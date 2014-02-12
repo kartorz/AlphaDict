@@ -1,0 +1,91 @@
+<?xml version="1.0"  encoding="UTF-8" ?>
+
+<!--		Front-end format of alphadict 
+			v1
+The front-end format of alphadict bases on xml, You can use any text edit to 
+create or modify the xml, then convert to Dictionary's internal format by 
+command tool "AlConvert".
+
+More detail about Dictionary's internal format see "dictionary_inner.pdf"
+-->
+
+<alphadict>
+  <header>
+    <version>1</version>
+
+    <srclan>[language]</srclan>
+    <detlan>[language]</detlan>
+    <!-- Use English lower-case word as the identifier.
+	 "english", "chinese",
+    -->
+
+    <charset>utf-8</charset>  <!-- Only support uft-8  -->
+
+    <entries/>
+    <publisher>[name]</publisher>
+    <publishdate>[date]</publishdate> 
+    <!-- Data Format:
+	 Year-month-day. for exmple: 2013-11-29
+    -->
+    <dictversion/>
+    <dictname/>
+  </header>
+        
+  <!--  word/phrase list
+       A <word/> node shall be replaced by a true word or phrase  in dictionary,like <boy/>, <girl/>.
+       Phrase uses a SPACE character as a spliter,like <in addtion to>
+  -->
+  <words>
+    <word>
+      <phonetic> <!-- (Optional Node)  -->
+	<name1>xx</name1>
+	<name2>xx</name2>
+      </phonetic>
+      <explanation>
+	<n>line1</n>
+	<n></n>  <!-- A blank line  -->
+	<n>line2</n>
+      </explanation>
+      <!-- This node means that these words/pharases share the same explanation.
+	   They all are indexes. see "鉴定", user can search either. -->
+      <alias>
+	<as>word1</as>
+	<as>word2</as>
+      </alias>
+    </word>
+  </words>
+</alphadict>
+
+<!-- Example for <words/>
+<words>
+
+<鑒定>
+	<phonetic>
+		<拼音><jian4 ding4></拼音>
+	</phonetic>
+	<explanation>
+		<n>na: evaluation;verification</n>
+	</explanation>
+	<alias>
+	  <as>鉴定</as>
+	</alias>
+</鑒定>
+
+<boy>
+	<phonetic>
+		<US>noʊt</US>
+		<UK>nəʊt</UK>
+	</phonetic>
+	<explanation>
+		<n>n: 男孩；小子； 伙计</n>
+		<n>int.表示惊奇</n>
+		<n></n>
+		<n>男孩；男青年a male child or a young male person</n>
+		<n>Sample Sentence:</n>
+		<n>  1.This family was that of the merry barefoot boy.</n>
+	</explanation>
+</boy>
+
+</words>
+
+-->
