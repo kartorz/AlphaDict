@@ -9,7 +9,7 @@ inline void endian_write_u32_le(u8 *buf, u32 v32)
 {
 	for (int i=0; i<4; i++) {
 		buf[i] = v32 & 0x000000ff;
-		v32 >> 8;
+		v32 >>= 8;
 	}
 }
 
@@ -41,7 +41,7 @@ inline void endian_write_u32_bg(u8 *buf, u32 v32)
 {
 	for (int i=0; i<4; i++) {
 		buf[3-i] = v32 & 0x000000ff;
-		v32 >> 8;
+		v32 >>= 8;
 	}
 }
 

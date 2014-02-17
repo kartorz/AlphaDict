@@ -27,7 +27,7 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
     <!-- Data Format:
 	 Year-month-day. for exmple: 2013-11-29
     -->
-    <dictversion/>
+    <dictversion>x.x</dictversion> <!-- x's rang is [0..255] -->
     <dictname/>
   </header>
         

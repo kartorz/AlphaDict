@@ -52,7 +52,7 @@ AlConvert: $(OBJS_ALCONVERT)
 -include $(DEPS)
 
 clean:
-	@find . -name "*.[oad]" | xargs -I{} rm {}
+	@find . -name "*.[oadi]" | xargs -I{} rm {}
 	-@rm -f AlphaDict
 
 echo:

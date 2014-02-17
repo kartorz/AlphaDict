@@ -4,8 +4,8 @@
 #include "endian_number.h"
 
 #define ALD_BLOCK	256
-
 #define ALD_INVALID_ADDR 0xFFFFFFFF
+#define ALD_STRINX_MAX  255
 
 #define BP(a, b)	(b-a+1)
 
