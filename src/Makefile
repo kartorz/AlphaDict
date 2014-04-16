@@ -12,16 +12,27 @@ FUN_LOCAL_DIRS = $(shell ls $(1) -lA | grep ^d  | awk '{print $$9}')
 include config.mk
 
 SOURCES_ALPHADICT :=
-subdirs := convert lib dict
+subdirs := convert lib dict gui
 
 incs := $(foreach dir, $(subdirs), $(dir)/Makefile.inc)
 
 include $(incs)
 
-SOURCES_ALPHADICT += $(foreach module, $(MODULE.yes), SOURCES_$(module))
+SOURCES_ALPHADICT += $(foreach module, $(MODULE.yes), $(SOURCES_$(module)))
 
 SOURCES_ALPHADICT += main.cpp \
-		     Log.cpp
+		     Log.cpp \
+		     MutexLock.cpp \
+             SpinLock.cpp \
+		     ThdCond.cpp \
+	         Thread.cpp \
+	         Util.cpp \
+             MessageQueue.cpp \
+             SysMessager.cpp \
+             TaskManager.cpp \
+             DictManager.cpp \
+             Application.cpp
+
 
 OBJS_TINYXML := $(SOURCS_TINYXML:%.cpp=%.o)
 
@@ -32,13 +43,14 @@ OBJS_ALCONVERT += lib/tinyxml2/libtinyxml2.a
 DEPS := $(SOURCES_ALPHADICT:%.cpp=%.d)
 DEPS += $(SOURCES_ALCONVERT:%.cpp=%.d)
 
+
 a11: AlphaDict AlConvert
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $<
 
 AlphaDict: $(OBJS_ALPHADICT)
-	$(CC) $^ -o $@
+	$(CC) $^ $(LIBS)  -o $@
 
 AlConvert: $(OBJS_ALCONVERT)
 	$(CC) $^ -o $@ 
@@ -51,12 +63,14 @@ AlConvert: $(OBJS_ALCONVERT)
 
 -include $(DEPS)
 
+-include gui/qt/qt.mk
+
 clean:
 	@find . -name "*.[oadi]" | xargs -I{} rm {}
 	-@rm -f AlphaDict
 
 echo:
-	@echo $(DEPS)
+	@echo $(SOURCES_ALPHADICT)
 
 
 .PHONY : clean  echo

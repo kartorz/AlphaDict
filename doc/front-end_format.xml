@@ -42,9 +42,11 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 	<name2>xx</name2>
       </phonetic>
       <explanation>
-	<n>line1</n>
-	<n></n>  <!-- A blank line  -->
-	<n>line2</n>
+        <![CDATA[
+        <p>paragraph</p>
+        <p></p>
+        <p>paragraph</p>
+        ]]>
       </explanation>
       <!-- This node means that these words/pharases share the same explanation.
 	   They all are indexes. see "鉴定", user can search either. -->

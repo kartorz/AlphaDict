@@ -20,8 +20,10 @@
 	<英>[ə'bændən]</英>
       </phonetic>
       <explanation>
-	<n>v: 放弃；抛弃；废弃；遗弃</n>
-	<n>n.放肆；狂热；任性；恣意任性</n>
+        <![CDATA[
+          <p>v: 放弃；抛弃；废弃；遗弃</p>
+          <p>n.放肆；狂热；任性；恣意任性</p>
+        ]]>
       </explanation>
     </abandon>
 
@@ -31,7 +33,9 @@
 	<英>['æbdəmən]</英>
       </phonetic>
       <explanation>
-	<n>肚子；下腹部；【虫类】腹部</n>
+        <![CDATA[
+         <p>肚子；下腹部；【虫类】腹部</p>
+        ]]>
       </explanation>
     </abdomen>
 
@@ -41,8 +45,10 @@
 	<英>[ə'baɪd]</英>
       </phonetic>
       <explanation>
-	<n>v: 居住；无法容忍；逗留；停留</n>
-	<n>网络: 遵守；忍受；坚持</n>
+        <![CDATA[
+    	  <p>v: 居住；无法容忍；逗留；停留</p>
+    	  <p>网络: 遵守；忍受；坚持</p>
+        ]]>
       </explanation>
     </abide>
 
@@ -52,8 +58,10 @@
 	<英>英 [əˈbɒlɪʃ]</英>
       </phonetic>
       <explanation>
-	<n>v: 废除；消灭；撤销</n>
-	<n>网络:取消；废止；革除</n>
+        <![CDATA[
+          <p>v: 废除；消灭；撤销</p>
+          <p>网络:取消；废止；革除</p>
+        ]]>
       </explanation>
     </abolish>
 
@@ -61,20 +69,26 @@
       <phonetic>
       </phonetic>
       <explanation>
-	<n>a. 突然的,意外的;陡峭的,险峻的;</n>
-	<n>   ( 举止,言谈等 ) 不流畅的</n>
+        <![CDATA[
+          <p>a. 突然的,意外的;陡峭的,险峻的;</p>
+          <p>   ( 举止,言谈等 ) 不流畅的</p>
+        ]]>
       </explanation>
     </abrupt>
 
     <absorb>
       <explanation>
-	<n>a. 愚蠢的;荒唐的;</n>
+        <![CDATA[
+          <p>a. 愚蠢的;荒唐的;</p>
+        ]]>
       </explanation>
     </absorb>
 
     <chemistry>
       <explanation>
-	<n>n. 化学;人际感情;</n>
+        <![CDATA[
+          <p>n. 化学;人际感情;</p>
+        ]]>
       </explanation>
     </chemistry>
 

@@ -4,7 +4,7 @@
  * See Doc/dictionary_inner.pdf for more inner format detail.
  *
  * Changes:
- * 11-Nov-2013, initial version: LiQiong lee<LiQiong.kartorz.lee@gmail.com>
+ * 11-Nov-2013, initial version: [LiQiong lee]
  *
  */
 
@@ -27,6 +27,7 @@ using namespace tinyxml2;
 #define MAX_DEPTH_STRINX 3
 #define MIN_DEPTH_CHRINX 1
 #define DICT_SUFFIX      ".ad"
+#define MAX_LEN_STRINX   ALD_BLOCK/4  /* max length */
 
 typedef ktree::kary_tree<aldict_charindex>&  IndexTreeRef;
 static int total_chrindex = 0; /* Used in recursion funciton write_charindex */
@@ -43,6 +44,7 @@ static void write_charindex(ktree::tree_node<aldict_charindex>::treeNodePtr pare
 			    FILE* cinxfile);
 static wchar_t mbrtowc_nextwc(char** strmb);
 static void merge_file(FILE *det, FILE *src);
+static off_t check_block_bound(off_t pos, int nbytes);
 
 int main(int argc, char* argv[])
 {
@@ -165,7 +167,7 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 	catch (exception e) {
 		AL_ASSERT(false, "Prase xml failure");
 	}
-
+	printf("parse header, pass\n");
 	/*-@ Stage 2: Create Index tree, write data file. */
 	#ifdef _LINUX
 	FILE *dict_tmpfile = fopen("/tmp/alphadict_tmp", "w+");
@@ -193,17 +195,18 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 
 		wordElement = wordElement->NextSiblingElement();
 	}
-
+	printf("Add to index tree, done\n");
 	/*-@ Stage 3: Trim index tree, remove string index and write it to string index temp file. */
 	trim_indextree(indexTree.root(), 0, strinx_tempfile);
 	
+	printf("trim index tree, done\n");
 	/*-@ Stage 4: Write char index to dict file. */
 	fseek(dictfile, (INDEX_BLOCK_NR-1)*ALD_BLOCK, SEEK_SET);
 	// Write root node.
 	ktree::tree_node<aldict_charindex>::treeNodePtr rootNode = indexTree.root();
 	struct aldict_charindex& rootIndex = rootNode->value();
 	ald_write_u32(rootIndex.location, sizeof(struct aldict_charindex));
-	ald_write_u32(rootIndex.len_content, rootNode->children().size());
+	ald_write_u16(rootIndex.len_content, rootNode->children().size());
 	fwrite(&rootIndex, sizeof(struct aldict_charindex), 1, dictfile);
 	total_chrindex = 1;
 	// Write all nodes recursively.
@@ -226,19 +229,20 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 	merge_file(dictfile, dict_tmpfile);
 	fseek(dictfile, 0, SEEK_SET);
 	fwrite(&header, sizeof(struct aldict_header), 1, dictfile);
+	printf("write dict file, done\n");
 
 	fclose(dictfile);
 	fclose(strinx_tempfile);
 	fclose(dict_tmpfile);
 }
 
-static void add_to_dictfile(const XMLElement* wordElement, FILE* dtf)
+static void add_to_dictfile(const XMLElement* wordElement, FILE* dict)
 {
 	unsigned char len[2];
 	string strWord = wordElement->Value();
 	len[0] = strWord.length();
-	fwrite((void *)len, 1, 1, dtf);
-	fwrite((void *)strWord.c_str(), len[0], 1, dtf);
+	fwrite((void *)len, 1, 1, dict);
+	fwrite((void *)strWord.c_str(), len[0], 1, dict);
 
 	string strPhonetic;
 	XMLConstHandle wordElementHd(wordElement);
@@ -252,21 +256,17 @@ static void add_to_dictfile(const XMLElement* wordElement, FILE* dtf)
 	}
 	
 	len[0] = strPhonetic.length();
-	fwrite((void *)len, 1, 1, dtf);
-	fwrite((void *)strPhonetic.c_str(), len[0], 1, dtf);
+	fwrite((void *)len, 1, 1, dict);
+	fwrite((void *)strPhonetic.c_str(), len[0], 1, dict);
 
 	string strExpln;
-	const XMLElement* explnTextElement = 
-		wordElementHd.FirstChildElement("explanation").FirstChild().ToElement();
-	for ( ; explnTextElement; ) {
-		strExpln += explnTextElement->GetText();
-		strExpln += "\n";
-		explnTextElement = explnTextElement->NextSiblingElement();
-	}
+	const XMLElement* explnElement = 
+		wordElementHd.FirstChildElement("explanation").ToElement();
+    strExpln += explnElement->FirstChild()->Value();
 
 	ald_write_u16(len, strExpln.length());	
-	fwrite((void *)len, 2, 1, dtf);
-	fwrite((void *)strExpln.c_str(), strExpln.length(), 1, dtf);
+	fwrite((void *)len, 2, 1, dict);
+	fwrite((void *)strExpln.c_str(), strExpln.length(), 1, dict);
 }
 
 static void add_to_indextree(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
@@ -292,7 +292,7 @@ static void add_to_indextree(ktree::tree_node<aldict_charindex>::treeNodePtr par
 			next = (*parent)[i];
 			break;
 		}
-	}	
+	}
 	bool leaf = *str == '\0' ? true : false;
 	if (!found) {
 		struct aldict_charindex  charInx;
@@ -356,53 +356,60 @@ static void add_alias(IndexTreeRef indexTree, const XMLElement* wordElement, off
  *    figure-2 should be char index.
  */
 static bool is_in_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
-			      int number, int depth)
+			      int words, int depth)
 {
 	if (parent->children().size() > MAX_WORDS_STRINX)
 		return false;
 	// firgure-3, if there is one more children, this node should be char index.
-	int max_depth = number > 1 ? MAX_DEPTH_STRINX : ALD_STRINX_MAX;
+	int max_depth = words > 1 ? MAX_DEPTH_STRINX : MAX_LEN_STRINX;
 	if (++depth > max_depth)
 		return false;
 
 	for (int i=0; i< parent->children().size(); i++) {
 		struct aldict_charindex& charIndex = (*parent)[i]->value();
 		if (ald_read_u32(charIndex.location) != ALD_INVALID_ADDR) {
-			if (++number > MAX_WORDS_STRINX)
+			if (++words > MAX_WORDS_STRINX)
 				return false;
 		}	
-		if (!is_in_stringindex((*parent)[i], number, depth))
+		if (!is_in_stringindex((*parent)[i], words, depth))
 			return false;
 	}
 	return true;
 }
 
+/* @len_inx - length of string.
+   @total - how many items. */
 static int write_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
-			     int len_inx, int* nbytes_total, FILE* file)
+			     int len_inx, int* total, FILE* file)
 {
-	static wchar_t index[ALD_STRINX_MAX] = {0};
+	static wchar_t index[MAX_LEN_STRINX] = {0};
 
 	for (int i=0; i<parent->children().size(); i++) {
 		struct aldict_charindex& charIndex = (*parent)[i]->value();
 		wchar_t wchr = ald_read_u32(charIndex.wchr);
-		if (len_inx < ALD_STRINX_MAX) {
+		if (len_inx < MAX_LEN_STRINX) {
 			index[len_inx] = wchr;
 		} else {
-			printf("WARRING: length of string index greatter then MAX_DEPTH_STRINX\n");
+			printf(
+			"WARRING: length of string index greatter then MAX_LEN_STRINX,please check function is_in_stringindex\n");
 		}
 
 		if (ald_read_u32(charIndex.location) != ALD_INVALID_ADDR) {
 			int nbytes_strinx = sizeof(aldict_stringindex)-1;
 			int nbytes_str = 4*(len_inx+1);
-			nbytes_strinx += nbytes_str;		      
+			nbytes_strinx += nbytes_str;
 			aldict_stringindex *strinx = (aldict_stringindex *)malloc(nbytes_strinx);
 			memcpy(strinx->str, index, nbytes_str);
 			memcpy(strinx->location, charIndex.location, 4);
 			strinx->len_str[0] = len_inx+1; /* How many char */
+
+			off_t offset = check_block_bound(ftello(file), nbytes_strinx);
+			fseek(file, offset, SEEK_CUR);
 			fwrite(strinx, nbytes_strinx, 1, file);
-			(*nbytes_total) += 1;
+			free(strinx);
+			(*total) += 1;
 		}
-	        write_stringindex((*parent)[i], len_inx+1, nbytes_total, file);
+		write_stringindex((*parent)[i], len_inx+1, total, file);
 	}
 }
 
@@ -418,8 +425,10 @@ static void trim_indextree(ktree::tree_node<aldict_charindex>::treeNodePtr paren
 			   int depth, FILE* sinxfile)
 {
 	bool bIsStrIndex = false;
-	if (++depth > MIN_DEPTH_CHRINX)
+	if (++depth > MIN_DEPTH_CHRINX && 
+	    ald_read_u32(parent->value().location) == ALD_INVALID_ADDR) {
 		bIsStrIndex = is_in_stringindex(parent, 0, 0);
+	}
 	if (bIsStrIndex) {
 		struct aldict_charindex& cinx = parent->value();
 		ald_write_u32(cinx.location, ftello(sinxfile));
@@ -456,7 +465,7 @@ static void write_charindex(ktree::tree_node<aldict_charindex>::treeNodePtr pare
 		int clen = (*parent)[i]->children().size();
 
 		if (loc == ALD_INVALID_ADDR) { /* Situation 3 */
-			ald_write_u32(i_cinx.len_content, clen);
+			ald_write_u16(i_cinx.len_content, clen);
 			/* Reserve room for parent[i]'s children.
 			   Write sequentialy from the end of file. 
 			   So, total_chrindex must be a global variable. */
@@ -466,18 +475,18 @@ static void write_charindex(ktree::tree_node<aldict_charindex>::treeNodePtr pare
 
 			ald_write_u32(inx.location, loc);
 			ald_write_u32(inx.wchr, 0);
-			ald_write_u32(inx.len_content, 0);
+			ald_write_u16(inx.len_content, 0);
 			(*parent)[i]->insert(inx, 0); /* Add a '0' index specifing the location in data area */
 
-			ald_write_u32(i_cinx.len_content, clen+1);
+			ald_write_u16(i_cinx.len_content, clen+1);
 			ald_write_u32(i_cinx.location, total_chrindex*sizeof(struct aldict_charindex));		
 		}
 	
-	       // Children's room has been reserved in parent's location.
-	       off_t offset = ald_read_u32(parent->value().location) + i*sizeof(struct aldict_charindex);
-	       fseek(cinxfile, (INDEX_BLOCK_NR-1)*ALD_BLOCK+offset, SEEK_SET);
-	       fwrite(&i_cinx, sizeof(struct aldict_charindex), 1, cinxfile);	       
-	       write_charindex((*parent)[i], cinxfile);
+	    // Children's room has been reserved in parent's location.
+	    off_t offset = ald_read_u32(parent->value().location) + i*sizeof(struct aldict_charindex);
+	    fseek(cinxfile, (INDEX_BLOCK_NR-1)*ALD_BLOCK+offset, SEEK_SET);
+	    fwrite(&i_cinx, sizeof(struct aldict_charindex), 1, cinxfile);	       
+	    write_charindex((*parent)[i], cinxfile);
 	}
 }
 
@@ -503,4 +512,13 @@ static void merge_file(FILE *det, FILE *src)
 	while ((nr = fread(buf, 1, 2048, src)) > 0) {
 		fwrite(buf, 1, nr, det);
 	}
+}
+
+/*@return  - offset aganist current pos. caller should use SEEK_CUR */
+static off_t check_block_bound(off_t pos, int nbytes)
+{
+	off_t remain = ALD_BLOCK - pos%ALD_BLOCK;
+	if (nbytes > remain)
+		return remain;
+	return 0;
 }

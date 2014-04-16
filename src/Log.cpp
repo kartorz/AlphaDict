@@ -7,14 +7,21 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include <string>
 
 Log g_log;
 
 Log::Log()
-: m_level(LOG_INFO)
+: m_level(LOG_DEBUG)
 {
-	std::string path = "/tmp/alpahdict.log";
+	std::string path = "/tmp/alphadict.log";
+    //std::string path = "stdout";
 	m_logFile = fopen(path.c_str(), "w+");
+}
+
+Log::~Log()
+{
+	fclose(m_logFile);
 }
 
 void Log::operator()(LogLevel l, const char *msg, ...) const
@@ -25,4 +32,5 @@ void Log::operator()(LogLevel l, const char *msg, ...) const
 	va_start(args, msg);
 	vfprintf(m_logFile, msg, args);
 	va_end(args);
+	fflush(m_logFile);
 }

@@ -1,11 +1,31 @@
 #include "alphadict.h"
+#include "Application.h"
 
-using namespace std;
+#ifdef _QT
+#include "gui/qt/mainwindow.h"
+#include <QApplication>
+#endif
 
+static void on_exit()
+{
+    g_log(LOG_INFO,"main.cpp on_exit()\n");
+    //delete SysMessager::getInstance();
+    //delete TaskManager::getInstance();
+    printf("on_exit");
+}
 
 int main(int argc, char* argv[])
 {
-	g_log.setLevel(LOG_DEBUG);
-	g_log(LOG_INFO,"print %d\n", 100);
-	return 0;
+	setlocale(LC_ALL, "C.UTF-8");
+
+    Application::getRefrence().initialization();
+
+#ifdef _QT
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    w.registerSysExit(on_exit);
+    QObject::connect(&a, SIGNAL(aboutToQuit()), &w, SLOT(onAppExit()));
+    return a.exec();
+#endif
 }

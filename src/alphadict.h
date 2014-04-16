@@ -17,5 +17,4 @@ if (!(cond)) {\
 /* i in [0 .. c-1] */
 #define LOOP(size)  for (int i=0; i<size; i++)
 
-
 #endif

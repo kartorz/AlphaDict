@@ -1,21 +1,43 @@
 #ifndef _ALDICTDOCUMENT_H_
 #define _ALDICTDOCUMENT_H_
-
-#include "alphadict.h"
-#include "aldic_inner.h"
 #include "kary_tree/kary_tree.hpp"
+#include "alphadict.h"
+#include "aldict_inner.h"
+#include "dict/iDict.h"
+
+using namespace ktree;
+using namespace std;
 
 class AldictDocument
 {
 public:
-	AldictDocument();
-	void loadDict(const std::string& path);
-	bool xmlToDict(const string& xmlPath,  const string& dictPath);
-	static void dictToXml(const string& dictPath, const string& xmlPath);
+	 AldictDocument();
+	~AldictDocument();
 
+	bool loadDict(const std::string& path);
+	address_t  lookup(const string& word, struct aldict_dataitem* item);
+    struct aldict_dataitem dataitem(address_t addr);
+
+	void writeToXml(const string& path);
+    IndexList* getIndexList();
+	
 private:
-	ktree::kary_tree<AldictCharIndex> m_indexTree;
-	struct AldictHeader m_header;
+	void loadIndexTree(tree_node<aldict_charindex>::treeNodePtr parent, void *chrblock);
+	void readHeader();
+	void readChrIndex();
+	address_t lookup(wchar_t *wstr, tree_node<aldict_charindex>::treeNodePtr parent);
+	address_t lookup(wchar_t* key, address_t off, int len);
+    void loadIndex(wchar_t *str, int inx,tree_node<aldict_charindex>::treeNodePtr parent);
+    void* getBlock(int blk);
+
+	kary_tree<aldict_charindex> *m_indexTree;
+	struct aldict_header m_header;
+	address_t m_chrIndexLoc;
+	address_t m_strIndexLoc;
+	address_t m_dataLoc;
+	FILE *m_dictFile;
+	IndexList m_indexList;
+    std::map<int, void*> m_cache;
 };
 
 #endif

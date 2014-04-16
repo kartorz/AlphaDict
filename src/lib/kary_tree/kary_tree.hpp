@@ -23,7 +23,7 @@ public:
 		_root = new tree_node<T>(d);
 	}
 
-	~kary_tree() { _root->clear(); }
+	~kary_tree() { clear(); }
 
 	treeNodePtr root() const { return _root; }
 
@@ -51,24 +51,17 @@ void traverse(tree_node<T> *pTree, void(*visit)(tree_node<T> *pTree))
 {
 	if(!pTree) return;
 
-	visit(pTree);
 	if(!pTree->children().empty()) {
 		typename std::list<tree_node<T> *>::const_iterator iter;
 		const std::list<tree_node<T> *>& children = pTree->children();
 		for (iter = children.begin(); 
 		     iter != children.end();
 		     ++iter) {
-		  traverse(*iter, visit);
+		     traverse(*iter, visit);
 		}
 	}
+	visit(pTree);
 }
-
-#if 0
-int depth() const
-{
-	return 0;
-}
-#endif
 
 };
 #endif

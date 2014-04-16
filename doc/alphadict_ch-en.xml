@@ -19,7 +19,9 @@
 	<拼音>[fang qi]</拼音>
       </phonetic>
       <explanation>
-	<n>abandon</n>
+        <![CDATA[
+          <p>abandon</p>
+        ]]>
       </explanation>
       <alias>
 	<as>放肆</as>
@@ -32,7 +34,9 @@
 	<拼音>[du zi]</拼音>
       </phonetic>
       <explanation>
-	<n>abdome</n>
+        <![CDATA[
+            <p>abdome</p>
+        ]]>
       </explanation>
       <alias>
 	<as>下腹部</as>
