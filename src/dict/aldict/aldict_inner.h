@@ -10,6 +10,11 @@
 
 #define BP(a, b)	(b-a+1)
 
+#define ALD_MAGIC_L  0x77
+#define ALD_MAGIC_H  0x88
+
+#define ALD_LANLEN_MAX 15 /* for src_lan and det_lan */
+
 struct aldict_header {
 	u8 magic        [ BP(1, 2)     ];
 	u8 h_version  	[ BP(3, 3)     ];
@@ -21,6 +26,8 @@ struct aldict_header {
 	u8 loc_chrindex	[ BP(134, 137) ];
 	u8 loc_strindex [ BP(138, 141) ];
 	u8 loc_data     [ BP(142, 145) ];
+	u8 src_lan      [ BP(146, 160) ];
+	u8 det_lan      [ BP(160, 175) ];
 };
 
 struct aldict_charindex {

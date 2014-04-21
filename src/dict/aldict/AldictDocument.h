@@ -20,10 +20,12 @@ public:
 
 	void writeToXml(const string& path);
     IndexList* getIndexList();
-	
+    bool support(const string& dictname);
+
+	struct aldict_header m_header;
 private:
 	void loadIndexTree(tree_node<aldict_charindex>::treeNodePtr parent, void *chrblock);
-	void readHeader();
+	bool readHeader();
 	void readChrIndex();
 	address_t lookup(wchar_t *wstr, tree_node<aldict_charindex>::treeNodePtr parent);
 	address_t lookup(wchar_t* key, address_t off, int len);
@@ -31,7 +33,6 @@ private:
     void* getBlock(int blk);
 
 	kary_tree<aldict_charindex> *m_indexTree;
-	struct aldict_header m_header;
 	address_t m_chrIndexLoc;
 	address_t m_strIndexLoc;
 	address_t m_dataLoc;

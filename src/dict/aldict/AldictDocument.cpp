@@ -30,20 +30,29 @@ bool AldictDocument::loadDict(const std::string& dictpath)
 	    g_log.e("Can't open dict file:(%s)", dictpath.c_str());
 		return false;
 	}
-
 	g_log.i("read meta data of Alpha Dict\n");
-	readHeader();
-	readChrIndex();	
-	return true;
+	if (readHeader()) {
+	    readChrIndex();	
+	    return true;
+    }
+    return false;
 }
 
-void AldictDocument::readHeader()
+bool AldictDocument::readHeader()
 {
 	ReadFile read;
-	read(m_dictFile, &m_header, sizeof(struct aldict_header));
-	m_chrIndexLoc = ald_read_u32(m_header.loc_chrindex);
-	m_strIndexLoc = ald_read_u32(m_header.loc_strindex);
-	m_dataLoc = ald_read_u32(m_header.loc_data);
+	size_t size = read(m_dictFile, &m_header, sizeof(struct aldict_header));
+    if (size < sizeof(struct aldict_header))
+        return false;
+
+    if (m_header.magic[0] == ALD_MAGIC_L && m_header.magic[1] == ALD_MAGIC_H) {
+	    m_chrIndexLoc = ald_read_u32(m_header.loc_chrindex);
+	    m_strIndexLoc = ald_read_u32(m_header.loc_strindex);
+	    m_dataLoc = ald_read_u32(m_header.loc_data);
+        return true;
+    }
+    g_log.i("not a alphadict's dictionary\n");
+    return false;
 }
 
 void AldictDocument::readChrIndex()
@@ -298,3 +307,16 @@ void AldictDocument::writeToXml(const std::string& path)
 	
 }
 
+bool AldictDocument::support(const string& dictname)
+{
+   m_dictFile = fopen(dictname.c_str(),"rb");
+	if (m_dictFile == NULL) {
+	    g_log.e("Can't open dict file:(%s)", dictname.c_str());
+		return false;
+	}
+
+	if (readHeader())
+	    return true;
+    else
+        return false;
+}

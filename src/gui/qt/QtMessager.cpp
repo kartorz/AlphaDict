@@ -28,7 +28,7 @@ void QtMessager::doWork()
 {
 	do{
         Message msg;
-        if (g_uiMessagerQ.pop(msg)) {
+        if (g_uiMessageQ.pop(msg)) {
             printf("{QtMessager} MSGID:%d\n", msg.id);
 		    switch (msg.id) {
                 case MSG_SET_INDEXLIST:{
@@ -45,10 +45,20 @@ void QtMessager::doWork()
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));
                 }
-			    break;         
+			    break;
+
+                case MSG_SET_LANLIST: {
+                     QMetaObject::invokeMethod((QObject *)m_owner,
+                                              "onSetLanComboBox",
+                                              Qt::QueuedConnection,
+                                              Q_ARG(QString, QString(msg.strArg1.c_str())),
+                                              Q_ARG(QString, QString(msg.strArg2.c_str())),
+                                              Q_ARG(void*, msg.pArg1));
+                }
+                break;
             }
-			  //SysMessager::getInstance()->getMessageQ()->push(0);
         } else {
+            printf("{QtMessager} no message eixt\n");
             break;
 		}
 	}while(!m_reqAbort);
@@ -59,7 +69,7 @@ void QtMessager::abort()
 	if(m_thread && m_thread->isRunning())
 	{
 		m_reqAbort = true;
-        g_uiMessagerQ.unblockAll();
+        g_uiMessageQ.unblockAll();
 		m_thread->quit();
 		m_thread->wait();
 	}

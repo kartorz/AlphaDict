@@ -32,7 +32,7 @@ ThdCond::~ThdCond()
     pthread_mutex_destroy(&m_mutex);
 }
 
-bool ThdCond::consume(void *v, int timeout)
+int ThdCond::consume(void *v, int timeout)
 {
     pthread_mutex_lock(&m_mutex);
     printf("consume 1.1\n");
@@ -42,26 +42,28 @@ bool ThdCond::consume(void *v, int timeout)
             pthread_cond_wait(&m_cv, &m_mutex);
         } else {
             struct timespec to;
-            to.tv_sec = time(NULL) + timeout;
-            to.tv_nsec = 0;            
+            int sec = timeout/1000;
+            int nsec = (timeout%1000)*1000;
+            to.tv_sec = time(NULL) + sec;
+            to.tv_nsec = nsec;            
             int err = pthread_cond_timedwait(&m_cv, &m_mutex, &to);
             if (err == ETIMEDOUT) {
                 pthread_mutex_unlock(&m_mutex);
-                return false;
+                return -1;
 		    }
         }
 
         printf("consume wakeup\n");
         if (m_unblock) {
             pthread_mutex_unlock(&m_mutex);
-            return false;
+            return -2;
         }
     }
     pthread_mutex_unlock(&m_mutex);
 
     onConsume(v);
     printf("consume exit\n");
-    return true;
+    return 0;
 }
 
 void ThdCond::produce(void *v, bool broadcast)
@@ -73,36 +75,40 @@ void ThdCond::produce(void *v, bool broadcast)
     	pthread_cond_signal(&m_cv);
     else
         pthread_cond_broadcast(&m_cv);
-    printf("wakup a thread\n");
     pthread_mutex_unlock(&m_mutex);
+    printf("produce %d\n", broadcast);
 }
 
-bool ThdCond::waitEvent(int timeout)
+int ThdCond::waitEvent(int timeout/*ms*/)
 {
     pthread_mutex_lock(&m_mutex);
 
-    printf("waitEvent to wait\n");
     if (timeout == 0) {
         pthread_cond_wait(&m_cv, &m_mutex);
     } else {
         struct timespec to;
-        to.tv_sec = time(NULL) + timeout;
-        to.tv_nsec = 0;            
+        clock_gettime(CLOCK_REALTIME, &to); /* sync with Util::GetTimeMS */
+        printf("waitEvent timeout1 (%ld, %ld)\n", to.tv_sec, to.tv_nsec);
+        int sec = timeout/1000;
+        int nsec = (timeout%1000)*1000;
+        to.tv_sec += sec;
+        to.tv_nsec += nsec;
+        printf("waitEvent timeout2 (%d, %d, %ld, %ld)\n", sec, nsec, to.tv_sec, to.tv_nsec);
         int err = pthread_cond_timedwait(&m_cv, &m_mutex, &to);
         if (err == ETIMEDOUT) {
             pthread_mutex_unlock(&m_mutex);
-            return false;
+            printf("waitEvent timeout ending\n");
+            return -1;
 		}
     }
-    printf("waitEvent wakeup %d\n", m_unblock);
-    if (m_unblock) {
-        printf("cond wait 2.3\n");
-        pthread_mutex_unlock(&m_mutex);
-        return false;
-    }
 
+    if (m_unblock) {
+        pthread_mutex_unlock(&m_mutex);
+        return -2;
+    }
+    printf("waitEvent ending\n");
     pthread_mutex_unlock(&m_mutex);
-    return true;
+    return 0;
 }
 
 void ThdCond::setEvent(bool broadcast)
@@ -113,7 +119,7 @@ void ThdCond::setEvent(bool broadcast)
     	pthread_cond_signal(&m_cv);
     else
         pthread_cond_broadcast(&m_cv);
-
+    printf("setEvent %d\n", broadcast);
     pthread_mutex_unlock(&m_mutex);
 }
 

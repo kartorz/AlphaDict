@@ -30,12 +30,12 @@ typedef vector<class iIndexItem*> IndexList;
 class iDictItem
 {
 public:
-	iDictItem(std::string identi=""):phonetic(""),expl(""),identify(identi),addr(0)
+	iDictItem(std::string identi=""):phonetic(""),expl(""),dictIdentifier(identi),addr(0)
     {
     }
     ~iDictItem(){}
 
-    std::string identify;
+    std::string dictIdentifier;
 	std::string phonetic; /* utf-8 bytes */
 	std::string expl;     /* utf-8 bytes */
 	address_t addr;
@@ -43,11 +43,25 @@ public:
 
 class iDict {
 public:
-	virtual iDictItem lookup(const string& word) = 0;
+    /* Load a dictionary */
+    virtual bool load(const string& dictname) = 0;
 
-     /* Derived class should maintains(new and delete) this returning pointers. */
+	virtual iDictItem lookup(const string& word) = 0;
+     /* This calss should maintains(new and delete) this returning pointers. */
 	virtual IndexList* getIndexList() = 0;
+    
+    /* For click on index item */
 	virtual iDictItem  onClick(int index, iIndexItem* item) = 0;
+
+    /* Identify the unique dict class name */
+    virtual const std::string identifier() = 0;
+
+    /* Check if a dictionary is supported by this dict class  */
+    virtual bool support(const string& dictname) = 0;
+
+    /* Check if this dictionary supports accroding lanauage */
+    // @detLan == "any": means that we only need check srcLan.
+    virtual bool canLookup(const string& srcLan, const string& detLan) = 0;
 };
 
 #endif

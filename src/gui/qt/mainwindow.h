@@ -23,6 +23,7 @@ public:
 
 public slots:
     void onUpdateText(void *v);
+    void onSetLanComboBox(const QString& src, const QString& det, void *v);
 
 private slots:
     void on_srcLanComboBox_currentIndexChanged(const QString &arg1);

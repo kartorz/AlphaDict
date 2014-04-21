@@ -1,14 +1,24 @@
-#include "alphadict.h"
 #include "DictManager.h"
 #include "TaskManager.h"
 #include "SysMessager.h"
+#include "Util.h"
+#include "Configure.h"
 #include "Application.h"
+#include "alphadict.h"
+#include "config.h"
 
-#define MAX_WORK_THREAD 1
+#include <stdlib.h>
 
 void InitTask::doWork()
 {
-    DictManager::getReference().load();
+    //equal to onTaskDone
+}
+
+// loop time is 5s.
+void SlowJob::doWork()
+{
+    printf("slowjob dowork\n");
+    m_owner->slowJob();
 }
 
 Application&  Application::getRefrence()
@@ -19,10 +29,16 @@ Application&  Application::getRefrence()
 
 Application::Application():m_init(false)
 {
+    m_sysMessager = new SysMessager();
+    m_configure =  new Configure();
+    TaskManager::getInstance()->start(MAX_WORK_THREAD);
 }
 
 Application::~Application()
 {
+    delete TaskManager::getInstance();
+    delete m_sysMessager;
+    delete m_configure;
 }
 
 void Application::initialization()
@@ -30,13 +46,19 @@ void Application::initialization()
 	g_log.setLevel(LOG_DEBUG);
     g_log(LOG_INFO, "Application initialization\n");
 
-    TaskManager::getInstance()->start(MAX_WORK_THREAD);
-    SysMessager::getInstance()->start();
-
-    TaskManager::getInstance()->addTask(new InitTask(this), 20);
+    m_sysMessager->start();
+    TaskManager::getInstance()->addTask(new InitTask(this), 0);
 }
 
 void Application::onTaskDone()
 {
+    m_configure->initialization();
     m_init = true;
+    TaskManager::getInstance()->addTask(new SlowJob(this), 0);
+    printf("Application onTaskDone\n");
+}
+
+void Application::slowJob(void)
+{
+    m_configure->writeXml();
 }

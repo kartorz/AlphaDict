@@ -158,11 +158,20 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 		
 		pstrTemp = headerElement->FirstChildElement("dictname")->FirstChild()->Value();
 		strncpy((char *)(header.d_identi), pstrTemp, 60);
+        header.d_identi[59] = '\0';
 
 		strTemp = headerElement->FirstChildElement("entries")->FirstChild()->Value();
 		u32Temp = boost::lexical_cast<unsigned int>(strTemp);
 		ald_write_u32(header.d_entries, u32Temp);
 		//fwrite(&header, sizeof(struct aldict_header), 1, dictfile);
+
+        pstrTemp = headerElement->FirstChildElement("srclan")->FirstChild()->Value();
+		strncpy((char *)(header.src_lan), pstrTemp, 15);
+        header.src_lan[14] = '\0';
+
+        pstrTemp = headerElement->FirstChildElement("detlan")->FirstChild()->Value();        
+		strncpy((char *)(header.det_lan), pstrTemp, 15);
+        header.src_lan[14] = '\0';
 	}
 	catch (exception e) {
 		AL_ASSERT(false, "Prase xml failure");

@@ -7,7 +7,6 @@
 class SysMessager: public Thread
 {
 public:
-    static SysMessager* getInstance();
     SysMessager();
     virtual ~SysMessager();
     

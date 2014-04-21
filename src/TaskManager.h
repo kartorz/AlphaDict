@@ -29,7 +29,7 @@ public:
 
 class Task {
 public:
-	Task(int inv=60, bool rept=true, TaskCallBack* callback=NULL, std::string identify="");
+	Task(int inv=60, bool rept=true, TaskCallBack* callback=NULL, std::string identifier="");
 	virtual ~Task();
 	virtual void doWork() = 0;
     virtual void abort() { m_abort = true; m_repeat = false;}

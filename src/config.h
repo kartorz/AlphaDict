@@ -1,5 +1,8 @@
 
-#define CFG_QT		0
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
 
-#define CFG_LINUX	1
+#define MAX_WORK_THREAD 2
+#define APP_NAME  "AlphaDict"
 
+#endif

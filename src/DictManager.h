@@ -7,6 +7,8 @@
 #include "TaskManager.h"
 #include "MutexLock.h"
 
+#include <map>
+
 using namespace std;
 
 class DictManager;
@@ -25,7 +27,6 @@ private:
       string m_input;
 };
 
-
 class DictManager
 {
 friend class LookupTask;
@@ -35,7 +36,8 @@ public:
     DictManager();
     ~DictManager();
 
-	void load();
+	bool load(const string& dictname, string *dictidenti);
+    bool load(const string& dictname, const string& dictidenti);
 	void lookup(const string& input);
 	void lookup(const string& srcLan, const string& detLan, const string& input);
 
@@ -44,12 +46,16 @@ public:
 
     void setSrcLan(const string& lan) { m_srcLan = lan; }
     void setDetLan(const string& lan) { m_detLan = lan; }
-
     void onAddLookupResult(string& input, int which, iDictItem& item);
 
+    void sendIndexListMessage();
+
 private:
-    iDict* m_Dicts[DICT_MAX_OPEN];
+    iDict* findIndexDict();
+
+    iDict* m_dicts[DICT_MAX_OPEN];
     Task* m_tasks[DICT_MAX_OPEN];
+    map<string, iDict*> m_dictMap;
 
     int m_dictTotal;
 

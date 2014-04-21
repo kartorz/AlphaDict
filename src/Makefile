@@ -31,6 +31,7 @@ SOURCES_ALPHADICT += main.cpp \
              SysMessager.cpp \
              TaskManager.cpp \
              DictManager.cpp \
+             Configure.cpp \
              Application.cpp
 
 
@@ -38,6 +39,7 @@ OBJS_TINYXML := $(SOURCS_TINYXML:%.cpp=%.o)
 
 OBJS_ALPHADICT := $(SOURCES_ALPHADICT:%.cpp=%.o)
 OBJS_ALCONVERT := $(SOURCES_ALCONVERT:%.cpp=%.o)
+OBJS_ALPHADICT += lib/tinyxml2/libtinyxml2.a
 OBJS_ALCONVERT += lib/tinyxml2/libtinyxml2.a
 
 DEPS := $(SOURCES_ALPHADICT:%.cpp=%.d)

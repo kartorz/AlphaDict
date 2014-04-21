@@ -18,12 +18,19 @@ class ThdCond
 public:
 	ThdCond();
 	virtual ~ThdCond();
-    
-    /* timeout == 0 meas waitting infintily or waitting 'timeout' secods */
-	bool consume(void *v, int timeout=0);
-    void produce(void *v, bool broadcast=false);
 
-	bool waitEvent(int timeout=0);
+    /* Common Arguments:
+     * @timeout == 0 meas waitting infintily. otherwise, waitting 'timeout' millisecods
+     * @broadcast. send a broadcast or not.
+     * @return for waitting.
+     *    0: satisfy contidion.
+     *   -1: timeout, no event.
+     *   -2: force exit, don't wait.
+     */
+
+	int consume(void *v, int timeout=0/*ms*/);
+    void produce(void *v, bool broadcast=false);
+	int waitEvent(int timeout=0/*ms*/);
     void setEvent(bool broadcast=false);
 
     void unblockAll(); /* unblock all blocked threads. */

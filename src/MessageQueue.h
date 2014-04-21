@@ -11,12 +11,18 @@
 
 #include <stdio.h>
 
-/* form UI to system */
+/* [@1]:  means 'iArg1' dones't matter.
+ * [@2]:  means Sender is responsible for the pointer pArg1.
+ * [@3]:  means Receiver is responsible for the pointer pArg1
+ */
 enum {
     MSG_DICT_QUERY = 0,
     MSG_DICT_INDEX_QUERY,
-    MSG_SET_INDEXLIST,
-	MSG_SET_DICTITEM,
+    MSG_SET_INDEXLIST, /* (-1[@1] , pArg1[@2])  */
+	MSG_SET_DICTITEM,  /* (-1[@1], pArg1[@3]):  */
+    MSG_SET_LANLIST,   /* (strArg1, strArg1, pArg1[@2])  */
+    MSG_SET_SRCLAN,    /* (strArg1) */
+    MSG_SET_DETLAN,    /* (strArg1) */
     MSG_QUIT,
 };
 
@@ -78,7 +84,7 @@ private:
 };
 
 
-extern MessageQueue g_uiMessagerQ;
-extern MessageQueue g_sysMessagerQ;
+extern MessageQueue g_uiMessageQ;
+extern MessageQueue g_sysMessageQ;
 
 #endif

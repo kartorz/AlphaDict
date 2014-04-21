@@ -3,8 +3,8 @@
   <header>
     <version>1</version>
 
-    <srclan>english</srclan>
-    <detlan>chinese</detlan>
+    <srclan>chinese</srclan>
+    <detlan>english</detlan>
     <charset>utf-8</charset>
     <entries>30</entries>
     <publisher>conver tester</publisher>
@@ -16,7 +16,7 @@
   <words>
     <放弃>
       <phonetic>
-	<拼音>[fang qi]</拼音>
+	  <拼音>[fang qi]</拼音>
       </phonetic>
       <explanation>
         <![CDATA[
@@ -24,8 +24,8 @@
         ]]>
       </explanation>
       <alias>
-	<as>放肆</as>
-	<as>遗弃</as>
+	     <as>放肆</as>
+	     <as>遗弃</as>
       </alias>
     </放弃>
 

@@ -6,7 +6,7 @@
  *
  */
 #include "MutexLock.h"
-//pthread_cond_timedwait()
+
 MutexCriticalSection::MutexCriticalSection(bool re)
 {
 	pthread_mutexattr_t attr;

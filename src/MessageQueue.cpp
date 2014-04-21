@@ -1,7 +1,7 @@
 #include "MessageQueue.h"
 
-MessageQueue g_uiMessagerQ("ui");   /* UI system should listen this */
-MessageQueue g_sysMessagerQ("sys");  /* SysMessager should listen this */
+MessageQueue g_uiMessageQ("ui");   /* UI system should listen this */
+MessageQueue g_sysMessageQ("sys");  /* SysMessager should listen this */
 
 MessageQueue::MessageQueue(std::string identi):m_identify(identi)
 {
@@ -9,7 +9,6 @@ MessageQueue::MessageQueue(std::string identi):m_identify(identi)
 
 MessageQueue::~MessageQueue()
 {
-    printf("~MessagerQueue\n");
     flush();
 }
 
@@ -23,7 +22,6 @@ void MessageQueue::push(int id)
 	Message msg;
     msg.id = id;
     produce(&msg);
-    printf("msg queue push\n");
 }
 
 void MessageQueue::push(int id, int arg1, int arg2)
@@ -84,7 +82,6 @@ void MessageQueue::push(int id, int arg1, void *arg2, void *arg3)
 void MessageQueue::onProduce(void *v)
 {
     SpinLock m_lock(m_crs);
-    printf("onProduce\n");
     m_queue.push_back(*((Message *)v));
 }
 
@@ -92,8 +89,7 @@ bool MessageQueue::pop(Message& msg, bool bwait)
 {
     bool ret = false;
     if (bwait) {
-        ret = consume(&msg);
-        printf("pop a message(%s)\n", m_identify.c_str());
+        ret = (consume(&msg) == 0);    
     } else {
         SpinLock m_lock(m_crs);
     	if (!m_queue.empty()) {
@@ -102,14 +98,14 @@ bool MessageQueue::pop(Message& msg, bool bwait)
             ret = true;
         }
     }
-
+    //printf("pop a message(%s, %d)\n", m_identify.c_str(), ret);
     return ret;
 }
 
 void MessageQueue::onConsume(void* v)
 {
     SpinLock m_lock(m_crs);
-    printf("onConsume(%s)\n", m_identify.c_str());
+    //printf("onConsume(%s)\n", m_identify.c_str());
     *((Message *)v)  = m_queue.back();
     m_queue.pop_back();
 }

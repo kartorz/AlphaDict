@@ -15,7 +15,7 @@ DEFINES  := -D_LINUX -D_QT
 CPPFLAGS := -g -MMD -O0 -fPIC
 LDFLAGS  := 
 
-LIBS = -lpthread
+LIBS = -lpthread -lboost_system  -lboost_filesystem -lrt
 LIBS += -L/usr/X11R6/lib64 -lQt5Widgets\
         -L/usr/lib/x86_64-linux-gnu -lQt5Gui\
         -lQt5Core

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "type.h"
+#include "config.h"
 #include "Log.h"
 
 #define AL_ASSERT(cond, msg)  \

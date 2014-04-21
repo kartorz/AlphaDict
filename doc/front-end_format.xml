@@ -15,8 +15,8 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 
     <srclan>[language]</srclan>
     <detlan>[language]</detlan>
-    <!-- Use English lower-case word as the identifier.
-	 "english", "chinese",
+    <!-- see "SourceCode"/etc/language.txt.
+      if user want to add new language, must add to language.txt.
     -->
 
     <charset>utf-8</charset>  <!-- Only support uft-8  -->
@@ -38,8 +38,8 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
   <words>
     <word>
       <phonetic> <!-- (Optional Node)  -->
-	<name1>xx</name1>
-	<name2>xx</name2>
+      <name1>xx</name1>
+	  <name2>xx</name2>
       </phonetic>
       <explanation>
         <![CDATA[

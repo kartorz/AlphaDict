@@ -29,12 +29,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_srcLanComboBox_currentIndexChanged(const QString &arg1)
 {
-
+    g_sysMessageQ.push(MSG_SET_SRCLAN, std::string(arg1.toUtf8().data()));
 }
 
 void MainWindow::on_detLanComboBox_currentIndexChanged(const QString &arg1)
 {
-
+    g_sysMessageQ.push(MSG_SET_DETLAN, std::string(arg1.toUtf8().data()));
 }
 
 void MainWindow::on_inputLineEdit_editingFinished()
@@ -49,13 +49,13 @@ void MainWindow::on_inputLineEdit_textChanged(const QString &arg1)
 
 void MainWindow::on_queryButton_clicked()
 {
-	g_sysMessagerQ.push(MSG_DICT_QUERY, std::string(m_input.toUtf8().data()));
+	g_sysMessageQ.push(MSG_DICT_QUERY, std::string(m_input.toUtf8().data()));
     ui->dictTextEdit->document()->clear();
 }
 
 void MainWindow::on_indexListView_clicked(const QModelIndex &index)
 {
-	g_sysMessagerQ.push(MSG_DICT_INDEX_QUERY, index.row(), (void *)(m_dictIndexModel->item(index.row())));
+	g_sysMessageQ.push(MSG_DICT_INDEX_QUERY, index.row(), (void *)(m_dictIndexModel->item(index.row())));
     ui->dictTextEdit->document()->clear();
     iIndexItem* item = m_dictIndexModel->item(index.row());
     QString text = QString::fromWCharArray(item->index, item->inxlen);
@@ -79,7 +79,7 @@ void MainWindow::onUpdateText(void *v)
     boldFormat.setFontWeight(QFont::Bold);
     itemBlock.setIndent(1);
 
-    text = QString::fromUtf8(i->identify.c_str());
+    text = QString::fromUtf8(i->dictIdentifier.c_str());
     text = text.trimmed();
     cursor.insertText(text, boldFormat);
     cursor.insertBlock(itemBlock);
@@ -96,6 +96,25 @@ void MainWindow::onUpdateText(void *v)
     cursor.insertHtml(text);
     cursor.insertBlock();
     delete i;
+}
+
+void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
+{
+    vector<string> *pVec = (vector<string>*) v;
+    vector<string>::iterator iter;
+    ui->detLanComboBox->addItem("any");
+
+    for (iter = (*pVec).begin(); iter != (*pVec).end(); iter++) {
+        QString item((*iter).c_str());
+        ui->srcLanComboBox->addItem(item);
+        ui->detLanComboBox->addItem(item);        
+    }
+
+    int i = ui->srcLanComboBox->findText(src);
+    ui->srcLanComboBox->setCurrentIndex(i);
+
+    i = ui->detLanComboBox->findText(det);
+    ui->detLanComboBox->setCurrentIndex(i);
 }
 
 void MainWindow::onAppExit()

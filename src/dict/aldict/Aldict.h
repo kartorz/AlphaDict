@@ -9,14 +9,17 @@ using namespace std;
 class Aldict: public iDict
 {
 public:
-	Aldict(const string& dictpath);
+	Aldict(const string& dictname);
+    Aldict() {}
     ~Aldict();
 	virtual iDictItem lookup(const string& word);
 	virtual IndexList* getIndexList();
 	virtual iDictItem onClick(int index, iIndexItem* item);
-
+    virtual const string identifier();
+    virtual bool support(const string& dictname);
+    virtual bool canLookup(const string& srcLan, const string& detLan);
+    virtual bool load(const string& dictname);
 private:
 	AldictDocument m_doc;
-	Aldict();
 };
 #endif

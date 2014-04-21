@@ -1,4 +1,5 @@
 #include "alphadict.h"
+#include "Util.h"
 #include "Application.h"
 
 #ifdef _QT
@@ -9,15 +10,13 @@
 static void on_exit()
 {
     g_log(LOG_INFO,"main.cpp on_exit()\n");
-    //delete SysMessager::getInstance();
-    //delete TaskManager::getInstance();
     printf("on_exit");
 }
 
 int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "C.UTF-8");
-
+    Util::getTimeMS(); // start to timing.
     Application::getRefrence().initialization();
 
 #ifdef _QT
