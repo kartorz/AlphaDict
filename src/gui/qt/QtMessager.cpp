@@ -29,17 +29,16 @@ void QtMessager::doWork()
 	do{
         Message msg;
         if (g_uiMessageQ.pop(msg)) {
-            printf("{QtMessager} MSGID:%d\n", msg.id);
+            //printf("{QtMessager} MSGID:%d\n", msg.id);
 		    switch (msg.id) {
-                case MSG_SET_INDEXLIST:{
+                case MSG_RESET_INDEXLIST:{
                     QMetaObject::invokeMethod(m_indexListModel,
-                                              "onUpdataList",
-                                              Qt::QueuedConnection,
-                                              Q_ARG(void*, msg.pArg1));
+                                              "onResetIndexList",
+                                              Qt::QueuedConnection);
                 }
                 break;
-
-			    case MSG_SET_DICTITEM:{
+             
+			   case MSG_SET_DICTITEM:{
                     QMetaObject::invokeMethod((QObject *)m_owner,
                                               "onUpdateText",
                                               Qt::QueuedConnection,
@@ -58,7 +57,7 @@ void QtMessager::doWork()
                 break;
             }
         } else {
-            printf("{QtMessager} no message eixt\n");
+            //printf("{QtMessager} no message eixt\n");
             break;
 		}
 	}while(!m_reqAbort);

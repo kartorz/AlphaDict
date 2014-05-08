@@ -5,80 +5,49 @@
 The format of front-end of alphadict:
 -------------------------------------
 <alphadict>
-<header>
-		<version>1</version>
-		<srclan/>
-		<detlan/>
-		<charset>utf-8</charset>
-		<entries/>
-		<publisher>[name]</publisher>
-		<publishdate>[date]</publishdate>
-		<dictversion/>
-		<dictname/>
-</header>
-<dict>
-        <word>
-		<alias> other word </alias>
-		<!-- This node means that this word shares the same meaning 
-		with some other word,just like a symbol link. So,if use this node, 
-		the other nodes can't be used anymore. They are mutual exclusion.
-		see example: "鉴定" -->
-		
-		<!-- Define a normal word other than a word with a alias node -->
-        	<phonetic>
-                	<name1>xx</name>
-                        <name2>xx</name2>
-                </phonetic>
-		<explanation>
-                	<text>line1</text>
-			<text>line2</text>
-		</explanation>
-		
-		<!-- notes, sentences, etc. More explain about the word -->
-		<note>
-			<text>line1</text>
-			<text>line2</text>
-		</note>
-
-		<!-- pictures, mp3, mp4, etc,some media resources.
-		if it is a local file, the "url" is a local path. -->
-		<resource>
-			<name>url</name>
-		</resource>
-        </word>
+  <header>
+    <version>1</version>
+    <srclan/>
+    <detlan/>
+    <charset>utf-8</charset>
+    <entries/>
+    <publisher>[name]</publisher>
+    <publishdate>[date]</publishdate>
+    <dictversion/>
+    <dictname/>
+  </header>
+  <words>
+    <word>
+      <!-- Define a normal word other than a word with a alias node -->
+      <phonetic>
+        <name1>xx</name1>
+        <name2>xx</name2>
+      </phonetic>
+      <explanation>
+text of explanation
+      </explanation>
+      <alias>
+       <as>other word</as> 
+      </alias>
+    </word>
 </words>
 </alphadict>
 
-<word> e.g:
-<鑒定>
-	<phonetic>
-		<拼音><jian4 ding4></拼音>
-	</phonetic>
-	<explanation>
-		<text>na: evaluation;verification</text>
-	</explanation>
-</鑒定>
-<鉴定>
-	<alias>鑒定</alias>
-</鉴定>
-
+<words> e.g:
 <boy>
 	<phonetic>
 		<US>noʊt</US>
 		<UK>nəʊt</UK>
 	</phonetic>
 	<explanation>
-		<text>n: 男孩；小子； 伙计</text>
-		<text>int.表示惊奇</text>
+n: 男孩；小子； 伙计
+int.表示惊奇
+	
+男孩；男青年a male child or a young male person
+Sample Sentence:
+1.This family was that of the merry barefoot boy.
+        ]]>
 	</explanation>
-	<note>
-		<text>男孩；男青年a male child or a young male person</text>
-		<text>Sample Sentence:</text>
-		<text>  1.This family was that of the merry barefoot boy.</text>
-	</note>
-	<resource>
-		<boy>resource/boy.png</boy>
-	</resource>
 </boy>
 --------------------------------------------------
 """
@@ -95,6 +64,7 @@ impl    = None
 doc     = None
 e_root  = None
 e_words = None
+entries = 0
 
 def xml_alphadict_openfile(path):
 	""" Open the xml file for writing """
@@ -132,10 +102,10 @@ def xml_alphadict_writeheader(header):
 	{"dictversion":} -- The version of the dictionary.
 	{"dictname:"} -- The name of the dictionary.
 	"""
-	global f_xml, doc, e_root
+	global f_xml, doc, e_root, e_words
 
 	validkeys = ["srclan", "detlan", "charset", "entries", "publisher", 
-		     "publishdate", "dictversion", "dictname", "version", "charset"]
+		     "publishdate", "dictversion", "dictname", "version"]
 	# Set default attribute.
 	header["version"] = "1"
 	header["charset"] = "utf-8"
@@ -150,9 +120,11 @@ def xml_alphadict_writeheader(header):
 				"get a invalid key(%s)\n" %(k))
 			
 	e_root.appendChild(e_header)
+	e_words = doc.createElement("words")
+	e_root.appendChild(e_words)
 	#doc.writexml(f_xml, addindent="\t", newl="\n")
 
-def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt=None, 
+def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt="", 
 			    note_lt=None, resource_lt=None):
 	"""
 	[word_lt] is a list containing the words sharing the same content 
@@ -164,29 +136,53 @@ def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt=None,
 	[resources] is a list containing the resource file's url.
 		The item of this list is a list("name", url)
 	"""
-	global f_xml, doc, e_root
+	global f_xml, doc, e_words, entries
 	
 	if not word_lt:
-		sys.stderr.write("xml_alphadict_writeword: no words")
-		
-	e_word = doc.createElement(word_lt[0])
+            sys.stderr.write("xml_alphadict_writeword: no words")
+	    return
+        entries = entries + 1
+	## " AB    CD E F" --> ['', 'AB', '', '', '', 'CD', 'E', 'F']
+	strlist = word_lt[0].split(' ')
+	if strlist[0] == '':
+            sys.stderr.write("xml_alphadict_writeword: start with a blank")
+	    return
+	attr_value = ''
+        for l in strlist:
+            if l != '':
+                attr_value += l + ' '
+        attr_value = attr_value[0:-1] # remove ' '
+        tag = "id_" + str(entries)
+	e_word = doc.createElement(tag)
+        e_word.setAttribute("word", attr_value)
 
-	e = create_element_childlist("phonetic", phonetic_lt)
+        if phonetic_lt != None and len(phonetic_lt) > 0:
+	    e = create_element_childlist("phonetic", phonetic_lt)
+	    e_word.appendChild(e)
+
+	e = doc.createElement("explanation")
+        expl = ""
+        if len(explanation_lt) == 1:
+            expl = explanation_lt[0]
+        else:
+	    for i in explanation_lt:
+	        expl += i + '\n';
+	    expl = expl[0:-1] # remove last ' '
+        
+        t = doc.createTextNode(expl)
+	e.appendChild(t)
 	e_word.appendChild(e)
-
-	e = create_element_childlist("explanation", explanation_lt, "text", e_word)
-
-	create_element_childlist("note", note_lt, "text", e_word)
+	#create_element_childlist("note", note_lt, "text", e_word)
 	
-	e = create_element_childlist("resource", resource_lt, None, e_word)
-	e_root.appendChild(e_word)
+	#e = create_element_childlist("resource", resource_lt, None, e_word)
+	e_words.appendChild(e_word)
 
 	if len(word_lt) > 1:
-		e_a = doc.createElement("alias")
-		for w in word_lt[1:]:
-			e_w = doc.createElement(w)
-			create_element_textnode("alias", word_lt[0], e_w)
-			#e_root.appendChild(e_w)
+	    e_a = doc.createElement("alias")
+	    for w in word_lt[1:]:
+                e_w = doc.createElement(w)
+		create_element_textnode("alias", word_lt[0], e_w)
+		#e_words.appendChild(e_w)
 
 
 def create_element_childlist(e, t, c=None, p=None):

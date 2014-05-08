@@ -17,6 +17,7 @@ protected:
 
 private:
     MessageQueue* m_msgQ;
+	bool m_bReloadDict;
 };
 
 

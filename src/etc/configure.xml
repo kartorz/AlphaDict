@@ -1,0 +1,20 @@
+<?xml version="1.0"  encoding="UTF-8" ?>
+<configure>
+  <!--
+      Default dictionary directory are:
+          Linux/Unix: "/user/local/share/AlphaDict/dict/" and "~/.AlphaDict/dict"
+          Windows:
+  -->
+  <dir></dir>
+  <srclan>any</srclan>
+  <detlan>any</detlan>
+  <dict>
+    <!--
+      <[A-Z|a-z] name="xx" open="" en="" srclan="", detlan=""/> 
+      @name : dictionary's name.
+      @open : which inner class of AlphaDict open this dict. 
+              'none' means it's not supported.
+      @en: {true, false}
+    -->
+  </dict>
+</configure>

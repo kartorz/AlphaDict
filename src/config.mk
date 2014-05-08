@@ -24,6 +24,6 @@ MODULE.yes := ALDICT
 
 ifeq ($(GUI), QT)
 MODULE.yes += QT
-MOC = /usr/lib/x86_64-linux-gnu/qt5/bin/moc
-UIC = /usr/lib/x86_64-linux-gnu/qt5/bin/uic
+MOC = /usr/bin/moc
+UIC = /usr/bin/uic
 endif

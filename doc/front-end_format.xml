@@ -32,29 +32,25 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
   </header>
         
   <!--  word/phrase list
-       A <word/> node shall be replaced by a true word or phrase  in dictionary,like <boy/>, <girl/>.
+       A <word/> node shall be replaced by a true word or phrase in dictionary,like <boy/>, <girl/>.
        Phrase uses a SPACE character as a spliter,like <in addtion to>
   -->
   <words>
-    <word>
+    <id word="word or phrase"> <!-- There are some limition about tag, so we put word/phrase in attribute -->
       <phonetic> <!-- (Optional Node)  -->
       <name1>xx</name1>
 	  <name2>xx</name2>
       </phonetic>
       <explanation>
-        <![CDATA[
-        <p>paragraph</p>
-        <p></p>
-        <p>paragraph</p>
-        ]]>
+<!-- plain text of explanation -->
       </explanation>
       <!-- This node means that these words/pharases share the same explanation.
 	   They all are indexes. see "鉴定", user can search either. -->
       <alias>
-	<as>word1</as>
-	<as>word2</as>
+	    <as>word1</as>
+	    <as>word2</as>
       </alias>
-    </word>
+    </id>
   </words>
 </alphadict>
 
@@ -65,9 +61,7 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 	<phonetic>
 		<拼音><jian4 ding4></拼音>
 	</phonetic>
-	<explanation>
-		<n>na: evaluation;verification</n>
-	</explanation>
+	<explanation>na: evaluation;verification</explanation>
 	<alias>
 	  <as>鉴定</as>
 	</alias>
@@ -79,12 +73,12 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 		<UK>nəʊt</UK>
 	</phonetic>
 	<explanation>
-		<n>n: 男孩；小子； 伙计</n>
-		<n>int.表示惊奇</n>
-		<n></n>
-		<n>男孩；男青年a male child or a young male person</n>
-		<n>Sample Sentence:</n>
-		<n>  1.This family was that of the merry barefoot boy.</n>
+n: 男孩；小子； 伙计</p>
+int.表示惊奇
+
+男孩；男青年a male child or a young male person
+Sample Sentence:
+1.This family was that of the merry barefoot boy
 	</explanation>
 </boy>
 

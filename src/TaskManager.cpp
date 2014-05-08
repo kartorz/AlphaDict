@@ -84,6 +84,7 @@ void TaskManager::addTask(Task *tsk, int delay)
 	MutexLock lock(m_taskQueueLock);
     //printf("{addTask} %d \n", tsk->getInterval());
 	/* Can't add a task repeatly. */
+    //printf("{addTask}: %u,%u\n", now, now+delay);
 	if (!IsExistTask(tsk)) {
 		tsk->setStartRunningTime(now+delay);
 	
@@ -92,10 +93,10 @@ void TaskManager::addTask(Task *tsk, int delay)
 		for ( ; iter != m_taskQueue.end(); ++iter) {
 			if ((*iter)->getStartRunningTime() >= tsk->getStartRunningTime()) {
 				m_taskQueue.insert(iter, tsk);
+                m_queueCond.setEvent();
 				return;
 			}
 		}
-
 		m_taskQueue.push_back(tsk);
 		m_queueCond.setEvent();
 	}
@@ -165,6 +166,7 @@ void* schedule(void *owner)
 			if (tmgr->m_curTask != NULL) {         
 			    tmgr->m_taskCond.setEvent();
                 canScheldule = false;
+                //printf("curTask != NULL\n");
             }
             /* Do't do sleep in this block, It will delay unlock "m_curTaskLock", 
                so execute thread can't pickup this tadk */
@@ -172,7 +174,7 @@ void* schedule(void *owner)
 
         if (!canScheldule) {
             //printf("{schedule} m_curTask != NULL\n");
-            usleep(20*1000); /* 10ms*/
+            usleep(20*1000); /* 20ms*/
             pthread_yield();
             continue;
         }
@@ -204,7 +206,7 @@ void* schedule(void *owner)
              *    - Waitting the front job util timeout.
              */
             int timeout = start - now;
-            printf("schedul timeout:%d, %ld, %ld\n", timeout, start, now);
+            //printf("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
             int wait_status = tmgr->m_queueCond.waitEvent(timeout);
             if (wait_status == -2) {
                 goto EXIT;
@@ -257,7 +259,7 @@ void* execute(void *owner)
                 break;
             //printf("{execute} wakeup\n");
         } else {
-            //printf("{execute} get a work to do \n");
+            //printf("{execute}: %u: get a work to do \n", Util::getTimeMS());
             if (!work->isAbort()) {
 			    work->doWork();
 				work->m_callback->onTaskDone();
@@ -266,7 +268,7 @@ void* execute(void *owner)
 			    } else {
                     delete work;
                 }
-                printf("{execute} doWork\n");
+                //printf("{execute} doWork\n");
             } else {
 			    work->m_callback->onTaskAbort();
                 g_log.d("{execute} onTaskAbort\n");
@@ -274,7 +276,6 @@ void* execute(void *owner)
             }
 		}
 	}
-    printf("execute thread exit\n");
     g_log.d("{execute} thread exit\n");
 	return NULL;
 }

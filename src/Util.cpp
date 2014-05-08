@@ -19,11 +19,12 @@ unsigned int Util::getTimeMS()
 	struct timespec ts;
 
     clock_gettime(CLOCK_MONOTONIC, &ts);
-	now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000);
+	now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
 	if (start_mstime == 0) {
 		start_mstime = now_mstime;
 	}
-    //printf("{getTimeMS} (%ld, %ld) --> (%ld, %ld)\n", ts.tv_sec, ts.tv_nsec, now_mstime, start_mstime);
+    /*printf("{getTimeMS} (%lu, %lu) --> (%lu, %lu), %u\n", 
+       ts.tv_sec, ts.tv_nsec, now_mstime, start_mstime, now_mstime - start_mstime);*/
 	return(now_mstime - start_mstime);
 }
 
@@ -34,14 +35,24 @@ wchar_t Util::mbrtowc_r(char** mb)
 	size_t len = strlen(*mb);
 	size_t nbytes = mbrtowc(wctmp, *mb, len, NULL);
 	if (nbytes > 0) {
-		if (nbytes > (size_t) - 2)
+		if (nbytes > (size_t)-2)
 			return 0;
 		*mb += nbytes;
 		return wctmp[0];
 	}
 }
 
+int Util::wcrtomb_r(char* s, wchar_t *wc)
+{
+    int nbytes = wcrtomb(s, *wc, NULL);
+    if (nbytes == (size_t) -1)
+        /* Error in the conversion. */
+        return -1;
+    return nbytes;
+}
+
 /* This piece of code comes from an example of mbrtowc function of GNU libc. */
+// Caller should release pointer 'wchar_t*'.
 wchar_t* Util::mbstowcs(const char *mb)
 {
 	size_t len = strlen(mb);
@@ -56,6 +67,7 @@ wchar_t* Util::mbstowcs(const char *mb)
 	{
 		if (nbytes >= (size_t) -2) {
 		    g_log.e("mbstowcs: invalid input string\n");
+            free(result);
 			return NULL;
 		}
 		*wcp++ = tmp[0];
@@ -65,7 +77,43 @@ wchar_t* Util::mbstowcs(const char *mb)
 	return result;
 }
 
-bool Util::isDir(const string& dir)
+// Caller should release pointer 'wchar_t*'
+wchar_t* Util::mbsrtowcs_r(const char *mb)
+{
+    size_t len = strlen(mb);
+    len = (len+1)*sizeof(wchar_t);
+    wchar_t *result = (wchar_t *)malloc(len);
+    memset(result, L'\0', len);
+    size_t ret = mbsrtowcs(result, &mb, len, NULL);
+    if (ret == (size_t)-1) {
+        free(result);
+        return NULL;
+    }
+
+    return result;
+}
+
+// Caller should release pointer char*
+char* Util::wcsrtombs_r(const wchar_t *wc)
+{
+    size_t len = wcslen(wc);
+    len = len*sizeof(wchar_t) + 1;
+    char *result = (char *)malloc(len);
+    memset(result, '\0', len);
+    size_t ret = wcsrtombs(result, &wc, len, NULL);
+    if (ret == (size_t)-1) {
+        if (result[0] == '\0') {
+            free(result);
+            g_log.e("{wcsrtombs_r}: invalid wc string\n");
+            return NULL;
+        } else {
+            g_log.w("{wcsrtombs_r}: (%s), encounter a invalid wide character(0x%x)\n", result, *wc);
+        }
+    }
+    return result;
+}
+
+bool Util::isDirExist(const string& dir)
 {
     struct stat attr;
     int ret = stat(dir.c_str(), &attr);
@@ -76,7 +124,7 @@ bool Util::isDir(const string& dir)
     return false;
 }
 
-bool Util::isFile(const string& filename)
+bool Util::isFileExist(const string& filename)
 {
     struct stat attr;
     int ret = stat(filename.c_str(), &attr);
@@ -93,13 +141,16 @@ bool Util::createDir(const string& path)
     return ret == 0;
 }
 
-void Util::copyFile(const string& from, const string& to)
+bool Util::copyFile(const string& from, const string& to)
 {
     try {
         copy_file(from, to);
     } catch (const filesystem_error& ex) {
-         printf("%s", ex.what());
-    }    
+         //printf("%s", ex.what());
+         g_log.e("%s\n", ex.what());   
+         return false;
+    }
+    return true;
 }
 
 void Util::copyDir(const string& from, const string& to)
@@ -117,7 +168,8 @@ void Util::copyDir(const string& from, const string& to)
             try {
                 copy_file(s, d);
             } catch (const filesystem_error& ex) {
-                printf("%s", ex.what());
+                //printf("%s", ex.what());
+                g_log.e("%s\n", ex.what());
             }
         }
         closedir(dp);

@@ -23,13 +23,14 @@ import sys, os, codecs
 
 from lib_aldictxml import *
 
-usage = """Usage: convert_cedict [file_in] [file_out]
+usage = """Usage: cedict_to_aldictxml [file_in] [file_out]
 Convert cedict file to front-end xml of AlphaDict.
 file_in:  The cedict file needed be converted.
 file_out: Specify the detination file.
-     Default is at the input file path appending ".xml" as a suffix to the output file
+
+Default is at the input file path appending ".xml" as a suffix to the output file
 For example:
-	convert_cdeict ../cedict  | convert_cedict ../cedict  /mydicts/xx.xml
+    convert_cdeict ../cedict  | convert_cedict ../cedict  /mydicts/xx.xml
 """
 
 if len(sys.argv) < 2:
@@ -77,7 +78,7 @@ try:
 				header["dictversion"] = (cedict_header["version"] 
 							 + "." + cedict_header["subversion"])
 				header["entries"] = cedict_header["entries"]
-				header["srclan"] = "CN"
+				header["srclan"] = "any"
 				header["publisher"] = cedict_header["publisher"]
 				header["publishdate"] = cedict_header["date"]
 				header["dictname"] = "cc-cedict dictionary"

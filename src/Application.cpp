@@ -1,8 +1,9 @@
+#define _APPLICATION_CPP_
+
 #include "DictManager.h"
 #include "TaskManager.h"
 #include "SysMessager.h"
 #include "Util.h"
-#include "Configure.h"
 #include "Application.h"
 #include "alphadict.h"
 #include "config.h"
@@ -19,12 +20,6 @@ void SlowJob::doWork()
 {
     printf("slowjob dowork\n");
     m_owner->slowJob();
-}
-
-Application&  Application::getRefrence()
-{
-    static Application app;
-	return app;
 }
 
 Application::Application():m_init(false)
@@ -47,15 +42,21 @@ void Application::initialization()
     g_log(LOG_INFO, "Application initialization\n");
 
     m_sysMessager->start();
-    TaskManager::getInstance()->addTask(new InitTask(this), 0);
+    m_configure->initialization();
+    DictManager::getReference().initialization();
+    m_init = true;
+    //TaskManager::getInstance()->addTask(new SlowJob(this), 0);
+    //TaskManager::getInstance()->addTask(new InitTask(this), 0);
 }
 
 void Application::onTaskDone()
 {
-    m_configure->initialization();
+#if 0
+    //DictManager::getReference().initialization();
     m_init = true;
     TaskManager::getInstance()->addTask(new SlowJob(this), 0);
     printf("Application onTaskDone\n");
+#endif
 }
 
 void Application::slowJob(void)

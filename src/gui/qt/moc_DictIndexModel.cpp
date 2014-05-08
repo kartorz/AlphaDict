@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_DictIndexModel_t {
-    QByteArrayData data[4];
-    char stringdata[32];
+    QByteArrayData data[5];
+    char stringdata[53];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -30,11 +30,13 @@ struct qt_meta_stringdata_DictIndexModel_t {
 static const qt_meta_stringdata_DictIndexModel_t qt_meta_stringdata_DictIndexModel = {
     {
 QT_MOC_LITERAL(0, 0, 14),
-QT_MOC_LITERAL(1, 15, 12),
-QT_MOC_LITERAL(2, 28, 0),
-QT_MOC_LITERAL(3, 29, 1)
+QT_MOC_LITERAL(1, 15, 16),
+QT_MOC_LITERAL(2, 32, 0),
+QT_MOC_LITERAL(3, 33, 15),
+QT_MOC_LITERAL(4, 49, 2)
     },
-    "DictIndexModel\0onUpdataList\0\0v\0"
+    "DictIndexModel\0onResetIndexList\0\0"
+    "updateIndexList\0pg\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -44,7 +46,7 @@ static const uint qt_meta_data_DictIndexModel[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -52,10 +54,12 @@ static const uint qt_meta_data_DictIndexModel[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   19,    2, 0x08,
+       1,    0,   24,    2, 0x0a,
+       3,    1,   25,    2, 0x0a,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::VoidStar,    3,
+    QMetaType::Void,
+    QMetaType::QModelIndex, QMetaType::Int,    4,
 
        0        // eod
 };
@@ -65,7 +69,9 @@ void DictIndexModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     if (_c == QMetaObject::InvokeMetaMethod) {
         DictIndexModel *_t = static_cast<DictIndexModel *>(_o);
         switch (_id) {
-        case 0: _t->onUpdataList((*reinterpret_cast< void*(*)>(_a[1]))); break;
+        case 0: _t->onResetIndexList(); break;
+        case 1: { QModelIndex _r = _t->updateIndexList((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QModelIndex*>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -96,13 +102,13 @@ int DictIndexModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 2)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }

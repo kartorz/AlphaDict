@@ -19,7 +19,8 @@
 
 #define DEFAULT_THREAD_NUMBER  1
 
-class TaskCallBack {
+class TaskCallBack
+{
 public:
     virtual void onTaskInit() {};
 	virtual void onTaskUnInit() {};
@@ -27,7 +28,8 @@ public:
 	virtual void onTaskAbort() {};
 };
 
-class Task {
+class Task 
+{
 public:
 	Task(int inv=60, bool rept=true, TaskCallBack* callback=NULL, std::string identifier="");
 	virtual ~Task();
@@ -41,7 +43,6 @@ public:
     void setRepeat(bool rept) {m_repeat = rept;}
     std::string& getIdentify() {return m_identify;}
     bool isAbort() { return m_abort; }
-
 	TaskCallBack* m_callback;
 
 protected:

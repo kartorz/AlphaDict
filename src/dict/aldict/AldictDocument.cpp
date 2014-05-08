@@ -1,3 +1,10 @@
+/* For saving memory:
+ *     - load char index partly, the others load dynamically into a cache tree 
+ *       that should can load a whole subtree at least.
+ *     
+ * 
+ */
+
 #include "AldictDocument.h"
 #include "tinyxml2/tinyxml2.h"
 #include "Log.h"
@@ -5,7 +12,11 @@
 
 #define CACHE_SLICE_MAX  400  /* 100k */
 
-AldictDocument::AldictDocument() 
+#define MEM_CHARINX_MAX  20*1024*1024 /*M*/
+
+#define INDEXARRY_LEN_MAX  256
+
+AldictDocument::AldictDocument():m_indexTree(NULL)
 {
 }
 
@@ -20,7 +31,9 @@ AldictDocument::~AldictDocument()
     
     for (int i=0; i<m_indexList.size(); i++) {
         delete m_indexList[i];
-    }    
+    }
+    if (m_indexTree)
+        delete m_indexTree;
 }
 
 bool AldictDocument::loadDict(const std::string& dictpath)
@@ -46,7 +59,7 @@ bool AldictDocument::readHeader()
         return false;
 
     if (m_header.magic[0] == ALD_MAGIC_L && m_header.magic[1] == ALD_MAGIC_H) {
-	    m_chrIndexLoc = ald_read_u32(m_header.loc_chrindex);
+	    m_chrIndexLoc = m_header.loc_chrindex[0];
 	    m_strIndexLoc = ald_read_u32(m_header.loc_strindex);
 	    m_dataLoc = ald_read_u32(m_header.loc_data);
         return true;
@@ -59,71 +72,83 @@ void AldictDocument::readChrIndex()
 {
 	ReadFile read;
 	Malloc maclloc_t;
-	int len = (m_strIndexLoc - m_chrIndexLoc)*ALD_BLOCK;
-	void* chrblock = maclloc_t(len);//malloc(len);//maclloc_t(len);
+	address_t len = (m_strIndexLoc - m_chrIndexLoc)*ALD_BLOCK;
+	void* chrblock = maclloc_t(len);
 
+    g_log.d("{readChrIndex}, charindex size == (%d)bytes \n", len);
 	fseek(m_dictFile, (m_chrIndexLoc-1)*ALD_BLOCK, SEEK_SET);
 	read(m_dictFile, chrblock, len);
 
 	struct aldict_charindex rootIndex;
-	//memcpy((void *)(&rootIndex), chrblock, sizeof(struct aldict_charindex));
 	rootIndex = *((struct aldict_charindex*)chrblock);
-
-	m_indexTree = new kary_tree<aldict_charindex>(rootIndex);
-	loadIndexTree(m_indexTree->root(), chrblock);
+    m_indexTree = new kary_tree<aldict_charindex>(rootIndex);
+    if (len <= MEM_CHARINX_MAX) {
+	    loadIndexTree(m_indexTree->root(), chrblock, len);
+    } else {
+        // Todo: Loading a part of index character.
+    }
 }
 
-void AldictDocument::loadIndexTree(
-		tree_node<aldict_charindex>::treeNodePtr parent, void *chrblock)
+void AldictDocument::loadIndexTree(tree_node<aldict_charindex>::treeNodePtr parent,
+                                   void *chrblock, address_t blksize)
 {		
-	struct aldict_charindex& chrInx = parent->value();
-	address_t loc = ald_read_u32(chrInx.location);
-	int len = ald_read_u16(chrInx.len_content);
-	g_log.d("loadIndexTree loc:(%u-->0x%x), len:(%d)\n", loc, loc, len);
-	//printf("loadIndexTree loc:(%u-->0x%x), len:(%d)\n", loc, loc, len);
+	struct aldict_charindex& parInx = parent->value();
+	address_t loc = ald_read_u32(parInx.location);
+    u16 len = ald_read_u16(parInx.len_content);
+
+    if (len > 1000) {
+        g_log.w("{loadIndexTree} more than 1000 child need to be loaded, someting wrong?\n");
+    }
+
+	//g_log.d("{loadIndexTree} parent loc: (%u-->0x%x), len:(%d)\n", loc, loc, len);
 	if ((loc & 0x80000000) == 0 && len > 0) { /* non-leaf */
-		LOOP(len) {
-			//struct aldict_charindex chrInx = *(
-		   // 	(struct aldict_charindex*)((u8 *)chrblock + loc + i*sizeof(struct aldict_charindex)));
+        if (loc + (len-1) * sizeof(struct aldict_charindex) > blksize) {
+            g_log.e("{loadIndexTree} (loc(%u) --> len(%u) )over char index aread\n", loc, len);
+            return;
+        }
+
+	    for (u32 i=0; i<len; i++) {
 		    struct aldict_charindex chrInx;
-			memcpy(&chrInx,
-				   (u8 *)chrblock + loc + i*sizeof(struct aldict_charindex),
-				   sizeof(struct aldict_charindex));
+            address_t off = loc + i*sizeof(struct aldict_charindex);
+			memcpy(&chrInx,(u8 *)chrblock + off,sizeof(struct aldict_charindex));
 			parent->insert(chrInx);
-			loadIndexTree((*parent)[i], chrblock);
+            // Recursion
+			loadIndexTree((*parent)[i], chrblock, blksize);
 		}
 	}
 }
 
 address_t AldictDocument::lookup(const string& word, struct aldict_dataitem* item)
-{	
-	wchar_t *wstr = Util::mbstowcs(word.c_str());
-	address_t loc = lookup(wstr, m_indexTree->root());
-	g_log.d("AldictDocument::lookup word:(%d)-->(%x) \n", loc, loc);
-	free(wstr);
-    *item = dataitem(loc);
+{
+	address_t loc = lookup((char*)word.c_str(), m_indexTree->root());
+	//g_log.d("AldictDocument::lookup word:(%d)-->(%x) \n", loc, loc);
+	//free(wstr);
+    if (loc != ALD_INVALID_ADDR)
+        *item = dataitem(loc);
     return loc;
 }
 
-/* Look up in char index tree */
-address_t AldictDocument::lookup(wchar_t *wstr, tree_node<aldict_charindex>::treeNodePtr parent)
+/* Look up in char index tree,
+ * If we can't find the 'target',.. 
+ */
+
+address_t AldictDocument::lookup(char *strkey, tree_node<aldict_charindex>::treeNodePtr parent)
 {
-	const wchar_t key = wstr[0];
+	const wchar_t key = Util::mbrtowc_r(&strkey); /* "strkey" will be modified */
+
 	g_log.d("AldictDocument::lookup key:(%u)-->(%x) \n", key, key);
-	printf("AldictDocument::lookup key:(%u)-->(%x) \n", key, key);
 	for (int i=0; i<parent->children().size(); i++) {
 		struct aldict_charindex chrInx = parent->child(i)->value();
 		wchar_t chr = ald_read_u32(chrInx.wchr);
 		if (chr == key) {
-			if (wcslen(wstr) > 1) {
-				wstr += 1; // next wchar
+			if (strlen(strkey) > 0) {
 				if (parent->child(i)->children().size() > 0) {
-					return lookup(wstr, (*parent)[i]);
+					return lookup(strkey, (*parent)[i]);
 			    } else {
 					address_t loc = ald_read_u32(chrInx.location);
 					int len = ald_read_u16(chrInx.len_content);
-					if (loc & F_LOCSTRINX == F_LOCSTRINX) {
-					    return lookup(wstr, loc & (~F_LOCSTRINX), len);
+					if ((loc & F_LOCSTRINX) == F_LOCSTRINX) {
+					    return lookup(strkey, loc & (~F_LOCSTRINX), len);
 					} else {
 						return ALD_INVALID_ADDR;
 					}
@@ -138,7 +163,7 @@ address_t AldictDocument::lookup(wchar_t *wstr, tree_node<aldict_charindex>::tre
 					}
 				} else {
 					address_t loc = ald_read_u32(chrInx.location);
-				    if (loc & F_LOCSTRINX == 0) {
+				    if ((loc & F_LOCSTRINX) == 0) {
 					    return loc; // Find!
 					}
 					return ALD_INVALID_ADDR;
@@ -150,29 +175,27 @@ address_t AldictDocument::lookup(wchar_t *wstr, tree_node<aldict_charindex>::tre
 }
 
 /* Look up in string index area */
-address_t AldictDocument::lookup(wchar_t* key, address_t off, int len)
+address_t AldictDocument::lookup(char* strkey, address_t off, int len)
 {
-	int bk_off = off/ALD_BLOCK;
+	int block_nr = off/ALD_BLOCK + m_strIndexLoc;
 	off = off%ALD_BLOCK;
-    u8 *buf = (u8 *)getBlock(m_strIndexLoc+bk_off) + off;
-	int len_key = wcslen(key);
+    u8 *buf = (u8 *)getBlock(block_nr) + off; /* Load index has checked if NULL. */
+
+	int len_key = strlen(strkey);
 	for (int item = 0; item < len; item++) {
-		aldict_stringindex *pStrInx = (aldict_stringindex *) buf;
+		struct aldict_stringindex *pStrInx = ( struct aldict_stringindex *) buf;
 		if (pStrInx->len_str[0] == 0) {
 			// Read next block
-			int n_bnr = ALD_BLOCK_NR(ftello(m_dictFile)) + 1;            
-			buf = (u8 *)getBlock(n_bnr - 1);
-			pStrInx = (aldict_stringindex *) buf;
+			buf = (u8 *)getBlock(++block_nr);            
+			pStrInx = ( struct aldict_stringindex *) buf;
 		}
 
 		if (len_key == pStrInx->len_str[0]) {
-		    wchar_t *wstr = (wchar_t*)(pStrInx->str);
+		    char *strinx = (char *)(pStrInx->str);
 			bool found = true;
 			// compasion from tail to head.
 		    for (int i=len_key; i>0; i--) {
-		    	wchar_t tail_wchr = ald_read_u32((u8 *)(wstr+i-1));
-				wchar_t tail_key = key[i-1];
-				if (tail_wchr != tail_key) {
+				if (strinx[i-1] != strkey[i-1]) {
 				    found = false;
 					break;
 				}
@@ -182,7 +205,7 @@ address_t AldictDocument::lookup(wchar_t* key, address_t off, int len)
 				return ald_read_u32(pStrInx->location);
 			}
 	    }		
-		buf += 5 + 4*pStrInx->len_str[0]; // wchar_t
+		buf += 5 + pStrInx->len_str[0];
 	}
 	return ALD_INVALID_ADDR;
 }
@@ -219,92 +242,161 @@ struct aldict_dataitem AldictDocument::dataitem(address_t loc)
 	return dataItem;
 }
 
-IndexList* AldictDocument::getIndexList()
+int AldictDocument::getIndexList(IndexList& indexList, int start, int end)
 {
-    wchar_t index[256*4];
-	memset(index, 0, 256*4);
-    m_indexList.clear();
-    loadIndex(index, 0, m_indexTree->root());
-    return &m_indexList;
+    if (!m_indexTree)
+        return 0;
+
+    wchar_t index[INDEXARRY_LEN_MAX];
+	memset(index, L'\0', INDEXARRY_LEN_MAX);
+    m_indexStart = start;
+    m_indexEnd = end;
+    m_indexNumber = 0; /* start from 0 */
+
+    loadIndex(index, 0, indexList, m_indexTree->root());
+    return m_indexNumber - m_indexStart;
 }
 
-void AldictDocument::loadIndex(wchar_t *str, int inx,
-							   tree_node<aldict_charindex>::treeNodePtr parent)
+/* @return : true -> continue; false -> stop */
+bool AldictDocument::loadIndex(wchar_t *str, int inx, IndexList& indexList,
+                               tree_node<aldict_charindex>::treeNodePtr parent)
 {
     int children_size = parent->children().size();
 	if (children_size > 0) {
 	    for (int i=0; i<children_size; i++) {
-	        struct aldict_charindex chrInx = parent->child(i)->value();
-	    	str[inx] = ald_read_u32(chrInx.wchr);
-	    	loadIndex(str, inx+1,  parent->child(i));
+	        struct aldict_charindex chrInx = parent->child(i)->value();           
+            if (inx < INDEXARRY_LEN_MAX -1) {
+                str[inx] = ald_read_u32(chrInx.wchr);
+                if (loadIndex(str, inx+1, indexList, parent->child(i)) == false)
+                    return false;
+            } else {
+                g_log.d("{loadIndex} index is too long, should't happen\n");
+                return false;
+            }
         }
-	} else {
-	    struct aldict_charindex chrInx = parent->value();
-		address_t loc = ald_read_u32(chrInx.location);
-		int len = ald_read_u16(chrInx.len_content);
-		if ((loc & F_LOCSTRINX) == 0) {
-            iIndexItem* item = new iIndexItem();
-            item->index = (wchar_t*)malloc(4*inx);
-            wcsncpy(item->index,  str, inx);
-            item->inxlen = inx;
-            item->addr = loc;
-            m_indexList.push_back(item);
-		} else {
-            loc = loc & (~F_LOCSTRINX);
-            int bk_off = loc/ALD_BLOCK;
-            int off = loc%ALD_BLOCK;
-	        u8 *buf = (u8 *)getBlock(m_strIndexLoc + bk_off) + off;
-            
-			for (int item = 0; item < len; item++) {
-		        aldict_stringindex *pStrInx = (aldict_stringindex *) buf;
-		        if (pStrInx->len_str[0] == 0) {
-			        // Read next block
-                    int c_bnr = ALD_BLOCK_NR(ftello(m_dictFile));
-			        int n_bnr = c_bnr + 1;
-                    buf = (u8 *)getBlock(n_bnr - 1);
-			        pStrInx = (aldict_stringindex *) buf;
-		        }
+        return true;
+	}
 
-				wchar_t *wstr = (wchar_t*)(pStrInx->str);
-				wcsncpy(str+inx, (wchar_t*)(pStrInx->str), pStrInx->len_str[0]);
-                inx += pStrInx->len_str[0];
-                {
+    // Leaf node
+
+    string strparent;
+    {
+        str[inx] = L'\0';
+        char* pinx = Util::wcsrtombs_r(str);
+        if (pinx == NULL) {
+            g_log.e("{loadIndex} invalid wcstring\n");
+            return false;
+        }    
+        strparent = string(pinx);
+        //printf("strparent %s\n", strparent.c_str());
+        free(pinx);
+    }
+
+    struct aldict_charindex chrInx = parent->value();
+	address_t loc = ald_read_u32(chrInx.location);
+	int length = ald_read_u16(chrInx.len_content);
+	if ((loc & F_LOCSTRINX) == 0) {
+        if (m_indexNumber >= m_indexStart) {
+            if (m_indexNumber < m_indexEnd) {
+                iIndexItem* item = new iIndexItem();
+                item->index = strparent;
+                item->addr = loc;
+                indexList.push_back(item);
+            } else {
+                return false;
+            }
+        }
+        ++m_indexNumber;
+	} else {
+        loc = loc & (~F_LOCSTRINX);
+        int bk_off = loc/ALD_BLOCK;
+        int addr_off = loc%ALD_BLOCK;
+        int block_nr = m_strIndexLoc+bk_off;
+        u8 *buf_start, *buf_end;
+        if (bk_off > m_dataLoc - m_strIndexLoc) {
+             g_log.e("{loadIndex} a invalid addr (%x\n", loc);
+             return false;
+        }
+
+        if ((buf_start = (u8 *)getBlock(block_nr)) == NULL)
+            return false;
+        buf_end = buf_start + ALD_BLOCK;
+
+        buf_start += addr_off; // move buf_start
+        
+		for (int item = 0; item < length; item++) {
+            struct aldict_stringindex *pStrInx;
+            if (buf_end <= buf_start || buf_end - buf_start < sizeof(struct aldict_stringindex))
+                goto READ_NEXT_BLOCK;
+           
+	        pStrInx = (struct aldict_stringindex *) buf_start;
+            if (pStrInx->len_str[0] != 0)
+                 goto LOADING;
+
+        READ_NEXT_BLOCK:
+		    // Read next block
+            ++block_nr;
+            if ((buf_start = (u8 *)getBlock(block_nr)) == NULL)
+                return false;
+            buf_end = buf_start + ALD_BLOCK;
+            pStrInx = (struct aldict_stringindex *) buf_start;
+
+            // Check pStrInx.
+            if (pStrInx->len_str[0] == 0) {
+                g_log.e("{loadIndex} read a invalid data area \n");
+                return false;
+	        }
+
+       LOADING:
+            if (m_indexNumber >= m_indexStart) {
+                if (m_indexNumber < m_indexEnd) {
+                    string strinx = string((char*)(pStrInx->str), pStrInx->len_str[0]);
+                    //printf("strinx %s, %d\n", strinx.c_str(), pStrInx->len_str[0]);
                     iIndexItem* item = new iIndexItem();
-                    item->index = (wchar_t*)malloc(4*inx);
-                    wcsncpy(item->index,  str, inx);
-                    item->inxlen = inx;
+                    item->index = strparent + strinx;
                     item->addr = ald_read_u32(pStrInx->location);
-                    m_indexList.push_back(item);
+                    indexList.push_back(item);
+                } else {
+                    return false;
                 }
-                buf += 5 + 4*pStrInx->len_str[0]; // wchar_t
-			}
+            }
+            ++m_indexNumber;
+            buf_start += 5 + pStrInx->len_str[0];
 		}
 	}
+    return true;
 }
 
 void* AldictDocument::getBlock(int blk)
 {
     map<int, void*>::iterator iter = m_cache.find(blk);
-    if(iter != m_cache.end())
-        return iter->second;
-    else {
+    if(iter == m_cache.end()) {
         ReadFile read;
         void *ptr = malloc(ALD_BLOCK);
-        fseek(m_dictFile, (blk-1)*ALD_BLOCK, SEEK_SET);
-        read(m_dictFile, ptr, ALD_BLOCK);
-
-        if(m_cache.size() > CACHE_SLICE_MAX) {
-            free(m_cache.end()->second);
-            m_cache.erase(m_cache.end());
+        memset(ptr, 0, ALD_BLOCK);
+        if (ptr != NULL) {
+            if (fseek(m_dictFile, (blk-1)*ALD_BLOCK, SEEK_SET) == 0) {
+                read(m_dictFile, ptr, ALD_BLOCK);
+                if(m_cache.size() > CACHE_SLICE_MAX) {
+                    free(m_cache.begin()->second);
+                    m_cache.erase(m_cache.begin());
+                }
+                m_cache[blk] = ptr;
+                return ptr;
+            }
+            free(ptr);
+            return NULL;
         }
-        m_cache[blk] = ptr;
-        return ptr;
+        g_log.e("getBlock can't malloc(ALD_BLOCK)\n");
+        return NULL;
+    } else {
+       return iter->second;
     }
 }
 
 void AldictDocument::writeToXml(const std::string& path)
 {
-	
+
 }
 
 bool AldictDocument::support(const string& dictname)
