@@ -8,6 +8,8 @@
 #include "config.h"
 #include "Log.h"
 
+#define AL_VERSION  "1.0"
+
 #define AL_ASSERT(cond, msg)  \
 do { \
 if (!(cond)) {\

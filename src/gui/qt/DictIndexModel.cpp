@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#define INDEXLIST_SIZE_MAX  10000
+#define INDEXLIST_SIZE_MAX  1000
 #define OVERLAP_NR 100
 
 #define STRING_MORE_B1  "<--------"
@@ -72,7 +72,7 @@ QVariant DictIndexModel::headerData(int section, Qt::Orientation orientation, in
          return QString("Row %1").arg(section);
 }
 
-void DictIndexModel::onResetIndexList()
+void DictIndexModel::onResetIndexList(string startwith)
 {
     MutexLock lock(m_cs);
     beginResetModel();
@@ -80,12 +80,13 @@ void DictIndexModel::onResetIndexList()
         delete (*m_indexList)[i];
     m_indexList->clear();
 
-    int ret = DictManager::getReference().getIndexList(*m_indexList, 0, INDEXLIST_SIZE_MAX);
+    int ret = DictManager::getReference().getIndexList(*m_indexList, 0, INDEXLIST_SIZE_MAX, startwith);
     if (ret != INDEXLIST_SIZE_MAX)
 	    m_indexEnd = ret;
 	else 
 	    m_indexEnd = DictManager::getReference().indexListSize();
     m_indexStart = 0;
+    m_indexPrefix = startwith;
     endResetModel();
 }
 
@@ -102,7 +103,7 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
         IndexList* indexList = new IndexList();
         int start = m_indexStart + pg*INDEXLIST_SIZE_MAX;
 		start = start < 0 ? 0 : start;
-        DictManager::getReference().getIndexList(*indexList, start, start+INDEXLIST_SIZE_MAX);
+        DictManager::getReference().getIndexList(*indexList, start, start+INDEXLIST_SIZE_MAX, m_indexPrefix);
 
 		if (pg == -1) {
             for (int i=0; i<OVERLAP_NR; i++)
@@ -134,7 +135,7 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
 		}
 
         int start = m_indexStart + pg*INDEXLIST_SIZE_MAX;
-        int ret = DictManager::getReference().getIndexList(*indexList, start, start + INDEXLIST_SIZE_MAX);
+        int ret = DictManager::getReference().getIndexList(*indexList, start, start + INDEXLIST_SIZE_MAX, m_indexPrefix);
         if (ret == INDEXLIST_SIZE_MAX) {
              // put 'more' item at the end.
             m_indexStart = start;

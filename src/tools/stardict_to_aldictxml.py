@@ -64,14 +64,16 @@ try:
             star_header[line[0:inx]] = line[inx+1:-1] # no '\n'      
 
     # Write header
-    last_dot =  star_header["version"].rfind(".");
-    header["dictversion"] = star_header["version"][0:last_dot] + star_header["version"][last_dot+1:-1]
-    header["entries"] = star_header["wordcount"]
+    if "version" in star_header:
+        last_dot =  star_header["version"].rfind(".");
+        header["dictversion"] = star_header["version"][0:last_dot] + star_header["version"][last_dot+1:-1]
+    if "wordcount" in star_header:
+        header["entries"] = star_header["wordcount"]
     header["srclan"] = "any"
     header["detlan"] = "any"
-    header["publisher"] = star_header["author"] + "[" + star_header["description"] + "]"
-    header["publishdate"] = star_header["date"].replace(".", "-")
-    header["dictname"] = star_header["bookname"]
+    header["publisher"] = star_header.get("author", "stardict")
+    header["publishdate"] = star_header.get("date", "2000.01.22").replace(".", "-")
+    header["dictname"] = star_header.get("bookname", "")
     xml_alphadict_writeheader(header)
 
     idx_buf = ""
@@ -85,10 +87,8 @@ try:
     idx_buf = f_idx.read()
     #total = 0
     total = 0
+    
     while idx_buf != "" :
-        # show osd information
-        #sys.stdout.write(".")
-
         strend = idx_buf.find('\0')
         #print strend
         if strend == -1 or strend == 0:
@@ -97,11 +97,10 @@ try:
             break
 
         try:
-        #if True:
             strinx = idx_buf[0:strend]
             print strinx
+            
             start = strend+1
-
             stroff = struct.unpack(fmt, idx_buf[start:start+addr_len])[0]
             #print("%d, %x")%(stroff, stroff)
             start = start+addr_len
@@ -116,10 +115,9 @@ try:
             explanation.append(expl)
             xml_alphadict_writeword(words, None, explanation)
             #print("%d, %d, 0x%x, %d")%(stroff, strsize, strsize, start+addr_len)            
-            idx_buf = idx_buf[start+addr_len:]            
-            #print "\n"        
+            idx_buf = idx_buf[start+addr_len:]
         except:
-            print "error"
+            sys.stderr.write("read(%s), get a error, you can fix it manually, or sent a email to me" %(strinx))
             break            
 finally:
     f_idx.close()

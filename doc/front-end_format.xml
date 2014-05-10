@@ -1,7 +1,7 @@
 <?xml version="1.0"  encoding="UTF-8" ?>
 
-<!--		Front-end format of alphadict 
-			v1
+<!--   Front-end format of alphadict v1
+
 The front-end format of alphadict bases on xml, You can use any text edit to 
 create or modify the xml, then convert to Dictionary's internal format by 
 command tool "AlConvert".
@@ -11,53 +11,61 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 
 <alphadict>
   <header>
-    <version>1</version>
+    <!-- If you don't want to sepcify any tag, just leave a null value. 
+         for example: <version\> or <version><version>
+    -->
+    <version>[ver]</version>
 
     <srclan>[language]</srclan>
     <detlan>[language]</detlan>
-    <!-- see "SourceCode"/etc/language.txt.
-      if user want to add new language, must add to language.txt.
+    <!-- Translate 'srclan' language to 'detlan' language. 
+      value of 'language' defines in "../src/system/language.txt.in"
+      if user want to add new language, must add to language.txt.in too.
+      
+      if you don't want to specify, specify it to 'any', or just leave it.
+        <srclan>any</srclan>  || <srclan\>      
     -->
 
     <charset>utf-8</charset>  <!-- Only support uft-8  -->
 
-    <entries/>
+    <entries></entries> 
+    <!-- the number of words in dictionary. -->
+
     <publisher>[name]</publisher>
     <publishdate>[date]</publishdate> 
     <!-- Data Format:
-	 Year-month-day. for exmple: 2013-11-29
+	 Year-month-day. for exmple: 2014-05-14
     -->
     <dictversion>x.x</dictversion> <!-- x's rang is [0..255] -->
-    <dictname/>
+    <dictname>[name]</dictname>
   </header>
-        
-  <!--  word/phrase list
-       A <word/> node shall be replaced by a true word or phrase in dictionary,like <boy/>, <girl/>.
-       Phrase uses a SPACE character as a spliter,like <in addtion to>
-  -->
+
   <words>
-    <id word="word or phrase"> <!-- There are some limition about tag, so we put word/phrase in attribute -->
+    <id_n word="word or phrase"> 
+      <!-- There are some limition about tag, so we put word/phrase in attribute 
+           Phrase uses a SPACE character as a spliter,like <in addtion to> 
+      -->
       <phonetic> <!-- (Optional Node)  -->
-      <name1>xx</name1>
-	  <name2>xx</name2>
+        <name1>xx</name1>
+	    <name2>xx</name2>
       </phonetic>
       <explanation>
 <!-- plain text of explanation -->
       </explanation>
-      <!-- This node means that these words/pharases share the same explanation.
-	   They all are indexes. see "鉴定", user can search either. -->
       <alias>
+      <!-- This node means that these words/pharases share the same explanation.
+	   They all are indexes. see "鉴定", user can search either. 
+      -->
 	    <as>word1</as>
 	    <as>word2</as>
       </alias>
-    </id>
+    </id_n>
   </words>
 </alphadict>
 
-<!-- Example for <words/>
-<words>
+<!-- Example
 
-<鑒定>
+<id_1 word="鑒定">
 	<phonetic>
 		<拼音><jian4 ding4></拼音>
 	</phonetic>
@@ -65,9 +73,9 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 	<alias>
 	  <as>鉴定</as>
 	</alias>
-</鑒定>
+</id_1>
 
-<boy>
+<id_1 word="boy">
 	<phonetic>
 		<US>noʊt</US>
 		<UK>nəʊt</UK>
@@ -81,7 +89,4 @@ Sample Sentence:
 1.This family was that of the merry barefoot boy
 	</explanation>
 </boy>
-
-</words>
-
 -->

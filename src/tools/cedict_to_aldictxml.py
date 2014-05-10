@@ -1,3 +1,4 @@
+#!/usr/bin/python2.7
 #-*-coding:utf-8-*-
 
 """ A conveter for CEDICT
@@ -18,7 +19,8 @@ This module converts the CEDICT file to the front-end xml of AlphaDict.
 #
 # Changes:
 #   Init version: Sep 22, 2013 LiQiong Lee<LiQiong.kartorz.lee@gmail.com>
-
+#       -- support cedict 1.0.
+ 
 import sys, os, codecs
 
 from lib_aldictxml import *
@@ -30,7 +32,8 @@ file_out: Specify the detination file.
 
 Default is at the input file path appending ".xml" as a suffix to the output file
 For example:
-    convert_cdeict ../cedict  | convert_cedict ../cedict  /mydicts/xx.xml
+    cedict_to_aldictxml.py foo.txt  
+    cedict_to_aldictxml.py  foo.txt foo
 """
 
 if len(sys.argv) < 2:
@@ -65,7 +68,7 @@ try:
 
 	for line in f_input:
 		# show osd information
-		sys.stdout.write(".")
+		#sys.stdout.write(".")
 
 		if line.startswith("#!"):
 			line = line.strip('#! \r\n')
@@ -75,12 +78,18 @@ try:
 		elif not line.startswith('#'):
 			if not bwriter_header:
 				bwriter_header = True
-				header["dictversion"] = (cedict_header["version"] 
-							 + "." + cedict_header["subversion"])
-				header["entries"] = cedict_header["entries"]
+				header["dictversion"] = (cedict_header.get("version", "0") 
+							 + "." + cedict_header.get("subversion", "0"))
+				header["entries"] = cedict_header.get("entries", "0")
 				header["srclan"] = "any"
-				header["publisher"] = cedict_header["publisher"]
-				header["publishdate"] = cedict_header["date"]
+                                header["detlan"] = "any"
+				header["publisher"] = cedict_header.get("publisher", "cedict")
+                                # 2014-05-18T08:58:12Z | 2014-05-18
+                                s = cedict_header.get("date", 2000-1-1).find('T')
+                                if s != -1:
+                                    header["publishdate"] = cedict_header["date"][:s]
+                                else:
+                                    header["publishdate"] = cedict_header["date"]
 				header["dictname"] = "cc-cedict dictionary"
 
 				xml_alphadict_writeheader(header)
@@ -98,13 +107,13 @@ try:
 			temp = line[:s-1]
 			words = temp.split(' ')
 			
-			
 			s = line.find('/', e)
 			e = line.rfind('/', s)
 			temp = line[s+1:e]
 			explanation = temp.split('/')
 			# print explanation
 			xml_alphadict_writeword(words, phonetics, explanation)
+                        print words[0]
 finally:
 	f_input.close()
 	xml_alphadict_close()

@@ -84,7 +84,7 @@ public:
 
 	void clear()
 	{
-        	_children.clear();
+        _children.clear();
 	}
 
 private:
@@ -92,7 +92,7 @@ private:
 	tree_node();
 
 	treeNodePtr  _parent;
-        T _data;
+    T _data;
 
 	std::list<treeNodePtr> _children;
 };

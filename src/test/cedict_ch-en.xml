@@ -1,0 +1,1017 @@
+<?xml version="1.0" ?>
+<alphadict>
+	<header>
+		<publisher>MDBG</publisher>
+		<charset>utf-8</charset>
+		<publishdate>2014-05-18</publishdate>
+		<dictversion>1.0</dictversion>
+		<version>1</version>
+		<srclan>any</srclan>
+		<entries>109642</entries>
+		<dictname>cc-cedict dictionary</dictname>
+	</header>
+	<words>
+		<id_1 word="21三體綜合症">
+			<phonetic>
+				<拼音>er4 shi2 yi1 san1 ti3 zong1 he2 zheng4</拼音>
+			</phonetic>
+			<explanation>trisomy
+Down's syndrome</explanation>
+			<alias>
+				<as>21三体综合症</as>
+			</alias>
+		</id_1>
+                <id_1 word="21三體">
+			<phonetic>
+				<拼音>er4 shi2 yi1 san1 ti3</拼音>
+			</phonetic>
+			<explanation>test string</explanation>
+			<alias>
+				<as>21三体综合症</as>
+			</alias>
+		</id_1>
+		<id_2 word="3C">
+			<phonetic>
+				<拼音>san1 C</拼音>
+			</phonetic>
+			<explanation>abbr. for computers, communications, and consumer electronics
+China Compulsory Certificate (CCC)</explanation>
+			<alias>
+				<as>3C</as>
+			</alias>
+		</id_2>
+                  <id_98 word="丁">
+			<phonetic>
+				<拼音>ai4</拼音>
+			</phonetic>
+			<explanation>test1 </explanation>
+		</id_98>
+                  <id_98 word="丁丁">
+			<phonetic>
+				<拼音>ai4</拼音>
+			</phonetic>
+			<explanation>test4 </explanation>
+		</id_98>
+
+		<id_3 word="AA制">
+			<phonetic>
+				<拼音>A A zhi4</拼音>
+			</phonetic>
+			<explanation>to split the bill
+to go Dutch</explanation>
+			<alias>
+				<as>AA制</as>
+			</alias>
+		</id_3>
+		<id_4 word="A咖">
+			<phonetic>
+				<拼音>A ka1</拼音>
+			</phonetic>
+			<explanation>class &quot;A&quot;
+top grade</explanation>
+			<alias>
+				<as>A咖</as>
+			</alias>
+		</id_4>
+		<id_5 word="A片">
+			<phonetic>
+				<拼音>A pian4</拼音>
+			</phonetic>
+			<explanation>adult movie
+pornography</explanation>
+			<alias>
+				<as>A片</as>
+			</alias>
+		</id_5>
+		<id_6 word="B型超聲">
+			<phonetic>
+				<拼音>B xing2 chao1 sheng1</拼音>
+			</phonetic>
+			<explanation>type-B ultrasound</explanation>
+			<alias>
+				<as>B型超声</as>
+			</alias>
+		</id_6>
+		<id_7 word="B超">
+			<phonetic>
+				<拼音>B chao1</拼音>
+			</phonetic>
+			<explanation>type-B ultrasound
+abbr. for B型超聲|B型超声[B xing2 chao1 sheng1]</explanation>
+			<alias>
+				<as>B超</as>
+			</alias>
+		</id_7>
+		<id_8 word="C盤">
+			<phonetic>
+				<拼音>C pan2</拼音>
+			</phonetic>
+			<explanation>C drive or default startup drive (computing)</explanation>
+			<alias>
+				<as>C盘</as>
+			</alias>
+		</id_8>
+		<id_9 word="DNA鑒定">
+			<phonetic>
+				<拼音>D N A jian4 ding4</拼音>
+			</phonetic>
+			<explanation>DNA test
+DNA testing</explanation>
+			<alias>
+				<as>DNA鉴定</as>
+			</alias>
+		</id_9>
+		<id_10 word="E仔">
+			<phonetic>
+				<拼音>e zai3</拼音>
+			</phonetic>
+			<explanation>MDMA (C11H15NO2)</explanation>
+			<alias>
+				<as>E仔</as>
+			</alias>
+		</id_10>
+		<id_11 word="G弦褲">
+			<phonetic>
+				<拼音>G xian2 ku4</拼音>
+			</phonetic>
+			<explanation>G-string</explanation>
+			<alias>
+				<as>G弦裤</as>
+			</alias>
+		</id_11>
+		<id_12 word="G點">
+			<phonetic>
+				<拼音>G dian3</拼音>
+			</phonetic>
+			<explanation>Gräfenberg Spot
+G-Spot</explanation>
+			<alias>
+				<as>G点</as>
+			</alias>
+		</id_12>
+		<id_13 word="K仔">
+			<phonetic>
+				<拼音>K zai3</拼音>
+			</phonetic>
+			<explanation>ketamine (slang)</explanation>
+			<alias>
+				<as>K仔</as>
+			</alias>
+		</id_13>
+		<id_14 word="K他命">
+			<phonetic>
+				<拼音>k ta1 ming4</拼音>
+			</phonetic>
+			<explanation>ketamine (C13H16ClNO) (slang)</explanation>
+			<alias>
+				<as>K他命</as>
+			</alias>
+		</id_14>
+		<id_15 word="K房">
+			<phonetic>
+				<拼音>K fang2</拼音>
+			</phonetic>
+			<explanation>(slang) KTV
+KTV room</explanation>
+			<alias>
+				<as>K房</as>
+			</alias>
+		</id_15>
+		<id_16 word="K書">
+			<phonetic>
+				<拼音>K shu1</拼音>
+			</phonetic>
+			<explanation>to cram (Taiwan, from Taiwanese khè su 齧書, lit. to gnaw a book)
+to study
+see also 啃書|啃书[ken3 shu1]</explanation>
+			<alias>
+				<as>K书</as>
+			</alias>
+		</id_16>
+		<id_17 word="K歌">
+			<phonetic>
+				<拼音>K ge1</拼音>
+			</phonetic>
+			<explanation>karaoke (slang)</explanation>
+			<alias>
+				<as>K歌</as>
+			</alias>
+		</id_17>
+		<id_18 word="K粉">
+			<phonetic>
+				<拼音>K fen3</拼音>
+			</phonetic>
+			<explanation>ketamine (slang)</explanation>
+			<alias>
+				<as>K粉</as>
+			</alias>
+		</id_18>
+		<id_19 word="M巾">
+			<phonetic>
+				<拼音>M jin1</拼音>
+			</phonetic>
+			<explanation>(coll.) menstrual pad</explanation>
+			<alias>
+				<as>M巾</as>
+			</alias>
+		</id_19>
+		<id_20 word="N檔">
+			<phonetic>
+				<拼音>N dang4</拼音>
+			</phonetic>
+			<explanation>neutral (gear)</explanation>
+			<alias>
+				<as>N档</as>
+			</alias>
+		</id_20>
+		<id_21 word="OK繃">
+			<phonetic>
+				<拼音>OK beng1</拼音>
+			</phonetic>
+			<explanation>band-aid (Tw)</explanation>
+			<alias>
+				<as>OK绷</as>
+			</alias>
+		</id_21>
+		<id_22 word="O型腿">
+			<phonetic>
+				<拼音>O xing2 tui3</拼音>
+			</phonetic>
+			<explanation>bow legs
+bow-leggedness</explanation>
+			<alias>
+				<as>O型腿</as>
+			</alias>
+		</id_22>
+		<id_23 word="P圖">
+			<phonetic>
+				<拼音>P tu2</拼音>
+			</phonetic>
+			<explanation>(Internet slang) to photoshop a picture
+photoshopped picture</explanation>
+			<alias>
+				<as>P图</as>
+			</alias>
+		</id_23>
+		<id_24 word="P檔">
+			<phonetic>
+				<拼音>P dang4</拼音>
+			</phonetic>
+			<explanation>park (gear)
+program mode (on a digital camera)</explanation>
+			<alias>
+				<as>P档</as>
+			</alias>
+		</id_24>
+		<id_25 word="P民">
+			<phonetic>
+				<拼音>P min2</拼音>
+			</phonetic>
+			<explanation>(slang) shitizen
+commoner
+hoi polloi</explanation>
+			<alias>
+				<as>P民</as>
+			</alias>
+		</id_25>
+		<id_26 word="Q">
+			<phonetic>
+				<拼音>Q</拼音>
+			</phonetic>
+			<explanation>cute (loanword)
+(of food) having a pleasant chewiness (like mochi, tapioca pearls, taro balls etc - foods with a springy or gel-like mouthfeel)</explanation>
+			<alias>
+				<as>Q</as>
+			</alias>
+		</id_26>
+		<id_27 word="T字帳">
+			<phonetic>
+				<拼音>T zi4 zhang4</拼音>
+			</phonetic>
+			<explanation>T-account (accounting)</explanation>
+			<alias>
+				<as>T字帐</as>
+			</alias>
+		</id_27>
+		<id_28 word="T字褲">
+			<phonetic>
+				<拼音>T zi4 ku4</拼音>
+			</phonetic>
+			<explanation>thong (underwear)</explanation>
+			<alias>
+				<as>T字裤</as>
+			</alias>
+		</id_28>
+		<id_29 word="T恤">
+			<phonetic>
+				<拼音>T xu4</拼音>
+			</phonetic>
+			<explanation>T-shirt</explanation>
+			<alias>
+				<as>T恤</as>
+			</alias>
+		</id_29>
+		<id_30 word="T裇">
+			<phonetic>
+				<拼音>T xu1</拼音>
+			</phonetic>
+			<explanation>T-shirt</explanation>
+			<alias>
+				<as>T裇</as>
+			</alias>
+		</id_30>
+		<id_31 word="USB手指">
+			<phonetic>
+				<拼音>U S B shou3 zhi3</拼音>
+			</phonetic>
+			<explanation>USB flash drive
+see also 閃存盤|闪存盘[shan3 cun2 pan2]</explanation>
+			<alias>
+				<as>USB手指</as>
+			</alias>
+		</id_31>
+		<id_32 word="USB記憶棒">
+			<phonetic>
+				<拼音>U S B ji4 yi4 bang4</拼音>
+			</phonetic>
+			<explanation>USB flash drive
+see also 閃存盤|闪存盘[shan3 cun2 pan2]</explanation>
+			<alias>
+				<as>USB记忆棒</as>
+			</alias>
+		</id_32>
+		<id_33 word="U形轉彎">
+			<phonetic>
+				<拼音>U xing2 zhuan3 wan1</拼音>
+			</phonetic>
+			<explanation>U-turn</explanation>
+			<alias>
+				<as>U形转弯</as>
+			</alias>
+		</id_33>
+		<id_34 word="U盤">
+			<phonetic>
+				<拼音>U pan2</拼音>
+			</phonetic>
+			<explanation>USB flash drive
+see also 閃存盤|闪存盘[shan3 cun2 pan2]</explanation>
+			<alias>
+				<as>U盘</as>
+			</alias>
+		</id_34>
+		<id_35 word="V溝">
+			<phonetic>
+				<拼音>V gou1</拼音>
+			</phonetic>
+			<explanation>low neckline that reveals the cleavage
+décolleté
+gully</explanation>
+			<alias>
+				<as>V沟</as>
+			</alias>
+		</id_35>
+		<id_36 word="X光">
+			<phonetic>
+				<拼音>X guang1</拼音>
+			</phonetic>
+			<explanation>X-ray</explanation>
+			<alias>
+				<as>X光</as>
+			</alias>
+		</id_36>
+		<id_37 word="○">
+			<phonetic>
+				<拼音>ling2</拼音>
+			</phonetic>
+			<explanation>character used in Taiwan as a substitute for a real name (like &quot;X&quot; in English)
+variant of 〇[ling2]</explanation>
+			<alias>
+				<as>○</as>
+			</alias>
+		</id_37>
+		<id_38 word="〇">
+			<phonetic>
+				<拼音>ling2</拼音>
+			</phonetic>
+			<explanation>zero</explanation>
+			<alias>
+				<as>〇</as>
+			</alias>
+		</id_38>
+		<id_39 word="〡">
+			<phonetic>
+				<拼音>yi1</拼音>
+			</phonetic>
+			<explanation>numeral 1 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〡</as>
+			</alias>
+		</id_39>
+		<id_40 word="〢">
+			<phonetic>
+				<拼音>er4</拼音>
+			</phonetic>
+			<explanation>numeral 2 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〢</as>
+			</alias>
+		</id_40>
+		<id_41 word="〣">
+			<phonetic>
+				<拼音>san1</拼音>
+			</phonetic>
+			<explanation>numeral 3 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〣</as>
+			</alias>
+		</id_41>
+		<id_42 word="〤">
+			<phonetic>
+				<拼音>si4</拼音>
+			</phonetic>
+			<explanation>numeral 4 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〤</as>
+			</alias>
+		</id_42>
+		<id_43 word="〥">
+			<phonetic>
+				<拼音>wu3</拼音>
+			</phonetic>
+			<explanation>numeral 5 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〥</as>
+			</alias>
+		</id_43>
+		<id_44 word="〦">
+			<phonetic>
+				<拼音>liu4</拼音>
+			</phonetic>
+			<explanation>numeral 6 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〦</as>
+			</alias>
+		</id_44>
+		<id_45 word="〧">
+			<phonetic>
+				<拼音>qi1</拼音>
+			</phonetic>
+			<explanation>numeral 7 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〧</as>
+			</alias>
+		</id_45>
+		<id_46 word="〨">
+			<phonetic>
+				<拼音>ba1</拼音>
+			</phonetic>
+			<explanation>numeral 8 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〨</as>
+			</alias>
+		</id_46>
+		<id_47 word="〩">
+			<phonetic>
+				<拼音>jiu3</拼音>
+			</phonetic>
+			<explanation>numeral 9 in Suzhou numeral system 蘇州碼子|苏州码子[Su1 zhou1 ma3 zi5]</explanation>
+			<alias>
+				<as>〩</as>
+			</alias>
+		</id_47>
+		<id_48 word="㐄">
+			<phonetic>
+				<拼音>kua4</拼音>
+			</phonetic>
+			<explanation>component in Chinese characters, mirror image of 夂[zhi3]</explanation>
+			<alias>
+				<as>㐄</as>
+			</alias>
+		</id_48>
+		<id_49 word="㐅">
+			<phonetic>
+				<拼音>wu3</拼音>
+			</phonetic>
+			<explanation>archaic variant of 五[wu3]</explanation>
+			<alias>
+				<as>㐅</as>
+			</alias>
+		</id_49>
+		<id_50 word="㐆">
+			<phonetic>
+				<拼音>yin3</拼音>
+			</phonetic>
+			<explanation>component in Chinese character 殷[yin1]</explanation>
+			<alias>
+				<as>㐆</as>
+			</alias>
+		</id_50>
+		<id_51 word="㐌">
+			<phonetic>
+				<拼音>ta1</拼音>
+			</phonetic>
+			<explanation>variant of 它[ta1]</explanation>
+			<alias>
+				<as>㐌</as>
+			</alias>
+		</id_51>
+		<id_52 word="㐖">
+			<phonetic>
+				<拼音>Ye4</拼音>
+			</phonetic>
+			<explanation>see 㐖毒[Ye4 du2]</explanation>
+			<alias>
+				<as>㐖</as>
+			</alias>
+		</id_52>
+		<id_53 word="㐖毒">
+			<phonetic>
+				<拼音>Ye4 du2</拼音>
+			</phonetic>
+			<explanation>India (archaic)</explanation>
+			<alias>
+				<as>㐖毒</as>
+			</alias>
+		</id_53>
+		<id_54 word="㐜">
+			<phonetic>
+				<拼音>chou2</拼音>
+			</phonetic>
+			<explanation>variant of 仇[chou2]</explanation>
+			<alias>
+				<as>㐜</as>
+			</alias>
+		</id_54>
+		<id_55 word="㐡">
+			<phonetic>
+				<拼音>nuo4</拼音>
+			</phonetic>
+			<explanation>archaic variant of 懦[nuo4]</explanation>
+			<alias>
+				<as>㐡</as>
+			</alias>
+		</id_55>
+		<id_56 word="㐤">
+			<phonetic>
+				<拼音>qiu2</拼音>
+			</phonetic>
+			<explanation>archaic variant of 求[qiu2]</explanation>
+			<alias>
+				<as>㐤</as>
+			</alias>
+		</id_56>
+		<id_57 word="㐫">
+			<phonetic>
+				<拼音>xiong1</拼音>
+			</phonetic>
+			<explanation>old variant of 凶[xiong1]</explanation>
+			<alias>
+				<as>㐫</as>
+			</alias>
+		</id_57>
+		<id_58 word="㐰">
+			<phonetic>
+				<拼音>xin4</拼音>
+			</phonetic>
+			<explanation>old variant of 信[xin4]</explanation>
+			<alias>
+				<as>㐰</as>
+			</alias>
+		</id_58>
+		<id_59 word="㐺">
+			<phonetic>
+				<拼音>zhong4</拼音>
+			</phonetic>
+			<explanation>old variant of 眾|众[zhong4]</explanation>
+			<alias>
+				<as>㐺</as>
+			</alias>
+		</id_59>
+		<id_60 word="㑳">
+			<phonetic>
+				<拼音>zhou4</拼音>
+			</phonetic>
+			<explanation>(old) beautiful
+clever</explanation>
+			<alias>
+				<as>㑇</as>
+			</alias>
+		</id_60>
+		<id_61 word="㑺">
+			<phonetic>
+				<拼音>jun4</拼音>
+			</phonetic>
+			<explanation>old variant of 俊[jun4]</explanation>
+			<alias>
+				<as>俊</as>
+			</alias>
+		</id_61>
+		<id_62 word="㒳">
+			<phonetic>
+				<拼音>liang3</拼音>
+			</phonetic>
+			<explanation>old variant of 兩|两[liang3]</explanation>
+			<alias>
+				<as>㒳</as>
+			</alias>
+		</id_62>
+		<id_63 word="㒸">
+			<phonetic>
+				<拼音>sui4</拼音>
+			</phonetic>
+			<explanation>archaic variant of 遂[sui4]</explanation>
+			<alias>
+				<as>㒸</as>
+			</alias>
+		</id_63>
+		<id_64 word="㒺">
+			<phonetic>
+				<拼音>wang3</拼音>
+			</phonetic>
+			<explanation>old variant of 罔[wang3]</explanation>
+			<alias>
+				<as>罔</as>
+			</alias>
+		</id_64>
+		<id_65 word="㓂">
+			<phonetic>
+				<拼音>kou4</拼音>
+			</phonetic>
+			<explanation>old variant of 寇[kou4]</explanation>
+			<alias>
+				<as>寇</as>
+			</alias>
+		</id_65>
+		<id_66 word="㔾">
+			<phonetic>
+				<拼音>jie2</拼音>
+			</phonetic>
+			<explanation>&quot;seal&quot; radical in Chinese characters (Kangxi radical 26)</explanation>
+			<alias>
+				<as>㔾</as>
+			</alias>
+		</id_66>
+		<id_67 word="㕁">
+			<phonetic>
+				<拼音>que4</拼音>
+			</phonetic>
+			<explanation>old variant of 卻|却[que4]</explanation>
+			<alias>
+				<as>却</as>
+			</alias>
+		</id_67>
+		<id_68 word="㕑">
+			<phonetic>
+				<拼音>chu2</拼音>
+			</phonetic>
+			<explanation>old variant of 廚|厨[chu2]</explanation>
+			<alias>
+				<as>厨</as>
+			</alias>
+		</id_68>
+		<id_69 word="㕥">
+			<phonetic>
+				<拼音>shen1</拼音>
+			</phonetic>
+			<explanation>old variant of 呻[shen1]</explanation>
+			<alias>
+				<as>㕥</as>
+			</alias>
+		</id_69>
+		<id_70 word="㕥">
+			<phonetic>
+				<拼音>yi3</拼音>
+			</phonetic>
+			<explanation>old variant of 以[yi3]</explanation>
+			<alias>
+				<as>以</as>
+			</alias>
+		</id_70>
+		<id_71 word="㕻">
+			<phonetic>
+				<拼音>pou3</拼音>
+			</phonetic>
+			<explanation>variant of 咅[pou3]
+also pr. [tou4]</explanation>
+			<alias>
+				<as>㕻</as>
+			</alias>
+		</id_71>
+		<id_72 word="㗂">
+			<phonetic>
+				<拼音>sheng3</拼音>
+			</phonetic>
+			<explanation>variant of 省[sheng3]
+tight-lipped
+to examine
+to watch
+to scour (esp. Cantonese)</explanation>
+			<alias>
+				<as>㗂</as>
+			</alias>
+		</id_72>
+		<id_73 word="㗎">
+			<phonetic>
+				<拼音>jia4</拼音>
+			</phonetic>
+			<explanation>sentence-final particle, contraction of &quot;嘅呀&quot; (Cantonese)
+see also 嘅[kai4]</explanation>
+			<alias>
+				<as>㗎</as>
+			</alias>
+		</id_73>
+		<id_74 word="㘭">
+			<phonetic>
+				<拼音>ao4</拼音>
+			</phonetic>
+			<explanation>variant of 坳[ao4]</explanation>
+			<alias>
+				<as>坳</as>
+			</alias>
+		</id_74>
+		<id_75 word="㚻">
+			<phonetic>
+				<拼音>ji1</拼音>
+			</phonetic>
+			<explanation>see 㚻姦|㚻奸[ji1 jian1]</explanation>
+			<alias>
+				<as>㚻</as>
+			</alias>
+		</id_75>
+		<id_76 word="㚻姦">
+			<phonetic>
+				<拼音>ji1 jian1</拼音>
+			</phonetic>
+			<explanation>variant of 雞姦|鸡奸[ji1 jian1]</explanation>
+			<alias>
+				<as>㚻奸</as>
+			</alias>
+		</id_76>
+		<id_77 word="㛂">
+			<phonetic>
+				<拼音>nuo3</拼音>
+			</phonetic>
+			<explanation>graceful
+frail and petite</explanation>
+			<alias>
+				<as>㛂</as>
+			</alias>
+		</id_77>
+		<id_78 word="㝄">
+			<phonetic>
+				<拼音>chun2</拼音>
+			</phonetic>
+			<explanation>old variant of 純|纯[chun2]</explanation>
+			<alias>
+				<as>㝄</as>
+			</alias>
+		</id_78>
+		<id_79 word="㝇">
+			<phonetic>
+				<拼音>chun2</拼音>
+			</phonetic>
+			<explanation>old variant of 鶉|鹑[chun2]</explanation>
+			<alias>
+				<as>㝇</as>
+			</alias>
+		</id_79>
+		<id_80 word="㝛">
+			<phonetic>
+				<拼音>su4</拼音>
+			</phonetic>
+			<explanation>old variant of 宿[su4]</explanation>
+			<alias>
+				<as>宿</as>
+			</alias>
+		</id_80>
+		<id_81 word="㝠">
+			<phonetic>
+				<拼音>ming2</拼音>
+			</phonetic>
+			<explanation>old variant of 冥[ming2]</explanation>
+			<alias>
+				<as>冥</as>
+			</alias>
+		</id_81>
+		<id_82 word="㝡">
+			<phonetic>
+				<拼音>zui4</拼音>
+			</phonetic>
+			<explanation>variant of 最[zui4]</explanation>
+			<alias>
+				<as>最</as>
+			</alias>
+		</id_82>
+		<id_83 word="㝵">
+			<phonetic>
+				<拼音>ai4</拼音>
+			</phonetic>
+			<explanation>variant of 礙|碍[ai4]</explanation>
+			<alias>
+				<as>㝵</as>
+			</alias>
+		</id_83>
+		<id_84 word="㝵">
+			<phonetic>
+				<拼音>de2</拼音>
+			</phonetic>
+			<explanation>to obtain
+old variant of 得[de2]</explanation>
+			<alias>
+				<as>㝵</as>
+			</alias>
+		</id_84>
+		<id_85 word="㞎">
+			<phonetic>
+				<拼音>ba3</拼音>
+			</phonetic>
+			<explanation>(baby talk) poop
+see 㞎㞎[ba3 ba5]</explanation>
+			<alias>
+				<as>㞎</as>
+			</alias>
+		</id_85>
+		<id_86 word="㞎㞎">
+			<phonetic>
+				<拼音>ba3 ba5</拼音>
+			</phonetic>
+			<explanation>(baby talk) poop</explanation>
+			<alias>
+				<as>㞎㞎</as>
+			</alias>
+		</id_86>
+		<id_87 word="㞙">
+			<phonetic>
+				<拼音>niao4</拼音>
+			</phonetic>
+			<explanation>old variant of 尿[niao4]</explanation>
+			<alias>
+				<as>㞙</as>
+			</alias>
+		</id_87>
+		<id_88 word="㞞">
+			<phonetic>
+				<拼音>song2</拼音>
+			</phonetic>
+			<explanation>(coll.) semen
+weak and incompetent</explanation>
+			<alias>
+				<as>㞞</as>
+			</alias>
+		</id_88>
+		<id_89 word="㟁">
+			<phonetic>
+				<拼音>an4</拼音>
+			</phonetic>
+			<explanation>variant of 岸[an4]</explanation>
+			<alias>
+				<as>岸</as>
+			</alias>
+		</id_89>
+		<id_90 word="㠀">
+			<phonetic>
+				<拼音>dao3</拼音>
+			</phonetic>
+			<explanation>variant of 島|岛[dao3]</explanation>
+			<alias>
+				<as>岛</as>
+			</alias>
+		</id_90>
+		<id_91 word="㠯">
+			<phonetic>
+				<拼音>yi3</拼音>
+			</phonetic>
+			<explanation>old variant of 以[yi3]</explanation>
+			<alias>
+				<as>以</as>
+			</alias>
+		</id_91>
+		<id_92 word="㠶">
+			<phonetic>
+				<拼音>fan1</拼音>
+			</phonetic>
+			<explanation>variant of 帆[fan1]</explanation>
+			<alias>
+				<as>帆</as>
+			</alias>
+		</id_92>
+		<id_93 word="㡌">
+			<phonetic>
+				<拼音>mao4</拼音>
+			</phonetic>
+			<explanation>old variant of 帽[mao4]</explanation>
+			<alias>
+				<as>帽</as>
+			</alias>
+		</id_93>
+		<id_94 word="㢘">
+			<phonetic>
+				<拼音>lian2</拼音>
+			</phonetic>
+			<explanation>old variant of 廉[lian2]</explanation>
+			<alias>
+				<as>廉</as>
+			</alias>
+		</id_94>
+		<id_95 word="㢠">
+			<phonetic>
+				<拼音>jiong3</拼音>
+			</phonetic>
+			<explanation>variant of 迥[jiong3]</explanation>
+			<alias>
+				<as>迥</as>
+			</alias>
+		</id_95>
+		<id_96 word="㢲">
+			<phonetic>
+				<拼音>xun4</拼音>
+			</phonetic>
+			<explanation>variant of 巽[xun4]</explanation>
+			<alias>
+				<as>㢲</as>
+			</alias>
+		</id_96>
+		<id_97 word="㢴">
+			<phonetic>
+				<拼音>xi1</拼音>
+			</phonetic>
+			<explanation>old variant of 西[xi1]</explanation>
+			<alias>
+				<as>㢴</as>
+			</alias>
+		</id_97>
+                 <id_98 word="丁丁">
+			<phonetic>
+				<拼音>ai4</拼音>
+			</phonetic>
+			<explanation>test </explanation>
+			<alias>
+				<as>㤅</as>
+			</alias>
+		</id_98>
+                  <id_98 word="丁丁">
+			<phonetic>
+				<拼音>ai4</拼音>
+			</phonetic>
+			<explanation>test2 </explanation>
+		</id_98>
+
+		<id_98 word="㤅">
+			<phonetic>
+				<拼音>ai4</拼音>
+			</phonetic>
+			<explanation>archaic variant of 愛|爱[ai4]</explanation>
+			<alias>
+				<as>㤅</as>
+			</alias>
+		</id_98>
+		<id_99 word="㤙">
+			<phonetic>
+				<拼音>en1</拼音>
+			</phonetic>
+			<explanation>variant of 恩[en1]</explanation>
+			<alias>
+				<as>恩</as>
+			</alias>
+		</id_99>
+		<id_100 word="㥁">
+			<phonetic>
+				<拼音>de2</拼音>
+			</phonetic>
+			<explanation>variant of 德[de2]</explanation>
+			<alias>
+				<as>㥁</as>
+			</alias>
+		</id_100>
+		<id_101 word="㥏">
+			<phonetic>
+				<拼音>tian3</拼音>
+			</phonetic>
+			<explanation>ashamed</explanation>
+			<alias>
+				<as>㥏</as>
+			</alias>
+		</id_101>
+		<id_102 word="㥦">
+			<phonetic>
+				<拼音>qie4</拼音>
+			</phonetic>
+			<explanation>variant of 愜|惬[qie4]</explanation>
+			<alias>
+				<as>惬</as>
+			</alias>
+		</id_102>
+		<id_103 word="㥦">
+			<phonetic>
+				<拼音>qie4_2</拼音>
+			</phonetic>
+			<explanation>dumplicat: variant of 愜|惬[qie4]</explanation>
+		</id_103>
+                  <id_104 word="㥦">
+			<phonetic>
+				<拼音>qie4_2</拼音>
+			</phonetic>
+			<explanation>dumplicat2: variant of 愜|惬[qie4]</explanation>
+		</id_104>
+    </words>
+</alphadict>  

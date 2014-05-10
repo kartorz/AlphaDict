@@ -24,12 +24,12 @@ public:
 	void *opaque;
 };
 
-typedef vector<class iIndexItem*> IndexList;
+typedef vector<iIndexItem*> IndexList;
 
 class iDictItem
 {
 public:
-	iDictItem():phonetic(""),expl(""),dictname(""),addr(0)
+	iDictItem():phonetic(""),expl(""),dictname(""),opaque(NULL)
     {
     }
     ~iDictItem(){}
@@ -37,8 +37,10 @@ public:
     std::string dictname;  /* utf-8 bytes */
 	std::string phonetic; /* utf-8 bytes */
 	std::string expl;     /* utf-8 bytes */
-	address_t addr;
+    void *opaque;
 };
+
+typedef vector<iDictItem> DictItemList;
 
 class iDict {
 public:
@@ -46,15 +48,15 @@ public:
     virtual bool load(const string& dictname) = 0;
 
     /* Lookup a word or phrase */
-	virtual iDictItem lookup(const string& word) = 0;
+	virtual bool lookup(const string& word, DictItemList& itemList) = 0;
 
 	virtual int indexListSize() { return 0; }
 
     /* Including 'start' but not incluing 'end', start from 0 */
-	virtual int getIndexList(IndexList & indexList, int start, int end) = 0;
+	virtual int getIndexList(IndexList & indexList, int start, int end, const string& startwith="") = 0;
 
     /* For click on index item */
-	virtual iDictItem  onClick(int index, iIndexItem* item) = 0;
+	virtual iDictItem  onClick(int row, iIndexItem* item) = 0;
 
     /* Identify the unique dict class name */
     virtual string identifier() = 0;

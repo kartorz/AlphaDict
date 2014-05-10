@@ -1,0 +1,18 @@
+
+AlphaDict 1.2
+	(Todo):
+	-- Release windows version.
+	-- Added words book.
+        -- Support other GPL dicts.
+
+AlphaDict 1.0
+	The first version: basically lookup, support cedict and stardict dictionaries
+	by using tools to convert.
+
+AlConvert 1.0
+	The first version: support "Front-end format of alphadict v1" and
+        "File Structure of Alphadict Dictionary Version 1".
+	
+	Support duplicate index, eg: the same index string within in the tree,
+	with different explantion. This is a unpleasant feature, for supporting cedict.
+

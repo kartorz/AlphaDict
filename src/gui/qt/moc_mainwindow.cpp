@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.0.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.2.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,15 +12,15 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.0.1. It"
+#error "This file was generated using the moc from 5.2.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[29];
-    char stringdata[587];
+    QByteArrayData data[27];
+    char stringdata[568];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -48,16 +48,14 @@ QT_MOC_LITERAL(15, 249, 28),
 QT_MOC_LITERAL(16, 278, 28),
 QT_MOC_LITERAL(17, 307, 26),
 QT_MOC_LITERAL(18, 334, 26),
-QT_MOC_LITERAL(19, 361, 29),
-QT_MOC_LITERAL(20, 391, 16),
-QT_MOC_LITERAL(21, 408, 4),
-QT_MOC_LITERAL(22, 413, 27),
-QT_MOC_LITERAL(23, 441, 29),
-QT_MOC_LITERAL(24, 471, 9),
-QT_MOC_LITERAL(25, 481, 25),
-QT_MOC_LITERAL(26, 507, 24),
-QT_MOC_LITERAL(27, 532, 25),
-QT_MOC_LITERAL(28, 558, 27)
+QT_MOC_LITERAL(19, 361, 25),
+QT_MOC_LITERAL(20, 387, 27),
+QT_MOC_LITERAL(21, 415, 29),
+QT_MOC_LITERAL(22, 445, 32),
+QT_MOC_LITERAL(23, 478, 9),
+QT_MOC_LITERAL(24, 488, 24),
+QT_MOC_LITERAL(25, 513, 25),
+QT_MOC_LITERAL(26, 539, 27)
     },
     "MainWindow\0onUpdateText\0\0v\0onSetLanComboBox\0"
     "src\0det\0on_srcLanComboBox_currentIndexChanged\0"
@@ -69,11 +67,11 @@ QT_MOC_LITERAL(28, 558, 27)
     "on_pgdownToolButton2_clicked\0"
     "on_pgupToolButton1_clicked\0"
     "on_pgupToolButton2_clicked\0"
-    "on_dictListWidget_itemChanged\0"
-    "QListWidgetItem*\0item\0on_dictUpToolButton_clicked\0"
-    "on_dictDownToolButton_clicked\0onAppExit\0"
     "on_dictListWidget_clicked\0"
-    "onActionSettingPageAdded\0"
+    "on_dictUpToolButton_clicked\0"
+    "on_dictDownToolButton_clicked\0"
+    "on_indexLineEdit_editingFinished\0"
+    "onAppExit\0onActionSettingPageAdded\0"
     "onActionVcbularyPageAdded\0"
     "on_tabWidget_currentChanged\0"
 };
@@ -106,13 +104,13 @@ static const uint qt_meta_data_MainWindow[] = {
       17,    0,  140,    2, 0x08,
       18,    0,  141,    2, 0x08,
       19,    1,  142,    2, 0x08,
-      22,    0,  145,    2, 0x08,
-      23,    0,  146,    2, 0x08,
-      24,    0,  147,    2, 0x08,
-      25,    1,  148,    2, 0x08,
-      26,    0,  151,    2, 0x08,
-      27,    0,  152,    2, 0x08,
-      28,    1,  153,    2, 0x08,
+      20,    0,  145,    2, 0x08,
+      21,    0,  146,    2, 0x08,
+      22,    0,  147,    2, 0x08,
+      23,    0,  148,    2, 0x08,
+      24,    0,  149,    2, 0x08,
+      25,    0,  150,    2, 0x08,
+      26,    1,  151,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,
@@ -127,11 +125,11 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 20,   21,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
     QMetaType::Void, QMetaType::QModelIndex,   14,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   14,
@@ -156,11 +154,11 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 9: _t->on_pgdownToolButton2_clicked(); break;
         case 10: _t->on_pgupToolButton1_clicked(); break;
         case 11: _t->on_pgupToolButton2_clicked(); break;
-        case 12: _t->on_dictListWidget_itemChanged((*reinterpret_cast< QListWidgetItem*(*)>(_a[1]))); break;
+        case 12: _t->on_dictListWidget_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
         case 13: _t->on_dictUpToolButton_clicked(); break;
         case 14: _t->on_dictDownToolButton_clicked(); break;
-        case 15: _t->onAppExit(); break;
-        case 16: _t->on_dictListWidget_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 15: _t->on_indexLineEdit_editingFinished(); break;
+        case 16: _t->onAppExit(); break;
         case 17: _t->onActionSettingPageAdded(); break;
         case 18: _t->onActionVcbularyPageAdded(); break;
         case 19: _t->on_tabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;

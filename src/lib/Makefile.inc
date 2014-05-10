@@ -1,1 +1,2 @@
-SOURCS_TINYXML += lib/tinyxml2/tinyxml2.cpp
+
+SRCS_TINYXML += lib/tinyxml2/tinyxml2.cpp

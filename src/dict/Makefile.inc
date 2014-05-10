@@ -1,2 +1,2 @@
-SOURCES_ALDICT = dict/aldict/AldictDocument.cpp \
+SRCS_DICT-yes = dict/aldict/AldictDocument.cpp \
 			     dict/aldict/Aldict.cpp

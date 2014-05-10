@@ -9,3 +9,7 @@ gui/qt/moc_DictIndexModel.cpp: gui/qt/DictIndexModel.h
 
 gui/qt/ui_mainwindow.h: gui/qt/mainwindow.ui
 	$(UIC) gui/qt/mainwindow.ui -o gui/qt/ui_mainwindow.h
+
+gui/qt/qrc_mainwindow.cpp:  gui/qt/mainwindow.qrc \
+                            gui/qt/res/search.png
+	$(RCC) --no-compress -name mainwindow  gui/qt/mainwindow.qrc -o  gui/qt/qrc_mainwindow.cpp

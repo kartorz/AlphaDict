@@ -38,7 +38,7 @@ void QtMessager::doWork()
                 }
                 break;
              
-			   case MSG_SET_DICTITEM:{
+			   case MSG_SET_DICTITEMS:{
                     QMetaObject::invokeMethod((QObject *)m_owner,
                                               "onUpdateText",
                                               Qt::QueuedConnection,

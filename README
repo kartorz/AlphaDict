@@ -1,1 +1,127 @@
-AlphaDict is a less resource and power diction.
+\\ What is AlphaDict
+------------------------------------------------------------
+
+AlphaDict is a lightweight, less dependence, cross platform open source 
+dictionary software,supproting linux,unix and windows. 
+
+AlphaDict has opened its dictionary format that you can make your own dictionary, 
+also supports many third-party dictionary formats: cedict, startdict. 
+AlphaDict has made some open source dictionaries, you can download from
+    "http://pan.baidu.com/s/1o6uhAyQ"
+
+
+
+\\ License
+------------------------------------------------------------
+
+AlphaDict distributes under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3).
+See accompanying file gpl-2.0.txt or a copy at  
+"http://www.gnu.org/copyleft/gpl.html".
+
+
+
+
+\\ Installing the required packages.
+------------------------------------------------------------
+
+AlphaDict depends:
+  1) QT5(gui): "http://qt-project.org/downloads" 
+  2) boost: "http://www.boost.org/"
+
+ubuntu14.04: 
+    sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev
+         qtbase5-dev
+
+
+
+
+\\ How to compile
+------------------------------------------------------------
+
+linux,unix
+------------------------------
+# ./configure  
+# ./configure --help
+  can give you some useful information, if you get trouble and want to
+  set some custom configurations to fix it.
+
+# make 
+
+# make install
+
+# AlphaDict
+  Now, You can enjoy 'AlphaDict'. 
+
+# make uninstall
+
+
+
+
+\\ How to make dictionary
+------------------------------------------------------------
+
+AlphaDict has opened its dictionary format, see doc/dictionary_inner.pdf,
+front-end_format.xml for more detail, encourage you to make your own dictionary.
+
+Usually, you only need to know the 'front-end_format.xml',There are two steps
+to make a dictioanry.
+1) create a xx.xml accoring to front-end_format.xml.
+2) use AlConvert to convert xx.xml to xx.aldict.
+   # AlConvert xx.xml   xx
+   AlConvert shall create a dictionary: xx.aldict.
+
+doc/alphadict_en-ch.xml is a example, You can use them or refrence them to build your dictionary.
+Also, You can get some dictonaries from here:
+    "http://pan.baidu.com/s/1o6uhAyQ"
+
+
+
+
+\\ where to put my dictionaries
+------------------------------------------------------------
+
+For win32:  'installing direcotry'/dicts
+For linux, unix:  /usr/local/share/alphadict/dicts
+
+
+
+\\ how to use the third-party dictionary
+------------------------------------------------------------
+
+AlphaDict don't support some dict formats directly but provides some tools to convert 
+these third-party dictionary to AlphaDict's front-end xml. 
+
+It's a little annoy,does it? Anyway,These tools are all python scripts, pretty simple.
+They are easy to use and at 
+    /usr/local/share/alphadict/tools  -- linux, unix
+    'installing direcotry'/tools -- win32.
+
+stardict
+------------------------------
+1) put all the files of startdict's dictionary to a directory like foo.
+   foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
+2) # python stardict_to_aldictxml.py  foo/foo_xx   foo_xx.xml
+3) # AlConvert foo_xx.xml  foo_xx
+     you will get foo_xx.aldict
+
+You can downlaod the dictionaries of stardict from here:
+    "http://abloz.com/huzheng/stardict-dic"
+
+
+cedict
+------------------------------
+Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
+
+# python cedict_to_aldictxml.py  foo.txt
+# AlConvert foo.xml foo
+    you will get foo.aldict
+
+You can download the cedict dicionary form here:
+    "http://www.mdbg.net/chindict/chindict.php?page=cedict"
+
+
+\\ How to report a bug, contribute or contact me.
+------------------------------------------------------------
+Here is my email: joni.kartorz.lee@gmail.com.
+You can contact me for anything about this software.
+

@@ -13,10 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    IndexListModel.cpp
+        mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    IndexListModel.h
+HEADERS  += mainwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += ../mainwindow.ui
+
+RESOURCES += \
+    ../mainwindow.qrc

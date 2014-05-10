@@ -24,9 +24,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>13</y>
+      <y>0</y>
       <width>721</width>
-      <height>561</height>
+      <height>454</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -48,7 +48,7 @@
      <enum>QTabWidget::Triangular</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="dictTab">
      <attribute name="title">
@@ -60,7 +60,7 @@
         <x>-1</x>
         <y>0</y>
         <width>161</width>
-        <height>400</height>
+        <height>341</height>
        </rect>
       </property>
       <property name="acceptDrops">
@@ -79,10 +79,10 @@
      <widget class="QLineEdit" name="inputLineEdit">
       <property name="geometry">
        <rect>
-        <x>440</x>
+        <x>450</x>
         <y>14</y>
-        <width>181</width>
-        <height>31</height>
+        <width>201</width>
+        <height>32</height>
        </rect>
       </property>
       <property name="readOnly">
@@ -95,7 +95,7 @@
         <x>180</x>
         <y>14</y>
         <width>101</width>
-        <height>31</height>
+        <height>32</height>
        </rect>
       </property>
      </widget>
@@ -105,21 +105,31 @@
         <x>330</x>
         <y>14</y>
         <width>101</width>
-        <height>31</height>
+        <height>32</height>
        </rect>
       </property>
      </widget>
      <widget class="QPushButton" name="queryButton">
       <property name="geometry">
        <rect>
-        <x>628</x>
-        <y>14</y>
-        <width>61</width>
-        <height>31</height>
+        <x>662</x>
+        <y>10</y>
+        <width>48</width>
+        <height>48</height>
        </rect>
       </property>
       <property name="text">
-       <string>Query</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/search.png</normaloff>:/res/search.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>48</width>
+        <height>48</height>
+       </size>
       </property>
      </widget>
      <widget class="QLabel" name="label">
@@ -132,16 +142,19 @@
        </rect>
       </property>
       <property name="text">
-       <string>-----&gt;</string>
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="mainwindow.qrc">:/res/to_right_arrow.png</pixmap>
       </property>
      </widget>
      <widget class="QTextEdit" name="dictTextEdit">
       <property name="geometry">
        <rect>
         <x>170</x>
-        <y>60</y>
+        <y>69</y>
         <width>550</width>
-        <height>340</height>
+        <height>271</height>
        </rect>
       </property>
       <property name="acceptDrops">
@@ -151,95 +164,167 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="moreButton">
-      <property name="geometry">
-       <rect>
-        <x>615</x>
-        <y>410</y>
-        <width>71</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>more</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="netdictButton">
       <property name="geometry">
        <rect>
-        <x>506</x>
-        <y>410</y>
-        <width>71</width>
-        <height>31</height>
+        <x>650</x>
+        <y>360</y>
+        <width>48</width>
+        <height>48</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;lookup net dictionary&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;not support yet!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>net dict</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/web.png</normaloff>:/res/web.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>48</width>
+        <height>48</height>
+       </size>
       </property>
      </widget>
      <widget class="QPushButton" name="saveButton">
       <property name="geometry">
        <rect>
-        <x>395</x>
-        <y>410</y>
-        <width>71</width>
-        <height>31</height>
+        <x>570</x>
+        <y>360</y>
+        <width>48</width>
+        <height>48</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;add to vocabulary book&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;not support yet!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>save</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/favorite.png</normaloff>:/res/favorite.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>48</width>
+        <height>48</height>
+       </size>
       </property>
      </widget>
      <widget class="QToolButton" name="pgupToolButton2">
       <property name="geometry">
        <rect>
-        <x>4</x>
-        <y>414</y>
-        <width>25</width>
-        <height>27</height>
+        <x>9</x>
+        <y>383</y>
+        <width>24</width>
+        <height>32</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;&lt;</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/left_arrow2.png</normaloff>:/res/left_arrow2.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>18</width>
+        <height>32</height>
+       </size>
       </property>
      </widget>
      <widget class="QToolButton" name="pgupToolButton1">
       <property name="geometry">
        <rect>
-        <x>40</x>
-        <y>414</y>
-        <width>25</width>
-        <height>27</height>
+        <x>47</x>
+        <y>383</y>
+        <width>24</width>
+        <height>32</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/left_arrow.png</normaloff>:/res/left_arrow.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>18</width>
+        <height>32</height>
+       </size>
       </property>
      </widget>
      <widget class="QToolButton" name="pgdownToolButton1">
       <property name="geometry">
        <rect>
-        <x>83</x>
-        <y>414</y>
-        <width>25</width>
-        <height>27</height>
+        <x>87</x>
+        <y>383</y>
+        <width>24</width>
+        <height>32</height>
        </rect>
       </property>
       <property name="text">
-       <string>&gt;</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/right_arrow.png</normaloff>:/res/right_arrow.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>18</width>
+        <height>32</height>
+       </size>
       </property>
      </widget>
      <widget class="QToolButton" name="pgdownToolButton2">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>414</y>
-        <width>25</width>
-        <height>27</height>
+        <x>126</x>
+        <y>383</y>
+        <width>24</width>
+        <height>32</height>
        </rect>
       </property>
       <property name="text">
-       <string>&gt;&gt;</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/right_arrow2.png</normaloff>:/res/right_arrow2.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>18</width>
+        <height>32</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="indexLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>349</y>
+        <width>141</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>filter by a prefix</string>
+      </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string/>
       </property>
      </widget>
     </widget>
@@ -278,41 +363,66 @@
      <widget class="QLabel" name="dictInfoLabel">
       <property name="geometry">
        <rect>
-        <x>290</x>
-        <y>90</y>
-        <width>411</width>
-        <height>221</height>
+        <x>265</x>
+        <y>80</y>
+        <width>231</width>
+        <height>251</height>
        </rect>
       </property>
       <property name="text">
        <string/>
       </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QToolButton" name="dictUpToolButton">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>0</y>
-        <width>31</width>
-        <height>61</height>
+        <x>333</x>
+        <y>10</y>
+        <width>32</width>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
-       <string>^
-</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/up.png</normaloff>:/res/up.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
       </property>
      </widget>
      <widget class="QToolButton" name="dictDownToolButton">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>360</y>
-        <width>31</width>
-        <height>71</height>
+        <x>333</x>
+        <y>350</y>
+        <width>32</width>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
-       <string>v</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="mainwindow.qrc">
+        <normaloff>:/res/down.png</normaloff>:/res/down.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
       </property>
      </widget>
     </widget>
@@ -322,6 +432,12 @@
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>48</width>
+     <height>48</height>
+    </size>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -333,20 +449,36 @@
    <addaction name="actionVocabulary"/>
   </widget>
   <action name="actionVocabulary">
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/res/vocabulary.png</normaloff>:/res/vocabulary.png</iconset>
+   </property>
    <property name="text">
-    <string>vocabulary</string>
+    <string/>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;vocabulay&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;not support yet!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
   </action>
   <action name="actionSetting">
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/res/setting.png</normaloff>:/res/setting.png</iconset>
+   </property>
    <property name="text">
+    <string/>
+   </property>
+   <property name="toolTip">
     <string>setting</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="mainwindow.qrc"/>
+ </resources>
  <connections/>
 </ui>

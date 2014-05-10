@@ -20,6 +20,8 @@ public:
     static bool copyFile(const string& from, const string& to);
     static void copyDir(const string& from, const string& to);
     static bool createDir(const string& path);
+    static bool currentDir(string& path);
+    static bool execDir(string& path);
 };
 
 class ReadFile {

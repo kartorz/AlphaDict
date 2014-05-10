@@ -13,6 +13,7 @@
 #include "tinyxml2/tinyxml2.h"
 #include "kary_tree/kary_tree.hpp"
 
+#include <time.h>
 #include <stddef.h>
 #include <locale.h>
 #include <vector>
@@ -21,6 +22,8 @@
 
 using namespace std;
 using namespace tinyxml2;
+
+#define VERSION     "1"
 
 #define INDEX_BLOCK_NR   2
 #define STRINX_WORDS_MAX 10
@@ -34,6 +37,8 @@ using namespace tinyxml2;
 
 typedef ktree::kary_tree<aldict_charindex>&  IndexTreeRef;
 static int total_chrindex = 0; /* Used in recursion funciton write_charindex */
+static int total_entry = 0;
+static bool duplicate_index_flag = false;
 
 static void usage();
 static void make_dict(const string& xmlfile, const string& dictfile);
@@ -49,6 +54,7 @@ static wchar_t mbrtowc_nextwc(char** strmb);
 static void merge_file(FILE *det, FILE *src);
 static off_t check_block_bound(off_t pos, int nbytes);
 static char* wcsrtombs_r(const wchar_t *wc, size_t *mb_len);
+static unsigned int get_timems();
 
 int main(int argc, char* argv[])
 {
@@ -58,7 +64,7 @@ int main(int argc, char* argv[])
 	string outpath = "";
 
 	setlocale(LC_ALL, "C.UTF-8");
-
+    get_timems();
 #if 0
 	if (argc < 2) {
 		usage();
@@ -83,7 +89,7 @@ int main(int argc, char* argv[])
 	if (argc == 3) {
 		xmlpath = argv[1];
 		outpath = argv[2];
-		//outpath += DICT_SUFFIX;
+		outpath += DICT_SUFFIX;
 		make_dict(xmlpath, outpath);
 	}else {
 		usage();
@@ -93,6 +99,7 @@ int main(int argc, char* argv[])
 
 static void usage()
 {
+    printf("AlConvert ver %s\n\n", VERSION);
 	printf("Usage: AlConvert <xml> <dict>\n");
 	printf("Convert <xml> file to <dict> file.\n");
 	printf("For example:\n");
@@ -134,78 +141,89 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 		header.magic[1] = 0x88;
 	 
 		tempElement = headerElement->FirstChildElement("version");
-		if (tempElement)
-		  header.h_version[0] = tempElement->FirstChild()->Value()[0];
+		if (tempElement) {
+          pstrTemp = tempElement->FirstChild()->Value();
+       if (pstrTemp)
+             header.h_version[0] = pstrTemp[0];
+        }
 
 		tempElement= headerElement->FirstChildElement("publishdate");
 		if (tempElement) {
-		    strTemp = tempElement->FirstChild()->Value();
-		    boost::split(splitVec, strTemp, boost::is_any_of("-"),
-		    	     boost::algorithm::token_compress_on);
-		    header.p_date[0] = boost::lexical_cast<int>(splitVec[2]);
-		    header.p_date[1] = boost::lexical_cast<int>(splitVec[1]);
-		    header.p_date[2] = boost::lexical_cast<int>(splitVec[0]) & 0x00ff;
-		    header.p_date[3] = boost::lexical_cast<int>(splitVec[0]) >> 8;
-		    //lexical_cast<int>(strTemp.data(), 4);
+		    pstrTemp = tempElement->FirstChild()->Value();
+            if (pstrTemp) {
+                strTemp = string(pstrTemp);
+		        boost::split(splitVec, strTemp, boost::is_any_of("-"),
+		        	     boost::algorithm::token_compress_on);
+		        header.p_date[0] = boost::lexical_cast<int>(splitVec[2]);
+		        header.p_date[1] = boost::lexical_cast<int>(splitVec[1]);
+		        header.p_date[2] = boost::lexical_cast<int>(splitVec[0]) & 0x00ff;
+		        header.p_date[3] = boost::lexical_cast<int>(splitVec[0]) >> 8;
+            }
 		}
 
 		tempElement = headerElement->FirstChildElement("publisher");
 		if (tempElement) {
 		    pstrTemp = tempElement->FirstChild()->Value();
-		    strncpy((char *)(header.p_identi), pstrTemp, 60);
+            if (pstrTemp)
+		        strncpy((char *)(header.p_identi), pstrTemp, 59);
 		}
 
 		splitVec.clear();
 		strTemp.clear();
 		tempElement = headerElement->FirstChildElement("dictversion");
 		if (tempElement) {
-		    strTemp = tempElement->FirstChild()->Value();
-
-     	    boost::split(splitVec, strTemp, boost::is_any_of("."),
-			     boost::algorithm::token_compress_on);
-		    if (splitVec.size() > 1) {
-		    	header.d_version[0] = boost::lexical_cast<int>(splitVec[1]);
-		    } else {
-		    	header.d_version[0] = 0;
-		    }
-		    header.d_version[1] = boost::lexical_cast<int>(splitVec[0]);
+		    pstrTemp = tempElement->FirstChild()->Value();
+            if (pstrTemp) {
+                strTemp = string(pstrTemp);
+     	        boost::split(splitVec, strTemp, boost::is_any_of("."),
+			         boost::algorithm::token_compress_on);
+		        if (splitVec.size() > 1) {
+		        	header.d_version[0] = boost::lexical_cast<int>(splitVec[1]);
+		        } else {
+		        	header.d_version[0] = 0;
+		        }
+		        header.d_version[1] = boost::lexical_cast<int>(splitVec[0]);
+            }
 		}
 
 		tempElement = headerElement->FirstChildElement("dictname");
 		if (tempElement) {
 		    pstrTemp = tempElement->FirstChild()->Value();
-		    strncpy((char *)(header.d_identi), pstrTemp, 60);
-            header.d_identi[59] = '\0';
+            if (pstrTemp) {
+		        strncpy((char *)(header.d_identi), pstrTemp, 59);
+            }
 		}
 
-		tempElement =  headerElement->FirstChildElement("entries");
-        if (tempElement) {
-            strTemp = tempElement->FirstChild()->Value();
-
-      		u32Temp = boost::lexical_cast<unsigned int>(strTemp);
-		    ald_write_u32(header.d_entries, u32Temp);
-		}
-		//fwrite(&header, sizeof(struct aldict_header), 1, dictfile);
+		/*tempElement =  headerElement->FirstChildElement("entries");
+        if (tempElement) {            
+            pstrTemp = tempElement->FirstChild()->Value();
+            if (pstrTemp) {
+                strTemp = string(pstrTemp);
+      		    u32Temp = boost::lexical_cast<unsigned int>(strTemp);
+		        ald_write_u32(header.d_entries, u32Temp);
+            }
+		}*/
 
         tempElement = headerElement->FirstChildElement("srclan");
 		if (tempElement) {
 		    pstrTemp = tempElement->FirstChild()->Value();
+            if (!pstrTemp)
+                pstrTemp = "any";
         } else {
 		    pstrTemp = "any";
 		}
-		strncpy((char *)(header.src_lan), pstrTemp, 15);
-        header.src_lan[14] = '\0';
+		strncpy((char *)(header.src_lan), pstrTemp, 14);
 
         tempElement = headerElement->FirstChildElement("detlan");
 		if (tempElement) {
 		    pstrTemp = tempElement->FirstChild()->Value();
+            if (!pstrTemp)
+                pstrTemp = "any";
         } else {
 		    pstrTemp = "any";
 		}
-		strncpy((char *)(header.det_lan), pstrTemp, 15);
-        header.det_lan[14] = '\0';
-	}
-	catch (exception e) {
+		strncpy((char *)(header.det_lan), pstrTemp, 14);
+	} catch (exception e) {
 	    /* It's annoy to check every header tag if has a text node,so xml should be responsible for that .*/
 		AL_ASSERT(false, "Prase xml failure, please check header tag, every tag of 'header' should have a text node.");
 	}
@@ -223,7 +241,7 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 	const XMLElement* wordsElement = rootElement->FirstChildElement("words");
 	AL_ASSERT(wordsElement, "Parse xml failure");
 	const XMLElement* wordElement = wordsElement->FirstChildElement();
-
+    
 	while (wordElement) {
 		off_t start;
 		char *word = (char *)wordElement->Attribute(WORD_ATTR);
@@ -258,10 +276,12 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 
 	/*-@ Stage 5: Merge temple files */
 	header.loc_chrindex[0] = INDEX_BLOCK_NR;
+    ald_write_u32(header.d_entries, total_entry);
 
 	fseek(dictfile, 0, SEEK_END);
 	int bnr = ALD_BLOCK_NR(ftello(dictfile)) + 1;
 	ald_write_u32(header.loc_strindex, bnr);
+    header.flags[0] |= duplicate_index_flag ? F_DUPLICATEINX : 0;
 
 	fseek(dictfile, (bnr-1)*ALD_BLOCK, SEEK_SET);
 	fseek(strinx_tempfile, 0, SEEK_SET);
@@ -274,8 +294,10 @@ static void make_dict(const string& xmlpath, const string& dictpath)
 	merge_file(dictfile, dict_tmpfile);
 	fseek(dictfile, 0, SEEK_SET);
 	fwrite(&header, sizeof(struct aldict_header), 1, dictfile);
-	printf("write dict file, done\n");
-
+	printf("write dict file, done: \n");
+    printf("    entries: %d\n", total_entry);
+    printf("    char index: %d\n", total_chrindex);
+    printf("    costs: (%u)s\n", get_timems()/1000);
 	fclose(dictfile);
 	fclose(strinx_tempfile);
 	fclose(dict_tmpfile);
@@ -315,61 +337,138 @@ static void add_to_dictfile(const string& strWord, const XMLElement* wordElement
 	fwrite((void *)strExpln.c_str(), strExpln.length(), 1, dict);
 }
 
-static void add_to_indextree(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
-			     char *str, off_t pos)
+static int bsearch(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
+                    wchar_t key, int min, int max)
 {
-	const wchar_t charIn = mbrtowc_nextwc(&str); /* "str" will be modified */
-	if (!charIn)
+    int mid = (min + max) / 2;
+    wchar_t chr = ald_read_u32(parent->child(mid)->value().wchr);
+    //printf("bsearch min(%d), mid(%d), max(%d): chr(%u)-->key(%u)\n", min, mid, max, chr, key);
+    if (min >= max) {
+        return min;
+    }
+	if (chr == key)
+        return mid;
+    if (chr < key)
+	    return bsearch(parent, key, mid+1, max);
+
+    if (mid > min)
+        return bsearch(parent, key, min, mid-1);
+    else
+        return min;
+}
+
+static void add_to_indextree(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
+                             char *str, off_t d_off)
+{
+	const wchar_t key = mbrtowc_nextwc(&str); /* "str" will be modified */
+	if (!key)
 		return;
 
+    static int cache[3] = {-1, -1, -1};
+    static int cchinx = 0;
+    
 	ktree::tree_node<aldict_charindex>::treeNodePtr next;
-	/* Find char index */
 	int size = parent->children().size();
-	int i;
 	bool found = false;
-	for (i=0; i<size; i++) {
-		wchar_t chr = ald_read_u32(parent->child(i)->value().wchr);
-		if (chr < charIn)
-			continue;
-		else if (chr > charIn)
-			break;
-		else {
-			found = true;
-			next = (*parent)[i];
-			break;
-		}
-	}
+    wchar_t chr;
+    int pos=0;
+
+    //printf("1: %u, %d\n", get_timems(), size);
+    if (size > 0) {
+        if (cchinx < 3) {
+            if (cache[cchinx] != -1) {
+                pos = cache[cchinx];
+                chr = ald_read_u32(parent->child(pos)->value().wchr);
+                if (chr == key) {
+                    found = true;
+                    goto ADD;
+                }
+                // a new tree, clear cache.
+                for (int i=cchinx; i<3; i++)
+                    cache[i] = -1;
+            }
+        }
+
+        pos = size - 1;
+        chr = ald_read_u32(parent->child(pos)->value().wchr);
+        if (chr == key) {
+            found = true;
+            goto ADD;
+        } else if(chr < key) {
+            pos = size;
+            goto ADD;
+        }
+
+        pos = bsearch(parent, key, 0, size-1);
+        //printf("bsearch done: pos(%u)\n", pos);
+        chr = ald_read_u32(parent->child(pos)->value().wchr);
+        if (chr == key) {
+            found = true;
+            goto ADD;
+        }
+        if (chr < key && pos < size) {
+            ++pos;
+            //printf("new pos(%u)\n", pos);
+        }
+        goto ADD;
+    }
+    //printf("2: %u\n", get_timems());
+ADD:
 	bool leaf = *str == '\0' ? true : false;
-	if (!found) {
-		struct aldict_charindex  charInx;
-		ald_write_u32(charInx.wchr, charIn);
-        ald_write_u16(charInx.len_content, 0);
-		if (leaf)
-			ald_write_u32(charInx.location, pos);
-		else
-			ald_write_u32(charInx.location, ALD_INVALID_ADDR);
 
-		if (i == size)
-			next = parent->insert(charInx);
-		else
-			next = parent->insert(charInx, i);
-	} else if (leaf)
-		printf("WARRNING: duplicate index\n");
+    struct aldict_charindex  charInx;
+    ald_write_u32(charInx.wchr, key);
+    ald_write_u16(charInx.len_content, 0);
+    if (leaf) {
+	    ald_write_u32(charInx.location, d_off);
+        ++total_entry;
+    } else {
+		ald_write_u32(charInx.location, ALD_INVALID_ADDR);
+    }
 
-	if (!leaf)
-		add_to_indextree(next, str, pos);
+    if (!found) {
+        if (pos == size)
+    	    next = parent->insert(charInx);
+        else
+    		next = parent->insert(charInx, pos);
+    } else {
+        if (leaf) {
+            if (ald_read_u32((*parent)[pos]->value().location) == ALD_INVALID_ADDR) {
+                ald_write_u32((*parent)[pos]->value().location, d_off);
+            } else {
+                printf("WARRNING: append a duplicate index--last wchar_t('%lc')\n", chr);
+                duplicate_index_flag = true;
+                ald_write_u32(charInx.wchr, 0);
+                (*parent)[pos]->insert(charInx, 0);
+            }
+        } else {
+            next = (*parent)[pos];
+        }
+    }
+    if (cchinx < 3) {
+        cache[cchinx] = pos;
+    }
+    /* advance to next level */
+	if (!leaf) {
+        ++cchinx;
+		add_to_indextree(next, str, d_off);
+        --cchinx;
+    }
 }
 
 static void add_alias(IndexTreeRef indexTree, const XMLElement* wordElement, off_t pos)
 {
+    const char *word = wordElement->Attribute(WORD_ATTR);
+
 	XMLConstHandle wordElementHd(wordElement);
 	const XMLElement* asElement = 
 		wordElementHd.FirstChildElement("alias").FirstChild().ToElement();
 
 	while (asElement) {
 		const char *as = asElement->GetText();
-		add_to_indextree(indexTree.root(), (char *)as, pos);
-		asElement = asElement->NextSiblingElement();
+        if (strcmp(word, as) != 0)
+		    add_to_indextree(indexTree.root(), (char *)as, pos);
+        asElement = asElement->NextSiblingElement();
 	}
 }
 
@@ -378,7 +477,7 @@ static void add_alias(IndexTreeRef indexTree, const XMLElement* wordElement, off
 /// The rule for stripping string index is in the function is_in_stringindex.
 
 /* Check if paren's children should be recorded in string index area.
- * If meet the following conditions:
+ * If meet the following conditions:x
  *    - the number of words less equal than STRINX_WORDS_MAX.
  *    - the length of tree less equal than STRINX_DEPTH_MAX.
  *
@@ -467,6 +566,8 @@ static void write_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr pa
 			    free(strinx);
                 free(mbindex);
 			    (*total) += 1;
+            } else {
+                printf("ERROR: index did't be converted to utf-8:(%x) \n", wchr);
             }
 		}
 		write_stringindex((*parent)[i], len_inx+1, total, start, file);
@@ -474,10 +575,14 @@ static void write_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr pa
 }
 
 /*
- *   Strip string index, Save it to sinxfile.
- *  "parent" should be saved to char index area, check if its children should be saved to 
+ *  Strip string index, Save it to sinxfile.
+ *  
+ *  'parent' should be saved to char index area, check if its children should be saved to 
  *  char index area or string index area. If a child should be saved to char index area,
- *  then all the children should be save to char index area.
+ *  then all the children should be save to char index area. 
+ *
+ *  'parent' can't be a index-- location must be ALD_INVALID_ADDR.
+ *
  *  "is_in_stringindex(..)" decides which index area children should be saved to.
  *
  */
@@ -603,4 +708,18 @@ static off_t check_block_bound(off_t pos, int nbytes)
 		return remain; /* seek to next block */
     }
 	return 0; /* don't seek */
+}
+
+static unsigned int get_timems()
+{
+	static unsigned long long start_mstime = 0;
+	unsigned long long now_mstime;
+	struct timespec ts;
+
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+	now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+	if (start_mstime == 0) {
+		start_mstime = now_mstime;
+	}
+	return(now_mstime - start_mstime);
 }

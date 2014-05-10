@@ -2,6 +2,6 @@
 
 import subprocess
 
-subprocess.call("../AlConvert ../../doc/alphadict_ch-en.xml ../../doc/alphadict_ch-en",  shell=True)
+subprocess.call("../AlConvert cedict_ch-en.xml  cedict_ch-en",  shell=True)
 
-subprocess.call(["python", "dump_aldict.py", "../../doc/alphadict_ch-en.ad"])
+subprocess.call(["python", "dump_aldict.py", "cedict_ch-en.aldict"])

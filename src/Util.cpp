@@ -176,6 +176,37 @@ void Util::copyDir(const string& from, const string& to)
     }
 }
 
+bool Util::currentDir(string& path)
+{
+    char buf[512];
+    if (getcwd(buf, 512) == NULL)
+        return false;
+    path = string(buf, 512);
+    return true;
+}
+
+bool Util::execDir(string& path)
+{
+#ifdef _WIN32
+    //GetModuleFileName 
+#elif defined(_LINUX)
+    path = "/usr/local/share/alphadict";
+#if 0
+    char buf[512];
+    int length = readlink("/proc/self/exe", buf, 512);
+    if(length != -1) {
+        //dirname(buf);
+        string temp(buf, length);
+        boost::filesystem::path execPath(temp);
+        //boost::filesystem::path dir(path);
+        path = execPath.remove_filename().string();
+        return true;
+    }
+    return false;
+#endif
+#endif
+}
+
 size_t ReadFile::operator()(FILE *f, void *ptr, size_t length)
 {
 	int rdbytes = 0;

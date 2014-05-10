@@ -46,8 +46,8 @@ public:
     ~DictManager();
     void initialization();
 	void lookup(const string& input, int which=-1);
-    int  getIndexList(IndexList& indexList, int start, int end);
-	void onClick(int index, iIndexItem* item);
+    int  getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
+	void onClick(int row, iIndexItem* item);
     void reloadDict();
     int  indexListSize();
     void setDictSrcLan(string& srclan);
@@ -55,7 +55,7 @@ public:
     bool hasDict() { return m_dictTotal > 0;}
 
 private:
-    void onAddLookupResult(int which, iDictItem& item);
+    void onAddLookupResult(int which, DictItemList& items);
 	bool loadDict(bool more=false);
     bool matchDict(const string& srcLan, const string& detLan);
     iDict* createHandleByDict(const string dictpath);

@@ -5,7 +5,7 @@
 #include "QtMessager.h"
 #include "iDict.h"
 #include "Application.h"
-//#include <stdio.h>
+///#include <stdio.h>
 #include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,7 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //ui->tabWidget->setTabsClosable(true);
-    
+    //ui->queryButton->setStyleSheet("background-image:url(:/res/search.png)");
+    //ui->queryButton->setIconSize(QSize(64,64));
+    //ui->inputLineEdit->setAttribute(Qt::WA_InputMethodEnabled,true);
     QObject::connect(ui->actionSetting, SIGNAL(triggered()),this, SLOT(onActionSettingPageAdded()));
     QObject::connect(ui->actionVocabulary, SIGNAL(triggered()), this, SLOT(onActionVcbularyPageAdded()));
     
@@ -49,6 +51,7 @@ void MainWindow::on_detLanComboBox_currentIndexChanged(const QString &arg1)
 void MainWindow::on_inputLineEdit_editingFinished()
 {
     m_input = ui->inputLineEdit->text();
+    on_queryButton_clicked();
 }
 
 void MainWindow::on_inputLineEdit_textChanged(const QString &arg1)
@@ -73,9 +76,14 @@ void MainWindow::on_indexListView_clicked(const QModelIndex &index)
     }
 }
 
+void MainWindow::on_indexLineEdit_editingFinished()
+{
+    m_dictIndexModel->onResetIndexList(ui->indexLineEdit->text().toStdString());
+}
+
 void MainWindow::onUpdateText(void *v)
 {
-    iDictItem *i = (iDictItem*) v;
+    DictItemList* itemList = (DictItemList*) v;
 
     QTextCursor cursor(ui->dictTextEdit->textCursor());
     QTextFrameFormat itemFrame;
@@ -91,26 +99,35 @@ void MainWindow::onUpdateText(void *v)
 
     boldFormat.setFontWeight(QFont::Bold);
     itemBlock.setIndent(1);
-    text = QString::fromUtf8(i->dictname.c_str());
+    
+    text = QString::fromUtf8((*itemList)[0].dictname.c_str());
     text = text.trimmed();
     cursor.insertText(text, boldFormat);
-    cursor.insertBlock(itemBlock);
-
-    titleFormat.setFontWeight(QFont::DemiBold);
-    text = QString::fromUtf8(i->phonetic.c_str());
-    text = text.trimmed();
-    cursor.insertText(text, titleFormat);
-
-    bodyFormat.setFontWeight(QFont::Light);
-    cursor.insertBlock(itemBlock);
     //cursor.insertBlock(itemBlock);
-    text = QString::fromUtf8(i->expl.c_str());
-    text = text.trimmed(); 
- //   qDebug() << text;
-    //cursor.insertHtml(text);
-    cursor.insertText(text,bodyFormat);
-    cursor.insertBlock();
-    delete i;
+
+    for (int i=0; i< itemList->size(); i++) {
+        cursor.insertBlock();
+        titleFormat.setFontWeight(QFont::DemiBold);
+        text = QString::fromUtf8((*itemList)[i].phonetic.c_str());
+        text = text.trimmed();
+        if (text != "") {
+            cursor.insertBlock();
+            cursor.insertText(text, titleFormat);
+            cursor.insertBlock();
+        }
+
+        bodyFormat.setFontWeight(QFont::Light);
+        cursor.insertBlock(itemBlock);
+        text = QString::fromUtf8((*itemList)[i].expl.c_str());
+        text = text.trimmed(); 
+     //   qDebug() << text;
+        //cursor.insertHtml(text);
+        cursor.insertText(text,bodyFormat);
+        cursor.insertBlock();
+        cursor.insertBlock();
+    }
+
+    delete itemList;
 }
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
@@ -176,17 +193,6 @@ void MainWindow::on_pgupToolButton2_clicked()
 	}
 }
 
-void MainWindow::on_dictListWidget_itemChanged(QListWidgetItem *item)
-{
-    int row = ui->dictListWidget->row(item);
-    if (row != -1) {
-        if (item->checkState() == Qt::Checked)
-		    g_sysMessageQ.push(MSG_SET_DICTEN, row, 1);
-        else
-		    g_sysMessageQ.push(MSG_SET_DICTEN, row, 0);
-    }
-}
-
 void MainWindow::on_dictUpToolButton_clicked()
 {
     int currentIndex = ui->dictListWidget->currentRow();
@@ -234,6 +240,8 @@ void MainWindow::onActionSettingPageAdded()
         ui->tabWidget->setCurrentIndex(inx);
     } else {
         ui->tabWidget->removeTab(inx);
+        /* will reload dictioanry if necessary */
+        g_sysMessageQ.push(MSG_RELOAD_DICT, -1, -1);
     }
 }
 
@@ -243,8 +251,17 @@ void MainWindow::onActionVcbularyPageAdded()
 
 void MainWindow::on_dictListWidget_clicked(const QModelIndex &index)
 {
+    int row = index.row();
+    QListWidgetItem *item = ui->dictListWidget->item(row);
+    if (row != -1) {
+        //printf("itemChanged (%d, %d)\n", row, item->checkState());
+        if (item->checkState() == Qt::Checked)
+		    g_sysMessageQ.push(MSG_SET_DICTEN, row, 1);
+        else if (item->checkState() == Qt::Unchecked)
+		    g_sysMessageQ.push(MSG_SET_DICTEN, row, 0);
+    }
+
     Configure* config = g_application.m_configure;
-	
     QString info = QString(config->m_dictNodes[index.row()].summary.c_str());
     ui->dictInfoLabel->setText(info);
 }
@@ -252,5 +269,5 @@ void MainWindow::on_dictListWidget_clicked(const QModelIndex &index)
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     if (index == 0)
-        g_sysMessageQ.push(MSG_CURTAB_PGDICT, -1, -1);
+        g_sysMessageQ.push(MSG_RELOAD_DICT, -1, -1);
 }

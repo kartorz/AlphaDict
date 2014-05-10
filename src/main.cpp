@@ -2,12 +2,10 @@
 #include "Util.h"
 #include "Application.h"
 
-#ifdef _QT
+#if CONFIG_QT5
 #include "gui/qt/mainwindow.h"
 #include <QApplication>
 #endif
-
-#include <boost/filesystem.hpp>
 
 static void on_exit()
 {
@@ -19,12 +17,9 @@ int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "C.UTF-8");
     Util::getTimeMS(); // start to timing.
-    boost::filesystem::path execPath(argv[0]);
-    g_application.m_configure->m_execDir = execPath.remove_filename().string();
-
     g_application.initialization();
 
-#ifdef _QT
+#if CONFIG_QT5
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

@@ -9,6 +9,8 @@
 
 #define F_LOCSTRINX  0x80000000
 
+#define F_DUPLICATEINX  0x01
+
 #define BP(a, b)	(b-a+1)
 
 #define ALD_MAGIC_L  0x77
@@ -29,6 +31,7 @@ struct aldict_header {
 	u8 loc_data     [ BP(139, 142) ];
 	u8 src_lan      [ BP(143, 157) ];
 	u8 det_lan      [ BP(158, 172) ];
+    u8 flags        [ BP(173, 173) ];
 };
 
 struct aldict_charindex {

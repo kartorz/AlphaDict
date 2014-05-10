@@ -16,39 +16,21 @@ The format of front-end of alphadict:
     <dictversion/>
     <dictname/>
   </header>
-  <words>
-    <word>
-      <!-- Define a normal word other than a word with a alias node -->
-      <phonetic>
-        <name1>xx</name1>
-        <name2>xx</name2>
-      </phonetic>
-      <explanation>
-text of explanation
-      </explanation>
-      <alias>
-       <as>other word</as> 
-      </alias>
-    </word>
-</words>
-</alphadict>
 
-<words> e.g:
-<boy>
-	<phonetic>
-		<US>noʊt</US>
-		<UK>nəʊt</UK>
-	</phonetic>
-	<explanation>
-n: 男孩；小子； 伙计
-int.表示惊奇
-	
-男孩；男青年a male child or a young male person
-Sample Sentence:
-1.This family was that of the merry barefoot boy.
-        ]]>
-	</explanation>
-</boy>
+  <words>
+    <id_n word="word or phrase"> 
+      <phonetic>
+         <name1>xx</name1>
+	 <name2>xx</name2>
+      </phonetic>
+      <explanation></explanation>
+      <alias>
+	    <as>word1</as>
+	    <as>word2</as>
+      </alias>
+    </id_n>
+  </words>
+</alphadict>
 --------------------------------------------------
 """
 # Changes:
@@ -143,14 +125,12 @@ def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt="",
 	    return
         entries = entries + 1
 	## " AB    CD E F" --> ['', 'AB', '', '', '', 'CD', 'E', 'F']
-	strlist = word_lt[0].split(' ')
-	if strlist[0] == '':
-            sys.stderr.write("xml_alphadict_writeword: start with a blank")
-	    return
+	strlist = word_lt[0].strip(' \t').split(' ')
 	attr_value = ''
         for l in strlist:
             if l != '':
                 attr_value += l + ' '
+
         attr_value = attr_value[0:-1] # remove ' '
         tag = "id_" + str(entries)
 	e_word = doc.createElement(tag)
@@ -163,7 +143,7 @@ def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt="",
 	e = doc.createElement("explanation")
         expl = ""
         if len(explanation_lt) == 1:
-            expl = explanation_lt[0]
+            expl = explanation_lt[0];
         else:
 	    for i in explanation_lt:
 	        expl += i + '\n';
@@ -173,18 +153,16 @@ def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt="",
 	e.appendChild(t)
 	e_word.appendChild(e)
 	#create_element_childlist("note", note_lt, "text", e_word)
-	
 	#e = create_element_childlist("resource", resource_lt, None, e_word)
-	e_words.appendChild(e_word)
 
 	if len(word_lt) > 1:
 	    e_a = doc.createElement("alias")
 	    for w in word_lt[1:]:
-                e_w = doc.createElement(w)
-		create_element_textnode("alias", word_lt[0], e_w)
-		#e_words.appendChild(e_w)
+                #e_w = doc.createElement()
+		create_element_textnode("as", w.strip(' \t'), e_a)
+            e_word.appendChild(e_a)
 
-
+	e_words.appendChild(e_word)
 def create_element_childlist(e, t, c=None, p=None):
 	""" Create a dom element with a series text nodes
 

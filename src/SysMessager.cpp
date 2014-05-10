@@ -76,7 +76,7 @@ void SysMessager::processMessage()
 			m_bReloadDict = true;
             break;
         }
-	    case MSG_CURTAB_PGDICT: {
+	    case MSG_RELOAD_DICT: {
 			if (m_bReloadDict) {
 			    m_bReloadDict = false;
 			    DictManager::getReference().reloadDict();

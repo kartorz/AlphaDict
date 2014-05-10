@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/search.png</file>
+        <file>res/setting.png</file>
+        <file>res/vocabulary.png</file>
+        <file>res/web.png</file>
+        <file>res/favorite.png</file>
+        <file>res/to_right_arrow.png</file>
+        <file>res/right_arrow2.png</file>
+        <file>res/right_arrow.png</file>
+        <file>res/left_arrow2.png</file>
+        <file>res/left_arrow.png</file>
+        <file>res/down.png</file>
+        <file>res/up.png</file>
+    </qresource>
+</RCC>

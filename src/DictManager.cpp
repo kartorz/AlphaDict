@@ -20,8 +20,9 @@ LookupTask::LookupTask(const string& input, int id, DictManager* dmgr)
  
 void LookupTask::doWork()
 {
-    iDictItem item = m_dict->lookup(m_input);
-    m_dmgr->onAddLookupResult(m_id, item);
+    DictItemList itemList;
+    m_dict->lookup(m_input, itemList);
+    m_dmgr->onAddLookupResult(m_id, itemList);        
 }
 
 void LookupTask::abort()
@@ -31,8 +32,8 @@ void LookupTask::abort()
 
 void LoadDictTask::doWork()
 {
-    if (DictManager::getReference().loadDict())
-        g_uiMessageQ.push(MSG_RESET_INDEXLIST);
+    DictManager::getReference().loadDict();
+    g_uiMessageQ.push(MSG_RESET_INDEXLIST);
 }
 
 DictManager& DictManager::getReference()
@@ -119,6 +120,7 @@ bool DictManager::loadDict(bool more)
                 m_dictOpen[m_dictTotal].dict = dict;
                 m_dictOpen[m_dictTotal].dictId = iter - nodeVec.begin();
                 m_dictTotal++;
+                g_log(LOG_DEBUG,"DictManager::loadDict(%s)\n", iter->path.c_str());
                 goto EXIT;
             }
         }
@@ -164,14 +166,14 @@ void DictManager::lookup(const string& input, int which)
     }
 }
 
-void DictManager::onAddLookupResult(int which, iDictItem& item)
+void DictManager::onAddLookupResult(int which, DictItemList& items)
 {
     if (!m_dictOpen[which].task->isAbort()) {
-        iDictItem* arg1 = new iDictItem();
-        *arg1 = item;
+        DictItemList* arg1 = new DictItemList();
+        *arg1 = items;
         int did = m_dictOpen[which].dictId;
-	    (*arg1).dictname = g_application.m_configure->m_dictNodes[did].name;
-        g_uiMessageQ.push(MSG_SET_DICTITEM, -1, (void *)arg1); /* UI should delete arg1 */
+	    (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
+        g_uiMessageQ.push(MSG_SET_DICTITEMS, -1, (void *)arg1); /* UI should delete arg1 */
         m_dictOpen[which].task = NULL; /* TaskManager will delete this pointer */
         //printf("{onAddLookupResult} %u\n", Util::getTimeMS());
     } else {
@@ -186,12 +188,12 @@ void DictManager::onAddLookupResult(int which, iDictItem& item)
     }
 }
 
-int DictManager::getIndexList(IndexList& indexList, int start, int end)
+int DictManager::getIndexList(IndexList& indexList, int start, int end, const string& startwith)
 {
     iDict* dict = m_dictOpen[0].dict;
     if (!dict)
         return 0;
-    return dict->getIndexList(indexList, start, end);
+    return dict->getIndexList(indexList, start, end, startwith);
 }
 
 int DictManager::indexListSize()
@@ -202,25 +204,29 @@ int DictManager::indexListSize()
     return dict->indexListSize();
 }
 
-void DictManager::onClick(int index, iIndexItem* item)
+void DictManager::onClick(int row, iIndexItem* item)
 {
-    iDictItem* arg1 = new iDictItem();
-    *arg1 = m_dictOpen[0].dict->onClick(index, item);
+    DictItemList* arg1 = new DictItemList();
+    arg1->push_back(m_dictOpen[0].dict->onClick(row, item));
     int did = m_dictOpen[0].dictId;
-    (*arg1).dictname = g_application.m_configure->m_dictNodes[did].name;
-    g_uiMessageQ.push(MSG_SET_DICTITEM, -1, (void *)arg1);
+    (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
+    g_uiMessageQ.push(MSG_SET_DICTITEMS, -1, (void *)arg1);
 }
 
 void DictManager::setDictSrcLan(string& srclan)
 {
     if (g_application.m_configure->m_srcLan.compare(srclan) != 0) {
         g_application.m_configure->writeSrcLan(srclan);
+        //printf("setDictSrcLan %s \n", srclan.c_str());
         if (m_dictTotal > 0) {
             int did = m_dictOpen[0].dictId;
             string& srclan = g_application.m_configure->m_dictNodes[did].srclan;
             string& detlan = g_application.m_configure->m_dictNodes[did].detlan;
-            if (!matchDict(srclan, detlan))
-                DictManager::getReference().reloadDict();
+            //printf("setDictSrcLan %d %s, %s \n", did, srclan.c_str(), detlan.c_str());
+            if (did != 0 || !matchDict(srclan, detlan))
+                reloadDict();
+        } else {
+            reloadDict();        
         }
     }
 }
@@ -229,12 +235,15 @@ void DictManager::setDictDetLan(string& detlan)
 {
     if (g_application.m_configure->m_detLan.compare(detlan) != 0) {
         g_application.m_configure->writeDetLan(detlan);
+        //printf("setDictDetLan %s \n", detlan.c_str());
         if (m_dictTotal > 0) {
             int did = m_dictOpen[0].dictId;
             string& srclan = g_application.m_configure->m_dictNodes[did].srclan;
             string& detlan = g_application.m_configure->m_dictNodes[did].detlan;
-            if (!matchDict(srclan, detlan))
+            if (did!=0 || !matchDict(srclan, detlan))
                 DictManager::getReference().reloadDict();
+        }else {
+            reloadDict();        
         }
     }
 }
@@ -243,22 +252,30 @@ void DictManager::setDictDetLan(string& detlan)
 bool DictManager::matchDict(const string& dictSrcLan, const string& dictDetLan)
 {
     Configure *config = g_application.m_configure;
+    bool src_match = false;
+    bool det_match = false;
 
-    if (dictSrcLan == "any") {
-        if (dictDetLan == "any")
-            return true;
-        if (dictDetLan == config->m_detLan)
-            return true;
-        return false;
-    } else {
-        if (dictSrcLan != config->m_srcLan)
-            return false;
-        if (dictDetLan == "any")
-            return true;
-        if (dictDetLan == config->m_detLan)
-            return true;
-        return false;
+    if (dictSrcLan == "any")
+        src_match = true;
+    else {
+        if (config->m_srcLan == "any")
+            src_match = true;
+        else if (dictSrcLan == config->m_srcLan)
+            src_match = true;
     }
+
+    if (dictDetLan == "any")
+        det_match = true;
+    else {
+        if (config->m_detLan == "any")
+            det_match = true;
+        else if (dictDetLan == config->m_detLan)
+            det_match = true;
+    }
+
+    if (src_match && det_match)
+        return true;
+    return false;
 }
 
 iDict* DictManager::createHandleByDict(const string dictpath)

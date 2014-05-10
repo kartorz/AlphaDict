@@ -46,16 +46,16 @@ private slots:
     void on_pgupToolButton1_clicked();
 
     void on_pgupToolButton2_clicked();
-
-    void on_dictListWidget_itemChanged(QListWidgetItem *item);
+    
+    void on_dictListWidget_clicked(const QModelIndex &index);
 
     void on_dictUpToolButton_clicked();
 
     void on_dictDownToolButton_clicked();
 
-    void onAppExit();
+    void on_indexLineEdit_editingFinished();
 
-    void on_dictListWidget_clicked(const QModelIndex &index);
+    void onAppExit();
 
     void onActionSettingPageAdded();
     void onActionVcbularyPageAdded();

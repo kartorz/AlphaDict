@@ -38,7 +38,7 @@ public:
     void writeXml();
 
     vector<string> m_languages;
-    string m_execDir;
+    string m_dataDir;
     string m_homeDir;
     string m_configFile;
     string m_srcLan;
@@ -53,8 +53,8 @@ private:
     string dictItemName(int item);
 
     XMLDocument m_doc;
-    
     bool m_dirty;
+    SpinCriticalSection m_cs;
 };
 
 #endif

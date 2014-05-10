@@ -3,7 +3,7 @@
  *	@Authors: LiQiong Lee
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
- * (See accompanying file LICENSE.txt or copy at
+ * (See accompanying file ../../LICENSE.txt or copy at
  * http://www.gnu.org/licenses/gpl.txt)
  *
  */
@@ -13,10 +13,9 @@
 #include "tree_node.hpp"
 
 namespace ktree {
-
 template <typename T>
 class kary_tree {
-	typedef typename tree_node<T>::treeNodePtr treeNodePtr;
+	typedef typename tree_node<T>::treeNodePtr  treeNodePtr;
 public:
 	kary_tree(const T& d)
 	{

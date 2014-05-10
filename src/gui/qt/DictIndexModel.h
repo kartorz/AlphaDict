@@ -22,13 +22,14 @@ public:
     iIndexItem* item(int row);
 
 public slots:
-    void onResetIndexList();
+    void onResetIndexList(string startwith="");
     QModelIndex updateIndexList(int pg);
 
 private:
     IndexList  *m_indexList;
     int m_indexStart;
 	int m_indexEnd;
+    string m_indexPrefix;
     MutexCriticalSection m_cs;
 };
 

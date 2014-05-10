@@ -11,11 +11,12 @@ if __name__ == '__main__':
     header = F_DICT.read(BLOCK_SIZE)
     print "== deump header =="
     ## L is 8-bytes on 64-bit os.
-    loc_chrindex = struct.unpack("<L",header[133:137])[0]
-    loc_strindex = struct.unpack("<L",header[137:141])[0]
-    loc_data     = struct.unpack("<L",header[141:145])[0]
+    loc_chrindex = struct.unpack("<B",header[133])[0];
+    loc_strindex = struct.unpack("<L",header[134:138])[0]
+    loc_data     = struct.unpack("<L",header[138:142])[0]
     print "loc_index:(%d, %d, %d)" %(loc_chrindex, loc_strindex, loc_data)
-
+    flags = struct.unpack("<B",header[172])[0];
+    print "flags:(%x)" %(flags)
     print "== char index =="
     F_DICT.seek(BLOCK_SIZE*(loc_chrindex-1))
     nbytes_charinx = BLOCK_SIZE*(loc_strindex - loc_chrindex)
@@ -41,7 +42,11 @@ if __name__ == '__main__':
         loc = struct.unpack("<L",buf_strinx[start:start+4])[0]
         strlen = struct.unpack("<B",buf_strinx[start+4:start+5])[0]
         strinx = buf_strinx[start+5:start+5+strlen*4]
-        print "char_index: %x:(%x, %s)" %(start, loc, strinx.decode("utf_32_le"))
+        if strlen > 0:
+            if strinx[0] == 0:
+                print "string index: 0"
+            else:
+                print "string_index: %x:(%x, %s)" %(start, loc, strinx)
        
         start += 5 + strlen*4
         if strlen == 0:

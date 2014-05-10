@@ -1,1 +1,1 @@
-SOURCES_ALCONVERT += convert/convert.cpp
+SRCS_ALCONVERT += convert/convert.cpp

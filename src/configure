@@ -1,0 +1,724 @@
+#! /bin/sh
+# 
+# Copyright (C) 2014 alpha-team
+#
+# We use compiling framework of mplayer that is a popular open source software,
+# Here is the website: http://www.mplayerhq.hu/
+#
+# Original version (C) 2000 Pontscho/fresh!mindworkz
+#                      pontscho@makacs.poliod.hu
+#
+# This configure script is *not* autoconf-based and has different semantics.
+# It attempts to autodetect all settings and options where possible. It is
+# possible to override autodetection with the --enable-option/--disable-option
+# command line parameters.  --enable-option forces the option on skipping
+# autodetection. Yes, this means that compilation may fail and yes, this is not
+# how autoconf-based configure scripts behave.
+#
+# configure generates a series of configuration files:
+#  - config.h contains #defines that are used in the C code.
+#  - config.mak is included from the Makefiles.
+#
+# If you want to add a new check for $feature, look at the existing checks
+# and try to use helper functions where you can.
+#
+# Furthermore you need to add the variable _feature to the list of default
+# settings and set it to one of yes/no/auto. Also add appropriate
+# --enable-feature/--disable-feature command line options.
+# The results of the check should be written to config.h and config.mak
+# at the end of this script. The variable names used for this should be
+# uniform, i.e. if the option is named 'feature':
+#
+# _feature     : should have a value of yes/no/auto
+# def_feature  : '#define ... 1' or '#undef ...' for conditional compilation
+# ld_feature   : '-L/path/dir -lfeature' GCC options
+#
+#############################################################################
+
+# Prevent locale nonsense from breaking basic text processing utilities
+export LC_ALL=C
+
+# Store the configure line that was used
+configuration="$*"
+
+# utility functions
+tolower() {
+  tr '[A-Z]' '[a-z]'
+}
+
+toupper() {
+  tr '[a-z]' '[A-Z]'
+}
+
+# Prefer these macros to full length text !
+# These macros only return an error code - NO display is done
+compile_check() {
+  source="$1"
+  shift
+  echo >> "$TMPLOG"
+  cat "$source" >> "$TMPLOG"
+  echo >> "$TMPLOG"
+  echo "$_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS $source $extra_cflags $ld_static $extra_ldflags $libs_alphadict  -o $TMPEXE $@" >> "$TMPLOG"
+  rm -f "$TMPEXE"
+  $_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS "$source" $extra_cflags $ld_static $extra_ldflags $libs_alphadict  -o "$TMPEXE" "$@"  >> "$TMPLOG" 2>&1
+  TMPRES="$?"
+  echo >> "$TMPLOG"
+  echo >> "$TMPLOG"
+  return "$TMPRES"
+}
+
+cc_check() {
+  compile_check $TMPC $@
+}
+
+cxx_check() {
+  compile_check $TMPCPP $@ -lstdc++
+}
+
+cpp_condition_check() {
+  inc=""
+  if test -n "$1" ; then
+    inc="#include <$1>"
+  fi
+  cat > $TMPC << EOF
+$inc
+#if !($2)
+#error condition not true: $2
+#endif
+int main(void) { return 0; }
+EOF
+  shift 2
+  compile_check $TMPC $@
+}
+
+cflag_check() {
+  cat > $TMPC << EOF
+int main(void) { return 0; }
+EOF
+  compile_check $TMPC $@
+}
+
+header_check() {
+  cat > $TMPC << EOF
+#include <$1>
+int main(void) { return 0; }
+EOF
+  shift
+  compile_check $TMPC $@
+}
+
+return_check() {
+  cat > $TMPC << EOF
+#include <$1>
+int main(void) { return $2; }
+EOF
+  shift 2
+  compile_check $TMPC $@
+}
+
+statement_check() {
+  cat > $TMPC << EOF
+#include <$1>
+int main(void) { $2; return 0; }
+EOF
+  shift
+  shift
+  compile_check $TMPC $@
+}
+
+define_statement_check() {
+  cat > $TMPC << EOF
+#define $1
+#include <$2>
+int main(void) { $3; return 0; }
+EOF
+  shift 3
+  compile_check $TMPC $@
+}
+
+return_statement_check() {
+  cat > $TMPC << EOF
+#include <$1>
+int main(void) { $2; return $3; }
+EOF
+  shift 3
+  compile_check $TMPC $@
+}
+
+inline_asm_check() {
+  cat > $TMPC << EOF
+int main(void) { __asm__ volatile ($1); return 0; }
+EOF
+  shift
+  compile_check $TMPC $@
+}
+
+# The following checks are special and should only be used with broken and
+# non-self-sufficient headers that do not include all of their dependencies.
+
+header_check_broken() {
+  cat > $TMPC << EOF
+#include <$1>
+#include <$2>
+int main(void) { return 0; }
+EOF
+  shift
+  shift
+  compile_check $TMPC $@
+}
+
+statement_check_broken() {
+  cat > $TMPC << EOF
+#include <$1>
+#include <$2>
+int main(void) { $3; return 0; }
+EOF
+  shift 3
+  compile_check $TMPC $@
+}
+
+yasm_check() {
+  echo >> "$TMPLOG"
+  cat "$TMPS" >> "$TMPLOG"
+  echo >> "$TMPLOG"
+  echo "$_yasm $YASMFLAGS -o $TMPEXE $TMPS $@" >> "$TMPLOG"
+  rm -f "$TMPEXE"
+  $_yasm $YASMFLAGS -o "$TMPEXE" "$TMPS" "$@" >> "$TMPLOG" 2>&1
+  TMPRES="$?"
+  echo >> "$TMPLOG"
+  echo >> "$TMPLOG"
+  return "$TMPRES"
+}
+
+tmp_run() {
+  "$TMPEXE" >> "$TMPLOG" 2>&1
+}
+
+# Display error message, flush temporary file, exit.
+die () {
+  echo
+  echo "Error: $@" >&2
+  echo >&2
+  rm -f "$TMPEXE" "$TMPC" "$TMPS" "$TMPCPP"
+  echo "Check \"$TMPLOG\" if you do not understand why it failed."
+  exit 1
+}
+
+# Use this before starting a check
+echocheck() {
+  echo "============ Checking for $@ ============" >> "$TMPLOG"
+  echo ${_echo_n} "Checking for $@ ... ${_echo_c}"
+}
+
+# Use this to echo the results of a check
+echores() {
+  if test "$res_comment" ; then
+    res_comment="($res_comment)"
+  fi
+  echo "Result is: $@ $res_comment" >> "$TMPLOG"
+  echo "##########################################" >> "$TMPLOG"
+  echo "" >> "$TMPLOG"
+  echo "$@ $res_comment"
+  res_comment=""
+}
+
+# Check how echo works in this /bin/sh
+case $(echo -n) in
+  -n)   _echo_n=        _echo_c='\c'    ;;      # SysV echo
+   *)   _echo_n='-n '   _echo_c=        ;;      # BSD echo
+esac
+
+show_help(){
+cat << EOF
+Usage: $0 [OPTIONS]...
+
+Configuration:
+  -h, --help             display this help and exit
+
+Installation directories:
+  --prefix=DIR           prefix directory for installation [/usr/local]
+  --bindir=DIR           directory for installing binaries [PREFIX/bin]
+  --datadir=DIR          directory for installing machine independent
+                         data files (resources, dicts, etc) [PREFIX/share/alphadict]
+
+Optional features:
+  --enable-little-endian force byte order to big-endian  [autodetect]
+  --enable-qt5           force using QT5 for the GUI     [autodetect]
+  --enable-debug         compile a debugging application [disable]
+
+Miscellaneous options:
+  --with-install=PATH    path to a custom install program [install]
+  --with-qttool=PATH     Path to QT tools: moc uic rss, etc.[autodetect]
+
+Use these options if autodetection fails:
+  --extra-cflags=FLAGS   extra CFLAGS
+  --extra-ldflags=FLAGS  extra LDFLAGS
+  --extra-libs=FLAGS     extra linker flags
+
+This configure script is NOT autoconf-based, even though its output is similar.
+It will try to autodetect all configuration options. If you --enable an option
+it will be forcefully turned on, skipping autodetection. This can break
+compilation, so you need to know what you are doing.
+EOF
+exit 0
+} # show_help
+
+_prefix=/usr/local
+_qttooldir=auto
+_qt5=auto
+_little_endian=auto
+_debug=no
+_cc=cc
+_ar=ar
+test "$CC" && _cc="$CC"
+_as=auto
+_nm=auto
+_install=install
+
+option_value(){
+  echo $(echo $* | cut -d '=' -f 2-)
+}
+
+option_value_uc(){
+  echo $(option_value $1 | toupper)
+}
+
+for ac_option do
+  case "$ac_option" in
+  --help|-help|-h)
+    show_help
+    ;;
+  --prefix=*)
+    _prefix=$(option_value $ac_option)
+    ;;
+  --datadir=*)
+    _datadir=$(option_value $ac_option)
+    ;;
+  --bindir=*)
+    _bindir=$(option_value $ac_option)
+    ;;
+  --with-qttool=*)
+    _qttooldir=$(option_value $ac_option)
+    ;;
+  --with-install=*)
+    _install=$(option_value $ac_option)
+    ;;
+  --extra-cflags=*)
+    extra_cflags=$(option_value $ac_option)
+    ;;
+  --extra-ldflags=*)
+    extra_ldflags=$(option_value $ac_option)
+    ;;
+  --extra-libs=*)
+    extra_libs=$(option_value $ac_option)
+    ;;
+  --enable-little-endian)  _little_endian=yes ;;
+  --disable-little-endian) _little_endian=no  ;;
+  --enable-qt5)         _qt5=yes        ;;
+  --disable-qt5)        _qt5=no         ;;
+  --enable-debug)      _debug=yes     ;;
+      
+  *)
+    echo "Unknown parameter: $ac_option"
+    exit 1
+    ;;
+
+  esac
+done
+
+test -z "$_bindir"  && _bindir="$_prefix/bin"
+test -z "$_datadir" && _datadir="$_prefix/share/alphadict"
+
+for tmpdir in "$TMPDIR" "$TEMPDIR" "/tmp" ; do
+  test "$tmpdir" && break
+done
+
+alpha_tmpdir="$tmpdir/alpha-configure-$RANDOM-$$"
+mkdir $alpha_tmpdir || die "Unable to create tmpdir."
+
+cleanup() {
+  rm -rf "$alpha_tmpdir"
+}
+
+trap cleanup EXIT
+
+TMPLOG="config.log"
+TMPC="$alpha_tmpdir/tmp.c"
+TMPCPP="$alpha_tmpdir/tmp.cpp"
+TMPH="$alpha_tmpdir/tmp.h"
+TMPS="$alpha_tmpdir/tmp.S"
+# We will update this later once we know the executable suffix
+TMPEXE="$alpha_tmpdir/tmp"
+
+rm -f "$TMPLOG"
+echo configuration: $configuration > "$TMPLOG"
+echo >> "$TMPLOG"
+
+for _cc in gcc cc ; do
+  cc_name_tmp=$($_cc -v 2>&1 | tail -n 1 | cut -d ' ' -f 1)
+  if test "$cc_name_tmp" = "gcc"; then
+    cc_name=$cc_name_tmp
+    echocheck "$_cc version"
+    cc_vendor=gnu
+    cc_version=$($_cc -dumpversion 2>&1)
+    case $cc_version in
+      2.96*)
+        cc_fail=yes
+        ;;
+      *)
+        _cc_major=$(echo $cc_version | cut -d '.' -f 1)
+        _cc_minor=$(echo $cc_version | cut -d '.' -f 2)
+        _cc_mini=$(echo $cc_version | cut -d '.' -f 3)
+        ;;
+    esac
+    echores "$cc_version"
+    break
+  fi
+done
+test "$cc_fail" = yes && die "unsupported compiler version"
+
+# Determine our OS name and CPU architecture
+if test -z "$_target" ; then
+  # OS name
+  system_name=$(uname -s 2>&1)
+  case "$system_name" in
+  Linux|FreeBSD|NetBSD|OpenBSD|DragonFly|BSD/OS|Darwin|SunOS|QNX|GNU|MorphOS|AIX|AmigaOS|Haiku)
+    ;;
+  IRIX*)
+    system_name=IRIX
+    ;;
+  GNU/kFreeBSD)
+    system_name=FreeBSD
+    ;;
+  HP-UX*)
+    system_name=HP-UX
+    ;;
+  [cC][yY][gG][wW][iI][nN]*)
+    system_name=CYGWIN
+    ;;
+  MINGW32*)
+    system_name=MINGW32
+    ;;
+  OS/2*)
+    system_name=OS/2
+    ;;
+  *)
+    system_name="$system_name-UNKNOWN"
+    ;;
+  esac
+  cpp_condition_check '' 'defined(__MINGW32__)' && system_name=MINGW32
+
+
+  # host's CPU/instruction set
+  set_host_arch() {
+  case "$1" in
+      x86_64|amd64|i[3-9]86*|i86pc|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686) host_arch=i386 ;;
+      ia64) host_arch=ia64 ;;
+      macppc|ppc*|Power*) host_arch=ppc ;;
+      alpha) host_arch=alpha ;;
+      sun4*|sparc*) host_arch=sparc ;;
+      parisc*|hppa*|9000*) host_arch=hppa ;;
+      arm*|zaurus|cats) host_arch=arm ;;
+      sh3|sh4|sh4a) host_arch=sh ;;
+      s390) host_arch=s390 ;;
+      s390x) host_arch=s390x ;;
+      *mips*) host_arch=mips ;;
+      nios2) host_arch=nios2 ;;
+      vax) host_arch=vax ;;
+      xtensa*) host_arch=xtensa ;;
+      *) host_arch=UNKNOWN ;;
+  esac
+  }
+  set_host_arch "$(uname -m 2>&1)"
+  if test "$host_arch" = UNKNOWN ; then
+    set_host_arch "$(uname -p 2>&1)"
+  fi
+else # if test -z "$_target"
+  for component in 3 2; do
+    system_name=$(echo $_target | cut -d '-' -f $component)
+    case "$(echo $system_name | tolower)" in
+      linux) system_name=Linux ;;
+      freebsd) system_name=FreeBSD ;;
+      gnu/kfreebsd) system_name=FreeBSD ;;
+      netbsd) system_name=NetBSD ;;
+      bsd/os) system_name=BSD/OS ;;
+      openbsd) system_name=OpenBSD ;;
+      dragonfly) system_name=DragonFly ;;
+      sunos) system_name=SunOS ;;
+      qnx) system_name=QNX ;;
+      morphos) system_name=MorphOS ;;
+      amigaos) system_name=AmigaOS ;;
+      mingw32*) system_name=MINGW32 ;;
+      wine) system_name=Wine ;;
+    esac
+  done
+  # We need to convert underscores so that values like k6-2 and pentium-mmx can be passed
+  host_arch=$(echo $_target | cut -d '-' -f 1)
+  if test $(echo $host_arch) != "x86_64" ; then
+    host_arch=$(echo $host_arch | tr '_' '-')
+  fi
+fi
+
+# endian testing
+echocheck "byte order"
+if test "$_little_endian" = auto ; then
+  cat > $TMPC <<EOF
+short ascii_name[] = {
+  'L' << 8 | 'A', 'H' << 8 | 'P', 0 << 8 | 'A' };
+int main(void) { return (long)ascii_name; }
+EOF
+  if cc_check ; then
+    # stdin is used to make "strings" not try something clever like
+    # parse executable section headers (and possibly fail in the process)
+
+    if strings < $TMPEXE | grep -q -l ALPH ; then
+      _little_endian=yes
+    else
+      _little_endian=no
+    fi
+  else
+    echo ${_echo_n} "failed to autodetect byte order, defaulting to ${_echo_c}"
+  fi
+fi
+if test "$_little_endian" = yes ; then
+  _byte_order='little-endian'
+  def_littleendian='#define HAVE_LITTLEENDIAN 1'
+else
+  _byte_order='big-endian'
+  def_littleendian='#define HAVE_LITTLEENDIAN 0'
+fi
+echores "$_byte_order"
+
+_install_strip="-s"
+if test -z "$CFLAGS" ; then
+  CFLAGS="-MMD -fPIC $CFLAGS"
+  if test $_debug = 'yes' ; then
+    CFLAGS="-g -O0 $CFLAGS"
+    def_debug='#define AL_DEBUG 1'
+  else
+    CFLAGS="-O0 $CFLAGS"
+    def_debug='#undef AL_DEBUG'
+    _install_strip=
+  fi
+else
+  warn_cflags=yes
+fi
+
+if test $system_name = Linux ; then
+  CFLAGS="$CFLAGS -D_LINUX"
+fi
+
+#if test "$cc_vendor" = "gnu" ; then
+#  cflag_check -std=gnu99 && WARN_CFLAGS="-std=gnu99 $WARN_CFLAGS"
+#fi
+extra_ldflags="-lpthread -lrt $extra_ldflags"
+if test -n "$LDFLAGS" ; then
+  extra_ldflags="$extra_ldflags $LDFLAGS"
+  warn_cflags=yes
+fi
+if test -n "$CPPFLAGS" ; then
+  extra_cflags="$extra_cflags $CPPFLAGS"
+  warn_cflags=yes
+fi
+
+echocheck "boost, boost_filesystem"
+_boost=no
+ld_tmp="-lboost_system  -lboost_filesystem"
+cat > $TMPCPP <<EOF
+#include <boost/lexical_cast.hpp>
+//#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+int main(void) {
+int i = boost::lexical_cast<int>("0"); 
+boost::filesystem::path p("test");
+return 0;
+}
+EOF
+cxx_check $ld_tmp  && 
+  extra_ldflags="$extra_ldflags -lboost_system  -lboost_filesystem" _boost=yes
+echores "$_boost"
+
+echocheck "QT5 header"
+  _qt5_headers="no"
+  inc_tmp=""
+  ld_tmp=""
+  res_comment="check if the qt5 dev(el) packages are installed"
+  for I in $(echo $extra_cflags | sed s/-I//g) /usr/include/qt5; do
+    if test -f "$I/QtWidgets/QMainWindow" ; then
+        inc_tmp="-I$I -I$I/QtCore -I$I/QtGui -I$I/QtWidgets"
+        res_comment=""
+        _qt5_headers="yes"
+    fi
+    break
+  done
+echores "$_qt5_headers"
+
+echocheck "QT5 libraries"
+  if test "$_qt5" = "auto" ; then
+    _qt5="no";
+    if test "$_qt5_headers" = "yes" ; then
+      for I in "" /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
+        if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
+          def_qt5='#define CONFIG_QT5 1'
+          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
+          libs_alphadict="$libs_alphadict $ld_tmp"
+          extra_cflags="$inc_tmp $extra_cflags"
+          _qt5="yes"
+          break
+        fi
+      done
+    fi
+  fi
+echores "$_qt5"
+
+echocheck "QT tools"
+if test $_qttooldir = "auto" ; then
+  if test $_qt5 = "yes" ; then
+    for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
+      if test -f "$I/qt5/bin/moc" ; then
+        _qttooldir=$I/qt5/bin
+        break 
+      fi
+      if test -f "$I/qt5/bin/moc" ; then
+        _qttooldir=$I/qt4/bin
+        break
+      fi
+    done
+
+    #if test -z "$_moc" ; then    
+    #  ver_tmp=$(moc -v 2>&1 | tail -n 1 | cut -d ' ' -f 6)
+    #  if test $ver_tmp != "" ; then
+    #    _moc=moc
+    #    _uic=uic
+    #    _rcc=rcc
+    #  fi
+    #fi
+  fi
+  echores "$_qttooldir"
+fi
+
+#############################################################################
+echo "Creating config.mak"
+cat > config.mak << EOF
+# -------- Generated by configure -----------
+
+# Ensure that locale settings do not interfere with shell commands.
+export LC_ALL = C
+
+CONFIGURATION = $configuration
+
+prefix  = \$(DESTDIR)$_prefix
+BINDIR  = \$(DESTDIR)$_bindir
+DATADIR = \$(DESTDIR)$_datadir
+
+AR      = $_ar
+ARFLAGS = rc
+AR_O    = \$@
+AS      = $_cc
+CC      = $_cc
+CXX     = $_cc
+HOST_CC = $_host_cc
+INSTALL = $_install
+INSTALLSTRIP = $_install_strip
+
+TOPDIR  := \$(abspath .)
+
+CFLAGS   = $WARNFLAGS $WARN_CFLAGS $CFLAGS $extra_cflags
+CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/dict  -I\$(TOPDIR)/lib -I\$(TOPDIR)/gui/qt
+CXXFLAGS = $WARNFLAGS $CXXFLAGS $extra_cxxflags
+CC_DEPFLAGS = $DEPFLAGS
+
+EXTRALIBS          = $extra_ldflags $ld_static $timer_libs $extra_libs
+EXTRALIBS_ALPHADICT  = $libs_alphadict
+
+DEBUG=$_debug
+QT5=$_qt5
+
+MOC="$_qttooldir/moc"
+UIC="$_qttooldir/uic"
+RCC="$_qttooldir/rcc"
+EOF
+
+
+echo "Creating config.h"
+cat > $TMPH << EOF
+/*----------------------------------------------------------------------------
+** This file has been automatically generated by configure any changes in it
+** will be lost when you run configure again.
+** Instead of modifying definitions here, use the --enable/--disable options
+** of the configure script! See ./configure --help for details.
+*---------------------------------------------------------------------------*/
+
+#ifndef ALPHADICT_CONFIG_H
+#define ALPHADICT_CONFIG_H
+
+#define MAX_WORK_THREAD 2
+#define APP_NAME  "AlphaDict"
+
+#define BINDIR   "$_bindir"
+#define DATADIR  "$_datadir"
+
+$def_debug
+$def_qt5
+$def_littleendian
+
+#endif /* ALPHADICT_CONFIG_H */
+EOF
+
+# Do not overwrite an unchanged config.h to avoid superfluous rebuilds.
+cmp -s "$TMPH" config.h || mv -f "$TMPH" config.h
+
+#############################################################################
+
+cat << EOF
+
+Config files successfully generated by ./configure $configuration !
+
+  Install prefix: $_prefix
+  Byte order: $_byte_order
+  debug: $_debug
+
+'config.h' and 'config.mak' contain your configuration options.
+Note: If you alter theses files (for instance CFLAGS) AlphaDict may no longer
+      compile *** DO NOT REPORT BUGS if you tweak these files ***
+
+'make' will now compile AlphaDict  and 'make install' will install it.
+Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
+
+EOF
+
+cat <<EOF
+Check $TMPLOG if you wonder why an autodetection failed (make sure
+development headers/packages are installed).
+
+NOTE: The --enable-* parameters unconditionally force options on, completely
+skipping autodetection. This behavior is unlike what you may be used to from
+autoconf-based configure scripts that can decide to override you. This greater
+level of control comes at a price. You may have to provide the correct compiler
+and linker flags yourself.
+If you used one of these options (except --enable-qt5 and similar ones that
+turn on gui features) and experience a compilation or linking failure,
+make sure you have passed the necessary compiler/linker flags to configure.
+
+If you suspect a bug, please read README text.
+
+EOF
+
+
+if test "$warn_cflags" = yes; then
+  cat <<EOF
+
+AlphaDict compilation will use the CPPFLAGS/CFLAGS/LDFLAGS/YASMFLAGS set by you,
+but:
+
+    *** ***  DO NOT REPORT BUGS IF IT DOES NOT COMPILE/WORK!  *** ***
+
+It is strongly recommended to let AlphaDict choose the correct *FLAGS!
+To do so, remove *FLAGS from the environment an re-run configure.
+You can use --extra-*flags to add custom flags if necessary.
+
+EOF
+fi
+
+# Last move:
+cleanup
