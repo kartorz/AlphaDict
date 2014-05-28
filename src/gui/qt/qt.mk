@@ -1,3 +1,4 @@
+
 gui/qt/moc_mainwindow.cpp: gui/qt/mainwindow.h
 	$(MOC) $(DEFINES) $(INCLUDES) gui/qt/mainwindow.h -o gui/qt/moc_mainwindow.cpp
 
@@ -6,6 +7,9 @@ gui/qt/moc_QtMessager.cpp: gui/qt/QtMessager.h
 
 gui/qt/moc_DictIndexModel.cpp: gui/qt/DictIndexModel.h
 	$(MOC) $(DEFINES) $(INCLUDES) gui/qt/DictIndexModel.h -o gui/qt/moc_DictIndexModel.cpp
+
+gui/qt/moc_VBookModel.cpp: gui/qt/VBookModel.h
+	$(MOC) $(DEFINES) $(INCLUDES) gui/qt/VBookModel.h -o gui/qt/moc_VBookModel.cpp
 
 gui/qt/ui_mainwindow.h: gui/qt/mainwindow.ui
 	$(UIC) gui/qt/mainwindow.ui -o gui/qt/ui_mainwindow.h

@@ -4,13 +4,16 @@
  *     
  * 
  */
+# ifdef WIN32
+#include <Windows.h>
+# endif
+#include <wchar.h>
 
 #include "AldictDocument.h"
 #include "tinyxml2/tinyxml2.h"
 #include "Log.h"
+#include "CharUtil.h"
 #include "Util.h"
-
-#include <wchar.h>
 
 #define CACHE_SLICE_MAX  400  /* 100k */
 
@@ -40,7 +43,13 @@ AldictDocument::~AldictDocument()
 
 bool AldictDocument::loadDict(const std::string& dictpath)
 {
+#ifdef WIN32
+   wchar_t *wdictname = CharUtil::utf8srtowcs(dictpath.c_str());
+   if (wdictname != NULL)
+       m_dictFile = _wfopen(wdictname, L"rb"); 
+#else
     m_dictFile = fopen(dictpath.c_str(),"rb");
+#endif
 	if (m_dictFile == NULL) {
 	    g_log.e("Can't open dict file:(%s)", dictpath.c_str());
 		return false;
@@ -55,7 +64,7 @@ bool AldictDocument::loadDict(const std::string& dictpath)
 
 bool AldictDocument::readHeader()
 {
-	ReadFile read;
+	util::ReadFile read;
 	size_t size = read(m_dictFile, &m_header, sizeof(struct aldict_header));
     if (size < sizeof(struct aldict_header))
         return false;
@@ -72,8 +81,8 @@ bool AldictDocument::readHeader()
 
 void AldictDocument::readChrIndex()
 {
-	ReadFile read;
-	Malloc maclloc_t;
+	util::ReadFile read;
+	util::Malloc maclloc_t;
 	address_t len = (m_strIndexLoc - m_chrIndexLoc)*ALD_BLOCK;
 	void* chrblock = maclloc_t(len);
 
@@ -84,7 +93,7 @@ void AldictDocument::readChrIndex()
 	struct aldict_charindex rootIndex;
 	rootIndex = *((struct aldict_charindex*)chrblock);
     m_indexTree = new kary_tree2<aldict_charindex>(rootIndex);
-    if (len <= MEM_CHARINX_MAX) {
+    if (true/*len <= MEM_CHARINX_MAX*/) {
 	    loadIndexTree(m_indexTree->root(), chrblock, len);
     } else {
         // Todo: Loading a part of index character.
@@ -140,10 +149,10 @@ bool AldictDocument::lookup(const string& word, vector<struct aldict_dataitem>& 
 }
 
 int AldictDocument::bsearch(tree_node<aldict_charindex>::treeNodePtr parent,
-                            wchar_t key, int min, int max)
+                            u4char_t key, int min, int max)
 {
     int mid = (min + max) / 2;
-    wchar_t chr = ald_read_u32(parent->child(mid)->value().wchr);
+    u32 chr = ald_read_u32(parent->child(mid)->value().wchr);
     //printf("bsearch mid(%d), min(%d), max(%d): %d-->%d\n", mid, min, max, chr, key);
     if (min == max) {
         if (chr == key)
@@ -169,33 +178,33 @@ bool AldictDocument::lookup(char *strkey, tree_node<aldict_charindex>::treeNodeP
 {
     int remain = strlen(strkey); /* for lookup candidate, mbrtowc_r will remove some chars */
     /* 'strkey' will be modified, some chars will be removed */
-	const wchar_t key = Util::mbrtowc_r(&strkey);
+    const u4char_t key = CharUtil::utf8byteToUCS4Char((const char**)&strkey);
     //printf("lookup, %lc\n", key);
     int cid = bsearch(parent, key, 0, parent->children().size()-1);
 	if (cid != -1) {
-		if (strlen(strkey) > 0) {
-			if (parent->child(cid)->children().size() > 0) {
-			    return lookup(strkey, (*parent)[cid], lookupStat);
-		    } else {
-                struct aldict_charindex chrInx = parent->child(cid)->value();
-				address_t loc = ald_read_u32(chrInx.location);
-				int len = ald_read_u16(chrInx.len_content);
-				if ((loc & F_LOCSTRINX) == F_LOCSTRINX) {
-				    if (lookup(strkey, loc & (~F_LOCSTRINX), len, lookupStat))
-                        return true;
+	    if (strlen(strkey) > 0) {
+	        if (parent->child(cid)->children().size() > 0) {
+                    return lookup(strkey, (*parent)[cid], lookupStat);
+		} else {
+                    struct aldict_charindex chrInx = parent->child(cid)->value();
+		    address_t loc = ald_read_u32(chrInx.location);
+		    int len = ald_read_u16(chrInx.len_content);
+		    if ((loc & F_LOCSTRINX) == F_LOCSTRINX) {
+	                if (lookup(strkey, loc & (~F_LOCSTRINX), len, lookupStat))
+                            return true;
 
-                    int len = lookupStat.advance.length() - strlen(strkey); /* it is not the same as 'remain' */
-                    lookupStat.advance = lookupStat.advance.substr(0, len);
-                    lookupStat.currentNode = (*parent)[cid];
-                    return false;
-				} else /* leaf node without a string index */  {
-                    int len = lookupStat.advance.length() - strlen(strkey);
-                    lookupStat.advance = lookupStat.advance.substr(0, len);
-                    lookupStat.currentNode = NULL;
-                    return false;
-                }
-		    }
-		} else { /* advance to the end of strkey */
+                        int len = lookupStat.advance.length() - strlen(strkey); /* it is not the same as 'remain' */
+                        lookupStat.advance = lookupStat.advance.substr(0, len);
+                        lookupStat.currentNode = (*parent)[cid];
+                        return false;
+		    } else /* leaf node without a string index */  {
+                        int len = lookupStat.advance.length() - strlen(strkey);
+                        lookupStat.advance = lookupStat.advance.substr(0, len);
+                        lookupStat.currentNode = NULL;
+                        return false;
+                    }
+	        }
+	} else { /* advance to the end of strkey */
             int csize = parent->child(cid)->children().size();
 		    if (csize > 0) {
                 /* Maybe, there are same indexs with different explantion. God, I hate this.*/
@@ -281,7 +290,7 @@ void AldictDocument::lookupCandidate(tree_node<aldict_charindex>::treeNodePtr pa
                                      string& header, IndexList& candidate)
 {
     if (parent != NULL) {
-        wchar_t index[INDEXARRY_LEN_MAX];
+        u4char_t index[INDEXARRY_LEN_MAX];
     	memset(index, L'\0', INDEXARRY_LEN_MAX);
         struct IndexStat stat;
         stat.start = 0;
@@ -304,7 +313,7 @@ struct aldict_dataitem AldictDocument::dataitem(address_t loc)
     struct aldict_dataitem dataItem;
 	memset(&dataItem, 0, sizeof(struct aldict_dataitem));
 	if (loc != ALD_INVALID_ADDR) {
-		ReadFile read;
+		util::ReadFile read;
     	fseek(m_dictFile, (m_dataLoc-1)*ALD_BLOCK+loc, SEEK_SET);
 
 		u8 *buf = (u8 *)read(m_dictFile, 1);
@@ -336,8 +345,8 @@ int AldictDocument::getIndexList(IndexList& indexList, int start, int end, const
     if (!m_indexTree)
         return 0;
 
-    wchar_t index[INDEXARRY_LEN_MAX];
-	memset(index, L'\0', INDEXARRY_LEN_MAX);
+    u4char_t index[INDEXARRY_LEN_MAX];
+    memset(index, L'\0', INDEXARRY_LEN_MAX);
     int index_star = 0;
     struct IndexStat stat;
     stat.start = start;
@@ -352,20 +361,21 @@ int AldictDocument::getIndexList(IndexList& indexList, int start, int end, const
         string prefix = startwith.substr(0, startwith.length()-remain);
         //printf("%s, %s, %d\n", startwith.c_str(), prefix.c_str(), remain);
         char* pkey = (char *)(prefix.c_str());
-        size_t len = mbsrtowcs(index, (const char **)(&pkey), INDEXARRY_LEN_MAX, NULL);
-        if (len != (size_t)-1) {
-                index_star = len;
-        } else {
-                return 0;
-        }
+        size_t u4len;
+        u4char_t* u4str = CharUtil::utf8StrToUcs4Str(pkey, &u4len);
+        if (u4len > 0) {
+            memcpy(index, u4str, sizeof(u4char_t)*u4len);
+            index_star = u4len;
+        }        
+        free((void *)u4str);
     }
 
     loadIndex(index, index_star, &stat, root, indexList);
-    return stat.number - stat.start;
+    return stat.number - stat.start; /* indexListSize use this feature.*/
 }
 
 /* @return : false -> abort */
-bool AldictDocument::loadIndex(wchar_t *str, int inx, struct IndexStat *stat,
+bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
                                tree_node<aldict_charindex>::treeNodePtr parent,
                                IndexList& indexList)
 {
@@ -389,11 +399,12 @@ bool AldictDocument::loadIndex(wchar_t *str, int inx, struct IndexStat *stat,
     string strparent;
     {
         str[inx] = L'\0';
-        char* pinx = Util::wcsrtombs_r(str);
+        char* pinx = CharUtil::ucs4StrToUTF8Str(str);
+        //char* pinx = Util::wcsrtombs_r(str);
         if (pinx == NULL) {
             g_log.e("{loadIndex} invalid wcstring\n");
             return false;
-        }    
+        }
         strparent = string(pinx);
         //printf("strparent %s\n", strparent.c_str());
         free(pinx);
@@ -480,13 +491,13 @@ AldictDocument::findTreeNode(char *strkey, tree_node<aldict_charindex>::treeNode
     *remain = strlen(strkey);
     if (*strkey != '\0') {
         /* 'strkey' will be modified, some chars will be removed */
-	    const wchar_t key = Util::mbrtowc_r(&strkey);
+	const u4char_t key = CharUtil::utf8byteToUCS4Char((const char**)&strkey);
 
         if (parent->children().size() > 0) {
             int i = bsearch(parent, key, 0, parent->children().size()-1);
             if (i != -1) {
 	        	struct aldict_charindex chrInx = parent->child(i)->value();
-	        	wchar_t chr = ald_read_u32(chrInx.wchr);
+	        	u4char_t chr = ald_read_u32(chrInx.wchr);
 	        	if (chr == key) {
                     return findTreeNode(strkey, (*parent)[i], remain);
 	        	}
@@ -500,7 +511,8 @@ void* AldictDocument::getBlock(int blk)
 {
     map<int, void*>::iterator iter = m_blkCache.find(blk);
     if(iter == m_blkCache.end()) {
-        ReadFile read;
+        MutexLock lock(m_cs);
+        util::ReadFile read;
         void *ptr = malloc(ALD_BLOCK);
         memset(ptr, 0, ALD_BLOCK);
         if (ptr != NULL) {
@@ -530,7 +542,13 @@ void AldictDocument::writeToXml(const std::string& path)
 
 bool AldictDocument::support(const string& dictname)
 {
+#ifdef WIN32
+   wchar_t *wdictname = CharUtil::utf8srtowcs(dictname.c_str());
+   if (wdictname != NULL)
+       m_dictFile = _wfopen(wdictname, L"rb"); 
+#else
    m_dictFile = fopen(dictname.c_str(),"rb");
+#endif
 	if (m_dictFile == NULL) {
 	    g_log.e("Can't open dict file:(%s)", dictname.c_str());
 		return false;

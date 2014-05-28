@@ -9,6 +9,9 @@
 
 MutexCriticalSection::MutexCriticalSection(bool re)
 {
+#ifdef WIN32
+    m_mutex = CreateMutex( NULL, FALSE, NULL);
+#else
 	pthread_mutexattr_t attr;
 	pthread_mutexattr_init(&attr);
 	if (re)
@@ -19,6 +22,7 @@ MutexCriticalSection::MutexCriticalSection(bool re)
 	pthread_mutex_init(&m_mutex, &attr);
 
 	pthread_mutexattr_destroy(&attr);
+#endif
 }
 
 

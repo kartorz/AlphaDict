@@ -8,16 +8,18 @@ class SysMessager: public Thread
 {
 public:
     SysMessager();
+    SysMessager(MessageQueue* queuq);
     virtual ~SysMessager();
     
     void processMessage();
+    MessageQueue* m_msgQ;
+
 protected:
     virtual void doWork();
     virtual void onStartup();
 
 private:
-    MessageQueue* m_msgQ;
-	bool m_bReloadDict;
+    bool m_bReloadDict;
 };
 
 

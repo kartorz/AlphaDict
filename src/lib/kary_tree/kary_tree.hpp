@@ -39,12 +39,32 @@ void erase(tree_node<T> *pTree)
   delete pTree;
 }
 
+#ifdef WIN32
 template <typename T>
 void remove(tree_node<T> *pTree)
 {
-	traverse(pTree, erase); 
+    if(!pTree) return;
+
+    if(!pTree->children().empty()) {
+        typename std::list<tree_node<T> *>::const_iterator iter;
+	const std::list<tree_node<T> *>& children = pTree->children();
+	for (iter = children.begin(); 
+             iter != children.end();
+	     ++iter) {
+             remove(*iter);
+	}
+    }
+  pTree->clear();
+  delete pTree;
 }
 
+#else
+template <typename T>
+void remove(tree_node<T> *pTree)
+{
+	traverse(pTree, erase);
+}
+#endif
 template <typename T>
 void traverse(tree_node<T> *pTree, void(*visit)(tree_node<T> *pTree))
 {

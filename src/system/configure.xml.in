@@ -2,19 +2,25 @@
 <configure>
   <!--
       Default dictionary directory are:
-          Linux/Unix: "/user/local/share/AlphaDict/dict/" and "~/.AlphaDict/dict"
-          Windows:
+          Linux/Unix: "/user/local/share/AlphaDict/dicts/"
+          Windows: "installing dir/dicts"
   -->
   <dir></dir>
   <srclan>any</srclan>
   <detlan>any</detlan>
   <dict>
     <!--
-      <[A-Z|a-z] name="xx" open="" en="" srclan="", detlan=""/> 
-      @name : dictionary's name.
+      <d open="" en=""/>
+        <name/>
+        <srclan/>
+        <detlan/>
+        <summary/>
+      </d>
+ 
       @open : which inner class of AlphaDict open this dict. 
               'none' means it's not supported.
       @en: {true, false}
+      @name : dictionary's name.
     -->
   </dict>
 </configure>

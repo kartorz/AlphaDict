@@ -1,9 +1,7 @@
 #include "MessageQueue.h"
 
-MessageQueue g_uiMessageQ("ui");   /* UI system should listen this */
-MessageQueue g_sysMessageQ("sys");  /* SysMessager should listen this */
-
-MessageQueue::MessageQueue(std::string identi):m_identify(identi)
+MessageQueue::MessageQueue(std::string identi)
+:m_identify(identi)
 {
 }
 
@@ -71,7 +69,7 @@ void MessageQueue::push(int id, std::string& arg1, std::string& arg2)
 
 void MessageQueue::push(int id, int arg1, void *arg2, void *arg3)
 {
-	Message msg;
+    Message msg;
     msg.id = id;
     msg.iArg1 = arg1;
     msg.pArg1 = arg2;

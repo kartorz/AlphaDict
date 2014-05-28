@@ -1,10 +1,9 @@
 #ifndef _QTMESSAGER_H_
 #define _QTMESSAGER_H_
+#include <QtCore/QThread>
 
 #include "MessageQueue.h"
 #include "DictIndexModel.h"
-
-#include <QThread>
 
 class MainWindow;
 
@@ -17,19 +16,20 @@ public slots:
 	void onExit();
 
 public:
-    QtMessager(MainWindow* owner, DictIndexModel* model);
+    QtMessager(MainWindow* owner, DictIndexModel* model, MessageQueue* q);
     ~QtMessager();
 
 	void start();
 	void abort();
 
 protected:
-	MainWindow* m_owner;
-	QThread *m_thread;
-	int m_reqAbort;
+    MainWindow* m_owner;
+    QThread *m_thread;
+    int m_reqAbort;
 
 private:
     DictIndexModel* m_indexListModel;
+    MessageQueue* m_msgQ;
 };
 
 #endif

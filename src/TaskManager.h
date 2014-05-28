@@ -9,7 +9,10 @@
  */
 #ifndef _TASKMANAGER_H_
 #define _TASKMANAGER_H_
-
+# ifdef WIN32
+#include <windows.h>
+# endif
+#include "type.h"
 #include "MutexLock.h"
 #include "ThdCond.h"
 
@@ -23,9 +26,9 @@ class TaskCallBack
 {
 public:
     virtual void onTaskInit() {};
-	virtual void onTaskUnInit() {};
-	virtual void onTaskDone() {};
-	virtual void onTaskAbort() {};
+    virtual void onTaskUnInit() {};
+    virtual void onTaskDone() {};
+    virtual void onTaskAbort() {};
 };
 
 class Task 
@@ -54,8 +57,14 @@ protected:
 };
 
 class TaskManager {
+#ifdef WIN32
+friend unsigned WINAPI schedule(void* owner);
+friend unsigned WINAPI execute(LPVOID owner);
+#else
 friend void* schedule(void *owner);
 friend void* execute(void *owner);
+#endif
+
 public:
 	TaskManager();
 	~TaskManager();
@@ -65,7 +74,6 @@ public:
 
 	void addTask(Task *tsk, int delay=0);
 	void deleteTask(Task *tsk) {} /* Not used */
-	void join();
     Task* getTask(std::string identify);
 
 	void dump();
@@ -74,8 +82,13 @@ public:
     static TaskManager* getInstance();
 private:
 	bool IsExistTask(Task *tsk);
-	
+	void waitForThrdExit();
+
 	std::vector<pthread_t> m_threadid;
+#ifdef WIN32
+        std::vector<HANDLE> m_thrdhandle;
+#endif
+
 	std::list<Task*>  m_taskQueue;
 	Task* m_curTask;
 	MutexCriticalSection  m_taskQueueLock;

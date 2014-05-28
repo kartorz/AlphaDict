@@ -8,7 +8,13 @@
 #ifndef _MUTEXLOCK_H_
 #define _MUTEXLOCK_H_
 
+# ifdef WIN32
+#include <windows.h>
+#define mutex_handle  HANDLE
+# else
 #include <pthread.h>
+#define mutex_handle  pthread_mutex_t
+# endif
 
 class MutexCriticalSection {
 public:
@@ -16,27 +22,44 @@ public:
 
 	~MutexCriticalSection()
 	{
-		pthread_mutex_destroy(&m_mutex);
+        #ifdef WIN32
+            CloseHandle(m_mutex);
+        #else
+	    pthread_mutex_destroy(&m_mutex);
+        #endif   
 	}
 
 	void lock()
 	{
-		pthread_mutex_lock(&m_mutex);
+	#ifdef WIN32
+            WaitForSingleObject(m_mutex, INFINITE);
+        #else
+	    pthread_mutex_lock(&m_mutex);
+        #endif
 	}
 
-	void trylock()
+        void trylock()
 	{
-		pthread_mutex_trylock(&m_mutex);
+        #ifdef WIN32
+            WaitForSingleObject(m_mutex, INFINITE);
+	#else
+	    pthread_mutex_trylock(&m_mutex);
+        #endif
 	}
 
 	void unlock()
 	{
-		pthread_mutex_unlock(&m_mutex);
+        #ifdef WIN32
+            ReleaseMutex(m_mutex);
+	#else 
+	    pthread_mutex_unlock(&m_mutex);
+        #endif 
 	}
-	
-	pthread_mutex_t& acquire() {return m_mutex;}
+
+	mutex_handle& acquire() {return m_mutex;}
+
 private:
-    pthread_mutex_t m_mutex;
+    mutex_handle m_mutex;
 };
 
 class MutexLock {

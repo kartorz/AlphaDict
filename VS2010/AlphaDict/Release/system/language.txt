@@ -1,0 +1,6 @@
+english
+chinese
+japanese
+german
+French
+Korean

@@ -14,7 +14,6 @@ typedef enum {
 
 class Log {
 public:
-	static Log& getInstance();
 	Log();
 	~Log();
 	void d(const char *msg, ...);
@@ -27,18 +26,11 @@ public:
 	LogLevel getLevel(LogLevel l) const { return m_level; }
 
 private:
-	LogLevel m_level;
-	FILE *m_logFile;
+    LogLevel m_level;
+    FILE *m_logFile;
     SpinCriticalSection m_crs;
 };
 
-#undef EXTERN
-#ifdef _LOG_CPP_
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-EXTERN  Log g_log;
+extern  Log g_log;
 
 #endif

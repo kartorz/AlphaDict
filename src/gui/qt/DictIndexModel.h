@@ -1,11 +1,10 @@
 #ifndef _DICTINDEXMODEL_H_
 #define _DICTINDEXMODEL_H_
+#include <QtCore/QAbstractListModel>
 
 #include "dict/iDict.h"
 #include "MutexLock.h"
 #include "dict/aldict/aldict_inner.h"
-
-#include <QAbstractListModel>
 
 class DictIndexModel: public QAbstractListModel
 {

@@ -9,25 +9,36 @@
  * @change
  *     Mar 3,2013  Created.  [LiQiong Lee]
  */
+# ifdef WIN32
+#include <Windows.h>
+#include <Process.h>
+#ifndef _MT
+#pragma message( "Please compile using multithreaded run-time libraries" )
+#endif
+#endif
+#include <assert.h>
 
 #include "TaskManager.h"
 #include "MutexLock.h"
 #include "alphadict.h"
 #include "Util.h"
+#include "Log.h"
 
-#include <assert.h>
-#include <unistd.h>
-
+#ifdef WIN32
+unsigned WINAPI schedule(void* owner);
+unsigned WINAPI execute(LPVOID owner);
+#else
 void* schedule(void *owner);
 void* execute(void *owner);
+#endif
 
 Task::Task(int inv, bool rept, TaskCallBack* callback, std::string identifier)
-:m_interval(inv), m_repeat(rept), m_callback(callback), m_identify(identifier), m_abort(false)
+:m_interval(inv), m_repeat(rept), m_callback(callback),
+ m_identify(identifier), m_abort(false)
 {
     if (m_callback == NULL) {
         m_callback = new TaskCallBack(); // A dummy callback, So we don't need check this pointer if is NULL.
-	}
-
+    }
     m_callback->onTaskInit();
 }
 
@@ -49,33 +60,45 @@ TaskManager::TaskManager():m_curTask(NULL)
 TaskManager::~TaskManager()
 {
     g_log(LOG_INFO, "TaskManager::~TaskManager\n");
-	stop();
-	join();
-	std::list<Task*>::const_iterator iter = m_taskQueue.begin();
-	for ( ; iter != m_taskQueue.end(); ++iter) {
-		delete *iter;
-	}
+    stop();
+    //waitForThrdExit();
+    std::list<Task*>::const_iterator iter = m_taskQueue.begin();
+    for ( ; iter != m_taskQueue.end(); ++iter) {
+        delete *iter;
+    }
 }
 
 void TaskManager::start(int thread_number)
 {
 	m_bRunning = true; /* Don't put at the end */
 	pthread_t tid;
-	pthread_create(&tid, NULL, &schedule, this);
+#ifdef _LINUX
+    pthread_create(&tid, NULL, &schedule, this);
+#elif defined(WIN32)
+    HANDLE h = (HANDLE)_beginthreadex(NULL, 0, schedule, this, 0, &tid);
+    m_thrdhandle.push_back(h);
+#endif
 	m_threadid.push_back(tid);
 	LOOP(thread_number) {
-		pthread_t tid;
-		pthread_create(&tid, NULL, &execute, this);
-		m_threadid.push_back(tid);
+	    pthread_t tid;
+        #ifdef _LINUX
+            pthread_create(&tid, NULL, &execute, this);
+        #elif defined(WIN32)
+            HANDLE h = (HANDLE)_beginthreadex(NULL, 0, execute, this, 0, &tid);
+            m_thrdhandle.push_back(h);
+        #endif
+	    m_threadid.push_back(tid);
 	}
-	g_log.d("TaskManager::start(%d)\n", thread_number);
+	//g_log.d("TaskManager::start(%d)\n", thread_number);
 }
 
 void TaskManager::stop()
 {
-	m_bRunning = false;
+    m_bRunning = false;
     m_queueCond.unblockAll();
-    m_taskCond.unblockAll();
+    m_taskCond.unblockAll(m_threadid.size()-1/*execute threads*/);
+    g_log.d("TaskManager::stop\n");
+    waitForThrdExit();
 }
 
 void TaskManager::addTask(Task *tsk, int delay)
@@ -102,13 +125,19 @@ void TaskManager::addTask(Task *tsk, int delay)
 	}
 }
 
-void TaskManager::join()
+void TaskManager::waitForThrdExit()
 {
-	LOOP (m_threadid.size()) {
-		pthread_join(m_threadid[i], NULL);
-	}
-
-	g_log.d("TaskManager::join, threads exit\n");
+#ifdef WIN32
+    int count = m_thrdhandle.size();
+    HANDLE *threads = new HANDLE[count];
+    std::copy(threads, threads + count, m_thrdhandle.begin());
+    WaitForMultipleObjects(count, threads, TRUE, INFINITE);
+#else
+    LOOP (m_threadid.size()) {
+        pthread_join(m_threadid[i], NULL);
+    }
+#endif
+    g_log.d("TaskManager::waitForThrdExit, done\n");
 }
 
 bool TaskManager::IsExistTask(Task *tsk)
@@ -153,7 +182,11 @@ void TaskManager::dump()
 	printf("dump taskmanager end\n");
 }
 
+#ifdef WIN32
+unsigned WINAPI schedule(void* owner)
+#else
 void* schedule(void *owner)
+#endif
 {
 	TaskManager *tmgr = (TaskManager *)owner;
 	assert(tmgr);
@@ -174,8 +207,10 @@ void* schedule(void *owner)
 
         if (!canScheldule) {
             //printf("{schedule} m_curTask != NULL\n");
-            usleep(20*1000); /* 20ms*/
+           Util::sleep(40);
+        #ifdef _LINUX
             pthread_yield();
+        #endif
             continue;
         }
 
@@ -207,6 +242,7 @@ void* schedule(void *owner)
              */
             int timeout = start - now;
             //printf("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
+            //g_log.d("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
             int wait_status = tmgr->m_queueCond.waitEvent(timeout);
             if (wait_status == -2) {
                 goto EXIT;
@@ -222,7 +258,9 @@ void* schedule(void *owner)
 			 tmgr->m_taskCond.setEvent(); /* wake up a exection thread.*/
          }
          //printf("{schedule} wakeup exection thread\n");
+    #ifdef _LINUX
          pthread_yield();
+    #endif
 		/* Dump */
 		#if 0
 		{
@@ -236,8 +274,11 @@ EXIT:
     g_log.d("{schedule} thread exit\n");
 	return NULL;
 }
-
+#ifdef WIN32
+unsigned WINAPI execute(LPVOID owner)
+#else
 void* execute(void *owner)
+#endif
 {
 	TaskManager *tmgr = (TaskManager *)owner;
 	assert(tmgr);

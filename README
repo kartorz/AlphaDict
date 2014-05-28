@@ -10,15 +10,12 @@ AlphaDict has made some open source dictionaries, you can download from
     "http://pan.baidu.com/s/1o6uhAyQ"
 
 
-
 \\ License
 ------------------------------------------------------------
 
 AlphaDict distributes under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3).
 See accompanying file gpl-2.0.txt or a copy at  
 "http://www.gnu.org/copyleft/gpl.html".
-
-
 
 
 \\ Installing the required packages.
@@ -31,8 +28,6 @@ AlphaDict depends:
 ubuntu14.04: 
     sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev
          qtbase5-dev
-
-
 
 
 \\ How to compile
@@ -55,8 +50,6 @@ linux,unix
 # make uninstall
 
 
-
-
 \\ How to make dictionary
 ------------------------------------------------------------
 
@@ -67,14 +60,16 @@ Usually, you only need to know the 'front-end_format.xml',There are two steps
 to make a dictioanry.
 1) create a xx.xml accoring to front-end_format.xml.
 2) use AlConvert to convert xx.xml to xx.aldict.
-   # AlConvert xx.xml   xx
+   # AlConvert -o xx xx.xml
    AlConvert shall create a dictionary: xx.aldict.
+   
+AlConvert supports multi-xml files. You can split a large xml into a few files, or
+merge a few xml files into a dict.
+  # AlConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
 
 doc/alphadict_en-ch.xml is a example, You can use them or refrence them to build your dictionary.
 Also, You can get some dictonaries from here:
     "http://pan.baidu.com/s/1o6uhAyQ"
-
-
 
 
 \\ where to put my dictionaries
@@ -84,7 +79,6 @@ For win32:  'installing direcotry'/dicts
 For linux, unix:  /usr/local/share/alphadict/dicts
 
 
-
 \\ how to use the third-party dictionary
 ------------------------------------------------------------
 
@@ -92,16 +86,20 @@ AlphaDict don't support some dict formats directly but provides some tools to co
 these third-party dictionary to AlphaDict's front-end xml. 
 
 It's a little annoy,does it? Anyway,These tools are all python scripts, pretty simple.
-They are easy to use and at 
+They are easy to use or modify, there are at 
     /usr/local/share/alphadict/tools  -- linux, unix
     'installing direcotry'/tools -- win32.
+I will make some dictionaries previously, but the best way is to convert by yourself, 
+because these dictionary will be updating from time to time.
+
+# python xx_toaldictxml.py   will show usage.
 
 stardict
 ------------------------------
 1) put all the files of startdict's dictionary to a directory like foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
-2) # python stardict_to_aldictxml.py  foo/foo_xx   foo_xx.xml
-3) # AlConvert foo_xx.xml  foo_xx
+2) # python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
+3) # AlConvert -o foo_xx   foo_xx.xml
      you will get foo_xx.aldict
 
 You can downlaod the dictionaries of stardict from here:
@@ -112,13 +110,38 @@ cedict
 ------------------------------
 Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
 
-# python cedict_to_aldictxml.py  foo.txt
-# AlConvert foo.xml foo
+# python cedict_to_aldictxml.py -i foo.txt
+# AlConvert -o foo  foo.xml
     you will get foo.aldict
 
-You can download the cedict dicionary form here:
+You can download the cedict dicionary from here:
     "http://www.mdbg.net/chindict/chindict.php?page=cedict"
 
+
+dicts.info
+------------------------------
+You can download the bilingual dictionaries from here:
+    "http://www.dicts.info/uddl.php"
+select "File format: UTF-8 plain text", then "Download dictionary".
+because it's not allowed to distribute the file, so I can't make dictionary previously.
+
+Here is a example for coverting.
+
+# ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
+# AlConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
+
+
+IDP
+------------------------------
+You can download the dictionary files from here:
+    "http://www.june29.com/IDP/IDPfiles.html"
+see "Dictionary Files"
+
+Here is a example for coverting.
+
+# ./idp_to_aldictxml.py  -i French.txt
+# AlConvert -o idp_french   French.xml
+ 
 
 \\ How to report a bug, contribute or contact me.
 ------------------------------------------------------------

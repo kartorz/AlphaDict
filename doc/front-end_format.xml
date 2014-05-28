@@ -18,9 +18,9 @@ More detail about Dictionary's internal format see "dictionary_inner.pdf"
 
     <srclan>[language]</srclan>
     <detlan>[language]</detlan>
-    <!-- Translate 'srclan' language to 'detlan' language. 
-      value of 'language' defines in "../src/system/language.txt.in"
-      if user want to add new language, must add to language.txt.in too.
+    <!-- Translate 'srclan' language to 'detlan' language.
+      value of 'language' defines in "../src/system/language.txt" and installing directory.
+      if user want to add new language, must add to language.txt of installing directory too.
       
       if you don't want to specify, specify it to 'any', or just leave it.
         <srclan>any</srclan>  || <srclan\>      

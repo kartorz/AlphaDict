@@ -45,7 +45,8 @@ public:
     DictManager();
     ~DictManager();
     void initialization();
-	void lookup(const string& input, int which=-1);
+	void lookup(const string& input, const int which=-1/*all*/); /* async */
+	void lookup(const string& input, const int which, DictItemList& items); /* sync*/
     int  getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
 	void onClick(int row, iIndexItem* item);
     void reloadDict();

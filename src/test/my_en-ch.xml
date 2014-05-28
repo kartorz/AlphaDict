@@ -1,0 +1,45 @@
+<?xml version="1.0"  encoding="UTF-8" ?>
+<alphadict>
+  <words>
+    <id_1 word="baa">
+      <phonetic>
+	<美>[ba:]</美>
+      </phonetic>
+      <explanation>
+n. 羊叫声
+vi. 羊叫
+      </explanation>
+    </id_1>
+
+    <id_2 word="baas">
+      <phonetic>
+	<美>[ba:s]</美>
+      </phonetic>
+      <explanation>
+n. 先生, 老板
+      </explanation>
+    </id_2>
+
+    <id_3 word="babble">
+      <phonetic>
+	<美>['bæbl]</美>
+      </phonetic>
+      <explanation>
+vi. 牙牙学语, 喋喋不休
+vt. 唠叨, 吐露
+n. 儿语, 胡言乱语, 嘈杂声
+【计】 串音
+      </explanation>
+    </id_3>
+
+    <id_4 word="babe">
+      <phonetic>
+	<美>[beib]</美>
+      </phonetic>
+      <explanation>
+n. 小孩, 天真幼稚的人
+      </explanation>
+    </id_4>
+
+  </words>
+</alphadict>

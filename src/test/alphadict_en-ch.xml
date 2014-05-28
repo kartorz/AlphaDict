@@ -1,0 +1,80 @@
+<?xml version="1.0"  encoding="UTF-8" ?>
+<alphadict>
+  <header>
+    <version>1</version>
+    <srclan>english</srclan>
+    <detlan>chinese</detlan>
+    <charset>utf-8</charset>
+    <publisher>AlphaDict</publisher>
+    <publishdate>2013-02-12</publishdate> 
+    <dictversion>1</dictversion>
+    <dictname>en-ch</dictname>
+  </header>
+
+  <words>
+    <id_1 word="abandon">
+      <phonetic>
+	<美>[əˈbændən]</美>
+	<英>[ə'bændən]</英>
+      </phonetic>
+      <explanation>
+v: 放弃；抛弃；废弃；遗弃
+n.放肆；狂热；任性；恣意任性
+      </explanation>
+    </id_1>
+
+    <id_2 word="abdomen">
+      <phonetic>
+	<美>[æbˈdoʊmən]</美>
+	<英>['æbdəmən]</英>
+      </phonetic>
+      <explanation>
+肚子；下腹部；【虫类】腹部
+      </explanation>
+    </id_2>
+
+    <id_3 word="abide">
+      <phonetic>
+	<美>[əˈbaɪd]</美>
+	<英>[ə'baɪd]</英>
+      </phonetic>
+      <explanation>
+v: 居住；无法容忍；逗留；停留
+网络: 遵守；忍受；坚持
+      </explanation>
+    </id_3>
+
+    <id_4 word="abolish">
+      <phonetic>
+	<美>[əˈbɑlɪʃ]</美>
+	<英>英 [əˈbɒlɪʃ]</英>
+      </phonetic>
+      <explanation>
+v: 废除；消灭；撤销
+网络:取消；废止；革除
+      </explanation>
+    </id_4>
+
+    <id_5 word="abrupt">
+      <phonetic>
+      </phonetic>
+      <explanation>
+a. 突然的,意外的;陡峭的,险峻的;
+( 举止,言谈等 ) 不流畅的
+      </explanation>
+    </id_5>
+
+    <id_6 word="absorb">
+      <explanation>
+a. 愚蠢的;荒唐的;
+      </explanation>
+    </id_6>
+
+    <id_7 word="chemistry">
+      <explanation>
+n. 化学;人际感情;
+      </explanation>
+    </id_7>
+
+  </words>
+</alphadict>

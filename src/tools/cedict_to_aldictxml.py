@@ -25,16 +25,30 @@ import sys, os, codecs
 
 from lib_aldictxml import *
 
-usage = """Usage: cedict_to_aldictxml [file_in] [file_out]
+usage = """Usage: cedict_to_aldictxml [options]
 Convert cedict file to front-end xml of AlphaDict.
-file_in:  The cedict file needed be converted.
-file_out: Specify the detination file.
 
-Default is at the input file path appending ".xml" as a suffix to the output file
+    -i    The cedict file needed be converted.
+    -o    Specify the output xml file.
+          Default: append ".xml" as a suffix to the input file name.
+
 For example:
-    cedict_to_aldictxml.py foo.txt  
-    cedict_to_aldictxml.py  foo.txt foo
+    cedict_to_aldictxml.py  -i foo.txt -o foo.xml
+    cedict_to_aldictxml.py  -i foo.txt
 """
+
+op_i = ""
+op_o = ""
+op_list=["-i", "-o", "-p"]
+op_dict = get_opt(sys.argv, op_list)
+
+if "-i" not in op_dict:
+        print usage
+	sys.exit()
+
+op_i = op_dict["-i"]
+op_o = op_dict.get("-o", op_i + ".xml")
+
 
 if len(sys.argv) < 2:
 	print usage
@@ -42,22 +56,12 @@ if len(sys.argv) < 2:
 
 # Open input file
 try:
-	f_input = codecs.open(sys.argv[1], mode='r', encoding='utf-8')
+	f_input = codecs.open(op_i, mode='r', encoding='utf-8', errors='ignore')
 except IOError:
-	sys.stderr.write("The file(%s) does not exist \n" %(sys.argv[1]))
+	sys.stderr.write("The file(%s) does not exist \n" %(op_i))
 	sys.exit()
 
-if len(sys.argv) == 3:
-	output_path = sys.argv[2]
-else:
-	output_path = sys.argv[1]
-	i = output_path.rfind('.')
-	if i == -1:
-		output_path = sys.argv[1] + ".xml"
-	else:
-		output_path = output_path[:i] + ".xml"
-
-if not xml_alphadict_openfile(output_path):
+if not xml_alphadict_openfile(op_o):
 	f_input.close()
 	sys.exit()
 
@@ -113,7 +117,10 @@ try:
 			explanation = temp.split('/')
 			# print explanation
 			xml_alphadict_writeword(words, phonetics, explanation)
-                        print words[0]
+			try :
+				print words[0]
+			except:
+				pass
 finally:
 	f_input.close()
 	xml_alphadict_close()

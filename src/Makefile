@@ -15,17 +15,19 @@ incs := $(foreach dir, $(subdirs), $(dir)/Makefile.inc)
 include $(incs)
 
 SRCS_ALPHADICT += main.cpp \
-		     Log.cpp \
-		     MutexLock.cpp \
+             Log.cpp \
+             MutexLock.cpp \
              SpinLock.cpp \
-		     ThdCond.cpp \
-	         Thread.cpp \
-	         Util.cpp \
+             ThdCond.cpp \
+	     Thread.cpp \
+	     Util.cpp \
+             CharUtil.cpp \
              MessageQueue.cpp \
              SysMessager.cpp \
              TaskManager.cpp \
              DictManager.cpp \
              Configure.cpp \
+             VocabularyBook.cpp \
              Application.cpp \
              $(SRCS_DICT-yes) \
 	         $(SRCS_GUI-yes) \
@@ -35,7 +37,8 @@ OBJS_TINYXML := $(SRCS_TINYXML:%.cpp=%.o)
 OBJS_ALPHADICT := $(SRCS_ALPHADICT:%.cpp=%.o)
 OBJS_ALCONVERT := $(SRCS_ALCONVERT:%.cpp=%.o)
 OBJS_ALPHADICT += lib/tinyxml2/libtinyxml2.a
-OBJS_ALCONVERT += lib/tinyxml2/libtinyxml2.a
+OBJS_ALCONVERT += lib/tinyxml2/libtinyxml2.a \
+                  Util.o CharUtil.o
 
 DEPS := $(SRCS_ALPHADICT:%.cpp=%.d)
 DEPS += $(SRCS_ALCONVERT:%.cpp=%.d)
@@ -61,7 +64,7 @@ AlphaDict: $(OBJS_ALPHADICT)
 	$(CC) $^ $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
 
 AlConvert: $(OBJS_ALCONVERT)
-	$(CC) $^ -lstdc++ -o $@ 
+	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@ 
 
 #%.d : %.cpp
 #	$(CC) -MM $< -o $@
@@ -86,6 +89,7 @@ install-%: % install-dirs
 install-system: install-dirs
 	install -m 0666 "system/configure.xml.in"      "$(DATADIR)/configure.xml.in"
 	install -m 0666 "system/language.txt"          "$(DATADIR)/language.txt"
+	install -m 0666 "gui/qt/uitr_cn.qm"            "$(DATADIR)/uitr_cn.qm"
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"

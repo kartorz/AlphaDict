@@ -89,7 +89,4 @@ private:
 };
 
 
-extern MessageQueue g_uiMessageQ;
-extern MessageQueue g_sysMessageQ;
-
 #endif

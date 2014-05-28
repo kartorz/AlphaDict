@@ -13,14 +13,14 @@
 #include <list>
 #include <iterator>
 
-namespace std {
+#ifdef _LINUX
 template<class ForwardIt>
 ForwardIt next(ForwardIt it, typename std::iterator_traits<ForwardIt>::difference_type n = 1)
 {
     std::advance(it, n);
     return it;
 }
-};
+#endif
 
 namespace ktree {
 
@@ -56,13 +56,17 @@ public:
 
 	treeNodePtr operator[](const int pos) const
 	{
-		child(pos);
+		return child(pos);
 	}
 	
 	treeNodePtr child(const int pos) const
 	{
 		typename std::list<treeNodePtr>::const_iterator iter;
-		iter = std::next(_children.begin(), pos);
+    #ifdef WIN32
+        iter = std::next(_children.begin(), pos);
+    #else
+		iter = next(_children.begin(), pos);
+    #endif
 		return *iter;
 	}
 	
@@ -75,7 +79,11 @@ public:
 			_children.push_front(pTree);
 		else {
 			typename std::list<treeNodePtr>::iterator iter;
+#ifdef WIN32
 			iter = std::next(_children.begin(), pos);
+#else
+            iter = next(_children.begin(), pos);
+#endif
 			_children.insert(iter, pTree);
 		}
 		pTree->_parent = this;

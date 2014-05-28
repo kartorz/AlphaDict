@@ -4,6 +4,7 @@
 #include "alphadict.h"
 #include "aldict_inner.h"
 #include "dict/iDict.h"
+#include "MutexLock.h"
 
 using namespace ktree;
 using namespace std;
@@ -39,7 +40,7 @@ private:
 	void loadIndexTree(tree_node<aldict_charindex>::treeNodePtr parent,
                        void *chrblock, address_t size);
 
-    bool loadIndex(wchar_t *str, int inx, struct IndexStat *stat,
+    bool loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
                    tree_node<aldict_charindex>::treeNodePtr parent,
                    IndexList& indexList);
 
@@ -52,7 +53,7 @@ private:
     void lookupCandidate(tree_node<aldict_charindex>::treeNodePtr parent,
                          string& header, IndexList& candidate);
     int  bsearch(tree_node<aldict_charindex>::treeNodePtr parent,
-                 wchar_t key, int min, int max);
+                 u4char_t key, int min, int max);
 
     void* getBlock(int blk);
     
@@ -70,6 +71,7 @@ private:
     int m_indexNumber;
 
     std::map<int, void*> m_blkCache;
+    MutexCriticalSection m_cs;
 };
 
 #endif

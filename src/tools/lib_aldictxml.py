@@ -39,7 +39,8 @@ The format of front-end of alphadict:
 import codecs, xml.dom.minidom, sys
 
 __all__ = ["xml_alphadict_openfile", "xml_alphadict_writeheader",
-	   "xml_alphadict_close", "xml_alphadict_writeword"]
+	   "xml_alphadict_close", "xml_alphadict_writeword", 
+           "extract_phonetic_str", "get_opt"]
 
 f_xml   = None
 impl    = None
@@ -47,6 +48,19 @@ doc     = None
 e_root  = None
 e_words = None
 entries = 0
+
+def __trim_phrase(phrase=None):
+    l = phrase.strip(' \t').split(' ') # with the leading and trailing characters removed.
+    if len(l) == 1:
+        return l[0]
+
+    s = ''
+    for e in l:
+        if e != '':
+            s += e + ' '
+
+    s = s[0:-1] # remove ' '
+    return s;
 
 def xml_alphadict_openfile(path):
 	""" Open the xml file for writing """
@@ -125,13 +139,16 @@ def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt="",
 	    return
         entries = entries + 1
 	## " AB    CD E F" --> ['', 'AB', '', '', '', 'CD', 'E', 'F']
-	strlist = word_lt[0].strip(' \t').split(' ')
-	attr_value = ''
-        for l in strlist:
-            if l != '':
-                attr_value += l + ' '
+        
 
-        attr_value = attr_value[0:-1] # remove ' '
+	#strlist = word_lt[0].strip(' \t').split(' ')
+	#attr_value = ''
+        #for l in strlist:
+        #    if l != '':
+        #        attr_value += l + ' '
+
+        #attr_value = attr_value[0:-1] # remove ' '
+        attr_value = __trim_phrase(word_lt[0])
         tag = "id_" + str(entries)
 	e_word = doc.createElement(tag)
         e_word.setAttribute("word", attr_value)
@@ -159,10 +176,12 @@ def xml_alphadict_writeword(word_lt=None, phonetic_lt=None, explanation_lt="",
 	    e_a = doc.createElement("alias")
 	    for w in word_lt[1:]:
                 #e_w = doc.createElement()
-		create_element_textnode("as", w.strip(' \t'), e_a)
+                s =  __trim_phrase(w)
+		create_element_textnode("as", s, e_a)
             e_word.appendChild(e_a)
 
 	e_words.appendChild(e_word)
+
 def create_element_childlist(e, t, c=None, p=None):
 	""" Create a dom element with a series text nodes
 
@@ -204,3 +223,43 @@ def create_element_textnode(e, v, p=None):
 		p.appendChild(e)
 
 	return e
+
+# Helper fuctions
+def extract_phonetic_str(strword, pcname, phonetic=None, sep='[]'):
+    """ Extract a phonetic str from a phrase string
+    
+        format of strword: "xxxx [nn]".
+        'sep' specifies the pair chars 
+        around the phonetic string. 
+    """
+    p = []
+    s = strword.find(sep[0])
+    if s != -1:
+        e = strword.find(sep[1], s+1)
+        p.append(pcname)
+        p.append(strword[s+1:e])
+        phonetic.append(p)
+        return strword[0:s]
+    return strword
+
+def get_opt(argv, op_list):
+    """ parse user input
+      
+        format of cmd:  -[op] xx 
+    """
+    op_len = len(argv)
+    i=1
+    ret = {}
+    while i < op_len:
+        if sys.argv[i] in op_list:
+            if i+1 < op_len:
+                ret[sys.argv[i]] = sys.argv[i+1]
+                i = i+2
+                continue
+            else:
+                break
+        i += 1
+    return ret
+    
+
+

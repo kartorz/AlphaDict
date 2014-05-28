@@ -10,8 +10,15 @@
  */
 #ifndef _THDCOND_H_
 #define _THDCOND_H_
-
-#include <MutexLock.h>
+# ifdef WIN32
+#include <windows.h>
+#define  cond_handle   HANDLE
+#define  mutex_handle  HANDLE
+#else
+#include <pthread.h>
+#define  cond_handle   pthread_cond_t    
+#define  mutex_handle  pthread_mutex_t
+#endif
 
 class ThdCond
 {
@@ -28,12 +35,11 @@ public:
      *   -2: force exit, don't wait.
      */
 
-	int consume(void *v, int timeout=0/*ms*/);
-    void produce(void *v, bool broadcast=false);
-	int waitEvent(int timeout=0/*ms*/);
-    void setEvent(bool broadcast=false);
-
-    void unblockAll(); /* unblock all blocked threads. */
+    int consume(void *v, int timeout=-1/*ms*/);
+    void produce(void *v, bool broadcast=false, int blockthrds=1);
+    int waitEvent(int timeout=-1/*ms*/);
+    void setEvent(bool broadcast=false, int blockthrds=1);
+    void unblockAll(int blocthrds=1);   /* unblock all blocked threads. */
 
 protected:
 	virtual void onConsume(void *v) {}
@@ -41,8 +47,8 @@ protected:
 	virtual bool canConsume(void *v) {return false;}
 
 private:
-	pthread_cond_t m_cv;
-    pthread_mutex_t m_mutex;
+    cond_handle  m_cv;
+    mutex_handle m_mutex;
     bool m_unblock;
 };
 

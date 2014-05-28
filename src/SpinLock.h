@@ -8,6 +8,11 @@
 #ifndef _SPINLOCK_H_
 #define _SPINLOCK_H_
 
+# ifdef WIN32
+#include "MutexLock.h"
+typedef MutexCriticalSection   SpinCriticalSection;
+typedef MutexLock  SpinLock;
+# else
 #include <pthread.h>
 
 class SpinCriticalSection {
@@ -49,5 +54,5 @@ private:
 
 	SpinLock(); /* Not allowed default contruct function */
 };
-
+#endif
 #endif

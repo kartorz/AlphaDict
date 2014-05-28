@@ -5,15 +5,19 @@
 #include "SysMessager.h"
 #include "Log.h"
 
-
 SysMessager::SysMessager(): Thread(0),m_bReloadDict(false)
 {
+    m_msgQ = new MessageQueue("sys");
+}
+
+SysMessager::SysMessager(MessageQueue* queue): Thread(0),m_bReloadDict(false)
+{
+    m_msgQ = queue;
 }
 
 SysMessager::~SysMessager()
 {
-    g_sysMessageQ.push(MSG_QUIT);
-    join();
+    m_msgQ->push(MSG_QUIT);
 }
 
 void SysMessager::onStartup()
@@ -28,7 +32,7 @@ void SysMessager::doWork()
 void SysMessager::processMessage()
 {
     Message msg;
-    bool ret = g_sysMessageQ.pop(msg);
+    bool ret = m_msgQ->pop(msg);
     if (ret == false) {
         //printf("{SysMessager} no message, exit\n");
         return;
@@ -62,7 +66,7 @@ void SysMessager::processMessage()
 
         case MSG_SET_DICTEN: {
             // When UI init, will send a invalid message.
-            if (g_application.m_configure->m_dictNodes[msg.iArg1].en != msg.iArg2) {
+            if (g_application.m_configure->m_dictNodes[msg.iArg1].en != (bool)msg.iArg2) {
 			    g_application.m_configure->enableDict(msg.iArg1, msg.iArg2);
 			    //DictManager::getReference().reloadDict();
 				m_bReloadDict = true;

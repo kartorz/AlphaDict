@@ -1,11 +1,13 @@
 #include "MessageQueue.h"
 #include "QtMessager.h"
+#include "Application.h"
 
-QtMessager::QtMessager(MainWindow* owner,  DictIndexModel* inxModel)
+QtMessager::QtMessager(MainWindow* owner,  DictIndexModel* inxModel, MessageQueue* q)
 :m_reqAbort(false)
 {
-	m_owner = owner;
+    m_owner = owner;
     m_indexListModel = inxModel;
+    m_msgQ = q;
 }
 
 QtMessager::~QtMessager()
@@ -28,7 +30,7 @@ void QtMessager::doWork()
 {
 	do{
         Message msg;
-        if (g_uiMessageQ.pop(msg)) {
+        if (m_msgQ->pop(msg)) {
             //printf("{QtMessager} MSGID:%d\n", msg.id);
 		    switch (msg.id) {
                 case MSG_RESET_INDEXLIST:{
@@ -67,10 +69,10 @@ void QtMessager::abort()
 {
 	if(m_thread && m_thread->isRunning())
 	{
-		m_reqAbort = true;
-        g_uiMessageQ.unblockAll();
-		m_thread->quit();
-		m_thread->wait();
+	    m_reqAbort = true;
+            m_msgQ->unblockAll();
+	    m_thread->quit();
+	    m_thread->wait();
 	}
 }
 

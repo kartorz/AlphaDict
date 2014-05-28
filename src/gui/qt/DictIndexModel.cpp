@@ -96,7 +96,7 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
     QModelIndex result = QAbstractItemModel::createIndex(-1, 0);
     //printf("onUpdateIndexList: %d, %d\n", curitem, m_indexList->size());
     beginResetModel();
-    
+
     if (pg < 0) {
 	    if (m_indexStart == 0)
 		    return result;
@@ -124,13 +124,14 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
 		    return result;
         IndexList* indexList = new IndexList();
 		int del_end = 0;
+        //int overlap_number = 0;
 		if (pg == 1) {
-            for (int i=INDEXLIST_SIZE_MAX - OVERLAP_NR; i<m_indexList->size()-1; i++) {
+            for (int i = m_indexList->size() - OVERLAP_NR; i < m_indexList->size(); i++) {
                 indexList->push_back((*m_indexList)[i]);
+                //overlap_number++;
             }
 			del_end = INDEXLIST_SIZE_MAX - OVERLAP_NR;
 		} else {
-
 		    del_end = m_indexList->size();
 		}
 
@@ -146,8 +147,9 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
             m_indexList = indexList;
 			result = QAbstractItemModel::createIndex(OVERLAP_NR, 0);
         } else if (ret > 0){
-		    for (int i=0; i<ret; i++)
+		    for (int i=OVERLAP_NR; i<indexList->size(); i++)
                 m_indexList->push_back((*indexList)[i]);
+            delete indexList;
 			if (pg != 1)
 			    m_indexStart = start;
 			//else append to end.
@@ -157,4 +159,3 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
     endResetModel();
     return result;
 }
-

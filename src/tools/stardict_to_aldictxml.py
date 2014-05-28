@@ -32,7 +32,7 @@ if len(sys.argv) < 2:
 
 # Open input file
 try:
-    f_ifo = codecs.open(sys.argv[1]+".ifo", mode='r', encoding='utf-8')
+    f_ifo = codecs.open(sys.argv[1]+".ifo", mode='r', encoding='utf-8', errors='ignore')
     f_dict = codecs.open(sys.argv[1]+".dict", mode='rb')
     f_idx =  open(sys.argv[1]+".idx", mode='rb')
 except IOError:
@@ -118,7 +118,7 @@ try:
             idx_buf = idx_buf[start+addr_len:]
         except:
             sys.stderr.write("read(%s), get a error, you can fix it manually, or sent a email to me" %(strinx))
-            break            
+            break
 finally:
     f_idx.close()
     f_dict.close()

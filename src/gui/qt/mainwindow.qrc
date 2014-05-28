@@ -12,5 +12,9 @@
         <file>res/left_arrow.png</file>
         <file>res/down.png</file>
         <file>res/up.png</file>
+        <file>res/remove.png</file>
+        <file>res/clear_all.png</file>
+        <file>res/appicon.png</file>
+        <file>res/app.ico</file>
     </qresource>
 </RCC>
