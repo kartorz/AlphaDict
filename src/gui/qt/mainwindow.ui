@@ -21,12 +21,12 @@
   </property>
   <property name="windowIcon">
    <iconset resource="mainwindow.qrc">
-    <normaloff>:/res/app.ico</normaloff>:/res/app.ico</iconset>
+    <normaloff>:/res/appicon.png</normaloff>:/res/appicon.png</iconset>
   </property>
   <property name="iconSize">
    <size>
-    <width>64</width>
-    <height>64</height>
+    <width>128</width>
+    <height>128</height>
    </size>
   </property>
   <widget class="QWidget" name="centralWidget">

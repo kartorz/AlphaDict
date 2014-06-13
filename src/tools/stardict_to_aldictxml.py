@@ -12,44 +12,42 @@ import sys, os, codecs, struct
 
 from lib_aldictxml import *
 
-usage = """Usage: stardict_to_aldictxml [dict] [xml]
+usage = """Usage: stardict_to_aldictxml [options]
+Convert startdict's dictionary to front-end xml of AlphaDict.
 
-    Convert startdict's dictionary to front-end xml of AlphaDict.
-    dict:  The name of dictionary. eg: 'langdao-ec-gb' means that it includs all the files of this dict:
-           'langdao-ec-gb.dict', 'langdao-ec-gb.idx' and other option files -- langdao-ec-gb.xx 
-    xml:   Specify the outpu xml file. [Default] is at the input file path appending ".xml" as a suffix
-           to the output file
+    -i    The name of dictionary. eg: 'langdao-ec-gb' means that it includs all the files of this dict:
+          'langdao-ec-gb.dict', 'langdao-ec-gb.idx' and other option files -- langdao-ec-gb.xx
+    -o    Specify the output xml file.
+          Default: append ".xml" as a suffix to the input file name.
+    -p    Specity the name of phonetic chars. [Default: ' ']
 
-    For example:
-        stardict_to_aldictxml  ~/xx/langdao/langdao-ec-gb  |  ~/xx/langdao/langdao-ec-gb  /mydicts/xx.xml
+For example:
+    stardict_to_aldictxml  -i ~/xx/langdao/langdao-ec-gb  -o /mydicts/xx.xml  -p US
+    stardict_to_aldictxml  -i ~/xx/langdao/langdao-ec-gb  
 """
 
-BLOCK_SIZE = 40960
+op_i = ""
+op_o = ""
+op_list=["-i", "-o", "-p"]
+op_dict = get_opt(sys.argv, op_list)
 
-if len(sys.argv) < 2:
-    print usage
-    sys.exit()
+if "-i" not in op_dict:
+        print usage
+	sys.exit()
+
+op_i = op_dict["-i"]
+op_o = op_dict.get("-o", op_i + ".xml")
 
 # Open input file
 try:
-    f_ifo = codecs.open(sys.argv[1]+".ifo", mode='r', encoding='utf-8', errors='ignore')
-    f_dict = codecs.open(sys.argv[1]+".dict", mode='rb')
-    f_idx =  open(sys.argv[1]+".idx", mode='rb')
+    f_ifo = codecs.open(op_i+".ifo", mode='r', encoding='utf-8', errors='ignore')
+    f_dict = codecs.open(op_i+".dict", mode='rb')
+    f_idx =  open(op_i+".idx", mode='rb')
 except IOError:
-    sys.stderr.write("The file(%s[.ifo|.dict|.idx]) does not exist \n" %(sys.argv[1]))
+    sys.stderr.write("The file(%s[.ifo|.dict|.idx]) does not exist \n" %(op_i))
     sys.exit()
 
-if len(sys.argv) == 3:
-    output_path = sys.argv[2]
-else:
-    output_path = sys.argv[1]
-    i = output_path.rfind('.')
-    if i == -1:
-        output_path = sys.argv[1] + ".xml"
-    else:
-        output_path = output_path[:i] + ".xml"
-
-if not xml_alphadict_openfile(output_path):
+if not xml_alphadict_openfile(op_o):
     f_input.close()
     sys.exit()
 
@@ -91,15 +89,21 @@ try:
     while idx_buf != "" :
         strend = idx_buf.find('\0')
         #print strend
-        if strend == -1 or strend == 0:
+        if strend == -1:
             print "can't find \0"
             print idx_buf
             break
+        elif strend == 0:
+           while idx_buf[strend] == '\0':
+               strend += 1
+    
+           idx_buf = idx_buf[strend:]
+           continue
 
         try:
             strinx = idx_buf[0:strend]
             print strinx
-            
+
             start = strend+1
             stroff = struct.unpack(fmt, idx_buf[start:start+addr_len])[0]
             #print("%d, %x")%(stroff, stroff)

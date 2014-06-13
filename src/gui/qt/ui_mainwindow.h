@@ -96,9 +96,9 @@ public:
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
         QIcon icon;
-        icon.addFile(QStringLiteral(":/res/app.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
-        MainWindow->setIconSize(QSize(64, 64));
+        MainWindow->setIconSize(QSize(128, 128));
         actionVocabulary = new QAction(MainWindow);
         actionVocabulary->setObjectName(QStringLiteral("actionVocabulary"));
         actionVocabulary->setEnabled(true);

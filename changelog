@@ -1,9 +1,13 @@
 
-AlphaDict 1.2
+AlphaDict 1.2:
+	(Todo):
+        Support Screen Translation (take a word from screen and translate).
+
+AlphaDict 1.1
 	(Todo):
 	-- Release windows version.
-	-- Added words book.
-        -- Support other GPL dicts.
+	-- Added vocubulary book.
+        -- Support dictionaries of "IDP" and "dicts.info".
 
 AlphaDict 1.0
 	The first version: basically lookup, support cedict and stardict dictionaries

@@ -5,9 +5,11 @@ AlphaDict is a lightweight, less dependence, cross platform open source
 dictionary software,supproting linux,unix and windows. 
 
 AlphaDict has opened its dictionary format that you can make your own dictionary, 
-also supports many third-party dictionary formats: cedict, startdict. 
+also supports lots third-party dictionary formats: cedict, startdict. 
 AlphaDict has made some open source dictionaries, you can download from
     "http://pan.baidu.com/s/1o6uhAyQ"
+
+Code Repository:  "https://github.com/kartorz/AlphaDict"
 
 
 \\ License
@@ -123,7 +125,6 @@ dicts.info
 You can download the bilingual dictionaries from here:
     "http://www.dicts.info/uddl.php"
 select "File format: UTF-8 plain text", then "Download dictionary".
-because it's not allowed to distribute the file, so I can't make dictionary previously.
 
 Here is a example for coverting.
 

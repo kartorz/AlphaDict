@@ -8,6 +8,8 @@
 
 4) If program initialization failure, delete configure.xml and try again.
 
+5) You can download more dictionaries from  "http://pan.baidu.com/s/1o6uhAyQ"
+
 -----------------------------------
 1) 直接运行 AlphaDict.exe
 
@@ -18,4 +20,16 @@
 
 4) 如果系统不能正常启动， 删除 configure.xml后，再重启试试。
 
+5) 你可以从下面地址下载更多的词典。
+   http://pan.baidu.com/s/1o6uhAyQ
 -----------------------------------
+
+Author's email: joni.kartorz.lee@gmail.com.
+You can contact me for anything about this software.
+
+作者的email: joni.kartorz.lee@gmail.com
+有关软件的任何事情，都可以同作者联系。
+
+
+Thanks!
+谢谢！

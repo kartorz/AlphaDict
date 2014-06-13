@@ -87,7 +87,7 @@ void MainWindow::on_inputLineEdit_textChanged(const QString &arg1)
 
 void MainWindow::on_queryButton_clicked()
 {
-    QString input = ui->inputLineEdit->text();
+    QString input = ui->inputLineEdit->text().trimmed();
 	g_application.sysMessageQ()->push(MSG_DICT_QUERY, std::string(input.toUtf8().data()));
     ui->dictTextEdit->document()->clear();
 }
