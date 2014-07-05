@@ -13,11 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    ../capworddialog.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    ../capworddialog.h
 
-FORMS    += ../mainwindow.ui
+FORMS    += ../mainwindow.ui \
+    ../capworddialog.ui
 
 RESOURCES += \
     ../mainwindow.qrc

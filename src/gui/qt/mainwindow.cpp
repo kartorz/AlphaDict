@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QToolTip>
+#include <QtCore/QMimeData>
+#include <QtCore/QDebug>
+#include <QtGui/QCursor>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "capworddialog.h"
 #include "DictIndexModel.h"
 #include "VBookModel.h"
 #include "MessageQueue.h"
@@ -23,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionVocabulary, SIGNAL(triggered()), this, SLOT(onActionVcbularyPageAdded()));
     //QShortcut  *listViewEnterAccel= new QShortcut(Qt::Key_Return, ui->indexListView);
     //connect(listViewEnterAccel, SIGNAL(activated()), this, SLOT(enterTreeItem()));
+    QObject::connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(onClipboardDataChanged()));
+    QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(onClipboardSelectionChanged()));
 
     m_config = g_application.m_configure;
 
@@ -113,7 +119,7 @@ void MainWindow::on_indexLineEdit_editingFinished()
     m_dictIndexModel->onResetIndexList(ui->indexLineEdit->text().toUtf8().data());
 }
 
-void MainWindow::onUpdateText(void *v)
+void MainWindow::onUpdateExplText(void *v)
 {
     DictItemList* itemList = (DictItemList*) v;
 
@@ -159,7 +165,33 @@ void MainWindow::onUpdateText(void *v)
         cursor.insertBlock();
     }
 
+//    ui->dictTextEdit->moveCursor(QTextCursor::Start);
+
     delete itemList;
+}
+
+void MainWindow::onUpdateCapWordExplText(void *v)
+{
+    DictItemList* itemList = (DictItemList*) v;
+
+    QPoint pos = QCursor::pos();
+    CapWordDialog* dlg = new CapWordDialog(this);
+    dlg->setText(v);
+    dlg->show();
+#if 0
+    QRect rect(0, 0, 120, 80);
+
+    pos.setX(this->pos().x() + pos.x());
+    pos.setY(this->pos().y() + pos.y() + 80);
+    QString info = QString::fromUtf8((*itemList)[0].expl.c_str());
+    //QToolTip::setPalette(color);
+    //QToolTip::setFont(serifFont);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 1))
+    QToolTip::showText(pos, info, this, rect);
+#else
+    QToolTip::showText(pos, info, this, rect);
+#endif
+#endif
 }
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
@@ -193,7 +225,7 @@ void MainWindow::on_saveButton_clicked()
     if (m_vbookModel->add(word)) {
         showToolTip(tr("success,add to vocabulary book"), ui->saveButton);
     } else {
-        showToolTip(tr("failure, maybe vocabulary book is full (200)"), ui->saveButton);
+        showToolTip(tr("failure, maybe vocabulary book is full"), ui->saveButton);
     }
 }
 
@@ -394,23 +426,51 @@ void MainWindow::on_vbookListView_activated(const QModelIndex &index)
 
 void MainWindow::showToolTip(QString info, QWidget* w, int displayTimeMS)
 {
+    showToolTip(info, w, this, displayTimeMS);
+}
+
+void MainWindow::showToolTip(QString info, QWidget* w, QWidget* p, int displayTimeMS)
+{
     QPoint pos = w->pos();
+    pos.setX(p->pos().x() + pos.x());
+    pos.setY(p->pos().y() + pos.y() + 80);
+    showToolTip(info, pos, displayTimeMS);
+}
+
+void MainWindow::showToolTip(QString info, QPoint pos, int displayTimeMS)
+{
     QRect rect(0, 0, 120, 80);
     //QFont serifFont("Times", 12, QFont::Bold);
     //QPalette color;
     //color.setColor( QPalette::Inactive,QPalette::QPalette::ToolTipBase, Qt::yellow);
-    pos.setX(this->pos().x() + pos.x());
-    pos.setY(this->pos().y() + pos.y() + 80);
     //QToolTip::setPalette(color);
     //QToolTip::setFont(serifFont);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 1))
     if (displayTimeMS != -1)
-        QToolTip::showText(pos, info, this, rect, displayTimeMS);
+        QToolTip::showText(pos, info, NULL, rect, displayTimeMS);
     else
-        QToolTip::showText(pos, info, this, rect);
+        QToolTip::showText(pos, info, NULL, rect);
 #else
-    QToolTip::showText(pos, info, this, rect);
+    QToolTip::showText(pos, info, NULL, rect);
 #endif
+}
+
+void MainWindow::onClipboardDataChanged()
+{
+    printf("onClipboardDataChanged\n");
+}
+
+void MainWindow::onClipboardSelectionChanged()
+{
+    const QClipboard *clipboard = QApplication::clipboard();
+
+    QString input = clipboard->text(QClipboard::Selection);
+    if (input != "") {
+        m_capword = input;
+    	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+    }
+    //qDebug() <<  clipboard->text(QClipboard::Selection);
+    //qDebug() << QCursor::pos().x() << ":" << QCursor::pos().y();
 }
 
 void MainWindow::onAppExit()

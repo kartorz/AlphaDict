@@ -42,11 +42,19 @@ void QtMessager::doWork()
              
 			   case MSG_SET_DICTITEMS:{
                     QMetaObject::invokeMethod((QObject *)m_owner,
-                                              "onUpdateText",
+                                              "onUpdateExplText",
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));
                 }
 			    break;
+                
+                case MSG_SET_CAPWORD_DICTITEM: {
+                    QMetaObject::invokeMethod((QObject *)m_owner,
+                                              "onUpdateCapWordExplText",
+                                              Qt::QueuedConnection,
+                                              Q_ARG(void*, msg.pArg1));
+                }
+                break;
 
                 case MSG_SET_LANLIST: {
                      QMetaObject::invokeMethod((QObject *)m_owner,
