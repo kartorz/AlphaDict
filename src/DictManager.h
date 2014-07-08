@@ -36,6 +36,7 @@ public:
 };
 
 #define QUERY_CAPWORD_FLAG  0x01
+#define NO_CANDIDATEWORD_FLAG  0x02
 
 class DictManager
 {

@@ -1,7 +1,7 @@
 #include "VBookModel.h"
 #include <stdlib.h>
 
-#define LIST_SIZE_MAX 500
+#define LIST_SIZE_MAX 1000
 
 VBookModel::VBookModel(const string& vbookpath):examIndex(0)
 {
@@ -56,11 +56,14 @@ bool VBookModel::add(const QString& word)
     }
 }
 
-void VBookModel::remove(const int row)
+QModelIndex VBookModel::remove(const int row)
 {
     beginResetModel();
     m_vocabularyBook->remove(row);
     endResetModel();
+    int cur = row > m_vocabularyBook->size() -1 ? m_vocabularyBook->size() -1 : row;
+    QModelIndex result = QAbstractItemModel::createIndex(cur, 0);
+    return result;
 }
 
 void VBookModel::clear()

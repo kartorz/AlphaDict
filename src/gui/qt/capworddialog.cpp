@@ -70,9 +70,9 @@ void CapWordDialog::on_saveToolButton_clicked()
     QString word = m_owner->m_capword;
     if (word != "") {
         if (m_owner->m_vbookModel->add(word)) {
-            MainWindow::showToolTip(tr("success,add to vocabulary book"), ui->saveToolButton, this);
+            MainWindow::showToolTip(tr("add to vocabulary book,success"));
         } else {
-            MainWindow::showToolTip(tr("failure, maybe vocabulary book is full"), ui->saveToolButton, this);
+            MainWindow::showToolTip(tr("add to vocabulary book,failure"));
         }
     }
 }

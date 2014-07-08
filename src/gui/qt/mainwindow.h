@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
 friend class  CapWordDialog;
 
 public:
-    static void showToolTip(QString info, QWidget* w, QWidget* p, int displayTimeMS=1500);
+    static void showToolTip(QString info, int displayTimeMS=1500);
     static void showToolTip(QString info, QPoint pos, int displayTimeMS=1500);
 
     explicit MainWindow(QWidget *parent = 0);
@@ -107,7 +107,7 @@ protected :
     //bool winEvent( MSG * message, long * result);
      //bool nativeEvent(const QByteArray & eventType, void * message, long * result);
 private:
-    void showToolTip(QString info, QWidget* w, int displayTimeMS=1500);
+
 
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;

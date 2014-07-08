@@ -23,3 +23,8 @@ gui/qt/ui_capworddialog.h: gui/qt/capworddialog.ui
 gui/qt/qrc_mainwindow.cpp:  gui/qt/mainwindow.qrc \
                             gui/qt/res/search.png
 	$(RCC) --no-compress -name mainwindow  gui/qt/mainwindow.qrc -o  gui/qt/qrc_mainwindow.cpp
+
+uitr:
+	lupdate -no-recursive  -verbose gui/qt -ts gui/qt/uitr_cn.ts
+	linguist gui/qt/uitr_cn.ts
+#   V it, select release

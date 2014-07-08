@@ -31,6 +31,7 @@ bool Aldict::lookup(const string& word, DictItemList& itemList)
         if (m_doc.lookup(word, retItems, candidate)) {
             for (int i=0; i<retItems.size(); i++) {
                 iDictItem item;
+                item.bfind = true;
                 struct aldict_dataitem& d = retItems[i];
                 //printf("Aldict:lookup (%s)\n", word.c_str());
                 if (d.len_phon > 0) {

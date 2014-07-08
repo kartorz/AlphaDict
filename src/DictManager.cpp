@@ -19,7 +19,7 @@ LookupTask::LookupTask(const string& input, int id, DictManager* dmgr)
     m_id = id;
     m_input = input;
 }
- 
+
 void LookupTask::doWork()
 {
     DictItemList itemList;

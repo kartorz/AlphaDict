@@ -31,8 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(onClipboardSelectionChanged()));
 
     m_config = g_application.m_configure;
-
-    /* Setup Language */
     
     m_dictIndexModel = new DictIndexModel();
     ui->indexListView->setModel(m_dictIndexModel);
@@ -219,13 +217,13 @@ void MainWindow::on_saveButton_clicked()
     QString word = ui->inputLineEdit->text();
     
     if (word == "") {
-        showToolTip(tr("empty string"), ui->saveButton);
+        showToolTip(tr("empty string"));
         return;
     }
     if (m_vbookModel->add(word)) {
-        showToolTip(tr("success,add to vocabulary book"), ui->saveButton);
+        showToolTip(tr("add to vocabulary book,success"));
     } else {
-        showToolTip(tr("failure, maybe vocabulary book is full"), ui->saveButton);
+        showToolTip(tr("add to vocabulary book,failure"));
     }
 }
 
@@ -377,8 +375,9 @@ void MainWindow::on_vbdelToolButton_clicked()
 {
     int currentIndex = ui->vbookListView->currentIndex().row();
     if (currentIndex != -1) {
-        m_vbookModel->remove(currentIndex);
+        QModelIndex current = m_vbookModel->remove(currentIndex);
         ui->vbexplTextEdit->setPlainText("");
+        ui->vbookListView->setCurrentIndex(current);
     }
 }
 
@@ -398,7 +397,7 @@ void MainWindow::on_vbInput_editingFinished()
         on_vbnextItemTlBtn_clicked();
         ui->vbInput->clear();
     } else {
-        showToolTip(tr("try again"), ui->vbInput);        
+        showToolTip(tr("try again"));        
     }
 }
 
@@ -424,17 +423,10 @@ void MainWindow::on_vbookListView_activated(const QModelIndex &index)
     on_vbookListView_clicked(index);
 }
 
-void MainWindow::showToolTip(QString info, QWidget* w, int displayTimeMS)
+void MainWindow::showToolTip(QString info, int displayTimeMS)
 {
-    showToolTip(info, w, this, displayTimeMS);
-}
-
-void MainWindow::showToolTip(QString info, QWidget* w, QWidget* p, int displayTimeMS)
-{
-    QPoint pos = w->pos();
-    pos.setX(p->pos().x() + pos.x());
-    pos.setY(p->pos().y() + pos.y() + 80);
-    showToolTip(info, pos, displayTimeMS);
+    //showToolTip(info, w, this, displayTimeMS);
+    showToolTip(info, QCursor::pos(), displayTimeMS);
 }
 
 void MainWindow::showToolTip(QString info, QPoint pos, int displayTimeMS)
