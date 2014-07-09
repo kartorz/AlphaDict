@@ -101,6 +101,9 @@ private slots:
 
     void onClipboardSelectionChanged();
 
+    void on_cwsClipboardCheckBox_clicked(bool checked);
+
+    void on_cwsSelectionCheckBox_clicked(bool checked);
     //void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
 protected :

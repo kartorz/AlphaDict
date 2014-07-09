@@ -50,6 +50,12 @@ private slots:
 
     void on_uilanComboBox_activated(int index);
 
+    void on_cwsSelectionCheckBox_clicked();
+
+    void on_cwsClipboardCheckBox_clicked(bool checked);
+
+    void on_cwsSelectionCheckBox_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };

@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
@@ -63,6 +64,8 @@ public:
     QComboBox *uilanComboBox;
     QWidget *tab_2;
     QGroupBox *groupBox;
+    QCheckBox *cwsSelectionCheckBox;
+    QCheckBox *cwsClipboardCheckBox;
     QListWidget *dictListWidget;
     QToolButton *dictDownToolButton;
     QToolButton *dictUpToolButton;
@@ -245,7 +248,7 @@ public:
         groupBox = new QGroupBox(tab_2);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         groupBox->setEnabled(true);
-        groupBox->setGeometry(QRect(310, 10, 361, 101));
+        groupBox->setGeometry(QRect(310, 10, 390, 101));
         groupBox->setAutoFillBackground(false);
         groupBox->setStyleSheet(QLatin1String("#groupBox { \n"
 "     border: 1px solid gray; \n"
@@ -253,6 +256,12 @@ public:
 " } "));
         groupBox->setCheckable(false);
         groupBox->setChecked(false);
+        cwsSelectionCheckBox = new QCheckBox(groupBox);
+        cwsSelectionCheckBox->setObjectName(QStringLiteral("cwsSelectionCheckBox"));
+        cwsSelectionCheckBox->setGeometry(QRect(10, 30, 161, 22));
+        cwsClipboardCheckBox = new QCheckBox(groupBox);
+        cwsClipboardCheckBox->setObjectName(QStringLiteral("cwsClipboardCheckBox"));
+        cwsClipboardCheckBox->setGeometry(QRect(219, 30, 161, 22));
         dictListWidget = new QListWidget(tab_2);
         dictListWidget->setObjectName(QStringLiteral("dictListWidget"));
         dictListWidget->setGeometry(QRect(20, 10, 261, 300));
@@ -376,8 +385,8 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
-        settingTabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
+        settingTabWidget->setCurrentIndex(1);
         vocabularyTabWidget->setCurrentIndex(0);
 
 
@@ -411,6 +420,9 @@ public:
 #endif // QT_NO_STATUSTIP
         indexLineEdit->setPlaceholderText(QString());
         saveButton->setText(QApplication::translate("MainWindow", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        netdictButton->setToolTip(QApplication::translate("MainWindow", "No action", 0));
+#endif // QT_NO_TOOLTIP
         netdictButton->setText(QApplication::translate("MainWindow", "...", 0));
         queryButton->setText(QApplication::translate("MainWindow", "...", 0));
         tabWidget->setTabText(tabWidget->indexOf(dictTab), QApplication::translate("MainWindow", "dictionary", 0));
@@ -422,7 +434,9 @@ public:
          << QApplication::translate("MainWindow", "\346\261\211\350\257\255", 0)
         );
         settingTabWidget->setTabText(settingTabWidget->indexOf(tab), QApplication::translate("MainWindow", "general", 0));
-        groupBox->setTitle(QApplication::translate("MainWindow", "option", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "capture word setting", 0));
+        cwsSelectionCheckBox->setText(QApplication::translate("MainWindow", "mouse selection", 0));
+        cwsClipboardCheckBox->setText(QApplication::translate("MainWindow", "clipboard", 0));
 #ifndef QT_NO_TOOLTIP
         dictListWidget->setToolTip(QString());
 #endif // QT_NO_TOOLTIP

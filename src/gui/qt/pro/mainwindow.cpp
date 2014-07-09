@@ -97,3 +97,18 @@ void MainWindow::on_uilanComboBox_activated(int index)
 {
 
 }
+
+void MainWindow::on_cwsSelectionCheckBox_clicked()
+{
+
+}
+
+void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
+{
+
+}

@@ -310,6 +310,11 @@ void MainWindow::onActionSettingPageAdded()
 	        	    item->setCheckState(Qt::Unchecked);
 	        }
             ui->uilanComboBox->setCurrentIndex(m_config->m_uilanID);
+            Qt::CheckState ckstate = m_config->m_cws.bselection ? Qt::Checked : Qt::Unchecked;
+            ui->cwsSelectionCheckBox->setCheckState(ckstate);
+
+            ckstate = m_config->m_cws.bclipboard ? Qt::Checked : Qt::Unchecked;
+            ui->cwsClipboardCheckBox->setCheckState(ckstate);
         }
         //QIcon icon;
         //icon.addFile(QStringLiteral(":/res/setting.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -449,20 +454,41 @@ void MainWindow::showToolTip(QString info, QPoint pos, int displayTimeMS)
 
 void MainWindow::onClipboardDataChanged()
 {
-    printf("onClipboardDataChanged\n");
+    //printf("onClipboardDataChanged\n");
+    if (m_config->m_cws.bclipboard) {
+        const QClipboard *clipboard = QApplication::clipboard();
+        
+        QString input = clipboard->text(QClipboard::Clipboard).trimmed();
+        if (input != "") {
+            m_capword = input;
+        	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        }
+    }
 }
 
 void MainWindow::onClipboardSelectionChanged()
 {
-    const QClipboard *clipboard = QApplication::clipboard();
-
-    QString input = clipboard->text(QClipboard::Selection);
-    if (input != "") {
-        m_capword = input;
-    	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+    if (m_config->m_cws.bselection) {
+        const QClipboard *clipboard = QApplication::clipboard();
+        
+        QString input = clipboard->text(QClipboard::Selection).trimmed();
+        if (input != "") {
+            m_capword = input;
+        	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        }
     }
     //qDebug() <<  clipboard->text(QClipboard::Selection);
     //qDebug() << QCursor::pos().x() << ":" << QCursor::pos().y();
+}
+
+void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsClipboard(checked);
+}
+
+void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsSelection(checked);
 }
 
 void MainWindow::onAppExit()

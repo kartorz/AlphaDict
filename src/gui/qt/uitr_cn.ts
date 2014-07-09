@@ -26,103 +26,125 @@
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.ui" line="77"/>
-        <location filename="ui_mainwindow.h" line="416"/>
+        <location filename="ui_mainwindow.h" line="428"/>
         <source>dictionary</source>
         <translation>词典</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="286"/>
-        <location filename="ui_mainwindow.h" line="407"/>
+        <location filename="ui_mainwindow.h" line="416"/>
         <source>filter by a prefix</source>
         <translation>过滤，指定前缀</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="305"/>
-        <location filename="mainwindow.ui" line="331"/>
-        <location filename="mainwindow.ui" line="357"/>
-        <location filename="mainwindow.ui" line="613"/>
-        <location filename="mainwindow.ui" line="639"/>
-        <location filename="mainwindow.ui" line="699"/>
-        <location filename="mainwindow.ui" line="722"/>
-        <location filename="ui_mainwindow.h" line="413"/>
-        <location filename="ui_mainwindow.h" line="414"/>
-        <location filename="ui_mainwindow.h" line="415"/>
-        <location filename="ui_mainwindow.h" line="433"/>
-        <location filename="ui_mainwindow.h" line="434"/>
-        <location filename="ui_mainwindow.h" line="436"/>
-        <location filename="ui_mainwindow.h" line="437"/>
+        <location filename="mainwindow.ui" line="334"/>
+        <location filename="mainwindow.ui" line="360"/>
+        <location filename="mainwindow.ui" line="642"/>
+        <location filename="mainwindow.ui" line="668"/>
+        <location filename="mainwindow.ui" line="728"/>
+        <location filename="mainwindow.ui" line="751"/>
+        <location filename="ui_mainwindow.h" line="422"/>
+        <location filename="ui_mainwindow.h" line="426"/>
+        <location filename="ui_mainwindow.h" line="427"/>
+        <location filename="ui_mainwindow.h" line="447"/>
+        <location filename="ui_mainwindow.h" line="448"/>
+        <location filename="ui_mainwindow.h" line="450"/>
+        <location filename="ui_mainwindow.h" line="451"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="379"/>
-        <location filename="mainwindow.ui" line="861"/>
-        <location filename="mainwindow.cpp" line="316"/>
-        <location filename="ui_mainwindow.h" line="393"/>
-        <location filename="ui_mainwindow.h" line="432"/>
+        <location filename="mainwindow.ui" line="331"/>
+        <location filename="ui_mainwindow.h" line="424"/>
+        <source>No action</source>
+        <translation>无功能</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="382"/>
+        <location filename="mainwindow.ui" line="890"/>
+        <location filename="mainwindow.cpp" line="321"/>
+        <location filename="ui_mainwindow.h" line="402"/>
+        <location filename="ui_mainwindow.h" line="446"/>
         <source>setting</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="401"/>
-        <location filename="ui_mainwindow.h" line="424"/>
+        <location filename="mainwindow.ui" line="404"/>
+        <location filename="ui_mainwindow.h" line="436"/>
         <source>general</source>
         <translation>常规</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="419"/>
-        <location filename="mainwindow.ui" line="482"/>
-        <location filename="ui_mainwindow.h" line="417"/>
-        <location filename="ui_mainwindow.h" line="425"/>
+        <location filename="mainwindow.ui" line="422"/>
+        <location filename="ui_mainwindow.h" line="429"/>
         <source>option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="431"/>
-        <location filename="ui_mainwindow.h" line="418"/>
+        <location filename="mainwindow.ui" line="434"/>
+        <location filename="ui_mainwindow.h" line="430"/>
         <source>UI Language</source>
         <translation>界面语言</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="445"/>
-        <location filename="ui_mainwindow.h" line="421"/>
+        <location filename="mainwindow.ui" line="448"/>
+        <location filename="ui_mainwindow.h" line="433"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="450"/>
-        <location filename="ui_mainwindow.h" line="422"/>
+        <location filename="mainwindow.ui" line="453"/>
+        <location filename="ui_mainwindow.h" line="434"/>
         <source>汉语</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="458"/>
-        <location filename="ui_mainwindow.h" line="431"/>
+        <location filename="mainwindow.ui" line="461"/>
+        <location filename="ui_mainwindow.h" line="445"/>
         <source>dict</source>
         <translation>词典</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="579"/>
-        <location filename="mainwindow.cpp" line="338"/>
-        <location filename="ui_mainwindow.h" line="441"/>
+        <location filename="mainwindow.ui" line="485"/>
+        <location filename="ui_mainwindow.h" line="437"/>
+        <source>capture word setting</source>
+        <translation>取词设置</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="503"/>
+        <location filename="ui_mainwindow.h" line="438"/>
+        <source>mouse selection</source>
+        <translation>鼠标选择文本</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="516"/>
+        <location filename="ui_mainwindow.h" line="439"/>
+        <source>clipboard</source>
+        <translation>剪贴板取词</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="608"/>
+        <location filename="mainwindow.cpp" line="343"/>
+        <location filename="ui_mainwindow.h" line="455"/>
         <source>vbook</source>
         <translation>生词本</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="601"/>
-        <location filename="ui_mainwindow.h" line="435"/>
+        <location filename="mainwindow.ui" line="630"/>
+        <location filename="ui_mainwindow.h" line="449"/>
         <source>list</source>
         <translation>列表</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="684"/>
-        <location filename="ui_mainwindow.h" line="440"/>
+        <location filename="mainwindow.ui" line="713"/>
+        <location filename="ui_mainwindow.h" line="454"/>
         <source>exam</source>
         <translation>考试</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="813"/>
-        <location filename="ui_mainwindow.h" line="442"/>
+        <location filename="mainwindow.ui" line="842"/>
+        <location filename="ui_mainwindow.h" line="456"/>
         <source>toolBar</source>
         <translation>工具栏</translation>
     </message>
@@ -151,7 +173,7 @@
         <translation type="vanished">添加失败，生词本可能已经存满了</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="400"/>
+        <location filename="mainwindow.cpp" line="405"/>
         <source>try again</source>
         <translation>加油,再试一次</translation>
     </message>

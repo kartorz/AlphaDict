@@ -16,7 +16,7 @@ CapWordDialog::CapWordDialog(MainWindow *owner) :
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     //setAttribute(Qt::WA_TranslucentBackground, true);
     //setGeometry(rect);
-    move(QCursor::pos());
+    move(QCursor::pos().x()+8, QCursor::pos().y()+16);
     //setFocusPolicy(Qt::ClickFocus);
 }
 
@@ -27,7 +27,6 @@ CapWordDialog::~CapWordDialog()
 
 bool CapWordDialog::event(QEvent * event)
 {
-    //printf(" Event type %d\n", event->type());
     if (event->type() == QEvent::ActivationChange) {
         if(QApplication::activeWindow() != this)
             close();
