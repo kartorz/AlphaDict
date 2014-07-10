@@ -17,16 +17,18 @@
  */
 enum {
     MSG_DICT_QUERY = 0, /* (strArg1) */
+    MSG_CAPWORD_QUERY, /* (strArg1) */  
     MSG_DICT_PENDING_QUERY,/* (strArg1, iArg1)*/
     MSG_DICT_INDEX_QUERY,
 	MSG_SET_DICTITEMS, /* (-1[@1], pArg1[@3]):  */
+    MSG_SET_CAPWORD_DICTITEM, /* (-1[@1], pArg1[@3]):  */
     MSG_SET_LANLIST,   /* (strArg1, strArg1, pArg1[@2])  */
     MSG_SET_SRCLAN,    /* (strArg1) */
     MSG_SET_DETLAN,    /* (strArg1) */
     MSG_SET_DICTEN,    /* (iArg1, iArg2) */
 	MSG_MOVE_DICTITEM,  /* (iArg1, iArg2) */
     MSG_RESET_INDEXLIST, /*  */
-    MSG_LOOKUP_DONE, /* (iArg1) */
+    MSG_LOOKUP_DONE,     /* (iArg1) */
 	MSG_RELOAD_DICT,
     MSG_QUIT,
 };

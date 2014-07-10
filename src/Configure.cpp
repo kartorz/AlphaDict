@@ -24,6 +24,8 @@ using namespace boost::filesystem;
 
 #define DICTNODE_NUM_MAX   48
 
+#define XML_TAG_CWS "capture-word-setting"
+
 Configure& Configure::getRefrence()
 {
     static Configure configure;
@@ -92,14 +94,11 @@ int Configure::initialization()
 
 int Configure::load(const string& xmlpath)
 {
-#ifdef WIN32
     if (m_doc.LoadFile(xmlpath.c_str()) != XML_NO_ERROR) {
         g_log.e("{Configure} can't load xml\n");
         return ERR_LDCFG;
     }
-#else
-    AL_ASSERT(m_doc.LoadFile(xmlpath.c_str()) == XML_NO_ERROR, "{Configure} can't load xml\n");
-#endif
+
     XMLElement* rootElement = m_doc.RootElement();
 
     XMLElement* tempElement = rootElement->FirstChildElement("srclan");
@@ -119,6 +118,7 @@ int Configure::load(const string& xmlpath)
         stream >> m_uilanID;
     }
 
+    // Loading dictionary 
     vector<string> dictFiles;
     scanDictDir(dictFiles);
 
@@ -164,7 +164,7 @@ int Configure::load(const string& xmlpath)
 	        dict.summary = textE;
         }
         m_dictNodes.push_back(dict);
-	dictElement = dictElement->NextSiblingElement();
+        dictElement = dictElement->NextSiblingElement();
     }
 
     vector<string>::iterator iter = dictFiles.begin();
@@ -177,6 +177,24 @@ int Configure::load(const string& xmlpath)
             //printf("%s\n",d.name.c_str());
             m_dictNodes.push_back(d);
         }
+    }
+    // Loading dictionary -- end
+
+    tempElement = rootElement->FirstChildElement(XML_TAG_CWS);
+    if (tempElement) {
+        m_cws.bselection = tempElement->BoolAttribute("selection");
+        m_cws.bclipboard = tempElement->BoolAttribute("clipboard");
+        m_cws.shortcutKey = (CwsShortcutKey)tempElement->IntAttribute("shortcutkey");
+    } else {
+        m_cws.bselection = true;
+        m_cws.bclipboard = false;
+        m_cws.shortcutKey = No_Key;
+
+        XMLElement* e = m_doc.NewElement(XML_TAG_CWS);
+        e->SetAttribute("selection",  m_cws.bselection);
+        e->SetAttribute("clipboard",  m_cws.bclipboard);
+        e->SetAttribute("shortcutkey",m_cws.shortcutKey);
+        rootElement->InsertEndChild(e);
     }
 
     m_doc.SaveFile(xmlpath.c_str());
@@ -413,6 +431,30 @@ void Configure::writeUILanID(int id)
             g_log(LOG_ERROR, "writeUILanID: can't find text node\n");    
         }
     }
+}
+
+void Configure::writeCwsSelection(bool en)
+{
+    m_cws.bselection = en;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("selection",  m_cws.bselection);
+    m_dirty = true;
+}
+
+void Configure::writeCwsClipboard(bool en)
+{
+    m_cws.bclipboard = en;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("clipboard",  m_cws.bselection);
+    m_dirty = true;
+}
+
+void Configure::writeCwsShortcutKey(CwsShortcutKey shortcutKey)
+{
+    m_cws.shortcutKey = shortcutKey;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("shortcutkey",  m_cws.shortcutKey);
+    m_dirty = true;
 }
 
 void Configure::writeXml()

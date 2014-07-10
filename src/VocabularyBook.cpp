@@ -2,8 +2,6 @@
 #include <Windows.h>
 # endif
 
-#include <sstream>
-
 #include "Log.h"
 #include "DictManager.h"
 #include "Util.h"
@@ -60,21 +58,23 @@ bool VocabularyBook::add(const string& word)
 {
     DictItemList itemList;
     DictManager::getReference().lookup(word, 0, itemList);
+
     string expl;
     for (int i=0; i< itemList.size(); i++) {
-        expl += itemList[i].expl + "\n";
+        if (itemList[i].bfind)
+            expl += itemList[i].expl + "\n";
     }
+    if (expl == "")
+        return false;
+
     struct VBItem  item;
     item.word = word;
     item.expl = expl;
     m_wdlist.push_back(item);
 
-    stringstream stream;
-    stream << "id_" << m_wdlist.size() - 1;
-
     XMLElement* root = m_doc.RootElement();
     if (root) {
-        XMLElement* newElement = m_doc.NewElement(stream.str().c_str());
+        XMLElement* newElement = m_doc.NewElement("item");
         XMLElement* tempChildE;
         tempChildE = m_doc.NewElement("word");
         tempChildE->InsertFirstChild(m_doc.NewText(item.word.c_str()));
@@ -92,12 +92,11 @@ bool VocabularyBook::add(const string& word)
 
 void VocabularyBook::remove(const int row)
 {
-    stringstream stream;
-    stream << "id_" << row;
-
     XMLElement* root = m_doc.RootElement();
-    XMLElement* targetElement = root->FirstChildElement(stream.str().c_str());
-    root->DeleteChild(targetElement);
+    XMLElement* itemElement = root->FirstChildElement();
+    ELEMENT_ADVANCE(itemElement, row);
+
+    root->DeleteChild(itemElement);
 
     list<struct VBItem>::iterator iter = m_wdlist.begin();
     ITER_ADVANCE(iter, row);

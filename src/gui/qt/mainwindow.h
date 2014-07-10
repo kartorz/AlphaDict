@@ -4,6 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QModelIndexList>
 #include <QtWidgets/QSystemTrayIcon>
+#include <QtGui/QClipboard>
 
 #include "Application.h"
 
@@ -19,16 +20,23 @@ class VBookModel;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
+friend class  CapWordDialog;
+
 public:
+    static void showToolTip(QString info, int displayTimeMS=1500);
+    static void showToolTip(QString info, QPoint pos, int displayTimeMS=1500);
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void registerSysExit(void (*exit)()) { onSysExit = exit; }    
 
+
     QtMessager *m_messager;
 
 public slots:
-    void onUpdateText(void *v);
+    void onUpdateExplText(void *v);
+    void onUpdateCapWordExplText(void *v);
     void onSetLanComboBox(const QString& src, const QString& det, void *v);
 
 private slots:
@@ -89,13 +97,21 @@ private slots:
 
     void onActionVcbularyPageAdded();
 
+    void onClipboardDataChanged();
+
+    void onClipboardSelectionChanged();
+
+    void on_cwsClipboardCheckBox_clicked(bool checked);
+
+    void on_cwsSelectionCheckBox_clicked(bool checked);
     //void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
 protected :
     //bool winEvent( MSG * message, long * result);
-     //bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+    //bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+
 private:
-    void showToolTip(QString info, QWidget* w, int displayTimeMS=1500);
+
 
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
@@ -105,7 +121,7 @@ private:
 
     Configure* m_config;
     bool m_initSettingPage;
-
+    QString m_capword;
     void (*onSysExit)();
 };
 

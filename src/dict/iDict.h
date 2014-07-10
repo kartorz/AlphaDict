@@ -29,7 +29,7 @@ typedef vector<iIndexItem*> IndexList;
 class iDictItem
 {
 public:
-	iDictItem():phonetic(""),expl(""),dictname(""),opaque(NULL)
+	iDictItem():phonetic(""),expl(""),dictname(""),bfind(false),opaque(NULL)
     {
     }
     ~iDictItem(){}
@@ -37,6 +37,7 @@ public:
     std::string dictname;  /* utf-8 bytes */
 	std::string phonetic; /* utf-8 bytes */
 	std::string expl;     /* utf-8 bytes */
+    bool bfind;
     void *opaque;
 };
 
@@ -47,7 +48,7 @@ public:
     /* Load a dictionary */
     virtual bool load(const string& dictname) = 0;
 
-    /* Lookup a word or phrase */
+    /* Lookup a word/phrase */
 	virtual bool lookup(const string& word, DictItemList& itemList) = 0;
 
 	virtual int indexListSize() { return 0; }

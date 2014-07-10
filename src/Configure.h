@@ -20,6 +20,18 @@ struct DictNode {
     string summary;
 };
 
+enum CwsShortcutKey {
+    No_Key = 0,
+    Ctrl_Key,
+    Shift_Key,
+};
+
+struct CaptureWordSetting {
+    bool bselection;
+    bool bclipboard;
+    CwsShortcutKey shortcutKey;
+};
+
 enum UILanID {
     UILAN_EN = 0,
     UILAN_CN,
@@ -42,6 +54,9 @@ public:
     void writeDetLan(const string& lan);
     void writeUILanID(int id);
     void writeXml();
+    void writeCwsSelection(bool en);
+    void writeCwsClipboard(bool en);
+    void writeCwsShortcutKey(CwsShortcutKey shortcutKey);
 
     vector<string> m_languages;
     string m_dataDir;
@@ -50,16 +65,17 @@ public:
     string m_srcLan;
     string m_detLan;
     int m_uilanID;
+    CaptureWordSetting  m_cws;
 
     vector<struct DictNode> m_dictNodes;
 
     string getVBPath() { return m_homeDir+"/vbook.xml";}
 
 private:
-    int    load(const string& xmlpath);
-    void   loadLanguage();
-    void   scanDictDir(const string& path, vector<string>& dictFiles);
-    int    findDict(const string& path, const vector<string>& dictFiles);
+    int  load(const string& xmlpath);
+    void loadLanguage();
+    void scanDictDir(const string& path, vector<string>& dictFiles);
+    int  findDict(const string& path, const vector<string>& dictFiles);
 
     tinyxml2::XMLDocument m_doc;
     bool m_dirty;

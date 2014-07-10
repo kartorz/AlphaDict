@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QToolTip>
+#include <QtCore/QMimeData>
+#include <QtCore/QDebug>
+#include <QtGui/QCursor>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "capworddialog.h"
 #include "DictIndexModel.h"
 #include "VBookModel.h"
 #include "MessageQueue.h"
@@ -23,10 +27,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionVocabulary, SIGNAL(triggered()), this, SLOT(onActionVcbularyPageAdded()));
     //QShortcut  *listViewEnterAccel= new QShortcut(Qt::Key_Return, ui->indexListView);
     //connect(listViewEnterAccel, SIGNAL(activated()), this, SLOT(enterTreeItem()));
+    QObject::connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(onClipboardDataChanged()));
+    QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(onClipboardSelectionChanged()));
 
     m_config = g_application.m_configure;
-
-    /* Setup Language */
     
     m_dictIndexModel = new DictIndexModel();
     ui->indexListView->setModel(m_dictIndexModel);
@@ -113,7 +117,7 @@ void MainWindow::on_indexLineEdit_editingFinished()
     m_dictIndexModel->onResetIndexList(ui->indexLineEdit->text().toUtf8().data());
 }
 
-void MainWindow::onUpdateText(void *v)
+void MainWindow::onUpdateExplText(void *v)
 {
     DictItemList* itemList = (DictItemList*) v;
 
@@ -159,7 +163,22 @@ void MainWindow::onUpdateText(void *v)
         cursor.insertBlock();
     }
 
+//    ui->dictTextEdit->moveCursor(QTextCursor::Start);
+
     delete itemList;
+}
+
+void MainWindow::onUpdateCapWordExplText(void *v)
+{
+    DictItemList* itemList = (DictItemList*) v;
+
+    QPoint pos = QCursor::pos();
+    CapWordDialog* dlg = new CapWordDialog(this);
+    dlg->setText(v);
+    dlg->show();
+    //dlg->raise();
+    //dlg->activateWindow();
+    //::SetCapture() //win32 
 }
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
@@ -187,13 +206,13 @@ void MainWindow::on_saveButton_clicked()
     QString word = ui->inputLineEdit->text();
     
     if (word == "") {
-        showToolTip(tr("empty string"), ui->saveButton);
+        showToolTip(tr("empty string"));
         return;
     }
     if (m_vbookModel->add(word)) {
-        showToolTip(tr("success,add to vocabulary book"), ui->saveButton);
+        showToolTip(tr("add to vocabulary book,success"));
     } else {
-        showToolTip(tr("failure, maybe vocabulary book is full (200)"), ui->saveButton);
+        showToolTip(tr("add to vocabulary book,failure"));
     }
 }
 
@@ -280,6 +299,11 @@ void MainWindow::onActionSettingPageAdded()
 	        	    item->setCheckState(Qt::Unchecked);
 	        }
             ui->uilanComboBox->setCurrentIndex(m_config->m_uilanID);
+            Qt::CheckState ckstate = m_config->m_cws.bselection ? Qt::Checked : Qt::Unchecked;
+            ui->cwsSelectionCheckBox->setCheckState(ckstate);
+
+            ckstate = m_config->m_cws.bclipboard ? Qt::Checked : Qt::Unchecked;
+            ui->cwsClipboardCheckBox->setCheckState(ckstate);
         }
         //QIcon icon;
         //icon.addFile(QStringLiteral(":/res/setting.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -345,8 +369,9 @@ void MainWindow::on_vbdelToolButton_clicked()
 {
     int currentIndex = ui->vbookListView->currentIndex().row();
     if (currentIndex != -1) {
-        m_vbookModel->remove(currentIndex);
+        QModelIndex current = m_vbookModel->remove(currentIndex);
         ui->vbexplTextEdit->setPlainText("");
+        ui->vbookListView->setCurrentIndex(current);
     }
 }
 
@@ -366,7 +391,7 @@ void MainWindow::on_vbInput_editingFinished()
         on_vbnextItemTlBtn_clicked();
         ui->vbInput->clear();
     } else {
-        showToolTip(tr("try again"), ui->vbInput);        
+        showToolTip(tr("try again"));        
     }
 }
 
@@ -392,25 +417,67 @@ void MainWindow::on_vbookListView_activated(const QModelIndex &index)
     on_vbookListView_clicked(index);
 }
 
-void MainWindow::showToolTip(QString info, QWidget* w, int displayTimeMS)
+void MainWindow::showToolTip(QString info, int displayTimeMS)
 {
-    QPoint pos = w->pos();
+    //showToolTip(info, w, this, displayTimeMS);
+    showToolTip(info, QCursor::pos(), displayTimeMS);
+}
+
+void MainWindow::showToolTip(QString info, QPoint pos, int displayTimeMS)
+{
     QRect rect(0, 0, 120, 80);
     //QFont serifFont("Times", 12, QFont::Bold);
     //QPalette color;
     //color.setColor( QPalette::Inactive,QPalette::QPalette::ToolTipBase, Qt::yellow);
-    pos.setX(this->pos().x() + pos.x());
-    pos.setY(this->pos().y() + pos.y() + 80);
     //QToolTip::setPalette(color);
     //QToolTip::setFont(serifFont);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 1))
     if (displayTimeMS != -1)
-        QToolTip::showText(pos, info, this, rect, displayTimeMS);
+        QToolTip::showText(pos, info, NULL, rect, displayTimeMS);
     else
-        QToolTip::showText(pos, info, this, rect);
+        QToolTip::showText(pos, info, NULL, rect);
 #else
-    QToolTip::showText(pos, info, this, rect);
+    QToolTip::showText(pos, info, NULL, rect);
 #endif
+}
+
+void MainWindow::onClipboardDataChanged()
+{
+    //printf("onClipboardDataChanged\n");
+    if (m_config->m_cws.bclipboard) {
+        const QClipboard *clipboard = QApplication::clipboard();
+        
+        QString input = clipboard->text(QClipboard::Clipboard).trimmed();
+        if (input != "") {
+            m_capword = input;
+        	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        }
+    }
+}
+
+void MainWindow::onClipboardSelectionChanged()
+{
+    if (m_config->m_cws.bselection) {
+        const QClipboard *clipboard = QApplication::clipboard();
+        
+        QString input = clipboard->text(QClipboard::Selection).trimmed();
+        if (input != "") {
+            m_capword = input;
+        	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        }
+    }
+    //qDebug() <<  clipboard->text(QClipboard::Selection);
+    //qDebug() << QCursor::pos().x() << ":" << QCursor::pos().y();
+}
+
+void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsClipboard(checked);
+}
+
+void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsSelection(checked);
 }
 
 void MainWindow::onAppExit()

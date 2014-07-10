@@ -43,6 +43,11 @@ void SysMessager::processMessage()
             DictManager::getReference().lookup(msg.strArg1);
             break;
         }
+
+        case MSG_CAPWORD_QUERY: {
+            DictManager::getReference().lookup(msg.strArg1, 0, QUERY_CAPWORD_FLAG);
+            break;
+        }
         
         case MSG_DICT_PENDING_QUERY: {
             DictManager::getReference().lookup(msg.strArg1, msg.iArg1);

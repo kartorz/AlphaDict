@@ -35,6 +35,9 @@ public:
       virtual void doWork();
 };
 
+#define QUERY_CAPWORD_FLAG  0x01
+#define NO_CANDIDATEWORD_FLAG  0x02
+
 class DictManager
 {
 friend class LookupTask;
@@ -45,7 +48,7 @@ public:
     DictManager();
     ~DictManager();
     void initialization();
-	void lookup(const string& input, const int which=-1/*all*/); /* async */
+	void lookup(const string& input, const int which=-1/*all*/, const int flags=0); /* async */
 	void lookup(const string& input, const int which, DictItemList& items); /* sync*/
     int  getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
 	void onClick(int row, iIndexItem* item);
@@ -65,7 +68,8 @@ private:
     struct DictOpen{
         iDict *dict;
         Task  *task;
-        int    dictId;
+        int   dictId;
+        int   flag;
         string pending;
     };
     

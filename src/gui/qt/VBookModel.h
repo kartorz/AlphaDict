@@ -19,7 +19,7 @@ public:
                                 int role = Qt::DisplayRole) const;
 
     bool add(const QString& word);
-    void remove(const int row);
+    QModelIndex remove(const int row);
     void clear();
     QString expl(const int row) const;
     
