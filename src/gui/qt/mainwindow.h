@@ -108,7 +108,8 @@ private slots:
 
 protected :
     //bool winEvent( MSG * message, long * result);
-     //bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+    bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+
 private:
 
 

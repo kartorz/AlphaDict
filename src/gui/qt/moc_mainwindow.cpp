@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.2.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.2.1. It"
+#error "This file was generated using the moc from 5.3.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,12 +20,12 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[43];
-    char stringdata[983];
+    char stringdata[982];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
-        - idx * sizeof(QByteArrayData) \
+    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
+        - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
@@ -103,7 +103,7 @@ QT_MOC_LITERAL(42, 950, 31)
     "onClipboardDataChanged\0"
     "onClipboardSelectionChanged\0"
     "on_cwsClipboardCheckBox_clicked\0checked\0"
-    "on_cwsSelectionCheckBox_clicked\0"
+    "on_cwsSelectionCheckBox_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -121,41 +121,41 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  189,    2, 0x0a,
-       4,    1,  192,    2, 0x0a,
-       5,    3,  195,    2, 0x0a,
-       8,    1,  202,    2, 0x08,
-      10,    1,  205,    2, 0x08,
-      11,    0,  208,    2, 0x08,
-      12,    1,  209,    2, 0x08,
-      13,    0,  212,    2, 0x08,
-      14,    1,  213,    2, 0x08,
-      16,    1,  216,    2, 0x08,
-      17,    0,  219,    2, 0x08,
-      18,    0,  220,    2, 0x08,
-      19,    0,  221,    2, 0x08,
-      20,    0,  222,    2, 0x08,
-      21,    1,  223,    2, 0x08,
-      22,    0,  226,    2, 0x08,
-      23,    0,  227,    2, 0x08,
-      24,    1,  228,    2, 0x08,
-      25,    0,  231,    2, 0x08,
-      26,    0,  232,    2, 0x08,
-      27,    1,  233,    2, 0x08,
-      28,    0,  236,    2, 0x08,
-      29,    0,  237,    2, 0x08,
-      30,    0,  238,    2, 0x08,
-      31,    0,  239,    2, 0x08,
-      32,    1,  240,    2, 0x08,
-      33,    1,  243,    2, 0x08,
-      34,    0,  246,    2, 0x08,
-      35,    0,  247,    2, 0x08,
-      36,    0,  248,    2, 0x08,
-      37,    0,  249,    2, 0x08,
-      38,    0,  250,    2, 0x08,
-      39,    0,  251,    2, 0x08,
-      40,    1,  252,    2, 0x08,
-      42,    1,  255,    2, 0x08,
+       1,    1,  189,    2, 0x0a /* Public */,
+       4,    1,  192,    2, 0x0a /* Public */,
+       5,    3,  195,    2, 0x0a /* Public */,
+       8,    1,  202,    2, 0x08 /* Private */,
+      10,    1,  205,    2, 0x08 /* Private */,
+      11,    0,  208,    2, 0x08 /* Private */,
+      12,    1,  209,    2, 0x08 /* Private */,
+      13,    0,  212,    2, 0x08 /* Private */,
+      14,    1,  213,    2, 0x08 /* Private */,
+      16,    1,  216,    2, 0x08 /* Private */,
+      17,    0,  219,    2, 0x08 /* Private */,
+      18,    0,  220,    2, 0x08 /* Private */,
+      19,    0,  221,    2, 0x08 /* Private */,
+      20,    0,  222,    2, 0x08 /* Private */,
+      21,    1,  223,    2, 0x08 /* Private */,
+      22,    0,  226,    2, 0x08 /* Private */,
+      23,    0,  227,    2, 0x08 /* Private */,
+      24,    1,  228,    2, 0x08 /* Private */,
+      25,    0,  231,    2, 0x08 /* Private */,
+      26,    0,  232,    2, 0x08 /* Private */,
+      27,    1,  233,    2, 0x08 /* Private */,
+      28,    0,  236,    2, 0x08 /* Private */,
+      29,    0,  237,    2, 0x08 /* Private */,
+      30,    0,  238,    2, 0x08 /* Private */,
+      31,    0,  239,    2, 0x08 /* Private */,
+      32,    1,  240,    2, 0x08 /* Private */,
+      33,    1,  243,    2, 0x08 /* Private */,
+      34,    0,  246,    2, 0x08 /* Private */,
+      35,    0,  247,    2, 0x08 /* Private */,
+      36,    0,  248,    2, 0x08 /* Private */,
+      37,    0,  249,    2, 0x08 /* Private */,
+      38,    0,  250,    2, 0x08 /* Private */,
+      39,    0,  251,    2, 0x08 /* Private */,
+      40,    1,  252,    2, 0x08 /* Private */,
+      42,    1,  255,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,

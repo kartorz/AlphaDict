@@ -12,26 +12,16 @@ CapWordDialog::CapWordDialog(MainWindow *owner) :
     m_owner(owner)
 {
     ui->setupUi(this);
-    //setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
+    //setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     //setAttribute(Qt::WA_TranslucentBackground, true);
-    //setGeometry(rect);
     move(QCursor::pos().x()+8, QCursor::pos().y()+16);
-    //setFocusPolicy(Qt::ClickFocus);
+    //qApp->installEventFilter(this);
 }
 
 CapWordDialog::~CapWordDialog()
 {
     delete ui;
-}
-
-bool CapWordDialog::event(QEvent * event)
-{
-    if (event->type() == QEvent::ActivationChange) {
-        if(QApplication::activeWindow() != this)
-            close();
-    }
-    return QWidget::event(event);
 }
 
 void CapWordDialog::setText(void *v)
@@ -58,7 +48,6 @@ void CapWordDialog::setText(void *v)
     text = QString::fromUtf8((*itemList)[0].expl.c_str());
     text = text.trimmed();
     cursor.insertText(text,bodyFormat);
-    //cursor.setPosition(0);
     ui->textEdit->moveCursor(QTextCursor::Start);
 
     delete itemList;
@@ -84,3 +73,20 @@ void CapWordDialog::on_dictToolButton_clicked()
     m_owner->activateWindow();
     m_owner->showNormal();
 }
+
+bool CapWordDialog::event(QEvent * event)
+{
+    if (event->type() == QEvent::ActivationChange) {
+        if(QApplication::activeWindow() != this)
+            close();
+    }
+    return QWidget::event(event);
+}
+
+#if 0
+bool CapWordDialog::eventFilter( QObject * watched, QEvent * event )
+{
+    //g_log.e("event type2 %d\n", event->type());
+    return false;
+}
+#endif

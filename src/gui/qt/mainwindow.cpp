@@ -12,7 +12,10 @@
 #include "VBookModel.h"
 #include "MessageQueue.h"
 #include "QtMessager.h"
+#include "win32/TextOutHookServer.h"
 #include "iDict.h"
+#include "Log.h"
+#include "CharUtil.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -141,7 +144,7 @@ void MainWindow::onUpdateExplText(void *v)
     cursor.insertText(text, boldFormat);
     //cursor.insertBlock(itemBlock);
 
-    for (int i=0; i< itemList->size(); i++) {
+    for (unsigned i=0; i< itemList->size(); i++) {
         cursor.insertBlock();
         titleFormat.setFontWeight(QFont::DemiBold);
         text = QString::fromUtf8((*itemList)[i].phonetic.c_str());
@@ -175,21 +178,11 @@ void MainWindow::onUpdateCapWordExplText(void *v)
     QPoint pos = QCursor::pos();
     CapWordDialog* dlg = new CapWordDialog(this);
     dlg->setText(v);
+    //dlg->exec();
     dlg->show();
-#if 0
-    QRect rect(0, 0, 120, 80);
-
-    pos.setX(this->pos().x() + pos.x());
-    pos.setY(this->pos().y() + pos.y() + 80);
-    QString info = QString::fromUtf8((*itemList)[0].expl.c_str());
-    //QToolTip::setPalette(color);
-    //QToolTip::setFont(serifFont);
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 1))
-    QToolTip::showText(pos, info, this, rect);
-#else
-    QToolTip::showText(pos, info, this, rect);
-#endif
-#endif
+    dlg->raise();
+    dlg->activateWindow();
+    //::SetCapture() //win32 
 }
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
@@ -299,7 +292,7 @@ void MainWindow::onActionSettingPageAdded()
     if (inx == -1) {
         if (!m_initSettingPage) {
             m_initSettingPage = true;
-	        for (int i = 0; i < m_config->m_dictNodes.size(); i++) {
+	        for (unsigned i = 0; i < m_config->m_dictNodes.size(); i++) {
                 QString name = QString(m_config->m_dictNodes[i].name.c_str());
 	        	bool en = m_config->m_dictNodes[i].en;
 	        	QListWidgetItem* item = new QListWidgetItem(name, ui->dictListWidget);
@@ -474,7 +467,7 @@ void MainWindow::onClipboardSelectionChanged()
         QString input = clipboard->text(QClipboard::Selection).trimmed();
         if (input != "") {
             m_capword = input;
-        	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
         }
     }
     //qDebug() <<  clipboard->text(QClipboard::Selection);
@@ -486,9 +479,16 @@ void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
     m_config->writeCwsClipboard(checked);
 }
 
+//HINSTANCE g_hTextOutHook2 = NULL;
 void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
 {
     m_config->writeCwsSelection(checked);
+    if (checked) {
+        TextOutHookServer::getReference().inject((HWND)effectiveWinId());
+       // g_hTextOutHook2 = LoadLibrary(L"TextOutHook");
+    } else {
+        TextOutHookServer::getReference().uninject();
+    }
 }
 
 void MainWindow::onAppExit()
@@ -503,10 +503,43 @@ void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason)
     activateWindow();
     showNormal();
 }
-
+#endif
 //bool MainWindow::winEvent(MSG * message, long * result)
-bool nativeEvent(const QByteArray & eventType, void * message, long * result)
+bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * result)
 {
+    //WM_USER : 1024;
+    //qDebug() << ((MSG *)message)->message;
+    UINT message = ((MSG *)msg)->message;
+    if (message >= WM_USER) {
+        g_log.d("native event %u\n", message);
+    }
+
+    if (message == WM_USER+200) {
+        g_log.d("native event %u, %d\n", message, ((DWORD)(((MSG *)msg)->wParam)));
+    }
+
+    if (message == WM_USER + 3 ||  message == WM_USER + 4 || message == WM_USER + 104) {
+        //POINT *p = (POINT*) (((MSG *)msg)->wParam);  //lParam
+        //g_log.d("native event capture mouse(%ld, %ld)\n", p->x, p->y);
+    }
+
+    if (message == WM_USER + 101) {
+        char strbuf[256];
+        TextOutHookServer::getReference().getCaptureText(strbuf);
+        QString qstr = QString(strbuf);
+        //char* strmb = CharUtil::wcsrtombs_r((const wchar_t *)str);
+        g_log.d("capture stringA(%s)\n", qstr.toStdString().c_str());
+    }
+    
+    if (message == WM_USER + 102) {
+       char strbuf[256];
+       TextOutHookServer::getReference().getCaptureText(strbuf);
+       QString 	qstr = QString::fromWCharArray((const wchar_t *)strbuf);
+       g_log.d("capture stringW(%s)\n", qstr.toStdString().c_str());
+       //g_log.d("capture stringW(%s)\n", qstr.toUtf8().data());
+    }
+    return false;
+#if 0
     if((MSG *)message->message == WM_SIZE) {
         if(message->wParam == SIZE_MINIMIZED) {
 	    hide();
@@ -517,5 +550,5 @@ bool nativeEvent(const QByteArray & eventType, void * message, long * result)
         m_systray->hide();
     }
     return false;
-}
 #endif
+}

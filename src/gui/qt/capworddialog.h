@@ -14,16 +14,14 @@ class CapWordDialog : public QDialog
     Q_OBJECT
 
 public:
-//    explicit CapWordDialog(QWidget *parent = 0);
     explicit CapWordDialog(MainWindow *owner);
     ~CapWordDialog();
 
     void setText(void *v);
 
 protected:
-    //virtual void mousePressEvent(QMouseEvent *event);
-//    virtual void focusOutEvent(QFocusEvent * event);
     bool event(QEvent * event);
+   //virtual bool eventFilter( QObject *watched, QEvent *event);
 
 private slots:
     void on_saveToolButton_clicked();
