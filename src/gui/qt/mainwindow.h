@@ -112,7 +112,6 @@ protected :
 
 private:
 
-
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
 
@@ -123,6 +122,8 @@ private:
     bool m_initSettingPage;
     QString m_capword;
     void (*onSysExit)();
+
+    CapWordDialog* m_capWordDialog;
 };
 
 #endif // MAINWINDOW_H

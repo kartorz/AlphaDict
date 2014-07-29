@@ -2,6 +2,10 @@
 #define CAPWORDDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include "iDict.h"
+
+#define CWD_X_OFFSET  8
+#define CWD_Y_OFFSET  16
 
 class MainWindow;
 
@@ -17,7 +21,8 @@ public:
     explicit CapWordDialog(MainWindow *owner);
     ~CapWordDialog();
 
-    void setText(void *v);
+    void setDictItemList(DictItemList *v);
+    void moveToCursor();
 
 protected:
     bool event(QEvent * event);

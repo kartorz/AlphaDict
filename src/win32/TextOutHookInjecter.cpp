@@ -7,58 +7,61 @@
 HHOOK g_hMouseHook = NULL;
 HWND  g_hHookServer = NULL;
 TCHAR g_szDllPath[MAX_PATH] = {'\0'};
+//DWORD g_dllCount = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.HKT,rws")
 
-// Msg
 const int MOUSEOVER_INTERVAL = 200;
-const int WM_CW_ERROR = WM_USER;
 
-// wParam
-// WM_CW_ERROR
-/*  1: can't load TextOutHook.dll
- *
- */
+enum {
+    WM_CW_ERROR = WM_USER,
+    WM_CW_TEXTA,
+    WM_CW_TEXTW,
+    WM_CW_LBUTTON,
+};
+
 HINSTANCE g_hModule = NULL;
 HANDLE    g_hSyncMutex = NULL;
 HINSTANCE g_hTextOutHook = NULL;
 UINT_PTR  g_timerID = NULL;
 POINT     g_pMouse = {-1, -1};
 
-typedef void (*CaptureTextEnable_t)(HWND, HWND, POINT);
+typedef BOOL (*CaptureTextEnable_t)(HWND, HWND, POINT, BOOL *);
 CaptureTextEnable_t  CaptureTextEnable = NULL;
 
-typedef void (*GetCaptureText_t)(CHAR*);
-GetCaptureText_t  GetCaptureText = NULL;
+typedef void (*GetCaptureText_t)(CHAR *,  int *, int *);
+GetCaptureText_t  _GetCaptureText = NULL;
 
 void CALLBACK TimerFunc(HWND hWnd,UINT nMsg,UINT nTimerid,DWORD dwTime)
 {
-    DWORD result = WaitForSingleObject(g_hSyncMutex, 0);
+    DWORD result = WaitForSingleObject(g_hSyncMutex, INFINITE);
+
     if (result == WAIT_OBJECT_0 || result == WAIT_ABANDONED) {
     __try {
         KillTimer(NULL, g_timerID);
         g_timerID = NULL;
 
-        DWORD  ret;
-        SendMessageTimeout(g_hHookServer, WM_USER+2, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
-
         if (g_hTextOutHook) {
             if (!CaptureTextEnable) {
-               CaptureTextEnable = 
-               (CaptureTextEnable_t)GetProcAddress(g_hTextOutHook, "CaptureTextEnable");
+               CaptureTextEnable = (CaptureTextEnable_t)GetProcAddress(g_hTextOutHook, "CaptureTextEnable");
                if (!CaptureTextEnable) {
-                   DWORD  ret;
-                   SendMessageTimeout(g_hHookServer, WM_USER+203, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);    
+                   ReleaseMutex(g_hSyncMutex);  
                    return;
                }
             }
-            DWORD  ret;
-            SendMessageTimeout(g_hHookServer, WM_USER+3, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
+
             HWND hWnd = WindowFromPoint(g_pMouse);
             if (hWnd) {
-                CaptureTextEnable(g_hHookServer, hWnd, g_pMouse);
+                BOOL  isWChr;
+                DWORD ret;
+                DWORD msgID = WM_CW_TEXTA;
+                BOOL got = CaptureTextEnable(g_hHookServer, hWnd, g_pMouse, &isWChr);
+                if (got) {
+                    if (isWChr)  msgID++;
+                    SendMessageTimeout(g_hHookServer, msgID, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
+                }
             }
-        }  
+        }
     } __finally {
         ReleaseMutex(g_hSyncMutex);
     }
@@ -69,29 +72,28 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
     if (!g_hTextOutHook) {
         g_hTextOutHook = LoadLibrary(g_szDllPath);
-        DWORD  ret;
         if (!g_hTextOutHook) {
+            DWORD  ret;
             DWORD  wParam = GetLastError();
-            SendMessageTimeout(g_hHookServer, WM_CW_ERROR+200, (WPARAM)wParam, 0, SMTO_ABORTIFHUNG, MSG_TIMEOUT, &ret);
+            SendMessageTimeout(g_hHookServer, WM_CW_ERROR, (WPARAM)wParam, 0, SMTO_ABORTIFHUNG, MSG_TIMEOUT, &ret);
             //UnhookWindowsHookEx(g_hMouseHook);
-        } else {
-            SendMessageTimeout(g_hHookServer, WM_CW_ERROR+205, (WPARAM)wParam, 0, SMTO_ABORTIFHUNG, MSG_TIMEOUT, &ret);
+            return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
         }
     }
 
-    if (nCode == HC_ACTION  && wParam == WM_LBUTTONDOWN) {
-        //placehold = wParam;
-        //DWORD  ret;
-        //SendMessageTimeout(g_hHookServer, WM_MY_SHOW_TRANSLATION, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
-    }
-    if ((nCode == HC_ACTION) && ((wParam == WM_MOUSEMOVE) || (wParam == WM_NCMOUSEMOVE))) {
-        g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
-        g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+    if (nCode == HC_ACTION) {
+        if (wParam == WM_LBUTTONDOWN || wParam == WM_NCLBUTTONDOWN ) {
+            DWORD  ret;
+            SendMessageTimeout(g_hHookServer, WM_CW_LBUTTON, g_pMouse.x, g_pMouse.y, SMTO_ABORTIFHUNG, 50, &ret);
+        } else if (wParam == WM_MOUSEMOVE || wParam == WM_NCMOUSEMOVE) {
+            g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
+            g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+        }
     }
     return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
 }
 
-extern "C" __declspec(dllexport) void injectTextOutDriver(HWND hServer)
+extern "C" __declspec(dllexport) void InjectTextOutDriver(HWND hServer)
 {
     g_hHookServer = hServer;
 
@@ -116,7 +118,7 @@ extern "C" __declspec(dllexport) void injectTextOutDriver(HWND hServer)
     }
 }
 
-extern "C" __declspec(dllexport) void uninjectTextOutDriver()
+extern "C" __declspec(dllexport) void UninjectTextOutDriver()
 {
     if (g_hMouseHook) {
         UnhookWindowsHookEx(g_hMouseHook);
@@ -124,22 +126,22 @@ extern "C" __declspec(dllexport) void uninjectTextOutDriver()
     }
 }
 
-extern "C" __declspec(dllexport) void getCaptureText(CHAR *str)
+extern "C" __declspec(dllexport) void GetCaptureText(CHAR *str, int *pos, int *cbString)
 {
     if (g_hTextOutHook) {
-        if (!GetCaptureText) {
-            GetCaptureText = 
-            (GetCaptureText_t)GetProcAddress(g_hTextOutHook, "GetCaptureText");
-            if (!GetCaptureText) {
-               DWORD  ret;
-               SendMessageTimeout(g_hHookServer, WM_USER+204, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);    
+        if (!_GetCaptureText) {
+            _GetCaptureText = (GetCaptureText_t)GetProcAddress(g_hTextOutHook, "GetCaptureText");
+            if (!_GetCaptureText) {   
                return;
             }
         }
-        GetCaptureText(str);
-        //TCHAR buf[256] = TEXT("This is the destination");
-        //CopyMemory(str, buf, 256);
+        _GetCaptureText(str, pos, cbString);
     }
+}
+
+extern "C" __declspec(dllexport) int GetDllCount()
+{
+    return 0;//g_dllCount;
 }
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserve)
@@ -159,13 +161,16 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserve)
         break;
 
     case DLL_PROCESS_DETACH:
-        WaitForSingleObject(g_hSyncMutex, 0);
-        if (g_timerID) {
-            KillTimer(NULL, g_timerID);
-            g_timerID = NULL;
+        DWORD result = WaitForSingleObject(g_hSyncMutex, INFINITE);
+        if (result == WAIT_OBJECT_0 || result == WAIT_ABANDONED) {
+            if (g_timerID) {
+                KillTimer(NULL, g_timerID);
+                g_timerID = NULL;
+            }
+            ReleaseMutex(g_hSyncMutex);
+            CloseHandle(g_hSyncMutex);
+            g_hSyncMutex = NULL;
         }
-        ReleaseMutex(g_hSyncMutex);
-        CloseHandle(g_hSyncMutex);
 
         if (g_hTextOutHook) {
             FreeLibrary(g_hTextOutHook);

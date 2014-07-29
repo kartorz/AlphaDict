@@ -48,10 +48,10 @@ public:
     DictManager();
     ~DictManager();
     void initialization();
-	void lookup(const string& input, const int which=-1/*all*/, const int flags=0); /* async */
-	void lookup(const string& input, const int which, DictItemList& items); /* sync*/
+    void lookup(const string& input, const int which=-1/*all*/, const int flags=0); /* async */
+    void lookup(const string& input, const int which, DictItemList& items); /* sync*/
     int  getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
-	void onClick(int row, iIndexItem* item);
+    void onClick(int row, iIndexItem* item);
     void reloadDict();
     int  indexListSize();
     void setDictSrcLan(string& srclan);
@@ -60,7 +60,7 @@ public:
 
 private:
     void onAddLookupResult(int which, DictItemList& items);
-	bool loadDict(bool more=false);
+    bool loadDict(bool more=false);
     bool matchDict(const string& srcLan, const string& detLan);
     iDict* createHandleByDict(const string dictpath);
     iDict* createHandleByIdenitfier(const string identi);

@@ -22,6 +22,8 @@ bool Aldict::load(const string& dictname)
 
 bool Aldict::lookup(const string& word, DictItemList& itemList)
 {
+    MutexLock lock(m_cs);
+
     if (m_bLoad && !word.empty()) {
         if (lookupCache(word, itemList))
             return true;

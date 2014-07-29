@@ -3,11 +3,11 @@
 #include "VBookModel.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "iDict.h"
 #include "stdio.h"
 
+
 CapWordDialog::CapWordDialog(MainWindow *owner) :
-    QDialog(NULL),
+    QDialog(owner),
     ui(new Ui::CapWordDialog),
     m_owner(owner)
 {
@@ -15,18 +15,24 @@ CapWordDialog::CapWordDialog(MainWindow *owner) :
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
     //setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     //setAttribute(Qt::WA_TranslucentBackground, true);
-    move(QCursor::pos().x()+8, QCursor::pos().y()+16);
+    move(QCursor::pos().x()+CWD_X_OFFSET, QCursor::pos().y()+CWD_Y_OFFSET);
     //qApp->installEventFilter(this);
 }
 
 CapWordDialog::~CapWordDialog()
 {
+    m_owner->m_capWordDialog = NULL;
     delete ui;
 }
 
-void CapWordDialog::setText(void *v)
+void CapWordDialog::moveToCursor()
 {
-    DictItemList* itemList = (DictItemList*) v;
+    move(QCursor::pos().x()+CWD_X_OFFSET, QCursor::pos().y()+CWD_Y_OFFSET);
+}
+
+void CapWordDialog::setDictItemList(DictItemList *itemList)
+{
+    ui->textEdit->clear();
 
     QTextCursor cursor(ui->textEdit->textCursor());
     QTextCharFormat titleFormat;
@@ -35,13 +41,16 @@ void CapWordDialog::setText(void *v)
     QString text;
 
     titleFormat.setFontWeight(QFont::DemiBold);
+    //cursor.insertBlock();
+    cursor.insertText(m_owner->m_capword, titleFormat);
+
     text = QString::fromUtf8((*itemList)[0].phonetic.c_str());
     text = text.trimmed();
     if (text != "") {
         cursor.insertBlock();
         cursor.insertText(text, titleFormat);
-        cursor.insertBlock();
     }
+    cursor.insertBlock();
 
     bodyFormat.setFontWeight(QFont::Light);
     cursor.insertBlock(itemBlock);

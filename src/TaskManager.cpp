@@ -252,10 +252,10 @@ void* schedule(void *owner)
          }while(true);
 
          /* Got a job. */
-		 {
-			 MutexLock lock (tmgr->m_curTaskLock);
-			 tmgr->m_curTask = tsk;
-			 tmgr->m_taskCond.setEvent(); /* wake up a exection thread.*/
+        {
+            MutexLock lock (tmgr->m_curTaskLock);
+	    tmgr->m_curTask = tsk;
+            tmgr->m_taskCond.setEvent(); /* wake up a exection thread.*/
          }
          //printf("{schedule} wakeup exection thread\n");
     #ifdef _LINUX

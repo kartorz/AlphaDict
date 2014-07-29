@@ -19,7 +19,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_capWordDialog(NULL)
 {
     ui->setupUi(this);
     //ui->tabWidget->setTabsClosable(true);
@@ -48,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_initSettingPage = false;
 
     ui->tabWidget->removeTab(1);
-
     //QIcon icon("app.ico"); 
     //setWindowIcon(icon);
 
@@ -175,14 +175,19 @@ void MainWindow::onUpdateCapWordExplText(void *v)
 {
     DictItemList* itemList = (DictItemList*) v;
 
-    QPoint pos = QCursor::pos();
-    CapWordDialog* dlg = new CapWordDialog(this);
-    dlg->setText(v);
+    //QPoint pos = QCursor::pos();
+    if (m_capWordDialog == NULL) { 
+        m_capWordDialog = new CapWordDialog(this);
+    } else {
+        m_capWordDialog->moveToCursor();
+    }
+
+    m_capWordDialog->setDictItemList(itemList);
     //dlg->exec();
-    dlg->show();
-    dlg->raise();
-    dlg->activateWindow();
-    //::SetCapture() //win32 
+    m_capWordDialog->show();
+    m_capWordDialog->raise();
+    m_capWordDialog->activateWindow();
+    //::SetCapture() /* win32 -- it seems not work */
 }
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
@@ -454,7 +459,7 @@ void MainWindow::onClipboardDataChanged()
         QString input = clipboard->text(QClipboard::Clipboard).trimmed();
         if (input != "") {
             m_capword = input;
-        	g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
         }
     }
 }
@@ -477,6 +482,8 @@ void MainWindow::onClipboardSelectionChanged()
 void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
 {
     m_config->writeCwsClipboard(checked);
+    int cnt = TextOutHookServer::getReference().getDllCount();
+    g_log.d("TextOutHookInjecter dll count(%d)\n", cnt);
 }
 
 //HINSTANCE g_hTextOutHook2 = NULL;
@@ -491,52 +498,44 @@ void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
     }
 }
 
-void MainWindow::onAppExit()
-{
-    (*onSysExit)();
-//    QCoreApplication::quit();
-}
-
-#if 0
-void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason)
-{
-    activateWindow();
-    showNormal();
-}
-#endif
 //bool MainWindow::winEvent(MSG * message, long * result)
 bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * result)
 {
     //WM_USER : 1024;
-    //qDebug() << ((MSG *)message)->message;
-    UINT message = ((MSG *)msg)->message;
-    if (message >= WM_USER) {
-        g_log.d("native event %u\n", message);
+    unsigned int message = ((MSG *)msg)->message;
+    switch (message) {
+    case WM_CW_ERROR+300:
+        if (m_capWordDialog != NULL) {
+            //QMouseEvent event(QEvent::MouseButtonPress, pos, LeftButton, 0, 0);
+            //QApplication::sendEvent(mainWindow, &event);
+        }
+        break;
+
+    case WM_CW_ERROR:
+    {
+        DWORD errcode = (DWORD)(((MSG *)msg)->wParam);
+        g_log.d("error when capture word on win32, error code(%d)\n", errcode);
+        break;
     }
 
-    if (message == WM_USER+200) {
-        g_log.d("native event %u, %d\n", message, ((DWORD)(((MSG *)msg)->wParam)));
+    case WM_CW_TEXTW: 
+    {
+       char *strbuf = TextOutHookServer::getReference().getCaptureText(true);
+       QString input = QString::fromWCharArray((const wchar_t *)strbuf);
+       if (input != "") {
+           m_capword = input;
+           g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+       }
+       break;
     }
 
-    if (message == WM_USER + 3 ||  message == WM_USER + 4 || message == WM_USER + 104) {
-        //POINT *p = (POINT*) (((MSG *)msg)->wParam);  //lParam
-        //g_log.d("native event capture mouse(%ld, %ld)\n", p->x, p->y);
+    case WM_USER + 106: 
+    {
+        int x = (int)(((MSG *)msg)->wParam);
+        int y = (int)(((MSG *)msg)->lParam);
+        g_log.d("dll debug (%d, %d)\n", x, y);
+        break;
     }
-
-    if (message == WM_USER + 101) {
-        char strbuf[256];
-        TextOutHookServer::getReference().getCaptureText(strbuf);
-        QString qstr = QString(strbuf);
-        //char* strmb = CharUtil::wcsrtombs_r((const wchar_t *)str);
-        g_log.d("capture stringA(%s)\n", qstr.toStdString().c_str());
-    }
-    
-    if (message == WM_USER + 102) {
-       char strbuf[256];
-       TextOutHookServer::getReference().getCaptureText(strbuf);
-       QString 	qstr = QString::fromWCharArray((const wchar_t *)strbuf);
-       g_log.d("capture stringW(%s)\n", qstr.toStdString().c_str());
-       //g_log.d("capture stringW(%s)\n", qstr.toUtf8().data());
     }
     return false;
 #if 0
@@ -552,3 +551,21 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     return false;
 #endif
 }
+
+void MainWindow::onAppExit()
+{
+   if (m_capWordDialog != NULL) 
+        m_capWordDialog->close();
+
+    TextOutHookServer::getReference().uninject();
+    (*onSysExit)();
+//    QCoreApplication::quit();
+}
+
+#if 0
+void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    activateWindow();
+    showNormal();
+}
+#endif
