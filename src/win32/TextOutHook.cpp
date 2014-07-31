@@ -11,6 +11,8 @@ int   g_cbString = -1;
 #pragma data_seg()
 #pragma comment(linker, "/section:.STRBUF,rws")
 
+#define WM_CW_DEBUG  WM_USER+4
+
 typedef BOOL (WINAPI *TextOutAHook_t)(
     HDC hdc, int nXStart, int nYStart, LPCSTR lpszString, int cbString);
 
@@ -28,7 +30,6 @@ TextOutWHook_t TextOutWOri = NULL;
 ExtTextOutAHook_t ExtTextOutAOri = NULL;
 ExtTextOutWHook_t ExtTextOutWOri = NULL;
 
-
 #define GetTextExtentPoint32X(hdc, lpszString, cbString, tSize, bWChr) \
 do { \
 if (bWChr) \
@@ -37,15 +38,15 @@ else  \
     GetTextExtentPoint32A(hdc, lpszString, cbString, tSize); \
 } while(0)
 
-
 static BOOL 
 CaptureTextOut(HDC hdc, int nXStart, int nYStart, LPCSTR lpszString, int cbString, BOOL bWChr)
 {
     SIZE  tSize;
     POINT ptTextPos;
     RECT  Rect;
+    BOOL  bInsideRect = FALSE;
     POINT pMouse = g_pMouse;
-
+    
     GetTextExtentPoint32X(hdc, lpszString, cbString, &tSize, bWChr);
 
     ptTextPos.x = nXStart;
@@ -56,8 +57,26 @@ CaptureTextOut(HDC hdc, int nXStart, int nYStart, LPCSTR lpszString, int cbStrin
     Rect.right = ptTextPos.x + tSize.cx;
     Rect.top = ptTextPos.y;
     Rect.bottom = ptTextPos.y + tSize.cy;
+     /*	
+      * On some situation, RECT will be [0,4,-100,-83] or [36,114,-9,8],
+      * while mouse point be [47, 100]. It seems 'ptTexPos.y' being wrong.
+      */
+#if 0
+    DWORD  ret;
+    SendMessageTimeoutA(g_hHookServer, WM_CW_DEBUG, -1, cbString, SMTO_ABORTIFHUNG, 50, &ret);
+    SendMessageTimeoutA(g_hHookServer, WM_CW_DEBUG, Rect.left, Rect.right, SMTO_ABORTIFHUNG, 50, &ret);
+    SendMessageTimeoutA(g_hHookServer, WM_CW_DEBUG, Rect.top,  Rect.bottom, SMTO_ABORTIFHUNG, 50, &ret);
+#endif
+    
+    if (Rect.top < 0) {
+        if (Rect.left <= pMouse.x && Rect.right >= pMouse.x)
+            bInsideRect = TRUE;
+    } else {
+        if (PtInRect(&Rect, pMouse)) 
+            bInsideRect = TRUE;
+    }
 
-    if (PtInRect(&Rect, pMouse)) {
+    if (bInsideRect) {
         int pos;
         SIZE  iterSize;
         pos =(int)((pMouse.x - Rect.left) * cbString /((float)tSize.cx)+0.5);   
@@ -85,8 +104,6 @@ CaptureTextOut(HDC hdc, int nXStart, int nYStart, LPCSTR lpszString, int cbStrin
         return TRUE;
     }
     return FALSE;
-    //DWORD  ret;
-    //SendMessageTimeoutA(g_hHookServer, WM_USER+106, nXStart, nYStart, SMTO_ABORTIFHUNG, 50, &ret);
 }
 
 static void CaptureTextOutA(HDC hdc, int nXStart, int nYStart, LPCSTR lpszString, int cbString)
@@ -113,29 +130,96 @@ static void CaptureTextOutW(HDC hdc, int nXStart, int nYStart, LPCWSTR lpszStrin
     }
 }
 
+/* Take this code form GolenDict which is a open source software */
+static WCHAR * GlyphindexToUnicode(HDC hdc, LPCWSTR lpszString, int cbString)
+{
+    LPGLYPHSET ranges;
+    WCHAR * allChars, * ptr, * restoredString;
+    WORD * allIndices;
+    unsigned x;
+
+    // Here we have to decode glyph indices back to chars. We do this
+    // by tedious and ineffective iteration.
+    //
+    ranges = (LPGLYPHSET)malloc( GetFontUnicodeRanges( hdc, 0 ) );
+    GetFontUnicodeRanges( hdc, ranges );
+
+    // Render up all available chars into one ridiculously big string
+    allChars   = (WCHAR *)malloc( ( ranges->cGlyphsSupported ) * sizeof( WCHAR ) );
+    allIndices = (WORD *)malloc( ( ranges->cGlyphsSupported ) * sizeof( WORD ) );
+
+    ptr = allChars;
+
+    for( x = 0; x < ranges->cRanges; ++x ) {
+        WCHAR c = ranges->ranges[x].wcLow;
+        unsigned y = ranges->ranges[ x ].cGlyphs;
+        while( y-- )
+          *ptr++ = c++;
+    }
+
+    // Amazing. Now get glyph indices for this one nice string.
+    GetGlyphIndicesW(hdc, allChars, ranges->cGlyphsSupported, allIndices,
+                     GGI_MARK_NONEXISTING_GLYPHS );
+
+    // Fascinating. Now translate our original input string back into
+    // its readable form.
+    restoredString = (WCHAR *)malloc(cbString * sizeof( WCHAR ));
+    for( x = 0; x < cbString; ++x ) {
+        unsigned y;
+        WORD idx = lpszString[x];
+        for( y = 0; y < ranges->cGlyphsSupported; ++y ) {
+            if (allIndices[y] == idx ) {
+                restoredString[x] = allChars[ y ];
+                break;
+            }
+            if ( y == ranges->cGlyphsSupported ) {
+                // Not found
+                restoredString[ x ] = L'?';
+            }
+        }
+    }
+    // And we're done.
+
+    free(allIndices);
+    free(allChars);
+    free(ranges);
+    return restoredString;
+}
+
 BOOL WINAPI TextOutAHook(HDC hdc, int nXStart, int nYStart, LPCSTR lpszString, int cbString)
 {
-    CaptureTextOutA(hdc, nXStart, nYStart, lpszString, cbString);  
+    if (g_bCapture)
+        CaptureTextOutA(hdc, nXStart, nYStart, lpszString, cbString);  
     return TextOutAOri(hdc, nXStart, nYStart, lpszString, cbString);
 }
 
 BOOL WINAPI TextOutWHook(HDC hdc, int nXStart, int nYStart, LPCWSTR lpszString, int cbString)
 {
-    CaptureTextOutW(hdc, nXStart, nYStart, lpszString, cbString);
+    if (g_bCapture)
+        CaptureTextOutW(hdc, nXStart, nYStart, lpszString, cbString);
     return TextOutWOri(hdc, nXStart, nYStart, lpszString, cbString);
 }
 
 BOOL WINAPI ExtTextOutAHook(HDC hdc, int nXStart, int nYStart, UINT fuOptions,
     CONST RECT *lprc, LPCSTR lpszString, UINT cbString, CONST INT *lpDx)
 {
-    CaptureTextOutA(hdc, nXStart, nYStart, lpszString, cbString);
+    if (g_bCapture)
+        CaptureTextOutA(hdc, nXStart, nYStart, lpszString, cbString);
     return ExtTextOutAOri(hdc, nXStart, nYStart, fuOptions, lprc, lpszString, cbString, lpDx);
 }
 
 BOOL WINAPI ExtTextOutWHook(HDC hdc, int nXStart, int nYStart, UINT fuOptions,
     CONST RECT *lprc, LPCWSTR lpszString, UINT cbString, CONST INT *lpDx)
 {
-    CaptureTextOutW(hdc, nXStart, nYStart, lpszString, cbString);
+    if (g_bCapture) {
+        if (fuOptions & ETO_GLYPH_INDEX) {
+            WCHAR * lpszUString = GlyphindexToUnicode(hdc, lpszString, cbString);
+            CaptureTextOutW(hdc, nXStart, nYStart, lpszUString, cbString);
+            free((void *)lpszUString);
+        } else {
+            CaptureTextOutW(hdc, nXStart, nYStart, lpszString, cbString);
+        }
+    }
     return ExtTextOutWOri(hdc, nXStart, nYStart, fuOptions, lprc, lpszString, cbString, lpDx);
 }
 
@@ -180,7 +264,11 @@ CaptureTextEnable(HWND hHookServer, HWND hWnd, POINT pMouse, BOOL *isWChr)
     ScreenToClient(hWnd, &pMouse);
     g_hHookServer = hHookServer;
     g_pMouse = pMouse;
-
+#if 0
+    DWORD ret;
+    SendMessageTimeoutA(g_hHookServer, WM_CW_DEBUG, -2, -2, SMTO_ABORTIFHUNG, 50, &ret);
+    SendMessageTimeoutA(g_hHookServer, WM_CW_DEBUG, g_pMouse.x, g_pMouse.y, SMTO_ABORTIFHUNG, 50, &ret);
+#endif
     if (pMouse.y >= 0) {
         RECT UpdateRect;
 	GetClientRect(hWnd, &UpdateRect);
@@ -194,7 +282,6 @@ CaptureTextEnable(HWND hHookServer, HWND hWnd, POINT pMouse, BOOL *isWChr)
 	UpdateWindow(hWnd);
         *isWChr = g_bWChr;
         g_bCapture = FALSE;
-        
         if (g_tPos != -1)
             return TRUE;
     }

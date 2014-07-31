@@ -1,7 +1,7 @@
 #include "win32/TextOutHookServer.h"
 #include "Log.h"
 
-void injectDummy(HWND) { }
+void injectDummy(HWND, int) { }
 void uninjectDummy() { }
 void getCaptureTextDummy(char *, int *, int *) {}
 int  getDllCountDummy() { return 0;}
@@ -19,10 +19,17 @@ static bool isSeparatorA(char c)
     int i = 0;
     if (c == '\0')
         return true;
-
+    if (c > 128)
+        return false;
+    if ((c >= 'a' &&  c <= 'z')
+        ||(c >= 'A' && c <= 'Z')) 
+        return false;
+    return true;
+#if 0
     while (separatorA[i] != '\0' && c != separatorA[i])
         ++i;
     return separatorA[i] != '\0';
+#endif
 }
 
 static bool isSeparatorW(WCHAR c)
@@ -30,10 +37,17 @@ static bool isSeparatorW(WCHAR c)
     int i = 0;
     if (c == L'\0')
         return true;
-
+    if (c >= 128)
+        return false;
+    if ((c >= L'a' &&  c <= L'z')
+        ||(c >= L'A' && c <= L'Z')) 
+        return false;
+    return true;
+#if 0
     while (separatorW[i] != L'\0' && c != separatorW[i])
         ++i;
     return separatorW[i] != L'\0';
+#endif
 }
 
 
@@ -85,24 +99,25 @@ char * TextOutHookServer::getCaptureText(bool isWChr)
             IS_SEPARATOR_LOOP(end, isWChr)
         }
         end -= 1;
-        
-        copysize = (end - start + 1);
-        copystart =  start;
-        if (isWChr) {
-            copysize = copysize * sizeof(wchar_t);
-            copystart = copystart * sizeof(wchar_t);
-        }
-
-        if (copystart < 254) {
-            /* It should be 255 for ANSI string, but it doesn't matter, 
-               Let us simplify this.*/
-            if (copystart + copysize < 254) {
-                memmove(m_strbuf, m_strbuf+copystart, copysize);
-                m_strbuf[copysize] = '\0';
-                m_strbuf[copysize+1] = '\0';
-                return m_strbuf;;
+        if (end > start) {
+            copysize = (end - start + 1);
+            copystart =  start;
+            if (isWChr) {
+                copysize = copysize * sizeof(wchar_t);
+                copystart = copystart * sizeof(wchar_t);
             }
-        }
+
+            if (copystart < 254) {
+                /* It should be 255 for ANSI string, but it doesn't matter, 
+                   Let us simplify this.*/
+                if (copystart + copysize < 254) {
+                    memmove(m_strbuf, m_strbuf+copystart, copysize);
+                    m_strbuf[copysize] = '\0';
+                    m_strbuf[copysize+1] = '\0';
+                    return m_strbuf;;
+                }
+            }
+        } // end > start
     }
 
 /* something wrong */

@@ -482,32 +482,38 @@ void MainWindow::onClipboardSelectionChanged()
 void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
 {
     m_config->writeCwsClipboard(checked);
-    int cnt = TextOutHookServer::getReference().getDllCount();
-    g_log.d("TextOutHookInjecter dll count(%d)\n", cnt);
 }
 
-//HINSTANCE g_hTextOutHook2 = NULL;
 void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
 {
     m_config->writeCwsSelection(checked);
+#if 1
     if (checked) {
-        TextOutHookServer::getReference().inject((HWND)effectiveWinId());
-       // g_hTextOutHook2 = LoadLibrary(L"TextOutHook");
+        TextOutHookServer::getReference().inject((HWND)effectiveWinId(), 0);
     } else {
         TextOutHookServer::getReference().uninject();
     }
+#endif
 }
 
 //bool MainWindow::winEvent(MSG * message, long * result)
 bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * result)
 {
+#ifdef _WINDOWS
     //WM_USER : 1024;
     unsigned int message = ((MSG *)msg)->message;
     switch (message) {
-    case WM_CW_ERROR+300:
+    case WM_CW_LBUTTON:
         if (m_capWordDialog != NULL) {
-            //QMouseEvent event(QEvent::MouseButtonPress, pos, LeftButton, 0, 0);
-            //QApplication::sendEvent(mainWindow, &event);
+            int x = (int)(((MSG *)msg)->wParam);
+            int y = (int)(((MSG *)msg)->lParam);
+            QPoint pos(x,y);
+            QRect rect = m_capWordDialog->frameGeometry();
+            if (!rect.contains(pos)) {
+                 m_capWordDialog->close();
+            }
+            //QMouseEvent event(QEvent::MouseButtonPress, pos, QT::LeftButton, 0, 0);
+            //QApplication::sendEvent(m_capWordDialog, &event);      
         }
         break;
 
@@ -525,31 +531,26 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
        if (input != "") {
            m_capword = input;
            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+       } else {
+           if (m_capWordDialog != NULL) {
+               m_capWordDialog->close();
+           }
        }
        break;
     }
 
-    case WM_USER + 106: 
+    case WM_CW_DEBUG: 
     {
         int x = (int)(((MSG *)msg)->wParam);
         int y = (int)(((MSG *)msg)->lParam);
-        g_log.d("dll debug (%d, %d)\n", x, y);
+        g_log.d("capture word debug message(%d, %d)\n", x, y);
         break;
     }
+    // case SIZE_MINIMIZED
+    // case WM_CLOSE
     }
-    return false;
-#if 0
-    if((MSG *)message->message == WM_SIZE) {
-        if(message->wParam == SIZE_MINIMIZED) {
-	    hide();
-            return true;
-	}
-    }
-    if(message->message == WM_CLOSE) {
-        m_systray->hide();
-    }
-    return false;
 #endif
+    return false;
 }
 
 void MainWindow::onAppExit()

@@ -2,7 +2,7 @@
 #define _TEXTOUTHOOKSERVER_H_
 #include <Windows.h>
 
-typedef void (*injectDriver_t)(HWND);
+typedef void (*injectDriver_t)(HWND,  int);
 typedef void (*uninjectDriver_t)();
 typedef void (*getCaptureText_t)(char *, int *, int *);
 typedef int (*getDllCount_t)();
@@ -13,6 +13,7 @@ enum {
     WM_CW_TEXTA,
     WM_CW_TEXTW,
     WM_CW_LBUTTON,
+    WM_CW_DEBUG,
 };
 
 class TextOutHookServer

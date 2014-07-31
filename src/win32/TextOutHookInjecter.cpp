@@ -7,6 +7,9 @@
 HHOOK g_hMouseHook = NULL;
 HWND  g_hHookServer = NULL;
 TCHAR g_szDllPath[MAX_PATH] = {'\0'};
+// 0: mouse over
+// 1: mouse selection
+int   g_iCapMode = 0;
 //DWORD g_dllCount = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.HKT,rws")
@@ -18,6 +21,7 @@ enum {
     WM_CW_TEXTA,
     WM_CW_TEXTW,
     WM_CW_LBUTTON,
+    WM_CW_DEBUG,
 };
 
 HINSTANCE g_hModule = NULL;
@@ -25,6 +29,10 @@ HANDLE    g_hSyncMutex = NULL;
 HINSTANCE g_hTextOutHook = NULL;
 UINT_PTR  g_timerID = NULL;
 POINT     g_pMouse = {-1, -1};
+POINT     g_pLastMouse = {-1, -1};
+int       g_selectionStatus = 0;
+BOOL      g_bSelectionText = FALSE;
+
 
 typedef BOOL (*CaptureTextEnable_t)(HWND, HWND, POINT, BOOL *);
 CaptureTextEnable_t  CaptureTextEnable = NULL;
@@ -32,6 +40,28 @@ CaptureTextEnable_t  CaptureTextEnable = NULL;
 typedef void (*GetCaptureText_t)(CHAR *,  int *, int *);
 GetCaptureText_t  _GetCaptureText = NULL;
 
+static void SendCtrlCKeyCode()
+{
+#define VK_C 0x43
+    INPUT ip;
+    ip.type = INPUT_KEYBOARD;
+    ip.ki.wScan = 0;
+    ip.ki.time = 0;
+    ip.ki.dwExtraInfo = 0;
+
+    ip.ki.wVk = VK_CONTROL;
+    ip.ki.dwFlags = 0;
+    SendInput(1, &ip, sizeof(INPUT));
+   
+    ip.ki.wVk = VK_C;
+    SendInput(1, &ip, sizeof(INPUT));
+
+    ip.ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, &ip, sizeof(INPUT));
+
+    ip.ki.wVk = VK_CONTROL;
+    SendInput(1, &ip, sizeof(INPUT));
+}
 void CALLBACK TimerFunc(HWND hWnd,UINT nMsg,UINT nTimerid,DWORD dwTime)
 {
     DWORD result = WaitForSingleObject(g_hSyncMutex, INFINITE);
@@ -41,6 +71,18 @@ void CALLBACK TimerFunc(HWND hWnd,UINT nMsg,UINT nTimerid,DWORD dwTime)
         KillTimer(NULL, g_timerID);
         g_timerID = NULL;
 
+        HWND hWnd = WindowFromPoint(g_pMouse);
+
+        if (g_iCapMode == 1) {
+            if (hWnd && g_bSelectionText) {
+                //SendMessage(hWnd, WM_COPY, 0, 0);
+                SendCtrlCKeyCode();
+                g_bSelectionText = FALSE;
+            }
+            ReleaseMutex(g_hSyncMutex);
+            return;
+        }
+
         if (g_hTextOutHook) {
             if (!CaptureTextEnable) {
                CaptureTextEnable = (CaptureTextEnable_t)GetProcAddress(g_hTextOutHook, "CaptureTextEnable");
@@ -49,19 +91,25 @@ void CALLBACK TimerFunc(HWND hWnd,UINT nMsg,UINT nTimerid,DWORD dwTime)
                    return;
                }
             }
-
-            HWND hWnd = WindowFromPoint(g_pMouse);
+            
             if (hWnd) {
-                BOOL  isWChr;
-                DWORD ret;
-                DWORD msgID = WM_CW_TEXTA;
-                BOOL got = CaptureTextEnable(g_hHookServer, hWnd, g_pMouse, &isWChr);
-                if (got) {
-                    if (isWChr)  msgID++;
-                    SendMessageTimeout(g_hHookServer, msgID, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
+                TCHAR tIdentifier[128];
+                //GetWindowText : "Capture Word"
+                //GetClassName  :  "Qt5QWindowPopupDropShadowSaveBits"
+                if (GetWindowText(hWnd, tIdentifier, sizeof(tIdentifier) / sizeof(TCHAR))) {
+                //if (GetClassName(hWnd, tIdentifier, sizeof(tIdentifier) / sizeof(TCHAR))) {
+                    if (lstrcmp(tIdentifier, TEXT("Capture Word")) != 0) {
+                        DWORD ret;
+                        DWORD msgID = WM_CW_TEXTA;
+                        BOOL  isWChr;
+                        if (CaptureTextEnable(g_hHookServer, hWnd, g_pMouse, &isWChr)) {
+                            if (isWChr)  msgID++;
+                            SendMessageTimeout(g_hHookServer, msgID, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
+                        }
+                    }
                 }
             }
-        }
+        } // g_hTextOutHook
     } __finally {
         ReleaseMutex(g_hSyncMutex);
     }
@@ -83,19 +131,45 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 
     if (nCode == HC_ACTION) {
         if (wParam == WM_LBUTTONDOWN || wParam == WM_NCLBUTTONDOWN ) {
+            POINT pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
             DWORD  ret;
-            SendMessageTimeout(g_hHookServer, WM_CW_LBUTTON, g_pMouse.x, g_pMouse.y, SMTO_ABORTIFHUNG, 50, &ret);
+            SendMessageTimeout(g_hHookServer, WM_CW_LBUTTON, pMouse.x, pMouse.y, SMTO_ABORTIFHUNG, 20, &ret);
+            if (g_iCapMode == 1) {
+                if (!g_bSelectionText) {
+                    g_pMouse = pMouse;
+                    g_selectionStatus = 1;
+                }
+            }
         } else if (wParam == WM_MOUSEMOVE || wParam == WM_NCMOUSEMOVE) {
-            g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
-            g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+            POINT pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
+            if (abs(pMouse.x - g_pMouse.x) > 1) {
+                g_pMouse = pMouse;
+                if (g_iCapMode == 0) {
+                    g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+                } else if (g_iCapMode == 1){
+                    if (g_selectionStatus == 1) {
+                        g_selectionStatus = 2;
+                    }
+                }
+            }
+        } else if (wParam == WM_LBUTTONUP || WM_NCLBUTTONUP) {
+            if (g_iCapMode == 1){
+                if (g_selectionStatus == 2) {
+                    g_selectionStatus = 3;
+                    g_bSelectionText = TRUE;
+                    g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
+                    g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+                }
+            }
         }
     }
     return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
 }
 
-extern "C" __declspec(dllexport) void InjectTextOutDriver(HWND hServer)
+extern "C" __declspec(dllexport) void InjectTextOutDriver(HWND hServer, int iCapMode)
 {
     g_hHookServer = hServer;
+    g_iCapMode = iCapMode;
 
     GetModuleFileName(0, g_szDllPath, sizeof(g_szDllPath) - sizeof(TCHAR));
     bool find = false;

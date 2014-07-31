@@ -188,9 +188,6 @@
     <ClCompile Include="..\..\..\src\gui\qt\moc_mainwindow.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\gui\qt\moc_QtMessager.cpp">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\gui\qt\moc_VBookModel.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -216,6 +213,9 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\win32\TextOutHookServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\qt\moc_QtMessager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

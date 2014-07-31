@@ -7,7 +7,7 @@
 
 
 CapWordDialog::CapWordDialog(MainWindow *owner) :
-    QDialog(owner),
+    QDialog(NULL),
     ui(new Ui::CapWordDialog),
     m_owner(owner)
 {
