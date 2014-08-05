@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.0
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -63,9 +63,16 @@ public:
     QLabel *uilanLabel;
     QComboBox *uilanComboBox;
     QWidget *tab_2;
-    QGroupBox *groupBox;
+    QGroupBox *cwsGroupBox;
+    QGroupBox *cwsGroupBox1;
+    QLabel *cwsShortcutkeylabel;
+    QCheckBox *cswEnableCheckBox;
+    QLabel *label_2;
+    QComboBox *cwsShortcutkeyComboBox;
+    QGroupBox *cwsGroupBox2;
     QCheckBox *cwsSelectionCheckBox;
     QCheckBox *cwsClipboardCheckBox;
+    QCheckBox *cwsMouseCheckBox;
     QListWidget *dictListWidget;
     QToolButton *dictDownToolButton;
     QToolButton *dictUpToolButton;
@@ -98,6 +105,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
+        MainWindow->setFocusPolicy(Qt::NoFocus);
         QIcon icon;
         icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
@@ -116,6 +124,7 @@ public:
         actionSetting->setIcon(icon2);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setFocusPolicy(Qt::NoFocus);
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
         tabWidget->setGeometry(QRect(1, 0, 718, 444));
@@ -224,7 +233,7 @@ public:
         settingTab->setEnabled(true);
         settingTabWidget = new QTabWidget(settingTab);
         settingTabWidget->setObjectName(QStringLiteral("settingTabWidget"));
-        settingTabWidget->setGeometry(QRect(0, -3, 717, 414));
+        settingTabWidget->setGeometry(QRect(0, -3, 717, 417));
         settingTabWidget->setFocusPolicy(Qt::NoFocus);
         settingTabWidget->setTabPosition(QTabWidget::South);
         tab = new QWidget();
@@ -245,23 +254,53 @@ public:
         settingTabWidget->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
-        groupBox = new QGroupBox(tab_2);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setEnabled(true);
-        groupBox->setGeometry(QRect(310, 10, 390, 101));
-        groupBox->setAutoFillBackground(false);
-        groupBox->setStyleSheet(QLatin1String("#groupBox { \n"
+        cwsGroupBox = new QGroupBox(tab_2);
+        cwsGroupBox->setObjectName(QStringLiteral("cwsGroupBox"));
+        cwsGroupBox->setEnabled(true);
+        cwsGroupBox->setGeometry(QRect(300, 10, 391, 300));
+        cwsGroupBox->setAutoFillBackground(false);
+        cwsGroupBox->setStyleSheet(QLatin1String("#cwsGroupBox { \n"
 "     border: 1px solid gray; \n"
 "     border-radius: 1px; \n"
 " } "));
-        groupBox->setCheckable(false);
-        groupBox->setChecked(false);
-        cwsSelectionCheckBox = new QCheckBox(groupBox);
+        cwsGroupBox->setCheckable(false);
+        cwsGroupBox->setChecked(false);
+        cwsGroupBox1 = new QGroupBox(cwsGroupBox);
+        cwsGroupBox1->setObjectName(QStringLiteral("cwsGroupBox1"));
+        cwsGroupBox1->setGeometry(QRect(10, 50, 360, 80));
+        cwsGroupBox1->setStyleSheet(QLatin1String("#cwsGroupBox1{ \n"
+"     border: 1px solid gray; \n"
+"     border-radius: 1px; \n"
+" } "));
+        cwsShortcutkeylabel = new QLabel(cwsGroupBox1);
+        cwsShortcutkeylabel->setObjectName(QStringLiteral("cwsShortcutkeylabel"));
+        cwsShortcutkeylabel->setGeometry(QRect(97, 40, 171, 20));
+        cswEnableCheckBox = new QCheckBox(cwsGroupBox1);
+        cswEnableCheckBox->setObjectName(QStringLiteral("cswEnableCheckBox"));
+        cswEnableCheckBox->setGeometry(QRect(8, 39, 81, 22));
+        label_2 = new QLabel(cwsGroupBox1);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(342, 42, 16, 17));
+        cwsShortcutkeyComboBox = new QComboBox(cwsGroupBox1);
+        cwsShortcutkeyComboBox->setObjectName(QStringLiteral("cwsShortcutkeyComboBox"));
+        cwsShortcutkeyComboBox->setGeometry(QRect(268, 38, 71, 27));
+        cwsShortcutkeyComboBox->setEditable(false);
+        cwsGroupBox2 = new QGroupBox(cwsGroupBox);
+        cwsGroupBox2->setObjectName(QStringLiteral("cwsGroupBox2"));
+        cwsGroupBox2->setGeometry(QRect(10, 162, 361, 91));
+        cwsGroupBox2->setStyleSheet(QLatin1String("#cwsGroupBox2{ \n"
+"     border: 1px solid gray; \n"
+"     border-radius: 1px; \n"
+" } "));
+        cwsSelectionCheckBox = new QCheckBox(cwsGroupBox2);
         cwsSelectionCheckBox->setObjectName(QStringLiteral("cwsSelectionCheckBox"));
-        cwsSelectionCheckBox->setGeometry(QRect(10, 30, 161, 22));
-        cwsClipboardCheckBox = new QCheckBox(groupBox);
+        cwsSelectionCheckBox->setGeometry(QRect(9, 40, 101, 22));
+        cwsClipboardCheckBox = new QCheckBox(cwsGroupBox2);
         cwsClipboardCheckBox->setObjectName(QStringLiteral("cwsClipboardCheckBox"));
-        cwsClipboardCheckBox->setGeometry(QRect(219, 30, 161, 22));
+        cwsClipboardCheckBox->setGeometry(QRect(130, 40, 101, 22));
+        cwsMouseCheckBox = new QCheckBox(cwsGroupBox2);
+        cwsMouseCheckBox->setObjectName(QStringLiteral("cwsMouseCheckBox"));
+        cwsMouseCheckBox->setGeometry(QRect(252, 40, 80, 22));
         dictListWidget = new QListWidget(tab_2);
         dictListWidget->setObjectName(QStringLiteral("dictListWidget"));
         dictListWidget->setGeometry(QRect(20, 10, 261, 300));
@@ -397,6 +436,9 @@ public:
     {
         MainWindow->setWindowTitle(QString());
         actionVocabulary->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        actionVocabulary->setToolTip(QApplication::translate("MainWindow", "vocabulary book", 0));
+#endif // QT_NO_TOOLTIP
         actionSetting->setText(QString());
 #ifndef QT_NO_TOOLTIP
         actionSetting->setToolTip(QApplication::translate("MainWindow", "setting", 0));
@@ -407,6 +449,12 @@ public:
 #ifndef QT_NO_ACCESSIBILITY
         indexListView->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
+#ifndef QT_NO_TOOLTIP
+        srcLanComboBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>select source language.</p><p>'any' means not specified.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_TOOLTIP
+        detLanComboBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>select destination language.</p><p>'any' means not specified.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         label->setText(QString());
         pgupToolButton2->setText(QString());
         pgupToolButton1->setText(QString());
@@ -419,11 +467,17 @@ public:
         indexLineEdit->setStatusTip(QString());
 #endif // QT_NO_STATUSTIP
         indexLineEdit->setPlaceholderText(QString());
+#ifndef QT_NO_TOOLTIP
+        saveButton->setToolTip(QApplication::translate("MainWindow", "save to vocabulary book", 0));
+#endif // QT_NO_TOOLTIP
         saveButton->setText(QApplication::translate("MainWindow", "...", 0));
 #ifndef QT_NO_TOOLTIP
         netdictButton->setToolTip(QApplication::translate("MainWindow", "No action", 0));
 #endif // QT_NO_TOOLTIP
         netdictButton->setText(QApplication::translate("MainWindow", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        queryButton->setToolTip(QApplication::translate("MainWindow", "lookup", 0));
+#endif // QT_NO_TOOLTIP
         queryButton->setText(QApplication::translate("MainWindow", "...", 0));
         tabWidget->setTabText(tabWidget->indexOf(dictTab), QApplication::translate("MainWindow", "dictionary", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "option", 0));
@@ -433,10 +487,73 @@ public:
          << QApplication::translate("MainWindow", "English", 0)
          << QApplication::translate("MainWindow", "\346\261\211\350\257\255", 0)
         );
+#ifndef QT_NO_TOOLTIP
+        uilanComboBox->setToolTip(QApplication::translate("MainWindow", "do work after restart", 0));
+#endif // QT_NO_TOOLTIP
         settingTabWidget->setTabText(settingTabWidget->indexOf(tab), QApplication::translate("MainWindow", "general", 0));
-        groupBox->setTitle(QApplication::translate("MainWindow", "capture word setting", 0));
-        cwsSelectionCheckBox->setText(QApplication::translate("MainWindow", "mouse selection", 0));
+        cwsGroupBox->setTitle(QApplication::translate("MainWindow", "capture word setting", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsGroupBox1->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        cwsGroupBox1->setTitle(QApplication::translate("MainWindow", "enable setting", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsShortcutkeylabel->setToolTip(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. </p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">On X11, if  shortcut key does't work, you can try clicking AlphaDict window.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsShortcutkeylabel->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Shortcut Key </span> &lt;Ctrl+Alt+</p></body></html>", 0));
+#ifndef QT_NO_TOOLTIP
+        cswEnableCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>enable/disable capture</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cswEnableCheckBox->setText(QApplication::translate("MainWindow", "enable", 0));
+        label_2->setText(QApplication::translate("MainWindow", ">", 0));
+        cwsShortcutkeyComboBox->clear();
+        cwsShortcutkeyComboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "KEY_A", 0)
+         << QApplication::translate("MainWindow", "KEY_B", 0)
+         << QApplication::translate("MainWindow", "KEY_C", 0)
+         << QApplication::translate("MainWindow", "KEY_D", 0)
+         << QApplication::translate("MainWindow", "KEY_E", 0)
+         << QApplication::translate("MainWindow", "KEY_F", 0)
+         << QApplication::translate("MainWindow", "KEY_G", 0)
+         << QApplication::translate("MainWindow", "KEY_H", 0)
+         << QApplication::translate("MainWindow", "KEY_I", 0)
+         << QApplication::translate("MainWindow", "KEY_J", 0)
+         << QApplication::translate("MainWindow", "KEY_K", 0)
+         << QApplication::translate("MainWindow", "KEY_L", 0)
+         << QApplication::translate("MainWindow", "KEY_M", 0)
+         << QApplication::translate("MainWindow", "KEY_N", 0)
+         << QApplication::translate("MainWindow", "KEY_O", 0)
+         << QApplication::translate("MainWindow", "KEY_P", 0)
+         << QApplication::translate("MainWindow", "KEY_Q", 0)
+         << QApplication::translate("MainWindow", "KEY_R", 0)
+         << QApplication::translate("MainWindow", "KEY_S", 0)
+         << QApplication::translate("MainWindow", "KEY_T", 0)
+         << QApplication::translate("MainWindow", "KEY_U", 0)
+         << QApplication::translate("MainWindow", "KEY_V", 0)
+         << QApplication::translate("MainWindow", "KEY_W", 0)
+         << QApplication::translate("MainWindow", "KEY_X", 0)
+         << QApplication::translate("MainWindow", "KEY_Y", 0)
+         << QApplication::translate("MainWindow", "KEY_Z", 0)
+        );
+        cwsShortcutkeyComboBox->setCurrentText(QApplication::translate("MainWindow", "KEY_A", 0));
+        cwsGroupBox2->setTitle(QApplication::translate("MainWindow", "capture method", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsSelectionCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>capture by mouse selection text (highlighted text).</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsSelectionCheckBox->setText(QApplication::translate("MainWindow", "selection", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsClipboardCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>capture word of clipboard.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         cwsClipboardCheckBox->setText(QApplication::translate("MainWindow", "clipboard", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsMouseCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>capture word by mouse over.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsMouseCheckBox->setText(QApplication::translate("MainWindow", "mouse", 0));
 #ifndef QT_NO_TOOLTIP
         dictListWidget->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
@@ -444,7 +561,13 @@ public:
         dictUpToolButton->setText(QString());
         settingTabWidget->setTabText(settingTabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "dict", 0));
         tabWidget->setTabText(tabWidget->indexOf(settingTab), QApplication::translate("MainWindow", "setting", 0));
+#ifndef QT_NO_TOOLTIP
+        vbdelToolButton->setToolTip(QApplication::translate("MainWindow", "delete a item", 0));
+#endif // QT_NO_TOOLTIP
         vbdelToolButton->setText(QApplication::translate("MainWindow", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        vbclearToolButton->setToolTip(QApplication::translate("MainWindow", "delete all items", 0));
+#endif // QT_NO_TOOLTIP
         vbclearToolButton->setText(QApplication::translate("MainWindow", "...", 0));
         vocabularyTabWidget->setTabText(vocabularyTabWidget->indexOf(listModeTable), QApplication::translate("MainWindow", "list", 0));
         vbpreItemTlBtn->setText(QApplication::translate("MainWindow", "...", 0));

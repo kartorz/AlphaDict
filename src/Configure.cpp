@@ -182,17 +182,24 @@ int Configure::load(const string& xmlpath)
 
     tempElement = rootElement->FirstChildElement(XML_TAG_CWS);
     if (tempElement) {
-        m_cws.bselection = tempElement->BoolAttribute("selection");
-        m_cws.bclipboard = tempElement->BoolAttribute("clipboard");
-        m_cws.shortcutKey = (CwsShortcutKey)tempElement->IntAttribute("shortcutkey");
+        m_cws.bselection  = tempElement->BoolAttribute("selection");
+        m_cws.bclipboard  = tempElement->BoolAttribute("clipboard");
+        m_cws.bmouse      = tempElement->BoolAttribute("mouse");
+        m_cws.benable     = tempElement->BoolAttribute("enable"); 
+        m_cws.shortcutKey = tempElement->IntAttribute("shortcutkey");
     } else {
+        m_cws.benable    = true;
         m_cws.bselection = true;
+        m_cws.bmouse     = true;
         m_cws.bclipboard = false;
-        m_cws.shortcutKey = No_Key;
+
+        m_cws.shortcutKey = 'c';
 
         XMLElement* e = m_doc.NewElement(XML_TAG_CWS);
         e->SetAttribute("selection",  m_cws.bselection);
         e->SetAttribute("clipboard",  m_cws.bclipboard);
+        e->SetAttribute("mouse",      m_cws.bmouse);
+        e->SetAttribute("enable",     m_cws.benable);
         e->SetAttribute("shortcutkey",m_cws.shortcutKey);
         rootElement->InsertEndChild(e);
     }
@@ -449,11 +456,27 @@ void Configure::writeCwsClipboard(bool en)
     m_dirty = true;
 }
 
-void Configure::writeCwsShortcutKey(CwsShortcutKey shortcutKey)
+void Configure::writeCwsShortcutKey(int shortcutKey)
 {
     m_cws.shortcutKey = shortcutKey;
     XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
     e->SetAttribute("shortcutkey",  m_cws.shortcutKey);
+    m_dirty = true;
+}
+
+void Configure::writeCwsMouse(bool en)
+{
+    m_cws.bmouse = en;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("mouse",  m_cws.bmouse);
+    m_dirty = true;
+}
+
+void Configure::writeCwsEnable(bool en)
+{
+    m_cws.benable = en;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("enable",  m_cws.benable);
     m_dirty = true;
 }
 

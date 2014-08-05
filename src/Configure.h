@@ -21,15 +21,18 @@ struct DictNode {
 };
 
 enum CwsShortcutKey {
-    No_Key = 0,
-    Ctrl_Key,
+    Ctrl_Key = 0,
     Shift_Key,
+    Alt_Key,
+    None_Key,
 };
 
 struct CaptureWordSetting {
+    bool benable;
     bool bselection;
     bool bclipboard;
-    CwsShortcutKey shortcutKey;
+    bool bmouse;
+    int  shortcutKey;
 };
 
 enum UILanID {
@@ -56,7 +59,9 @@ public:
     void writeXml();
     void writeCwsSelection(bool en);
     void writeCwsClipboard(bool en);
-    void writeCwsShortcutKey(CwsShortcutKey shortcutKey);
+    void writeCwsMouse(bool en);
+    void writeCwsEnable(bool en);
+    void writeCwsShortcutKey(int shortcutKey);
 
     vector<string> m_languages;
     string m_dataDir;

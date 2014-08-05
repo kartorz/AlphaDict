@@ -29,7 +29,7 @@ AlphaDict depends:
 
 ubuntu14.04: 
     sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev
-         qtbase5-dev
+         qtbase5-dev libqt5x11extras5-dev
 
 
 \\ How to compile

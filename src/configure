@@ -560,7 +560,7 @@ echocheck "QT5 libraries"
       for I in "" /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
         if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
           def_qt5='#define CONFIG_QT5 1'
-          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
+          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets  -lQt5X11Extras  -lX11"
           libs_alphadict="$libs_alphadict $ld_tmp"
           extra_cflags="$inc_tmp $extra_cflags"
           _qt5="yes"

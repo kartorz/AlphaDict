@@ -55,6 +55,8 @@ please refer README.txt\n").arg(ret);
     }
 
     MainWindow w;
+    w.raise();
+    w.activateWindow();
     w.show();
     w.registerSysExit(on_exit);
     QObject::connect(&a, SIGNAL(aboutToQuit()), &w, SLOT(onAppExit()));

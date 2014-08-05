@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QToolTip>
+#include <QtWidgets/QShortcut> 
 #include <QtCore/QMimeData>
 #include <QtCore/QDebug>
+#include <QtCore/QEvent>
 #include <QtGui/QCursor>
 
 #include "mainwindow.h"
@@ -12,15 +14,22 @@
 #include "VBookModel.h"
 #include "MessageQueue.h"
 #include "QtMessager.h"
-#include "win32/TextOutHookServer.h"
 #include "iDict.h"
 #include "Log.h"
 #include "CharUtil.h"
+#ifdef WIN32
+#include "win32/TextOutHookServer.h"
+#elif defined (_LINUX)
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include "X11Util.h"
+#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_capWordDialog(NULL)
+    m_capWordDialog(NULL),
+    m_cwdEnableTemp(true)
 {
     ui->setupUi(this);
     //ui->tabWidget->setTabsClosable(true);
@@ -49,9 +58,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_initSettingPage = false;
 
     ui->tabWidget->removeTab(1);
+    //setFocus();
     //QIcon icon("app.ico"); 
     //setWindowIcon(icon);
-
+    qApp->installEventFilter(this);
 #if 0
     m_systray = new QSystemTrayIcon(this);
     QIcon icon("trayicon.png"); 
@@ -61,7 +71,18 @@ MainWindow::MainWindow(QWidget *parent) :
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,
             SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
+
+    QShortcut *shortcut = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")),  this, 0, 0, Qt::ApplicationShortcut);
+    connect(shortcut,
+            SIGNAL(activated()),
+            this,
+            SLOT(on_pgdownToolButton1_clicked()));
+
 #endif
+
+    if (m_config->m_cws.benable) {
+        X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
+    }
 }
 
 MainWindow::~MainWindow()
@@ -308,11 +329,22 @@ void MainWindow::onActionSettingPageAdded()
 	        	    item->setCheckState(Qt::Unchecked);
 	        }
             ui->uilanComboBox->setCurrentIndex(m_config->m_uilanID);
+            ui->cwsShortcutkeyComboBox->setCurrentIndex(m_config->m_cws.shortcutKey);
+
             Qt::CheckState ckstate = m_config->m_cws.bselection ? Qt::Checked : Qt::Unchecked;
             ui->cwsSelectionCheckBox->setCheckState(ckstate);
 
             ckstate = m_config->m_cws.bclipboard ? Qt::Checked : Qt::Unchecked;
             ui->cwsClipboardCheckBox->setCheckState(ckstate);
+
+            ckstate = m_config->m_cws.benable ? Qt::Checked : Qt::Unchecked;
+            ui->cswEnableCheckBox->setCheckState(ckstate);
+        #ifdef _LINUX
+            ui->cwsMouseCheckBox->hide();
+        #elif defined(_WINDOWS)
+            ckstate = m_config->m_cws.bmouse ? Qt::Checked : Qt::Unchecked;
+            ui->cwsMouseCheckBox->setCheckState(ckstate);
+        #endif
         }
         //QIcon icon;
         //icon.addFile(QStringLiteral(":/res/setting.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -452,8 +484,7 @@ void MainWindow::showToolTip(QString info, QPoint pos, int displayTimeMS)
 
 void MainWindow::onClipboardDataChanged()
 {
-    //printf("onClipboardDataChanged\n");
-    if (m_config->m_cws.bclipboard) {
+    if (m_config->m_cws.bclipboard && m_cwdEnableTemp && m_config->m_cws.benable) {
         const QClipboard *clipboard = QApplication::clipboard();
         
         QString input = clipboard->text(QClipboard::Clipboard).trimmed();
@@ -466,7 +497,7 @@ void MainWindow::onClipboardDataChanged()
 
 void MainWindow::onClipboardSelectionChanged()
 {
-    if (m_config->m_cws.bselection) {
+    if (m_config->m_cws.bselection && m_cwdEnableTemp && m_config->m_cws.benable) {
         const QClipboard *clipboard = QApplication::clipboard();
         
         QString input = clipboard->text(QClipboard::Selection).trimmed();
@@ -487,19 +518,47 @@ void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
 void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
 {
     m_config->writeCwsSelection(checked);
-#if 1
+}
+
+void MainWindow::on_cswEnableCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsEnable(checked);
+#ifdef _WINDOWS
     if (checked) {
         TextOutHookServer::getReference().inject((HWND)effectiveWinId(), 0);
     } else {
         TextOutHookServer::getReference().uninject();
     }
+#elif defined(_LINUX)
+    if (checked) {
+        X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
+    } else {
+        X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
+    }    
 #endif
+}
+
+void MainWindow::on_cwsMouseCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsMouse(checked);
+}
+
+void MainWindow::on_cwsShortcutkeyComboBox_activated(int index)
+{
+    m_config->writeCwsShortcutKey(index);
+    if (m_config->m_cws.benable) {
+        X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
+        X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
+    }
 }
 
 //bool MainWindow::winEvent(MSG * message, long * result)
 bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * result)
 {
-#ifdef _WINDOWS
+#ifdef _LINUX
+    //XEvent *report = ((XEvent *)msg);
+    //int type = report->type;
+#elif defined (_WINDOWS)
     //WM_USER : 1024;
     unsigned int message = ((MSG *)msg)->message;
     switch (message) {
@@ -524,7 +583,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
         break;
     }
 
-    case WM_CW_TEXTW: 
+    case WM_CW_TEXTW:
     {
        char *strbuf = TextOutHookServer::getReference().getCaptureText(true);
        QString input = QString::fromWCharArray((const wchar_t *)strbuf);
@@ -553,12 +612,34 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     return false;
 }
 
+bool MainWindow::eventFilter( QObject * watched, QEvent * event )
+{
+    if (event->type() == 6/*QEvent::KeyPress*/) {
+        QKeyEvent *keyevent = (QKeyEvent *)event;
+        int key = keyevent->key();
+        Qt::KeyboardModifiers modifier = keyevent->modifiers();
+        //printf("native event keypress %d, %d, %d\n", key, m_config->m_cws.shortcutKey, modifier);
+        if (key == m_config->m_cws.shortcutKey + 0x41 && 
+            modifier == (Qt::ControlModifier|Qt::AltModifier)) {
+            m_cwdEnableTemp = !m_cwdEnableTemp;
+            //X11Util::forwardHotKey(m_config->m_cws.shortcutKey+'a');
+            return true;
+        }
+    }
+    return false;
+}
+
 void MainWindow::onAppExit()
 {
    if (m_capWordDialog != NULL) 
         m_capWordDialog->close();
 
+   if (m_config->m_cws.benable)
+        X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
+
+#ifdef WIN32
     TextOutHookServer::getReference().uninject();
+#endif
     (*onSysExit)();
 //    QCoreApplication::quit();
 }

@@ -16,6 +16,9 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
   <property name="windowTitle">
    <string/>
   </property>
@@ -30,6 +33,9 @@
    </size>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
@@ -123,6 +129,9 @@
         <height>32</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;select source language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
      </widget>
      <widget class="QComboBox" name="detLanComboBox">
       <property name="geometry">
@@ -132,6 +141,9 @@
         <width>101</width>
         <height>32</height>
        </rect>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;select destination language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QLabel" name="label">
@@ -301,6 +313,9 @@
         <height>48</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>save to vocabulary book</string>
+      </property>
       <property name="text">
        <string>...</string>
       </property>
@@ -356,6 +371,9 @@
         <height>48</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>lookup</string>
+      </property>
       <property name="text">
        <string>...</string>
       </property>
@@ -387,7 +405,7 @@
         <x>0</x>
         <y>-3</y>
         <width>717</width>
-        <height>414</height>
+        <height>417</height>
        </rect>
       </property>
       <property name="focusPolicy">
@@ -443,6 +461,9 @@
            <height>27</height>
           </rect>
          </property>
+         <property name="toolTip">
+          <string>do work after restart</string>
+         </property>
          <item>
           <property name="text">
            <string>English</string>
@@ -460,23 +481,23 @@
        <attribute name="title">
         <string>dict</string>
        </attribute>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="cwsGroupBox">
         <property name="enabled">
          <bool>true</bool>
         </property>
         <property name="geometry">
          <rect>
-          <x>310</x>
+          <x>300</x>
           <y>10</y>
-          <width>390</width>
-          <height>101</height>
+          <width>391</width>
+          <height>300</height>
          </rect>
         </property>
         <property name="autoFillBackground">
          <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">#groupBox { 
+         <string notr="true">#cwsGroupBox { 
      border: 1px solid gray; 
      border-radius: 1px; 
  } </string>
@@ -490,31 +511,291 @@
         <property name="checked">
          <bool>false</bool>
         </property>
-        <widget class="QCheckBox" name="cwsSelectionCheckBox">
+        <widget class="QGroupBox" name="cwsGroupBox1">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>30</y>
-           <width>161</width>
-           <height>22</height>
+           <y>50</y>
+           <width>360</width>
+           <height>80</height>
           </rect>
          </property>
-         <property name="text">
-          <string>mouse selection</string>
+         <property name="toolTip">
+          <string/>
          </property>
+         <property name="styleSheet">
+          <string notr="true">#cwsGroupBox1{ 
+     border: 1px solid gray; 
+     border-radius: 1px; 
+ } </string>
+         </property>
+         <property name="title">
+          <string>enable setting</string>
+         </property>
+         <widget class="QLabel" name="cwsShortcutkeylabel">
+          <property name="geometry">
+           <rect>
+            <x>97</x>
+            <y>40</y>
+            <width>171</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;On X11, if  shortcut key does't work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Shortcut Key &lt;/span&gt; &amp;lt;Ctrl+Alt+&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="cswEnableCheckBox">
+          <property name="geometry">
+           <rect>
+            <x>8</x>
+            <y>39</y>
+            <width>81</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;enable/disable capture&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>enable</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_2">
+          <property name="geometry">
+           <rect>
+            <x>342</x>
+            <y>42</y>
+            <width>16</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&gt;</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="cwsShortcutkeyComboBox">
+          <property name="geometry">
+           <rect>
+            <x>268</x>
+            <y>38</y>
+            <width>71</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+          <property name="currentText">
+           <string>KEY_A</string>
+          </property>
+          <item>
+           <property name="text">
+            <string>KEY_A</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_B</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_C</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_D</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_E</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_F</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_G</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_H</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_I</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_J</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_K</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_L</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_M</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_N</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_O</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_P</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_Q</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_R</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_S</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_T</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_U</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_V</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_W</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_X</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_Y</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>KEY_Z</string>
+           </property>
+          </item>
+         </widget>
         </widget>
-        <widget class="QCheckBox" name="cwsClipboardCheckBox">
+        <widget class="QGroupBox" name="cwsGroupBox2">
          <property name="geometry">
           <rect>
-           <x>219</x>
-           <y>30</y>
-           <width>161</width>
-           <height>22</height>
+           <x>10</x>
+           <y>162</y>
+           <width>361</width>
+           <height>91</height>
           </rect>
          </property>
-         <property name="text">
-          <string>clipboard</string>
+         <property name="styleSheet">
+          <string notr="true">#cwsGroupBox2{ 
+     border: 1px solid gray; 
+     border-radius: 1px; 
+ } </string>
          </property>
+         <property name="title">
+          <string>capture method</string>
+         </property>
+         <widget class="QCheckBox" name="cwsSelectionCheckBox">
+          <property name="geometry">
+           <rect>
+            <x>9</x>
+            <y>40</y>
+            <width>101</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture by mouse selection text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>selection</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="cwsClipboardCheckBox">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>40</y>
+            <width>101</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture word of clipboard.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>clipboard</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="cwsMouseCheckBox">
+          <property name="geometry">
+           <rect>
+            <x>252</x>
+            <y>40</y>
+            <width>80</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture word by mouse over.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>mouse</string>
+          </property>
+         </widget>
         </widget>
        </widget>
        <widget class="QListWidget" name="dictListWidget">
@@ -638,6 +919,9 @@
           <height>32</height>
          </rect>
         </property>
+        <property name="toolTip">
+         <string>delete a item</string>
+        </property>
         <property name="text">
          <string>...</string>
         </property>
@@ -663,6 +947,9 @@
           <width>32</width>
           <height>32</height>
          </rect>
+        </property>
+        <property name="toolTip">
+         <string>delete all items</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -873,6 +1160,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="toolTip">
+    <string>vocabulary book</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>

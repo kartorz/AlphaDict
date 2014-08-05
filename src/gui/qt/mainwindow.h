@@ -16,6 +16,7 @@ class QtMessager;
 class DictIndexModel;
 class QListWidgetItem;
 class VBookModel;
+class CapWordDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -105,13 +106,18 @@ private slots:
 
     void on_cwsSelectionCheckBox_clicked(bool checked);
     //void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
+    void on_cswEnableCheckBox_clicked(bool checked);
+
+    void on_cwsMouseCheckBox_clicked(bool checked);
+
+    void on_cwsShortcutkeyComboBox_activated(int index);
 
 protected :
     //bool winEvent( MSG * message, long * result);
     bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+    virtual bool eventFilter( QObject *watched, QEvent *event);
 
 private:
-
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
 
@@ -124,6 +130,7 @@ private:
     void (*onSysExit)();
 
     CapWordDialog* m_capWordDialog;
+    bool m_cwdEnableTemp;
 };
 
 #endif // MAINWINDOW_H
