@@ -19,11 +19,13 @@
 #include "CharUtil.h"
 #ifdef WIN32
 #include "win32/TextOutHookServer.h"
+#define HOTKEY_IDENTIFY   0x1111
 #elif defined (_LINUX)
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "X11Util.h"
 #endif
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -79,10 +81,6 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(on_pgdownToolButton1_clicked()));
 
 #endif
-
-    if (m_config->m_cws.benable) {
-        X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
-    }
 }
 
 MainWindow::~MainWindow()
@@ -91,6 +89,17 @@ MainWindow::~MainWindow()
 
     delete m_messager;
     delete ui;
+}
+
+void MainWindow::initDelay()
+{
+    if (m_config->m_cws.benable) {
+        registerHotkey();
+    #ifdef _WINDOWS
+        TextOutHookServer::getReference().inject((HWND)effectiveWinId());
+        TextOutHookServer::getReference().captureTextEnable(capwordMode());
+    #endif
+    }
 }
 
 void MainWindow::on_srcLanComboBox_currentIndexChanged(const QString &arg1)
@@ -216,7 +225,7 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
     vector<string> *pVec = (vector<string>*) v;
     vector<string>::iterator iter;
     ui->detLanComboBox->addItem("any");
-	ui->srcLanComboBox->addItem("any");
+    ui->srcLanComboBox->addItem("any");
 
     for (iter = (*pVec).begin(); iter != (*pVec).end(); iter++) {
         QString item((*iter).c_str());
@@ -484,13 +493,18 @@ void MainWindow::showToolTip(QString info, QPoint pos, int displayTimeMS)
 
 void MainWindow::onClipboardDataChanged()
 {
-    if (m_config->m_cws.bclipboard && m_cwdEnableTemp && m_config->m_cws.benable) {
-        const QClipboard *clipboard = QApplication::clipboard();
-        
-        QString input = clipboard->text(QClipboard::Clipboard).trimmed();
-        if (input != "") {
-            m_capword = input;
-            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+    if (m_cwdEnableTemp && m_config->m_cws.benable) {
+    #ifdef _LINUX
+        if (m_config->m_cws.bclipboard) {
+    #elif defined(_WINDOWS)
+        if (m_config->m_cws.bclipboard || m_config->m_cws.bselection) {
+    #endif
+            const QClipboard *clipboard = QApplication::clipboard();
+            QString input = clipboard->text(QClipboard::Clipboard).trimmed();
+            if (input != "") {
+                m_capword = input;
+                g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+            }
         }
     }
 }
@@ -512,43 +526,59 @@ void MainWindow::onClipboardSelectionChanged()
 
 void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
 {
+    m_cwdEnableTemp = true;
     m_config->writeCwsClipboard(checked);
 }
 
 void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
 {
+    m_cwdEnableTemp = true;
     m_config->writeCwsSelection(checked);
+#ifdef _WINDOWS
+    TextOutHookServer::getReference().captureTextEnable(capwordMode());
+#endif
 }
 
 void MainWindow::on_cswEnableCheckBox_clicked(bool checked)
 {
     m_config->writeCwsEnable(checked);
+    if (checked) {
+        this->registerHotkey();
+    } else {
+        this->unregisterHotkey();
+    }
+
 #ifdef _WINDOWS
     if (checked) {
-        TextOutHookServer::getReference().inject((HWND)effectiveWinId(), 0);
+        m_cwdEnableTemp = true;
+        TextOutHookServer::getReference().inject((HWND)effectiveWinId());
+    #ifdef _WINDOWS
+        TextOutHookServer::getReference().captureTextEnable(capwordMode());
+    #endif
     } else {
         TextOutHookServer::getReference().uninject();
+        if (m_capWordDialog != NULL) {
+            m_capWordDialog->close();
+        }
     }
-#elif defined(_LINUX)
-    if (checked) {
-        X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
-    } else {
-        X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
-    }    
 #endif
 }
 
 void MainWindow::on_cwsMouseCheckBox_clicked(bool checked)
 {
+    m_cwdEnableTemp = true;
     m_config->writeCwsMouse(checked);
+#ifdef _WINDOWS
+    TextOutHookServer::getReference().captureTextEnable(capwordMode());
+#endif
 }
 
 void MainWindow::on_cwsShortcutkeyComboBox_activated(int index)
 {
     m_config->writeCwsShortcutKey(index);
     if (m_config->m_cws.benable) {
-        X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
-        X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
+        this->unregisterHotkey();
+        this->registerHotkey();
     }
 }
 
@@ -598,6 +628,29 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
        break;
     }
 
+    case WM_HOTKEY:
+    {
+        if (m_config->m_cws.benable) {
+            int identifier = (int)(((MSG *)msg)->wParam);
+            //int y = (int)(((MSG *)msg)->lParam); 0x430003
+            if (identifier == HOTKEY_IDENTIFY) {
+                m_cwdEnableTemp = !m_cwdEnableTemp;
+                if (m_cwdEnableTemp && 
+                   (m_config->m_cws.bselection || 
+                    m_config->m_cws.bmouse)) {
+                    TextOutHookServer::getReference().captureTextEnable(capwordMode());
+                } else {
+                    TextOutHookServer::getReference().captureTextEnable(0);
+                    if (m_capWordDialog != NULL) {
+                        m_capWordDialog->close();
+                    }
+                }
+            }
+            //g_log.d("win hotkey %d, %d\n", x,y);
+        }
+        break;
+    }
+
     case WM_CW_DEBUG: 
     {
         int x = (int)(((MSG *)msg)->wParam);
@@ -606,7 +659,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
         break;
     }
     // case SIZE_MINIMIZED
-    // case WM_CLOSE
+    // case WM_CL OSE
     }
 #endif
     return false;
@@ -629,13 +682,44 @@ bool MainWindow::eventFilter( QObject * watched, QEvent * event )
     return false;
 }
 
+void MainWindow::registerHotkey()
+{
+#ifdef _WINDOWS
+    ::RegisterHotKey((HWND)(this->effectiveWinId()),
+                      0x1111, 
+                      MOD_CONTROL | MOD_ALT,
+                      m_config->m_cws.shortcutKey + 'A');
+#elif defined(_LINUX)
+    X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
+#endif
+}
+
+void MainWindow::unregisterHotkey()
+{
+#ifdef _WINDOWS
+    UnregisterHotKey((HWND)effectiveWinId(), 0x1111);
+#elif defined(_LINUX)
+    X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
+#endif
+}
+
+int MainWindow::capwordMode()
+{
+    int mode = 0;
+    if (m_config->m_cws.bmouse)
+        mode |= CAPMODE_MOUSE_OVER;
+    if (m_config->m_cws.bselection)
+        mode |= CAPMODE_MOUSE_SELECTION;
+    return mode;
+}
+
 void MainWindow::onAppExit()
 {
    if (m_capWordDialog != NULL) 
-        m_capWordDialog->close();
+       m_capWordDialog->close();
 
    if (m_config->m_cws.benable)
-        X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
+       this->unregisterHotkey();
 
 #ifdef WIN32
     TextOutHookServer::getReference().uninject();

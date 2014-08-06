@@ -30,8 +30,9 @@ public:
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void registerSysExit(void (*exit)()) { onSysExit = exit; }    
+    void registerSysExit(void (*exit)()) { onSysExit = exit; }
 
+    void initDelay();
 
     QtMessager *m_messager;
 
@@ -118,6 +119,10 @@ protected :
     virtual bool eventFilter( QObject *watched, QEvent *event);
 
 private:
+    void registerHotkey();
+    void unregisterHotkey();
+    int  capwordMode();
+
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
 

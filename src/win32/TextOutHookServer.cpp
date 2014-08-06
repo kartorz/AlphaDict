@@ -1,10 +1,11 @@
 #include "win32/TextOutHookServer.h"
 #include "Log.h"
 
-void injectDummy(HWND, int) { }
+void injectDummy(HWND) { }
 void uninjectDummy() { }
 void getCaptureTextDummy(char *, int *, int *) {}
 int  getDllCountDummy() { return 0;}
+void captureTextEnableDummy(int) { }
 
 HINSTANCE g_hTextOutHook = NULL;
 
@@ -65,11 +66,13 @@ TextOutHookServer::TextOutHookServer()
         uninject = (uninjectDriver_t)GetProcAddress(m_hDriverInjecter, "UninjectTextOutDriver");
         _getCaptureText = (getCaptureText_t)GetProcAddress(m_hDriverInjecter, "GetCaptureText");
         getDllCount = (getDllCount_t)GetProcAddress(m_hDriverInjecter, "GetDllCount");
+        captureTextEnable = (captureTextEnable_t)GetProcAddress(m_hDriverInjecter, "CaptureTextEnable");
     } else {
         inject = injectDummy;
         uninject = uninjectDummy;
         _getCaptureText = getCaptureTextDummy;
         getDllCount = getDllCountDummy;
+        captureTextEnable = captureTextEnableDummy;
     }
 }
 

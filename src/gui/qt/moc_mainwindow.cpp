@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.2.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.2.1. It"
+#error "This file was generated using the moc from 5.3.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,12 +20,12 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[46];
-    char stringdata[1076];
+    char stringdata[1075];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
-        - idx * sizeof(QByteArrayData) \
+    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
+        - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
@@ -109,7 +109,7 @@ QT_MOC_LITERAL(45, 1039, 35)
     "on_cwsSelectionCheckBox_clicked\0"
     "on_cswEnableCheckBox_clicked\0"
     "on_cwsMouseCheckBox_clicked\0"
-    "on_cwsShortcutkeyComboBox_activated\0"
+    "on_cwsShortcutkeyComboBox_activated"
 };
 #undef QT_MOC_LITERAL
 
@@ -127,44 +127,44 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  204,    2, 0x0a,
-       4,    1,  207,    2, 0x0a,
-       5,    3,  210,    2, 0x0a,
-       8,    1,  217,    2, 0x08,
-      10,    1,  220,    2, 0x08,
-      11,    0,  223,    2, 0x08,
-      12,    1,  224,    2, 0x08,
-      13,    0,  227,    2, 0x08,
-      14,    1,  228,    2, 0x08,
-      16,    1,  231,    2, 0x08,
-      17,    0,  234,    2, 0x08,
-      18,    0,  235,    2, 0x08,
-      19,    0,  236,    2, 0x08,
-      20,    0,  237,    2, 0x08,
-      21,    1,  238,    2, 0x08,
-      22,    0,  241,    2, 0x08,
-      23,    0,  242,    2, 0x08,
-      24,    1,  243,    2, 0x08,
-      25,    0,  246,    2, 0x08,
-      26,    0,  247,    2, 0x08,
-      27,    1,  248,    2, 0x08,
-      28,    0,  251,    2, 0x08,
-      29,    0,  252,    2, 0x08,
-      30,    0,  253,    2, 0x08,
-      31,    0,  254,    2, 0x08,
-      32,    1,  255,    2, 0x08,
-      33,    1,  258,    2, 0x08,
-      34,    0,  261,    2, 0x08,
-      35,    0,  262,    2, 0x08,
-      36,    0,  263,    2, 0x08,
-      37,    0,  264,    2, 0x08,
-      38,    0,  265,    2, 0x08,
-      39,    0,  266,    2, 0x08,
-      40,    1,  267,    2, 0x08,
-      42,    1,  270,    2, 0x08,
-      43,    1,  273,    2, 0x08,
-      44,    1,  276,    2, 0x08,
-      45,    1,  279,    2, 0x08,
+       1,    1,  204,    2, 0x0a /* Public */,
+       4,    1,  207,    2, 0x0a /* Public */,
+       5,    3,  210,    2, 0x0a /* Public */,
+       8,    1,  217,    2, 0x08 /* Private */,
+      10,    1,  220,    2, 0x08 /* Private */,
+      11,    0,  223,    2, 0x08 /* Private */,
+      12,    1,  224,    2, 0x08 /* Private */,
+      13,    0,  227,    2, 0x08 /* Private */,
+      14,    1,  228,    2, 0x08 /* Private */,
+      16,    1,  231,    2, 0x08 /* Private */,
+      17,    0,  234,    2, 0x08 /* Private */,
+      18,    0,  235,    2, 0x08 /* Private */,
+      19,    0,  236,    2, 0x08 /* Private */,
+      20,    0,  237,    2, 0x08 /* Private */,
+      21,    1,  238,    2, 0x08 /* Private */,
+      22,    0,  241,    2, 0x08 /* Private */,
+      23,    0,  242,    2, 0x08 /* Private */,
+      24,    1,  243,    2, 0x08 /* Private */,
+      25,    0,  246,    2, 0x08 /* Private */,
+      26,    0,  247,    2, 0x08 /* Private */,
+      27,    1,  248,    2, 0x08 /* Private */,
+      28,    0,  251,    2, 0x08 /* Private */,
+      29,    0,  252,    2, 0x08 /* Private */,
+      30,    0,  253,    2, 0x08 /* Private */,
+      31,    0,  254,    2, 0x08 /* Private */,
+      32,    1,  255,    2, 0x08 /* Private */,
+      33,    1,  258,    2, 0x08 /* Private */,
+      34,    0,  261,    2, 0x08 /* Private */,
+      35,    0,  262,    2, 0x08 /* Private */,
+      36,    0,  263,    2, 0x08 /* Private */,
+      37,    0,  264,    2, 0x08 /* Private */,
+      38,    0,  265,    2, 0x08 /* Private */,
+      39,    0,  266,    2, 0x08 /* Private */,
+      40,    1,  267,    2, 0x08 /* Private */,
+      42,    1,  270,    2, 0x08 /* Private */,
+      43,    1,  273,    2, 0x08 /* Private */,
+      44,    1,  276,    2, 0x08 /* Private */,
+      45,    1,  279,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,
