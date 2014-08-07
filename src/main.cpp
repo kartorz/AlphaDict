@@ -1,7 +1,10 @@
+#include <Windows.h>
+
 #include "alphadict.h"
 #include "Util.h"
 #include "Log.h"
 #include "Application.h"
+
 
 #if CONFIG_QT5
 #include <QtWidgets/QApplication>
@@ -59,6 +62,7 @@ please refer README.txt\n").arg(ret);
     w.activateWindow();
     w.show();
     w.registerSysExit(on_exit);
+    w.initDelay();
     QObject::connect(&a, SIGNAL(aboutToQuit()), &w, SLOT(onAppExit()));
     return a.exec();
 #endif
