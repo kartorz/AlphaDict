@@ -36,6 +36,7 @@ POINT     g_pLastMouse = {-1, -1};
 int       g_selectionStatus = 0;
 BOOL      g_bSelectionText = FALSE;
 BOOL      g_bLButtonDown = FALSE;
+BOOL      g_bLoadTextOutHook = FALSE;
 
 typedef BOOL (*CaptureTextEnable_t)(HWND, HWND, POINT, BOOL *);
 CaptureTextEnable_t  _CaptureTextEnable = NULL;
@@ -123,15 +124,14 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
     if (!g_iCapMode)
         return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
-    
-    if (!g_hTextOutHook) {
+
+    if (!g_hTextOutHook && !g_bLoadTextOutHook) {
+        g_bLoadTextOutHook = true;
         g_hTextOutHook = LoadLibrary(g_szDllPath);
         if (!g_hTextOutHook) {
             DWORD  ret;
             DWORD  wParam = GetLastError();
             SendMessageTimeout(g_hHookServer, WM_CW_ERROR, (WPARAM)wParam, 0, SMTO_ABORTIFHUNG, MSG_TIMEOUT, &ret);
-            //UnhookWindowsHookEx(g_hMouseHook);
-            return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
         }
     }
 
@@ -152,7 +152,8 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
             if (abs(pMouse.x - g_pMouse.x) > 1) {
                 g_pMouse = pMouse;
                 if ((g_iCapMode & CAPMODE_MOUSE_OVER) && (!g_bLButtonDown)) {
-                    if (!g_bSelectionText) // wait processing seletion timer.
+                    if (!g_bSelectionText // wait processing seletion timer.
+                         && g_hTextOutHook) 
                         g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
                 } else if (g_iCapMode & CAPMODE_MOUSE_SELECTION){
                     if (g_selectionStatus == 1) {
@@ -172,6 +173,7 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
             }
         }
     }
+
     return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
 }
 
