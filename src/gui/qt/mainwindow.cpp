@@ -491,6 +491,8 @@ void MainWindow::onClipboardDataChanged()
         if (input != "") {
             m_capword = input;
             g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        } else if (m_capWordDialog) {
+            m_capWordDialog->close();
         }
     }
 }
@@ -504,6 +506,8 @@ void MainWindow::onClipboardSelectionChanged()
         if (input != "") {
             m_capword = input;
             g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        } else if (m_capWordDialog) {
+            m_capWordDialog->close();
         }
     }
     //qDebug() <<  clipboard->text(QClipboard::Selection);
