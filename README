@@ -1,16 +1,16 @@
 \\ What is AlphaDict
-------------------------------------------------------------
+--------------------
 
-AlphaDict is a lightweight, less dependence, cross platform open source 
-dictionary software,supproting linux,unix and windows. 
+AlphaDict is a lightweight, cross platform open source dictionary software,
+supproting linux,unix and windows. 
 
-AlphaDict has opened its dictionary format that you can make your own dictionary, 
+AlphaDict has a open dictionary format that you can make your own dictionary, 
 also supports lots third-party dictionary formats: cedict, startdict. 
 AlphaDict has made some open source dictionaries, you can download from
     "http://pan.baidu.com/s/1o6uhAyQ"
 
 Code Repository:  "https://github.com/kartorz/AlphaDict"
-
+wiki: https://github.com/kartorz/AlphaDict/wiki
 
 \\ License
 ------------------------------------------------------------
@@ -29,7 +29,7 @@ AlphaDict depends:
 
 ubuntu14.04: 
     sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev
-         qtbase5-dev
+         qtbase5-dev libqt5x11extras5-dev
 
 
 \\ How to compile

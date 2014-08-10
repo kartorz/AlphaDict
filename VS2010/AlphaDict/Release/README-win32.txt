@@ -4,6 +4,7 @@
    (e.g "C:\Program Files"), you should run it as a Administrator,or set a writing permission for 
    the current directory. 
 
+-=,.//
 3) Put dictionaries at "./system/dicts".
 
 4) If program initialization failure, delete configure.xml and try again.

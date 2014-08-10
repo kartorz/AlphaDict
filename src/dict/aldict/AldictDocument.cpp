@@ -45,8 +45,10 @@ bool AldictDocument::loadDict(const std::string& dictpath)
 {
 #ifdef WIN32
    wchar_t *wdictname = CharUtil::utf8srtowcs(dictpath.c_str());
-   if (wdictname != NULL)
-       m_dictFile = _wfopen(wdictname, L"rb"); 
+   if (wdictname != NULL) {
+       m_dictFile = _wfopen(wdictname, L"rb");
+       free(wdictname);
+   }
 #else
     m_dictFile = fopen(dictpath.c_str(),"rb");
 #endif

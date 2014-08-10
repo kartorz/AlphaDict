@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[43];
-    char stringdata[983];
+    QByteArrayData data[50];
+    char stringdata[1200];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -57,21 +57,28 @@ QT_MOC_LITERAL(24, 500, 26),
 QT_MOC_LITERAL(25, 527, 32),
 QT_MOC_LITERAL(26, 560, 21),
 QT_MOC_LITERAL(27, 582, 27),
-QT_MOC_LITERAL(28, 610, 26),
-QT_MOC_LITERAL(29, 637, 28),
-QT_MOC_LITERAL(30, 666, 25),
-QT_MOC_LITERAL(31, 692, 26),
-QT_MOC_LITERAL(32, 719, 24),
-QT_MOC_LITERAL(33, 744, 26),
-QT_MOC_LITERAL(34, 771, 26),
-QT_MOC_LITERAL(35, 798, 9),
-QT_MOC_LITERAL(36, 808, 24),
-QT_MOC_LITERAL(37, 833, 25),
-QT_MOC_LITERAL(38, 859, 22),
-QT_MOC_LITERAL(39, 882, 27),
-QT_MOC_LITERAL(40, 910, 31),
-QT_MOC_LITERAL(41, 942, 7),
-QT_MOC_LITERAL(42, 950, 31)
+QT_MOC_LITERAL(28, 610, 37),
+QT_MOC_LITERAL(29, 648, 26),
+QT_MOC_LITERAL(30, 675, 28),
+QT_MOC_LITERAL(31, 704, 25),
+QT_MOC_LITERAL(32, 730, 26),
+QT_MOC_LITERAL(33, 757, 24),
+QT_MOC_LITERAL(34, 782, 26),
+QT_MOC_LITERAL(35, 809, 26),
+QT_MOC_LITERAL(36, 836, 9),
+QT_MOC_LITERAL(37, 846, 24),
+QT_MOC_LITERAL(38, 871, 25),
+QT_MOC_LITERAL(39, 897, 21),
+QT_MOC_LITERAL(40, 919, 22),
+QT_MOC_LITERAL(41, 942, 27),
+QT_MOC_LITERAL(42, 970, 31),
+QT_MOC_LITERAL(43, 1002, 7),
+QT_MOC_LITERAL(44, 1010, 31),
+QT_MOC_LITERAL(45, 1042, 28),
+QT_MOC_LITERAL(46, 1071, 27),
+QT_MOC_LITERAL(47, 1099, 35),
+QT_MOC_LITERAL(48, 1135, 33),
+QT_MOC_LITERAL(49, 1169, 29)
     },
     "MainWindow\0onUpdateExplText\0\0v\0"
     "onUpdateCapWordExplText\0onSetLanComboBox\0"
@@ -91,6 +98,7 @@ QT_MOC_LITERAL(42, 950, 31)
     "on_uilanComboBox_activated\0"
     "on_indexLineEdit_editingFinished\0"
     "on_saveButton_clicked\0on_tabWidget_currentChanged\0"
+    "on_vocabularyTabWidget_currentChanged\0"
     "on_vbdelToolButton_clicked\0"
     "on_vbclearToolButton_clicked\0"
     "on_vbpreItemTlBtn_clicked\0"
@@ -100,10 +108,15 @@ QT_MOC_LITERAL(42, 950, 31)
     "on_vbInput_editingFinished\0onAppExit\0"
     "onActionSettingPageAdded\0"
     "onActionVcbularyPageAdded\0"
-    "onClipboardDataChanged\0"
+    "onActionHelpPageAdded\0onClipboardDataChanged\0"
     "onClipboardSelectionChanged\0"
     "on_cwsClipboardCheckBox_clicked\0checked\0"
     "on_cwsSelectionCheckBox_clicked\0"
+    "on_cwsEnableCheckBox_clicked\0"
+    "on_cwsMouseCheckBox_clicked\0"
+    "on_cwsShortcutkeyComboBox_activated\0"
+    "on_cwsAutoCloseEnCheckBox_clicked\0"
+    "on_fontsizeComboBox_activated\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -113,7 +126,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      35,   14, // methods
+      42,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -121,41 +134,48 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  189,    2, 0x0a,
-       4,    1,  192,    2, 0x0a,
-       5,    3,  195,    2, 0x0a,
-       8,    1,  202,    2, 0x08,
-      10,    1,  205,    2, 0x08,
-      11,    0,  208,    2, 0x08,
-      12,    1,  209,    2, 0x08,
-      13,    0,  212,    2, 0x08,
-      14,    1,  213,    2, 0x08,
-      16,    1,  216,    2, 0x08,
-      17,    0,  219,    2, 0x08,
-      18,    0,  220,    2, 0x08,
-      19,    0,  221,    2, 0x08,
-      20,    0,  222,    2, 0x08,
-      21,    1,  223,    2, 0x08,
-      22,    0,  226,    2, 0x08,
-      23,    0,  227,    2, 0x08,
-      24,    1,  228,    2, 0x08,
-      25,    0,  231,    2, 0x08,
-      26,    0,  232,    2, 0x08,
-      27,    1,  233,    2, 0x08,
-      28,    0,  236,    2, 0x08,
-      29,    0,  237,    2, 0x08,
-      30,    0,  238,    2, 0x08,
-      31,    0,  239,    2, 0x08,
-      32,    1,  240,    2, 0x08,
-      33,    1,  243,    2, 0x08,
-      34,    0,  246,    2, 0x08,
-      35,    0,  247,    2, 0x08,
-      36,    0,  248,    2, 0x08,
-      37,    0,  249,    2, 0x08,
-      38,    0,  250,    2, 0x08,
-      39,    0,  251,    2, 0x08,
-      40,    1,  252,    2, 0x08,
-      42,    1,  255,    2, 0x08,
+       1,    1,  224,    2, 0x0a,
+       4,    1,  227,    2, 0x0a,
+       5,    3,  230,    2, 0x0a,
+       8,    1,  237,    2, 0x08,
+      10,    1,  240,    2, 0x08,
+      11,    0,  243,    2, 0x08,
+      12,    1,  244,    2, 0x08,
+      13,    0,  247,    2, 0x08,
+      14,    1,  248,    2, 0x08,
+      16,    1,  251,    2, 0x08,
+      17,    0,  254,    2, 0x08,
+      18,    0,  255,    2, 0x08,
+      19,    0,  256,    2, 0x08,
+      20,    0,  257,    2, 0x08,
+      21,    1,  258,    2, 0x08,
+      22,    0,  261,    2, 0x08,
+      23,    0,  262,    2, 0x08,
+      24,    1,  263,    2, 0x08,
+      25,    0,  266,    2, 0x08,
+      26,    0,  267,    2, 0x08,
+      27,    1,  268,    2, 0x08,
+      28,    1,  271,    2, 0x08,
+      29,    0,  274,    2, 0x08,
+      30,    0,  275,    2, 0x08,
+      31,    0,  276,    2, 0x08,
+      32,    0,  277,    2, 0x08,
+      33,    1,  278,    2, 0x08,
+      34,    1,  281,    2, 0x08,
+      35,    0,  284,    2, 0x08,
+      36,    0,  285,    2, 0x08,
+      37,    0,  286,    2, 0x08,
+      38,    0,  287,    2, 0x08,
+      39,    0,  288,    2, 0x08,
+      40,    0,  289,    2, 0x08,
+      41,    0,  290,    2, 0x08,
+      42,    1,  291,    2, 0x08,
+      44,    1,  294,    2, 0x08,
+      45,    1,  297,    2, 0x08,
+      46,    1,  300,    2, 0x08,
+      47,    1,  303,    2, 0x08,
+      48,    1,  306,    2, 0x08,
+      49,    1,  309,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,
@@ -179,6 +199,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   15,
+    QMetaType::Void, QMetaType::Int,   15,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -191,8 +212,14 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   41,
-    QMetaType::Void, QMetaType::Bool,   41,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Int,   15,
+    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Int,   15,
 
        0        // eod
 };
@@ -223,20 +250,27 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 18: _t->on_indexLineEdit_editingFinished(); break;
         case 19: _t->on_saveButton_clicked(); break;
         case 20: _t->on_tabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 21: _t->on_vbdelToolButton_clicked(); break;
-        case 22: _t->on_vbclearToolButton_clicked(); break;
-        case 23: _t->on_vbpreItemTlBtn_clicked(); break;
-        case 24: _t->on_vbnextItemTlBtn_clicked(); break;
-        case 25: _t->on_vbookListView_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 26: _t->on_vbookListView_activated((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 27: _t->on_vbInput_editingFinished(); break;
-        case 28: _t->onAppExit(); break;
-        case 29: _t->onActionSettingPageAdded(); break;
-        case 30: _t->onActionVcbularyPageAdded(); break;
-        case 31: _t->onClipboardDataChanged(); break;
-        case 32: _t->onClipboardSelectionChanged(); break;
-        case 33: _t->on_cwsClipboardCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 34: _t->on_cwsSelectionCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 21: _t->on_vocabularyTabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 22: _t->on_vbdelToolButton_clicked(); break;
+        case 23: _t->on_vbclearToolButton_clicked(); break;
+        case 24: _t->on_vbpreItemTlBtn_clicked(); break;
+        case 25: _t->on_vbnextItemTlBtn_clicked(); break;
+        case 26: _t->on_vbookListView_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 27: _t->on_vbookListView_activated((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 28: _t->on_vbInput_editingFinished(); break;
+        case 29: _t->onAppExit(); break;
+        case 30: _t->onActionSettingPageAdded(); break;
+        case 31: _t->onActionVcbularyPageAdded(); break;
+        case 32: _t->onActionHelpPageAdded(); break;
+        case 33: _t->onClipboardDataChanged(); break;
+        case 34: _t->onClipboardSelectionChanged(); break;
+        case 35: _t->on_cwsClipboardCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 36: _t->on_cwsSelectionCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 37: _t->on_cwsEnableCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 38: _t->on_cwsMouseCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 39: _t->on_cwsShortcutkeyComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 40: _t->on_cwsAutoCloseEnCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 41: _t->on_fontsizeComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -267,13 +301,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 35)
+        if (_id < 42)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 35;
+        _id -= 42;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 35)
+        if (_id < 42)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 35;
+        _id -= 42;
     }
     return _id;
 }

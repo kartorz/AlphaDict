@@ -16,6 +16,7 @@ class QtMessager;
 class DictIndexModel;
 class QListWidgetItem;
 class VBookModel;
+class CapWordDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -29,7 +30,9 @@ public:
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void registerSysExit(void (*exit)()) { onSysExit = exit; }    
+    void registerSysExit(void (*exit)()) { onSysExit = exit; }
+
+    void initDelay();
 
 
     QtMessager *m_messager;
@@ -76,6 +79,8 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
+    void on_vocabularyTabWidget_currentChanged(int index);
+
     void on_vbdelToolButton_clicked();
 
     void on_vbclearToolButton_clicked();
@@ -97,6 +102,8 @@ private slots:
 
     void onActionVcbularyPageAdded();
 
+    void onActionHelpPageAdded();
+
     void onClipboardDataChanged();
 
     void onClipboardSelectionChanged();
@@ -105,13 +112,26 @@ private slots:
 
     void on_cwsSelectionCheckBox_clicked(bool checked);
     //void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
+    void on_cwsEnableCheckBox_clicked(bool checked);
+
+    void on_cwsMouseCheckBox_clicked(bool checked);
+
+    void on_cwsShortcutkeyComboBox_activated(int index);
+
+    void on_cwsAutoCloseEnCheckBox_clicked(bool checked);
+
+    void on_fontsizeComboBox_activated(int index);
 
 protected :
     //bool winEvent( MSG * message, long * result);
-    //bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+    bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+    virtual bool eventFilter( QObject *watched, QEvent *event);
 
 private:
-
+    void registerHotkey(int key);
+    void unregisterHotkey(int key);
+    int  capwordMode();
+    void readHelpText(QString &help);
 
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
@@ -121,8 +141,13 @@ private:
 
     Configure* m_config;
     bool m_initSettingPage;
+    bool m_initHelpPage;
+
     QString m_capword;
     void (*onSysExit)();
+
+    CapWordDialog* m_capWordDialog;
+    bool m_cwdEnableTemp;
 };
 
 #endif // MAINWINDOW_H

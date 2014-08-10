@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\alphadict.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,6 +117,18 @@
     <ClInclude Include="..\..\..\src\win32\resource.h">
       <Filter>Header Files\Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\qt\ui_capworddialog.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\qt\capworddialog.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\win32\HookApiUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\win32\TextOutHookServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\Application.cpp">
@@ -179,9 +188,6 @@
     <ClCompile Include="..\..\..\src\gui\qt\moc_mainwindow.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\gui\qt\moc_QtMessager.cpp">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\gui\qt\moc_VBookModel.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -198,6 +204,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\CharUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\qt\capworddialog.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\qt\moc_capworddialog.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\win32\TextOutHookServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\qt\moc_QtMessager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

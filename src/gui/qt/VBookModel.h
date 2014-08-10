@@ -22,15 +22,17 @@ public:
     QModelIndex remove(const int row);
     void clear();
     QString expl(const int row) const;
-    
+    void setCurrentRow(int row) {m_currentRow = row; m_examIndex = row;}
+
     QString curExamExpl()  const;
-    QString nextExamExpl();
-    QString preExamExpl();
-    bool   testInput(const QString& input, int& score);
+    bool nextExamExpl(QString& text);
+    bool preExamExpl(QString& text);
+    bool testInput(const QString& input, int& score);
 
 private:
     mutable VocabularyBook* m_vocabularyBook;
-    int examIndex;
+    int m_examIndex;
+    int m_currentRow;
 };
 
 #endif

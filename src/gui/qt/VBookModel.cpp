@@ -3,7 +3,7 @@
 
 #define LIST_SIZE_MAX 1000
 
-VBookModel::VBookModel(const string& vbookpath):examIndex(0)
+VBookModel::VBookModel(const string& vbookpath):m_examIndex(0),m_currentRow(0)
 {
     m_vocabularyBook = new VocabularyBook(vbookpath);
 }
@@ -80,29 +80,30 @@ QString VBookModel::expl(const int row) const
 
 QString VBookModel::curExamExpl() const
 {
-    return expl(examIndex);
+    return expl(m_currentRow);
 }
 
-QString VBookModel::nextExamExpl()
+bool VBookModel::nextExamExpl(QString& text)
 {
-    if (examIndex < m_vocabularyBook->size()-1) {
-        return expl(++examIndex);
+    if (m_examIndex < m_vocabularyBook->size()-1) {
+        text = expl(++m_examIndex);
+        return true;
     }
-    return expl(examIndex);
+    return false;
 }
 
-QString VBookModel::preExamExpl()
+bool VBookModel::preExamExpl(QString& text)
 {
-    if (examIndex > 0) {
-        return expl(--examIndex);
-    }
-
-    return expl(examIndex);
+    if (m_examIndex > 0) {
+        text =  expl(--m_examIndex);
+        return true;
+    }    
+    return false;
 }
 
 bool VBookModel::testInput(const QString& input, int& score)
 {
-    string result = m_vocabularyBook->getWord(examIndex);
+    string result = m_vocabularyBook->getWord(m_examIndex);
     if (result.compare(input.toUtf8().data()) == 0)
         return true;
     return false;

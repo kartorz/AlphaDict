@@ -56,6 +56,29 @@ private slots:
 
     void on_cwsSelectionCheckBox_clicked(bool checked);
 
+<<<<<<< HEAD
+=======
+    void on_cswEnableCheckBox_clicked(bool checked);
+
+    void on_cwsMouseCheckBox_clicked(bool checked);
+
+    void on_cwsShortcutKeycomboBox_activated(int index);
+
+    void on_cwsHotkeyInputEdit_editingFinished();
+
+    void on_cwsShortcutkeyInputEdit_editingFinished();
+
+    void on_cwsShortcutkeyComboBox_activated(int index);
+
+    void on_cwdEnCheckBox_clicked(bool checked);
+
+    void on_actionHelp_triggered(bool checked);
+
+    void on_actionHelp_triggered();
+
+    void on_fontsizeComboBox_activated(int index);
+
+>>>>>>> 1.2
 private:
     Ui::MainWindow *ui;
 };

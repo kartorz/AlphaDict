@@ -14,23 +14,25 @@ subdirs := convert lib dict gui
 incs := $(foreach dir, $(subdirs), $(dir)/Makefile.inc)
 include $(incs)
 
-SRCS_ALPHADICT += main.cpp \
-             Log.cpp \
-             MutexLock.cpp \
-             SpinLock.cpp \
-             ThdCond.cpp \
-	     Thread.cpp \
-	     Util.cpp \
-             CharUtil.cpp \
+SRCS_ALPHADICT += main.cpp    \
+             Log.cpp          \
+             MutexLock.cpp    \
+             SpinLock.cpp     \
+             ThdCond.cpp      \
+             Thread.cpp       \
+             Util.cpp         \
+             CharUtil.cpp     \
+             X11Util.cpp      \
              MessageQueue.cpp \
-             SysMessager.cpp \
-             TaskManager.cpp \
-             DictManager.cpp \
-             Configure.cpp \
+             SysMessager.cpp  \
+             TaskManager.cpp  \
+             DictManager.cpp  \
+             Configure.cpp    \
              VocabularyBook.cpp \
-             Application.cpp \
+             Application.cpp  \
              $(SRCS_DICT-yes) \
-	         $(SRCS_GUI-yes) \
+	         $(SRCS_GUI-yes)  \
+
 
 OBJS_TINYXML := $(SRCS_TINYXML:%.cpp=%.o)
 
@@ -93,6 +95,8 @@ install-system: install-dirs
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"
+
+	install -m 0666 ../doc/help.*                  "$(DATADIR)/doc/"
 
 	$(INSTALL) -d  $(DATADIR)/tools
 	@for FILE in `ls tools`; do \

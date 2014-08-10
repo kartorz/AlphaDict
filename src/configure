@@ -266,6 +266,7 @@ exit 0
 _prefix=/usr/local
 _qttooldir=auto
 _qt5=auto
+_qt5extras="no"
 _little_endian=auto
 _debug=no
 _cc=cc
@@ -564,12 +565,27 @@ echocheck "QT5 libraries"
           libs_alphadict="$libs_alphadict $ld_tmp"
           extra_cflags="$inc_tmp $extra_cflags"
           _qt5="yes"
+        fi
+
+        if test -f "$I/libQt5X11Extras.so" -o -L "$I/libQt5X11Extras.so" ; then
+          ld_tmp="-L$I -lQt5X11Extras  -lX11"
+          def_qt5extras='#define CONFIG_QT5EXTRAS 1'
+          libs_alphadict="$libs_alphadict $ld_tmp"
+          _qt5extras="yes"
+        fi
+
+        if test $_qt5 = "yes" -a $_qt5extras = "yes" ; then
           break
         fi
       done
     fi
   fi
 echores "$_qt5"
+
+if test $_qt5extras = "no" ; then
+  echo  "WARNING: libQt5X11Extras.so has not be installed, the shortcut Key for Capture word Dialog will be disable."
+  echo ""
+fi
 
 echocheck "QT tools"
 if test $_qttooldir = "auto" ; then
@@ -660,6 +676,7 @@ cat > $TMPH << EOF
 
 $def_debug
 $def_qt5
+$def_qt5extras
 $def_littleendian
 
 #endif /* ALPHADICT_CONFIG_H */

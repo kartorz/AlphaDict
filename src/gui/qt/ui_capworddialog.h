@@ -32,6 +32,7 @@ public:
         if (CapWordDialog->objectName().isEmpty())
             CapWordDialog->setObjectName(QStringLiteral("CapWordDialog"));
         CapWordDialog->resize(240, 180);
+        CapWordDialog->setToolTipDuration(10000);
         CapWordDialog->setAutoFillBackground(false);
         CapWordDialog->setSizeGripEnabled(false);
         CapWordDialog->setModal(false);

@@ -112,3 +112,51 @@ void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
 {
 
 }
+<<<<<<< HEAD
+=======
+
+void MainWindow::on_cswEnableCheckBox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_cwsMouseCheckBox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_cwsShortcutKeycomboBox_activated(int index)
+{
+
+}
+
+void MainWindow::on_cwsShortcutkeyInputEdit_editingFinished()
+{
+
+}
+
+void MainWindow::on_cwsShortcutkeyComboBox_activated(int index)
+{
+
+}
+
+void MainWindow::on_cwdEnCheckBox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_actionHelp_triggered(bool checked)
+{
+
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+
+}
+
+void MainWindow::on_fontsizeComboBox_activated(int index)
+{
+
+}
+>>>>>>> 1.2

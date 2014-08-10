@@ -161,12 +161,13 @@ void DictManager::lookup(const string& input, const int which, DictItemList& ite
 void DictManager::lookup(const string& input, const int which, const int flags)
 {
     MutexLock lock(m_cs);
+
     if (m_dictTotal == 0)
         return;
     if (which == -1) {
         for (int i=0; i<m_dictTotal; i++) {
             if (m_dictOpen[i].task != NULL) {
-                m_dictOpen[i].task->abort();
+                //m_dictOpen[i].task->abort(); // need enter into onAddLookupResult
                 m_dictOpen[i].pending = input; 
                /* The Task will use the variable 'm_dictOpen', 
                   can't assign m_dictOpen[i] a new pinter directly. */
@@ -178,36 +179,41 @@ void DictManager::lookup(const string& input, const int which, const int flags)
             }
         }
     } else {
-        if (which < m_dictTotal) { 
-            m_dictOpen[which].task = new LookupTask(input, which, this);
-            m_dictOpen[which].pending = "";
-            m_dictOpen[which].flag = flags;
-            TaskManager::getInstance()->addTask(m_dictOpen[which].task, 0);
+        if (which < m_dictTotal) {
+            if (m_dictOpen[which].task != NULL) {
+                m_dictOpen[which].pending = input;
+            } else {
+                m_dictOpen[which].task = new LookupTask(input, which, this);
+                m_dictOpen[which].pending = "";
+                m_dictOpen[which].flag = flags;
+                TaskManager::getInstance()->addTask(m_dictOpen[which].task, 0);
+            }
         }
     }
 }
 
 void DictManager::onAddLookupResult(int which, DictItemList& items)
 {
-    if (!m_dictOpen[which].task->isAbort()) {
-        DictItemList* arg1 = new DictItemList();
-        *arg1 = items;
-        int did = m_dictOpen[which].dictId;
-	    (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
-        int msgid = m_dictOpen[which].flag == 
-            QUERY_CAPWORD_FLAG ? MSG_SET_CAPWORD_DICTITEM : MSG_SET_DICTITEMS;
-        g_application.uiMessageQ()->push(msgid, -1, (void *)arg1); /* UI should delete arg1 */
-        m_dictOpen[which].task = NULL; /* TaskManager will delete this pointer */
-        //printf("{onAddLookupResult} %u\n", Util::getTimeMS());
-    } else {
-        if (m_dictOpen[which].pending != "") {
-            Message msg;
-            msg.strArg1 = m_dictOpen[which].pending;
-            msg.iArg1 = which;
-            msg.id = MSG_DICT_PENDING_QUERY;
-            m_dictOpen[which].task = NULL; /* TaskManager will delete this pointer */
-            g_application.sysMessageQ()->push(msg);
-        }
+    MutexLock lock(m_cs);
+    
+    DictItemList* arg1 = new DictItemList();
+    *arg1 = items;
+    int did = m_dictOpen[which].dictId;
+    (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
+    int msgid = m_dictOpen[which].flag == 
+        QUERY_CAPWORD_FLAG ? MSG_SET_CAPWORD_DICTITEM : MSG_SET_DICTITEMS;
+    g_application.uiMessageQ()->push(msgid, -1, (void *)arg1); /* UI should delete arg1 */
+
+    m_dictOpen[which].task = NULL; /* TaskManager will delete this pointer */
+    //printf("{onAddLookupResult} %u\n", Util::getTimeMS());
+
+    if (m_dictOpen[which].pending != "") {
+        Message msg;
+        msg.strArg1 = m_dictOpen[which].pending;
+        msg.iArg1 = which;
+        msg.id = MSG_DICT_PENDING_QUERY;
+        m_dictOpen[which].pending = "";
+        g_application.sysMessageQ()->push(msg);
     }
 }
 

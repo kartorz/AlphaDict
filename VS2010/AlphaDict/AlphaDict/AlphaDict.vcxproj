@@ -76,6 +76,7 @@
       <AdditionalDependencies>Winmm.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
+      <ImportLibrary>dlls</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -89,9 +90,11 @@
     <ClInclude Include="..\..\..\src\dict\aldict\aldict_inner.h" />
     <ClInclude Include="..\..\..\src\dict\iDict.h" />
     <ClInclude Include="..\..\..\src\endian_number.h" />
+    <ClInclude Include="..\..\..\src\gui\qt\capworddialog.h" />
     <ClInclude Include="..\..\..\src\gui\qt\DictIndexModel.h" />
     <ClInclude Include="..\..\..\src\gui\qt\mainwindow.h" />
     <ClInclude Include="..\..\..\src\gui\qt\QtMessager.h" />
+    <ClInclude Include="..\..\..\src\gui\qt\ui_capworddialog.h" />
     <ClInclude Include="..\..\..\src\gui\qt\ui_mainwindow.h" />
     <ClInclude Include="..\..\..\src\gui\qt\VBookModel.h" />
     <ClInclude Include="..\..\..\src\lib\tinyxml2\tinyxml2.h" />
@@ -108,8 +111,9 @@
     <ClInclude Include="..\..\..\src\Util.h" />
     <ClInclude Include="..\..\..\src\VocabularyBook.h" />
     <ClInclude Include="..\..\..\src\win32\config.h" />
+    <ClInclude Include="..\..\..\src\win32\HookApiUtil.h" />
     <ClInclude Include="..\..\..\src\win32\resource.h" />
-    <ClInclude Include="Resource.h" />
+    <ClInclude Include="..\..\..\src\win32\TextOutHookServer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\Application.cpp" />
@@ -118,8 +122,10 @@
     <ClCompile Include="..\..\..\src\DictManager.cpp" />
     <ClCompile Include="..\..\..\src\dict\aldict\Aldict.cpp" />
     <ClCompile Include="..\..\..\src\dict\aldict\AldictDocument.cpp" />
+    <ClCompile Include="..\..\..\src\gui\qt\capworddialog.cpp" />
     <ClCompile Include="..\..\..\src\gui\qt\DictIndexModel.cpp" />
     <ClCompile Include="..\..\..\src\gui\qt\mainwindow.cpp" />
+    <ClCompile Include="..\..\..\src\gui\qt\moc_capworddialog.cpp" />
     <ClCompile Include="..\..\..\src\gui\qt\moc_DictIndexModel.cpp" />
     <ClCompile Include="..\..\..\src\gui\qt\moc_mainwindow.cpp" />
     <ClCompile Include="..\..\..\src\gui\qt\moc_QtMessager.cpp" />
@@ -138,6 +144,7 @@
     <ClCompile Include="..\..\..\src\Thread.cpp" />
     <ClCompile Include="..\..\..\src\Util.cpp" />
     <ClCompile Include="..\..\..\src\VocabularyBook.cpp" />
+    <ClCompile Include="..\..\..\src\win32\TextOutHookServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\win32\AlphaDict.ico" />
