@@ -1,0 +1,61 @@
+* About AlphaDict
+-----------------
+  AlphaDict by joni lee.
+  It's a lightwight, open-source dictionary software.
+  The author's email is joni.kartorz.lee@gmail.com. You can contact hime 
+  for anything about this software.
+  
+  Code Repository:  "https://github.com/kartorz/AlphaDict"
+
+
+* Dictionary Format
+-------------------
+  AlphaDict has a custom inner dictionary format including a back-end format
+  (doc/dictionary_inner.pdf) and a front-end xml format (doc/front-end_format.xml).
+
+  Usually, user should edit front-end xml, then use AlConvert(.exe) to convert.
+  More detail about dictionary, see "README" doc.
+
+
+* Dictionary Selection
+----------------------
+  AlphaDict supports a variety of language dicts. It selects dict accroding to language 
+  instead of input text. It checks dicts one by one from top to buttom of
+  dict list, util find a dict to fit the lanague on "Dictionary window". 
+
+  Usr can choose source and destination language on "Dictionary window", change
+  the order of dicts on "Setting window".
+
+  For example:
+      "any" --> "any"         : select the first dict.
+      "any" --> "chinese"     : select the first dict that its destionation language
+                                  being "chinese" or "any".
+      "english" --> "chinese" : select the first dict that its source language being
+                                  "english" or "any", and its destionation language
+                                  being "chinese" or "any".
+
+      "any" value of language can match any language (not specified).  
+  
+
+* Capture Word of Screen
+------------------------
+  AlphaDict supports three capture methods. 
+  . selection
+    Select text by mouse: pressing left button of mouse, then move mouse, unpressing
+    the button finally.
+    AlphaDict will capture the selection word and translate.
+
+  . mouse
+    Move the mouse cursor over a text.
+    AlphaDict will extract the word within the text under mouse cursor to translate.
+
+  . clipboard
+    Copy the text to clipboard.
+    AlphaDict will listen the clipboard change, get this text and translate.
+
+  User can change setting on "Dict Setting Window".
+
+  Shortcut Key.
+  It's annoying AlphaDict pops capture dialog always. So, AlphaDict provides a 
+  shortcut key, you can  disalbe and enable the capture function alternately.
+  The default Shortcut key is "ctrl + alt + G" -- G is a key not a capital letter.
