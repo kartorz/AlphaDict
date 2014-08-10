@@ -205,7 +205,12 @@ extern "C" __declspec(dllexport) void InjectTextOutDriver(HWND hServer)
 extern "C" __declspec(dllexport) void UninjectTextOutDriver()
 {
     if (g_hMouseHook) {
+        DWORD result = WaitForSingleObject(g_hSyncMutex, INFINITE);
+        if (result == WAIT_OBJECT_0 || result == WAIT_ABANDONED)
+            ReleaseMutex(g_hSyncMutex);
+
         UnhookWindowsHookEx(g_hMouseHook);
+        g_iCapMode = 0;
         g_hMouseHook = NULL;
     }
 }
