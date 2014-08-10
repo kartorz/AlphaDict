@@ -200,6 +200,8 @@ size_t ReadFile::operator()(FILE *f, void *ptr, size_t length)
 {
     size_t rdbytes = 0;
     size_t rsize;
+    if (f == NULL)
+        return 0;
     do {
         int bytes = length - rdbytes;
 	rsize = fread(ptr, 1, bytes, f);
@@ -210,8 +212,16 @@ size_t ReadFile::operator()(FILE *f, void *ptr, size_t length)
 
 void* ReadFile::operator()(FILE *f, size_t length)
 {
+    if (f == NULL)
+        return NULL;
+
     if (ptr != NULL)
         free(ptr);
+    if (length == -1) {
+        fseek(f, 0, SEEK_END);
+        length = ftello(f);
+        fseek(f, 0, SEEK_SET); 
+    }
     ptr = malloc(length);
     size_t rdbytes = 0;
     size_t rsize;

@@ -1,10 +1,10 @@
 \\ What is AlphaDict
-------------------------------------------------------------
+--------------------
 
-AlphaDict is a lightweight, less dependence, cross platform open source 
-dictionary software,supproting linux,unix and windows. 
+AlphaDict is a lightweight, cross platform open source dictionary software,
+supproting linux,unix and windows. 
 
-AlphaDict has opened its dictionary format that you can make your own dictionary, 
+AlphaDict has a open dictionary format that you can make your own dictionary, 
 also supports lots third-party dictionary formats: cedict, startdict. 
 AlphaDict has made some open source dictionaries, you can download from
     "http://pan.baidu.com/s/1o6uhAyQ"

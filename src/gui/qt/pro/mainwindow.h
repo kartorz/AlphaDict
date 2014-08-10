@@ -68,6 +68,14 @@ private slots:
 
     void on_cwsShortcutkeyComboBox_activated(int index);
 
+    void on_cwdEnCheckBox_clicked(bool checked);
+
+    void on_actionHelp_triggered(bool checked);
+
+    void on_actionHelp_triggered();
+
+    void on_fontsizeComboBox_activated(int index);
+
 private:
     Ui::MainWindow *ui;
 };

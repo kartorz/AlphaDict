@@ -27,12 +27,19 @@ enum CwsShortcutKey {
     None_Key,
 };
 
+struct Setting {
+    int  uilanID;
+    int  fontsize;
+};
+
 struct CaptureWordSetting {
     bool benable;
     bool bselection;
     bool bclipboard;
     bool bmouse;
     int  shortcutKey;
+    bool autoCloseEn;
+    int  autoCloseInv;
 };
 
 enum UILanID {
@@ -56,12 +63,15 @@ public:
     void writeSrcLan(const string& lan);
     void writeDetLan(const string& lan);
     void writeUILanID(int id);
-    void writeXml();
+    void writeFontSize(int size);
     void writeCwsSelection(bool en);
     void writeCwsClipboard(bool en);
     void writeCwsMouse(bool en);
     void writeCwsEnable(bool en);
     void writeCwsShortcutKey(int shortcutKey);
+    void writeCwsAutoCloseEn(bool en);
+    void writeCwsAutoCloseInv(int Inv);
+    void writeXml();
 
     vector<string> m_languages;
     string m_dataDir;
@@ -69,9 +79,10 @@ public:
     string m_configFile;
     string m_srcLan;
     string m_detLan;
-    int m_uilanID;
+    
     CaptureWordSetting  m_cws;
-
+    Setting  m_setting;
+     
     vector<struct DictNode> m_dictNodes;
 
     string getVBPath() { return m_homeDir+"/vbook.xml";}

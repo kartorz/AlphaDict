@@ -96,6 +96,8 @@ install-system: install-dirs
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"
 
+	install -m 0666 ../doc/help.*                  "$(DATADIR)/doc/"
+
 	$(INSTALL) -d  $(DATADIR)/tools
 	@for FILE in `ls tools`; do \
 	    install -m 0755 "tools/$$FILE" "$(DATADIR)/tools/$$FILE"; done

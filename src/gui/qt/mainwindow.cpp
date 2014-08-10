@@ -17,6 +17,7 @@
 #include "iDict.h"
 #include "Log.h"
 #include "CharUtil.h"
+#include "Util.h"
 #ifdef WIN32
 #include "win32/TextOutHookServer.h"
 #define HOTKEY_IDENTIFY   0x1111
@@ -25,7 +26,6 @@
 #include <X11/Xutil.h>
 #include "X11Util.h"
 #endif
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->inputLineEdit->setAttribute(Qt::WA_InputMethodEnabled,true);
     QObject::connect(ui->actionSetting, SIGNAL(triggered()),this, SLOT(onActionSettingPageAdded()));
     QObject::connect(ui->actionVocabulary, SIGNAL(triggered()), this, SLOT(onActionVcbularyPageAdded()));
+    QObject::connect(ui->actionHelp, SIGNAL(triggered()), this, SLOT(onActionHelpPageAdded()));
     //QShortcut  *listViewEnterAccel= new QShortcut(Qt::Key_Return, ui->indexListView);
     //connect(listViewEnterAccel, SIGNAL(activated()), this, SLOT(enterTreeItem()));
     QObject::connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(onClipboardDataChanged()));
@@ -60,10 +61,15 @@ MainWindow::MainWindow(QWidget *parent) :
     m_initSettingPage = false;
 
     ui->tabWidget->removeTab(1);
+    
+    ui->tabWidget->removeTab(1);
+    m_initHelpPage = false;
     //setFocus();
     //QIcon icon("app.ico"); 
     //setWindowIcon(icon);
     qApp->installEventFilter(this);
+
+    m_capWordDialog = new CapWordDialog(this, m_config->m_cws.autoCloseEn);
 #if 0
     m_systray = new QSystemTrayIcon(this);
     QIcon icon("trayicon.png"); 
@@ -94,7 +100,7 @@ MainWindow::~MainWindow()
 void MainWindow::initDelay()
 {
     if (m_config->m_cws.benable) {
-        registerHotkey();
+        registerHotkey(m_config->m_cws.shortcutKey);
     #ifdef _WINDOWS
         TextOutHookServer::getReference().inject((HWND)effectiveWinId());
         TextOutHookServer::getReference().captureTextEnable(capwordMode());
@@ -206,12 +212,7 @@ void MainWindow::onUpdateCapWordExplText(void *v)
     DictItemList* itemList = (DictItemList*) v;
 
     //QPoint pos = QCursor::pos();
-    if (m_capWordDialog == NULL) { 
-        m_capWordDialog = new CapWordDialog(this);
-    } else {
-        m_capWordDialog->moveToCursor();
-    }
-
+    m_capWordDialog->moveToCursor();
     m_capWordDialog->setDictItemList(itemList);
     //dlg->exec();
     m_capWordDialog->show();
@@ -337,7 +338,8 @@ void MainWindow::onActionSettingPageAdded()
 	        	else
 	        	    item->setCheckState(Qt::Unchecked);
 	        }
-            ui->uilanComboBox->setCurrentIndex(m_config->m_uilanID);
+            ui->uilanComboBox->setCurrentIndex(m_config->m_setting.uilanID);
+            ui->fontsizeComboBox->setCurrentIndex(m_config->m_setting.fontsize-9);
             ui->cwsShortcutkeyComboBox->setCurrentIndex(m_config->m_cws.shortcutKey);
 
             Qt::CheckState ckstate = m_config->m_cws.bselection ? Qt::Checked : Qt::Unchecked;
@@ -347,7 +349,11 @@ void MainWindow::onActionSettingPageAdded()
             ui->cwsClipboardCheckBox->setCheckState(ckstate);
 
             ckstate = m_config->m_cws.benable ? Qt::Checked : Qt::Unchecked;
-            ui->cswEnableCheckBox->setCheckState(ckstate);
+            ui->cwsEnableCheckBox->setCheckState(ckstate);
+
+            ckstate = m_config->m_cws.autoCloseEn ? Qt::Checked : Qt::Unchecked;
+            ui->cwsAutoCloseEnCheckBox->setCheckState(ckstate);
+
         #ifdef _LINUX
             ui->cwsMouseCheckBox->hide();
         #elif defined(_WINDOWS)
@@ -357,7 +363,7 @@ void MainWindow::onActionSettingPageAdded()
         }
         //QIcon icon;
         //icon.addFile(QStringLiteral(":/res/setting.png"), QSize(), QIcon::Normal, QIcon::Off);
-        inx = ui->tabWidget->addTab(ui->settingTab, QApplication::translate("MainWindow", "setting", 0));
+        inx = ui->tabWidget->addTab(ui->settingTab, QApplication::translate("MainWindow", "Setting", 0));
         ui->tabWidget->setCurrentIndex(inx);
     } else {
         if (ui->tabWidget->currentIndex() == inx) {
@@ -379,7 +385,27 @@ void MainWindow::onActionVcbularyPageAdded()
         //ui->vbScoreLabel->setText("0");
         //QIcon icon;
         //icon.addFile(QStringLiteral(":/res/vocabulary.png"), QSize(), QIcon::Normal, QIcon::Off);
-        inx = ui->tabWidget->addTab(ui->vocabularyTab, QApplication::translate("MainWindow", "vbook", 0));
+        inx = ui->tabWidget->addTab(ui->vocabularyTab, QApplication::translate("MainWindow", "VocabulayBook", 0));
+        ui->tabWidget->setCurrentIndex(inx);
+    } else {
+        if (ui->tabWidget->currentIndex() == inx)
+            ui->tabWidget->removeTab(inx);
+        else
+            ui->tabWidget->setCurrentIndex(inx);
+    }
+}
+
+void MainWindow::onActionHelpPageAdded()
+{
+    int inx = ui->tabWidget->indexOf(ui->helpTab);
+    if (inx == -1) {
+        if (!m_initHelpPage) {
+            QString help;
+            m_initHelpPage = true;
+            readHelpText(help);
+            ui->helpTextEdit->setPlainText(help);
+        }
+        inx = ui->tabWidget->addTab(ui->helpTab, QApplication::translate("MainWindow", "Help", 0));
         ui->tabWidget->setCurrentIndex(inx);
     } else {
         if (ui->tabWidget->currentIndex() == inx)
@@ -415,6 +441,14 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         g_application.sysMessageQ()->push(MSG_RELOAD_DICT, -1, -1);
 }
 
+void MainWindow::on_vocabularyTabWidget_currentChanged(int index)
+{
+    if (index == 1) {
+        ui->vbexplTextEdit->setPlainText("");
+        ui->vbExplLabel->setText(m_vbookModel->curExamExpl());
+    }
+}
+
 void MainWindow::on_vbdelToolButton_clicked()
 {
     int currentIndex = ui->vbookListView->currentIndex().row();
@@ -447,19 +481,31 @@ void MainWindow::on_vbInput_editingFinished()
 
 void MainWindow::on_vbpreItemTlBtn_clicked()
 {
-    ui->vbExplLabel->setText(m_vbookModel->preExamExpl());
+    QString text;
+    if (m_vbookModel->preExamExpl(text)) {
+        ui->vbExplLabel->setText(text);
+    } else {
+        showToolTip(tr("the first item"));
+    }
 }
 
 void MainWindow::on_vbnextItemTlBtn_clicked()
 {
-    ui->vbExplLabel->setText(m_vbookModel->nextExamExpl());
+    QString text;
+    if (m_vbookModel->nextExamExpl(text)) {
+        ui->vbExplLabel->setText(text);
+    } else {
+        showToolTip(tr("the last item"));
+    }
 }
 
 void MainWindow::on_vbookListView_clicked(const QModelIndex &index)
 {
     QString expl = m_vbookModel->expl(index.row());
+    m_vbookModel->setCurrentRow(index.row());
     expl.trimmed();
     ui->vbexplTextEdit->setPlainText(expl);
+
 }
 
 void MainWindow::on_vbookListView_activated(const QModelIndex &index)
@@ -518,7 +564,7 @@ void MainWindow::onClipboardSelectionChanged()
         if (input != "") {
             m_capword = input;
             g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
-        } else if (m_capWordDialog) {
+        } else if (!m_capWordDialog->isHidden()) {
             m_capWordDialog->close();
         }
     }
@@ -541,13 +587,13 @@ void MainWindow::on_cwsSelectionCheckBox_clicked(bool checked)
 #endif
 }
 
-void MainWindow::on_cswEnableCheckBox_clicked(bool checked)
+void MainWindow::on_cwsEnableCheckBox_clicked(bool checked)
 {
     m_config->writeCwsEnable(checked);
     if (checked) {
-        this->registerHotkey();
+        this->registerHotkey(m_config->m_cws.shortcutKey);
     } else {
-        this->unregisterHotkey();
+        this->unregisterHotkey(m_config->m_cws.shortcutKey);
     }
 
 #ifdef _WINDOWS
@@ -559,7 +605,7 @@ void MainWindow::on_cswEnableCheckBox_clicked(bool checked)
     #endif
     } else {
         TextOutHookServer::getReference().uninject();
-        if (m_capWordDialog != NULL) {
+        if (!m_capWordDialog->isHidden()) {
             m_capWordDialog->close();
         }
     }
@@ -577,11 +623,22 @@ void MainWindow::on_cwsMouseCheckBox_clicked(bool checked)
 
 void MainWindow::on_cwsShortcutkeyComboBox_activated(int index)
 {
+    int old = m_config->m_cws.shortcutKey;
     m_config->writeCwsShortcutKey(index);
+    this->unregisterHotkey(old);
     if (m_config->m_cws.benable) {
-        this->unregisterHotkey();
-        this->registerHotkey();
+        this->registerHotkey(m_config->m_cws.shortcutKey);
     }
+}
+
+void MainWindow::on_cwsAutoCloseEnCheckBox_clicked(bool checked)
+{
+    m_config->writeCwsAutoCloseEn(checked);
+}
+
+void MainWindow::on_fontsizeComboBox_activated(int index)
+{
+    m_config->writeFontSize(index+9);   
 }
 
 //bool MainWindow::winEvent(MSG * message, long * result)
@@ -595,7 +652,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     unsigned int message = ((MSG *)msg)->message;
     switch (message) {
     case WM_CW_LBUTTON:
-        if (m_capWordDialog != NULL) {
+        if (!m_capWordDialog->isHidden()) {
             int x = (int)(((MSG *)msg)->wParam);
             int y = (int)(((MSG *)msg)->lParam);
             QPoint pos(x,y);
@@ -623,9 +680,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
            m_capword = input;
            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
        } else {
-           if (m_capWordDialog != NULL) {
-               m_capWordDialog->close();
-           }
+           m_capWordDialog->close();
        }
        break;
     }
@@ -643,9 +698,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
                     TextOutHookServer::getReference().captureTextEnable(capwordMode());
                 } else {
                     TextOutHookServer::getReference().captureTextEnable(0);
-                    if (m_capWordDialog != NULL) {
-                        m_capWordDialog->close();
-                    }
+                    m_capWordDialog->close();
                 }
             }
             //g_log.d("win hotkey %d, %d\n", x,y);
@@ -674,54 +727,82 @@ bool MainWindow::eventFilter( QObject * watched, QEvent * event )
         int key = keyevent->key();
         Qt::KeyboardModifiers modifier = keyevent->modifiers();
         //printf("native event keypress %d, %d, %d\n", key, m_config->m_cws.shortcutKey, modifier);
-        if (key == m_config->m_cws.shortcutKey + 0x41 && 
+        if (key == m_config->m_cws.shortcutKey + 'A' && 
             modifier == (Qt::ControlModifier|Qt::AltModifier)) {
             m_cwdEnableTemp = !m_cwdEnableTemp;
-            //X11Util::forwardHotKey(m_config->m_cws.shortcutKey+'a');
+            if (!m_cwdEnableTemp)
+                m_capWordDialog->close();
+            //X11Util::forwardHotKey(m_config->m_cws.shortcutKey);
             return true;
         }
     }
     return false;
 }
 
-void MainWindow::registerHotkey()
+void MainWindow::registerHotkey(int key)
 {
 #ifdef _WINDOWS
     ::RegisterHotKey((HWND)(this->effectiveWinId()),
                       0x1111, 
                       MOD_CONTROL | MOD_ALT,
-                      m_config->m_cws.shortcutKey + 'A');
+                      key+'A');
 #elif defined(_LINUX)
-    X11Util::registerHotkey(m_config->m_cws.shortcutKey+'a');
+    X11Util::registerHotkey(key+'a');
+    // QT identifies this key as key+'A'
 #endif
+    //printf("registerHotkey %d\n", key+'a');
 }
 
-void MainWindow::unregisterHotkey()
+void MainWindow::unregisterHotkey(int key)
 {
 #ifdef _WINDOWS
     UnregisterHotKey((HWND)effectiveWinId(), 0x1111);
 #elif defined(_LINUX)
-    X11Util::unregisterHotkey(m_config->m_cws.shortcutKey+'a');
+    X11Util::unregisterHotkey(key +'a');
+    // QT identifies this key as m_config->m_cws.shortcutKey+'A'
 #endif
+    //printf("unregisterHotkey %d\n", key+'a');
 }
 
 int MainWindow::capwordMode()
 {
     int mode = 0;
+#ifdef _WINDOWS
     if (m_config->m_cws.bmouse)
         mode |= CAPMODE_MOUSE_OVER;
     if (m_config->m_cws.bselection)
         mode |= CAPMODE_MOUSE_SELECTION;
+#endif
     return mode;
+}
+
+void MainWindow::readHelpText(QString &help)
+{
+    std::string suffix[] = {".en", ".cn"};
+    int lanid = m_config->m_setting.uilanID;
+    std::string helpPath = m_config->m_dataDir + "/doc/help" + suffix[lanid];
+    FILE *pHelpFile;
+    char *bytes;
+#ifdef WIN32
+   wchar_t *wHelpPath= CharUtil::utf8srtowcs(helpPath.c_str());
+   if (wHelpPath != NULL) {
+       pHelpFile = _wfopen(wHelpPath, L"rb");
+   }
+#else
+    pHelpFile = fopen(helpPath.c_str(),"rb");
+#endif
+    util::ReadFile read;
+    bytes = (char *)read(pHelpFile, -1);
+    help = QString::fromUtf8(bytes);
+    //qDebug() << help;
 }
 
 void MainWindow::onAppExit()
 {
-   if (m_capWordDialog != NULL) 
-       m_capWordDialog->close();
+   m_capWordDialog->close();
 
    if (m_config->m_cws.benable)
-       this->unregisterHotkey();
+       this->unregisterHotkey(m_config->m_cws.shortcutKey);
 
 #ifdef WIN32
     TextOutHookServer::getReference().uninject();

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'capworddialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.0
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -32,6 +32,7 @@ public:
         if (CapWordDialog->objectName().isEmpty())
             CapWordDialog->setObjectName(QStringLiteral("CapWordDialog"));
         CapWordDialog->resize(240, 180);
+        CapWordDialog->setToolTipDuration(10000);
         CapWordDialog->setAutoFillBackground(false);
         CapWordDialog->setSizeGripEnabled(false);
         CapWordDialog->setModal(false);

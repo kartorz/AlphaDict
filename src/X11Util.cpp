@@ -1,7 +1,9 @@
-#include <QtX11Extras/QX11Info> 
+#include "config.h"
+
+#if CONFIG_QT5EXTRAS
+#include <QtX11Extras/QX11Info>
 
 #include "X11Util.h"
-#include <stdio.h>
 
 void X11Util::registerHotkey(int keycode)
 {
@@ -48,4 +50,10 @@ void X11Util::sendKeyEvent(Display *display, XEvent event)
 
     XSendEvent(display, InputFocus,  True, xkey.type, (XEvent *)(&event));
 }
-
+#else
+#include "X11Util.h"
+void X11Util::registerHotkey(int keycode)   {}
+void X11Util::unregisterHotkey(int keycode) {}
+void X11Util::forwardHotKey(int keycode)    {}
+void X11Util::sendKeyEvent(Display *display, XEvent event) {}
+#endif

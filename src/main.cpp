@@ -1,10 +1,7 @@
-#include <Windows.h>
-
 #include "alphadict.h"
 #include "Util.h"
 #include "Log.h"
 #include "Application.h"
-
 
 #if CONFIG_QT5
 #include <QtWidgets/QApplication>
@@ -36,9 +33,19 @@ int main(int argc, char* argv[])
     int argc = 0;
     char** argv = 0;
 #endif
-    QApplication a(argc, argv);
     QTranslator translator;
-    if (g_application.m_configure->m_uilanID == UILAN_CN) {
+    QApplication a(argc, argv);
+    QFont font = a.font();
+
+    int fontsize = g_application.m_configure->m_setting.fontsize;
+    if (fontsize != font.pointSize()) {
+        if (fontsize > 0) {
+            font.setPointSize(fontsize);
+            a.setFont(font);
+        }
+    }
+
+    if (g_application.m_configure->m_setting.uilanID == UILAN_CN) {
         string trfile = g_application.m_configure->m_dataDir + "/uitr_cn";
         //translator.load(QString::fromUtf8(trfile.c_str()));
         translator.load(QString::fromLocal8Bit(trfile.c_str()));
@@ -46,7 +53,8 @@ int main(int argc, char* argv[])
     }
     a.setStyle(QStyleFactory::create("Fusion"));
     //a.setStyle(QStyleFactory::create("windowsvista"));
-    if (ret != 0) {
+
+    if (ret != 0 /*application initialization*/) {
         QMessageBox msgBox;
         QString errmsg = QString("\n\
 system init failure, error code:(%1)    \n\n\

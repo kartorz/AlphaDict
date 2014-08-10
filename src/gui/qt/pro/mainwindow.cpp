@@ -137,3 +137,23 @@ void MainWindow::on_cwsShortcutkeyComboBox_activated(int index)
 {
 
 }
+
+void MainWindow::on_cwdEnCheckBox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_actionHelp_triggered(bool checked)
+{
+
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+
+}
+
+void MainWindow::on_fontsizeComboBox_activated(int index)
+{
+
+}

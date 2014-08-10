@@ -25,6 +25,7 @@ using namespace boost::filesystem;
 #define DICTNODE_NUM_MAX   48
 
 #define XML_TAG_CWS "capture-word-setting"
+#define XML_TAG_SETTING  "setting"
 
 Configure& Configure::getRefrence()
 {
@@ -33,7 +34,7 @@ Configure& Configure::getRefrence()
 }
 
 Configure::Configure():m_homeDir(""),m_configFile(""),
- m_srcLan("any"),m_detLan("any"),m_dirty(false),m_uilanID(0)
+ m_srcLan("any"),m_detLan("any"),m_dirty(false)
 {
 }
 
@@ -111,13 +112,6 @@ int Configure::load(const string& xmlpath)
         m_detLan = tempElement->GetText();
     }
 
-    tempElement = rootElement->FirstChildElement("uilan");
-    if (tempElement && tempElement->GetText()) {
-        stringstream  stream;
-        stream << tempElement->GetText();
-        stream >> m_uilanID;
-    }
-
     // Loading dictionary 
     vector<string> dictFiles;
     scanDictDir(dictFiles);
@@ -179,7 +173,6 @@ int Configure::load(const string& xmlpath)
         }
     }
     // Loading dictionary -- end
-
     tempElement = rootElement->FirstChildElement(XML_TAG_CWS);
     if (tempElement) {
         m_cws.bselection  = tempElement->BoolAttribute("selection");
@@ -187,20 +180,41 @@ int Configure::load(const string& xmlpath)
         m_cws.bmouse      = tempElement->BoolAttribute("mouse");
         m_cws.benable     = tempElement->BoolAttribute("enable"); 
         m_cws.shortcutKey = tempElement->IntAttribute("shortcutkey");
+        m_cws.autoCloseEn = tempElement->BoolAttribute("AutoCloseEnable");
+        m_cws.autoCloseInv= tempElement->IntAttribute("AutoCloseInterval");
     } else {
         m_cws.benable    = true;
         m_cws.bselection = true;
         m_cws.bmouse     = true;
         m_cws.bclipboard = false;
-
-        m_cws.shortcutKey = 'c';
+        m_cws.shortcutKey = 'g'-'a';
+        m_cws.autoCloseEn  = true;
+        m_cws.autoCloseInv = 1000;
 
         XMLElement* e = m_doc.NewElement(XML_TAG_CWS);
-        e->SetAttribute("selection",  m_cws.bselection);
-        e->SetAttribute("clipboard",  m_cws.bclipboard);
-        e->SetAttribute("mouse",      m_cws.bmouse);
-        e->SetAttribute("enable",     m_cws.benable);
-        e->SetAttribute("shortcutkey",m_cws.shortcutKey);
+        e->SetAttribute("selection",        m_cws.bselection);
+        e->SetAttribute("clipboard",        m_cws.bclipboard);
+        e->SetAttribute("mouse",            m_cws.bmouse);
+        e->SetAttribute("enable",           m_cws.benable);
+        e->SetAttribute("shortcutkey",      m_cws.shortcutKey);
+        e->SetAttribute("AutoCloseEnable",  m_cws.autoCloseEn);
+        e->SetAttribute("AutoCloseInterval",m_cws.autoCloseInv);
+
+        rootElement->InsertEndChild(e);
+    }
+
+    tempElement = rootElement->FirstChildElement(XML_TAG_SETTING);
+    if (tempElement) {
+        m_setting.uilanID = tempElement->IntAttribute("uilan");
+        m_setting.fontsize = tempElement->IntAttribute("fontsize");
+    } else {
+        m_setting.uilanID = UILAN_EN;
+        m_setting.fontsize = 11;
+
+        XMLElement* e = m_doc.NewElement(XML_TAG_SETTING);
+        e->SetAttribute("uilan", m_setting.uilanID);
+        e->SetAttribute("fontsize", m_setting.fontsize);
+
         rootElement->InsertEndChild(e);
     }
 
@@ -416,27 +430,22 @@ void Configure::writeDetLan(const string& lan)
 
 void Configure::writeUILanID(int id)
 {
-    if (m_uilanID != id) {
+    if (m_setting.uilanID != id) {
         SpinLock lock(m_cs);
-	    m_uilanID = id;
-        stringstream  stream;
-        stream << id;
+	    m_setting.uilanID = id;
+        //stringstream  stream;
+        //stream << id;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
+        e->SetAttribute("uilan", m_setting.uilanID);
+    }
+}
 
-        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement("uilan").ToElement();
-        if (e == NULL) {
-            e = m_doc.NewElement("uilan");
-            e->InsertFirstChild(m_doc.NewText(stream.str().c_str()));
-            m_doc.RootElement()->InsertEndChild(e);
-            return;
-        }
-
-        XMLText* txt = e->FirstChild()->ToText();
-        if (txt) {
-            txt->SetValue(stream.str().c_str());
-            m_dirty = true;
-        } else {
-            g_log(LOG_ERROR, "writeUILanID: can't find text node\n");    
-        }
+void Configure::writeFontSize(int size)
+{
+    if (m_setting.fontsize != size) {
+	    m_setting.fontsize = size;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
+        e->SetAttribute("fontsize", m_setting.fontsize);
     }
 }
 
@@ -477,6 +486,22 @@ void Configure::writeCwsEnable(bool en)
     m_cws.benable = en;
     XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
     e->SetAttribute("enable",  m_cws.benable);
+    m_dirty = true;
+}
+
+void Configure::writeCwsAutoCloseEn(bool en)
+{
+    m_cws.autoCloseEn = en;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("AutoCloseEnable", m_cws.autoCloseEn);
+    m_dirty = true;
+}
+
+void Configure::writeCwsAutoCloseInv(int inv)
+{
+    m_cws.autoCloseInv = inv;
+    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+    e->SetAttribute("AutoCloseInterval", m_cws.autoCloseInv);
     m_dirty = true;
 }
 
