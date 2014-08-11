@@ -780,7 +780,7 @@ void MainWindow::readHelpText(QString &help)
 {
     std::string suffix[] = {".en", ".cn"};
     int lanid = m_config->m_setting.uilanID;
-    std::string helpPath = m_config->m_dataDir + "/doc/help" + suffix[lanid];
+    std::string helpPath = m_config->m_dataDir + "/help" + suffix[lanid];
     FILE *pHelpFile;
     char *bytes;
 #ifdef WIN32

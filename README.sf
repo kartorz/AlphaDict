@@ -1,0 +1,26 @@
+
+AlphaDict by joni lee (li liqiong) <joni.kartorz.lee@gmail.com>
+version: 1.2
+
+It's a lightwight, open-source dictionary software with a open dict format that you can make your own dictionary,
+being a cross platform software, supproting linux, unix and windows.
+
+Features:
+  . Support lots of third-party dictionary formats: cedict, startdict, dicts.info, IDP,etc.
+  . Capture Word of Screen.
+  . Vocabulary book.
+  . Be easy to make your own dictionary.
+
+You can download software, code, dicts and get information from the below URLs.
+  sourceforge: "http://sourceforge.net/projects/alphadict"    (home page)
+  github     : "https://github.com/kartorz/AlphaDict"         (code repository)
+  netdisk    : "http://pan.baidu.com/s/1dD9v12D"              (download software, code, dicts)
+  wiki       : "https://github.com/kartorz/AlphaDict/wiki"    (wiki home page)
+
+You can download all the dictionaries on "netdisk" or "wiki", just a few on "sourceforge".
+
+More details, see "README.xx" and "doc/" of source code, or visit "wiki".
+
+AlphaDict_v1.2_win32.rar is for windows(xp, 2000, win7, win8), no need to install, just unrar, and run AlphaDict.exe.
+read README-win32.txt for more information.
+
