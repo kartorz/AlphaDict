@@ -13,6 +13,7 @@
 
 static void on_exit()
 {
+    g_application.stop();
 }
 
 #ifdef WIN32
@@ -26,7 +27,7 @@ int main(int argc, char* argv[])
 #endif
     int ret = 0;
     Util::getTimeMS(); // start to timing.
-    ret = g_application.initialization();
+    ret = g_application.start();
 
 #if CONFIG_QT5
 #ifdef WIN32
@@ -58,7 +59,7 @@ int main(int argc, char* argv[])
         QMessageBox msgBox;
         QString errmsg = QString("\n\
 system init failure, error code:(%1)    \n\n\
-please refer README.txt\n").arg(ret);
+read README-win32.txt for more information \n").arg(ret);
 
 	msgBox.setText(errmsg);
 	msgBox.exec();

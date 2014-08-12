@@ -7,19 +7,20 @@
 class SysMessager: public Thread
 {
 public:
-    SysMessager();
     SysMessager(MessageQueue* queuq);
     virtual ~SysMessager();
     
     void processMessage();
-    MessageQueue* m_msgQ;
+    virtual void stop();
 
 protected:
     virtual void doWork();
     virtual void onStartup();
+    virtual void onExit();
 
 private:
     bool m_bReloadDict;
+    MessageQueue* m_msgQ;
 };
 
 

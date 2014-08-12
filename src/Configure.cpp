@@ -46,19 +46,20 @@ Configure::~Configure()
 int Configure::initialization()
 {
     int ret = 0;
-    Util::usrHomeDir(m_homeDir);
+    Util::usrProfileDir(m_homeDir);
     m_configFile = m_homeDir + "/configure.xml";
     g_log(LOG_INFO, "home direcotry:(%s)\n", m_homeDir.c_str());
 
 #ifdef WIN32
-    m_dataDir = m_homeDir + "/system";
+    Util::execDir(m_dataDir);
+    m_dataDir +=  "/system";
 #else
     m_dataDir = DATADIR;
 #endif
     g_log(LOG_INFO, "system dir :(%s)\n", m_dataDir.c_str());
     if (!Util::isDirExist(m_homeDir)) {
-         if (Util::createDir(m_homeDir) == true) {
-             string path = m_dataDir;
+         if (Util::createDir(m_homeDir)) {
+             //string path = m_dataDir;
              Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
          } else {
          #ifdef WIN32
@@ -73,34 +74,45 @@ int Configure::initialization()
     if (!Util::isFileExist(m_configFile)) {
         if (Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile) == false) {
         #ifdef WIN32
-            g_log.e("{Configure} can't create home dir\n");
+            g_log.e("{Configure} can't copy cofigure.xml.in \n");
             return ERR_CPCFG;
         #else
-            AL_ASSERT(false, "{Configure} can't create home dir\n");
+            AL_ASSERT(false, "{Configure} can't copy cofigure.xml.in \n");
         #endif
         }
     }
 
     ret = load(m_configFile);
+    if (ret == ERR_LDCFG) {
+        // Reload configure file
+        Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
+        ret = load(m_configFile);
+        g_log.w("{Configure} load configure.xml failure, reload\n");
+    }
+
     loadLanguage();
-    
+
     Message msg;
     msg.id = MSG_SET_LANLIST;
     msg.strArg1 = m_srcLan;
     msg.strArg2 = m_detLan;
     msg.pArg1 = &m_languages;
-    g_application.uiMessageQ()->push(msg);
+    g_application.uiMessageQ()->push(msg); // Cause loading dict.
     return ret;
 }
 
 int Configure::load(const string& xmlpath)
 {
     if (m_doc.LoadFile(xmlpath.c_str()) != XML_NO_ERROR) {
-        g_log.e("{Configure} can't load xml\n");
+        g_log.e("{Configure} can't load xml %s\n", xmlpath.c_str());
         return ERR_LDCFG;
     }
 
     XMLElement* rootElement = m_doc.RootElement();
+    if (rootElement == NULL) {
+        g_log.e("{Configure} can't get root element %s\n", xmlpath.c_str());
+        return ERR_LDCFG;    
+    }
 
     XMLElement* tempElement = rootElement->FirstChildElement("srclan");
     if (tempElement && tempElement->GetText()) {
@@ -186,7 +198,7 @@ int Configure::load(const string& xmlpath)
     } else {
         m_cws.benable    = true;
         m_cws.bselection = true;
-        m_cws.bmouse     = true;
+        m_cws.bmouse     = false;
         m_cws.bclipboard = true;
         m_cws.shortcutKey = 'g'-'a';
         m_cws.autoCloseEn  = true;
@@ -243,6 +255,11 @@ void Configure::scanDictDir(const string& path, vector<string>& dictFiles)
             char *nm2 = CharUtil::mbsrtoutf8s(nm);
             string utf8path = string(nm2);
             free(nm2);
+
+            int pos = utf8path.rfind("\\");
+            if (pos != string::npos)
+               utf8path.replace(pos, 1, "/");
+
             dictFiles.push_back(utf8path);
         }
     } catch (const filesystem_error& ex) {

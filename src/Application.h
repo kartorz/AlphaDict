@@ -36,10 +36,10 @@ friend class SlowJob;
 public:
     Application();
     virtual ~Application();
-
-    int initialization();
+ 
+    int  start();
+    void stop();
     bool isInit() {return m_init;}
-
     /* TaskCallBack*/
     virtual void onTaskDone();
     MessageQueue* sysMessageQ() { return m_sysMessageQ; }
@@ -47,7 +47,9 @@ public:
     Configure* m_configure;
 
 private:
+    int initialization();
     void slowJob(void);
+
     bool m_init;
     MessageQueue* m_uiMessageQ;
     MessageQueue* m_sysMessageQ;

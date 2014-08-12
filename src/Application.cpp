@@ -37,11 +37,25 @@ Application::Application():m_init(false)
 
 Application::~Application()
 {
-    delete TaskManager::getInstance();
     delete m_sysMessager;
+
+    // Any thread invoking TaskManager should already stop. (SysMessager)
+    delete TaskManager::getInstance();
+
     delete m_configure;
+
+    /* Some tasks may push message to message queue, before delete MessageQ, 
+       all the tasks should be stopped. */
     delete m_uiMessageQ;
     delete m_sysMessageQ;
+    g_log.d("~Application\n");
+}
+
+int Application::start()
+{
+    int ret = initialization();
+    TaskManager::getInstance()->addTask(new SlowJob(this), 0);
+    return ret;
 }
 
 int Application::initialization()
@@ -57,9 +71,16 @@ int Application::initialization()
 
     DictManager::getReference().initialization();
     m_init = true;
-    TaskManager::getInstance()->addTask(new SlowJob(this), 0);
     //TaskManager::getInstance()->addTask(new InitTask(this), 0);
     return ret;
+}
+
+void Application::stop()
+{
+    /* Some tasks may send message, invoke g_application, So,
+       The first thing to do is stopping all the tasks */
+    TaskManager::getInstance()->stop();
+    m_sysMessager->stop();
 }
 
 void Application::onTaskDone()

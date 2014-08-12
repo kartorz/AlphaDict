@@ -16,6 +16,7 @@
     <ClCompile Include="..\..\..\src\lib\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="..\..\..\src\Util.cpp" />
     <ClCompile Include="..\..\..\src\win32\pgetopt.cpp" />
+    <ClCompile Include="..\..\..\src\win32\WIN32Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\alphadict.h" />

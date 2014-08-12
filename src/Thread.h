@@ -19,7 +19,9 @@ public:
 
     void start();
     void abort();
-    bool isRunning() {return m_stop ? false : true; }
+    virtual void stop();
+
+    bool isRunning() {return !m_stop; }
     pthread_t threadId() {return m_threadId;}
     void waitThreadExit();
     bool isCurrentThread();

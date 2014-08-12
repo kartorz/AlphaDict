@@ -5,11 +5,6 @@
 #include "SysMessager.h"
 #include "Log.h"
 
-SysMessager::SysMessager(): Thread(0),m_bReloadDict(false)
-{
-    m_msgQ = new MessageQueue("sys");
-}
-
 SysMessager::SysMessager(MessageQueue* queue): Thread(0),m_bReloadDict(false)
 {
     m_msgQ = queue;
@@ -17,11 +12,24 @@ SysMessager::SysMessager(MessageQueue* queue): Thread(0),m_bReloadDict(false)
 
 SysMessager::~SysMessager()
 {
+    if (!m_stop) {
+        stop();
+    }
+}
+
+void SysMessager::stop()
+{
     m_msgQ->push(MSG_QUIT);
+    Thread::stop();
 }
 
 void SysMessager::onStartup()
 {
+}
+
+void SysMessager::onExit()
+{
+    g_log(LOG_DEBUG, "SysMessager: onExit()\n");
 }
 
 void SysMessager::doWork()
@@ -93,8 +101,8 @@ void SysMessager::processMessage()
 			break;
 		}
 	    case MSG_QUIT: {
-            abort();
-            break;
+                abort();
+                break;
         }
 
         default:

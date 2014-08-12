@@ -21,7 +21,7 @@ public:
     static bool createDir(const string& path);
 
     static void currentDir(string& path);
-    static void usrHomeDir(string& path);
+    static void usrProfileDir(string& path);
     static void execDir(string& path);
     static void tempDir(string& path);
     static void removeFileName(string& path);

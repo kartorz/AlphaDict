@@ -16,6 +16,7 @@ using namespace boost::filesystem;
 #include "alphadict.h"
 #include "string.h"
 #include "Util.h"
+#include "win32/WIN32Util.h"
 
 unsigned int Util::getTimeMS()
 {
@@ -73,7 +74,7 @@ bool Util::createDir(const string& path)
 bool Util::copyFile(const string& from, const string& to)
 {
     try {
-        copy_file(from, to);
+        copy_file(from, to, copy_option::overwrite_if_exists);
     } catch (const filesystem_error& ex) {
          printf("%s", ex.what());   
          return false;
@@ -121,28 +122,25 @@ void Util::currentDir(string& path)
     path = string(buf, 512);
 }
 
-void Util::usrHomeDir(string& path)
+void Util::usrProfileDir(string& path)
 {
-#ifdef _LINUX
     string userHome;
+#ifdef _LINUX
     if (getenv("HOME"))
         userHome = getenv("HOME");
     else
         userHome = "/root";
     path = userHome + "/." + APP_NAME;
 #else
-    execDir(path);
+    WIN32Util::getProfilePath(userHome);
+    path = userHome + "/" + APP_NAME;
 #endif
 }
 
 void Util::execDir(string& strpath)
 {
 #ifdef WIN32
-    char szAppPath[MAX_PATH] = "";
-    ::GetModuleFileNameA(0, szAppPath, sizeof(szAppPath) - 1);
-    //strncpy(szDest,szAppPath,sizeof(szAppPath));
-    strpath.append(szAppPath);
-    removeFileName(strpath);
+    WIN32Util::execDir(strpath);
     //boost::filesystem::path p(p1);
     //p.remove_filename();
     //strpath = p.string();
@@ -165,7 +163,7 @@ void Util::tempDir(string& path)
 #ifdef _LINUX
     path = "/tmp";
 #else
-    execDir(path);
+    usrProfileDir(path);
 #endif
 }
 

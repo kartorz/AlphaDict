@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\..\src\CharUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\win32\WIN32Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\win32\pgetopt.h">

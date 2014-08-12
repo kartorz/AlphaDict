@@ -91,10 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    m_messager->abort();
-
     delete m_messager;
     delete ui;
+    g_log.d("~MainWindow\n");
 }
 
 void MainWindow::initDelay()
@@ -672,6 +671,19 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
         break;
     }
 
+    case WM_CW_TEXTA:
+    {
+       char *strbuf = TextOutHookServer::getReference().getCaptureText(true);
+       QString input = QString::fromLocal8Bit((char *)strbuf);
+       if (input != "") {
+           m_capword = input;
+           g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+       } else {
+           m_capWordDialog->close();
+       }
+       break;
+    }
+
     case WM_CW_TEXTW:
     {
        char *strbuf = TextOutHookServer::getReference().getCaptureText(true);
@@ -808,6 +820,8 @@ void MainWindow::onAppExit()
     TextOutHookServer::getReference().uninject();
 #endif
     (*onSysExit)();
+    // After all the tasks are stopped.
+    m_messager->abort();
 //    QCoreApplication::quit();
 }
 

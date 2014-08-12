@@ -61,7 +61,7 @@ TaskManager::~TaskManager()
 {
     g_log(LOG_INFO, "TaskManager::~TaskManager\n");
     stop();
-    //waitForThrdExit();
+
     std::list<Task*>::const_iterator iter = m_taskQueue.begin();
     for ( ; iter != m_taskQueue.end(); ++iter) {
         delete *iter;
@@ -92,46 +92,53 @@ void TaskManager::start(int thread_number)
 	//g_log.d("TaskManager::start(%d)\n", thread_number);
 }
 
+// This stop function may be called more then once.
 void TaskManager::stop()
 {
-    m_bRunning = false;
-    m_queueCond.unblockAll();
-    m_taskCond.unblockAll(m_threadid.size()-1/*execute threads*/);
-    g_log.d("TaskManager::stop\n");
-    waitForThrdExit();
+    if (m_bRunning) {
+        m_bRunning = false;
+        m_queueCond.unblockAll();
+        m_taskCond.unblockAll(m_threadid.size()-1/*execute threads*/);
+        waitForThrdExit();
+        g_log.d("TaskManager::stop\n");
+    }
 }
 
 void TaskManager::addTask(Task *tsk, int delay)
 {
-	unsigned int now = Util::getTimeMS();
-	MutexLock lock(m_taskQueueLock);
-    //printf("{addTask} %d \n", tsk->getInterval());
-	/* Can't add a task repeatly. */
-    //printf("{addTask}: %u,%u\n", now, now+delay);
+    unsigned int now = Util::getTimeMS();
+    MutexLock lock(m_taskQueueLock);
+    if (m_bRunning) { 
+        //printf("{addTask} %d \n", tsk->getInterval());
+	 /* Can't add a task repeatly. */
 	if (!IsExistTask(tsk)) {
-		tsk->setStartRunningTime(now+delay);
+            tsk->setStartRunningTime(now+delay);
 	
-		/* The task was queued in ascending order by its waittime property.*/
-		std::list<Task*>::iterator iter = m_taskQueue.begin();
-		for ( ; iter != m_taskQueue.end(); ++iter) {
-			if ((*iter)->getStartRunningTime() >= tsk->getStartRunningTime()) {
-				m_taskQueue.insert(iter, tsk);
-                m_queueCond.setEvent();
-				return;
-			}
-		}
-		m_taskQueue.push_back(tsk);
-		m_queueCond.setEvent();
+	     /* The task was queued in ascending order by its waittime property.*/
+	     std::list<Task*>::iterator iter = m_taskQueue.begin();
+	     for ( ; iter != m_taskQueue.end(); ++iter) {
+                 if ((*iter)->getStartRunningTime() >= tsk->getStartRunningTime()) {
+                     m_taskQueue.insert(iter, tsk);
+                     m_queueCond.setEvent();
+                     return;
+		  }
+	     }
+	     m_taskQueue.push_back(tsk);
+	     m_queueCond.setEvent();
 	}
+    } else {
+        delete tsk;
+    }
 }
 
 void TaskManager::waitForThrdExit()
 {
 #ifdef WIN32
     int count = m_thrdhandle.size();
-    HANDLE *threads = new HANDLE[count];
-    std::copy(threads, threads + count, m_thrdhandle.begin());
-    WaitForMultipleObjects(count, threads, TRUE, INFINITE);
+    for (int i=0; i<count; i++) {
+        WaitForSingleObject(m_thrdhandle[i], INFINITE);
+        CloseHandle(m_thrdhandle[i]);
+    }
 #else
     LOOP (m_threadid.size()) {
         pthread_join(m_threadid[i], NULL);
@@ -190,77 +197,76 @@ void* schedule(void *owner)
 {
 	TaskManager *tmgr = (TaskManager *)owner;
 	assert(tmgr);
-    
+
 	while (tmgr->isRunning()) {
-        //printf("{schedule}: get task from queue\n");
-        bool canScheldule = true;
-        {
+	       //printf("{schedule}: get task from queue\n");
+		bool canScheldule = true;
+	       {
 			MutexLock lock (tmgr->m_curTaskLock);
 			if (tmgr->m_curTask != NULL) {         
-			    tmgr->m_taskCond.setEvent();
-                canScheldule = false;
-                //printf("curTask != NULL\n");
-            }
-            /* Do't do sleep in this block, It will delay unlock "m_curTaskLock", 
-               so execute thread can't pickup this tadk */
+				tmgr->m_taskCond.setEvent();
+				canScheldule = false;
+				//printf("curTask != NULL\n");
+			}
+		/* Do't do sleep in this block, It will delay unlock "m_curTaskLock", 
+			so execute thread can't pickup this tadk */
 		}
 
-        if (!canScheldule) {
-            //printf("{schedule} m_curTask != NULL\n");
-           Util::sleep(40);
-        #ifdef _LINUX
-            pthread_yield();
-        #endif
-            continue;
-        }
+		if (!canScheldule) {
+			//printf("{schedule} m_curTask != NULL\n");
+			Util::sleep(40);
+		#ifdef _LINUX
+			pthread_yield();
+		#endif
+			continue;
+		}
 
-        if (tmgr->getTaskNumber() == 0) {
-            if (tmgr->m_queueCond.waitEvent() == -2)
-                goto EXIT;
-        }
+		if (tmgr->getTaskNumber() == 0) {
+			if (tmgr->m_queueCond.waitEvent() == -2)
+				goto EXIT;
+		}
 
-        /* The queue is not empty, schedule a job */
-        Task *tsk = NULL;
-        do {
-            unsigned int now = Util::getTimeMS();
-            unsigned int start = 0;
-            // Lock this block for pickup a job
-            {
-		        MutexLock lock(tmgr->m_taskQueueLock);
-                
-		        tsk = tmgr->m_taskQueue.front();
-                start = tsk->getStartRunningTime();
-                if (now >= start) {            
-                    //printf("{schedule} got a job right now (%ld, %ld)\n", now, start);
-		            tmgr->m_taskQueue.pop_front(); /* pick up this task, remove it from queue. */
-                    break;
-                }
-            }
-            /* Waitting. There will are two situations:
-             *    - Add a new job. 
-             *    - Waitting the front job util timeout.
-             */
-            int timeout = start - now;
-            //printf("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
-            //g_log.d("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
-            int wait_status = tmgr->m_queueCond.waitEvent(timeout);
-            if (wait_status == -2) {
-                goto EXIT;
-            }
-            //printf("{schedule}  schedule again\n");
-            // schedule again.
-         }while(true);
+		/* The queue is not empty, schedule a job */
+		Task *tsk = NULL;
+		do {
+			unsigned int now = Util::getTimeMS();
+			unsigned int start = 0;
+			// Lock this block for pickup a job
+			{
+				MutexLock lock(tmgr->m_taskQueueLock);
+				tsk = tmgr->m_taskQueue.front();
+				start = tsk->getStartRunningTime();
+				if (now >= start) {            
+					//printf("{schedule} got a job right now (%ld, %ld)\n", now, start);
+					tmgr->m_taskQueue.pop_front(); /* pick up this task, remove it from queue. */
+					break;
+				}
+			}
+			/* Waitting. There will are two situations:
+			 *    - Add a new job. 
+			 *    - Waitting the front job util timeout.
+			 */
+			int timeout = start - now;
+			//printf("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
+			//g_log.d("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
+			int wait_status = tmgr->m_queueCond.waitEvent(timeout);
+			if (wait_status == -2) {
+				goto EXIT;
+			}
+			//printf("{schedule}  schedule again\n");
+			// schedule again.
+		}while(tmgr->isRunning());
 
-         /* Got a job. */
-        {
-            MutexLock lock (tmgr->m_curTaskLock);
-	    tmgr->m_curTask = tsk;
-            tmgr->m_taskCond.setEvent(); /* wake up a exection thread.*/
-         }
-         //printf("{schedule} wakeup exection thread\n");
-    #ifdef _LINUX
-         pthread_yield();
-    #endif
+		/* Got a job. */
+		{
+			MutexLock lock (tmgr->m_curTaskLock);
+			tmgr->m_curTask = tsk;
+			tmgr->m_taskCond.setEvent(); /* wake up a exection thread.*/
+		}
+		//printf("{schedule} wakeup exection thread\n");
+	#ifdef _LINUX
+		pthread_yield();
+	#endif
 		/* Dump */
 		#if 0
 		{
@@ -269,9 +275,8 @@ void* schedule(void *owner)
 		}
 		#endif
 	}
-
 EXIT:
-    g_log.d("{schedule} thread exit\n");
+	g_log.d("{schedule} thread exit\n");
 	return NULL;
 }
 #ifdef WIN32
@@ -280,44 +285,44 @@ unsigned WINAPI execute(LPVOID owner)
 void* execute(void *owner)
 #endif
 {
-	TaskManager *tmgr = (TaskManager *)owner;
-	assert(tmgr);
-	while (tmgr->isRunning()) {
+    TaskManager *tmgr = (TaskManager *)owner;
+    assert(tmgr);
+    while (tmgr->isRunning()) {
         Task* work = NULL;
-		/* Lock this block */
-		{
-			MutexLock lock (tmgr->m_curTaskLock);
-			if (tmgr->m_curTask != NULL) {
+        /* Lock this block */
+        {
+            MutexLock lock (tmgr->m_curTaskLock);
+            if (tmgr->m_curTask != NULL) {
                 //printf("{execute}: get task\n");
-				work = tmgr->m_curTask;
-				tmgr->m_curTask = NULL;
-			}
-		}
+                work = tmgr->m_curTask;
+                tmgr->m_curTask = NULL;
+             }
+         }
 
-		if (work == NULL) {
-            //printf("{execute} no work, waitting... \n");
-            if(tmgr->m_taskCond.waitEvent() == -2)
-                break;
-            //printf("{execute} wakeup\n");
-        } else {
-            //printf("{execute}: %u: get a work to do \n", Util::getTimeMS());
+         if (work == NULL) {
+             //printf("{execute} no work, waitting... \n");
+             if(tmgr->m_taskCond.waitEvent() == -2)
+                 break;
+             //printf("{execute} wakeup\n");
+         } else {
+             //printf("{execute}: %u: get a work to do \n", Util::getTimeMS());
             if (!work->isAbort()) {
-			    work->doWork();
-				work->m_callback->onTaskDone();
+                work->doWork();
+                work->m_callback->onTaskDone();
                 if (work->isRepeat()) {
-				    tmgr->addTask(work, work->getInterval());
-			    } else {
+                    tmgr->addTask(work, work->getInterval());
+                } else {
                     delete work;
                 }
                 //printf("{execute} doWork\n");
             } else {
-			    work->m_callback->onTaskAbort();
+                work->m_callback->onTaskAbort();
                 g_log.d("{execute} onTaskAbort\n");
                 delete work;
             }
-		}
-	}
+        }
+    }
     g_log.d("{execute} thread exit\n");
-	return NULL;
+    return NULL;
 }
 

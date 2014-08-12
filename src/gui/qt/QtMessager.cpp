@@ -12,8 +12,9 @@ QtMessager::QtMessager(MainWindow* owner,  DictIndexModel* inxModel, MessageQueu
 
 QtMessager::~QtMessager()
 {
-    if (!m_reqAbort)
+    if (!m_reqAbort) {
         abort();
+    }
 }
 
 void QtMessager::start()
@@ -28,49 +29,58 @@ void QtMessager::start()
 
 void QtMessager::doWork()
 {
-	do{
+    do{
         Message msg;
         if (m_msgQ->pop(msg)) {
             //printf("{QtMessager} MSGID:%d\n", msg.id);
-		    switch (msg.id) {
-                case MSG_RESET_INDEXLIST:{
-                    QMetaObject::invokeMethod(m_indexListModel,
-                                              "onResetIndexList",
-                                              Qt::QueuedConnection);
-                }
+            switch (msg.id) {
+            case MSG_RESET_INDEXLIST:{
+                QMetaObject::invokeMethod(m_indexListModel,
+                                          "onResetIndexList",
+                                          Qt::QueuedConnection);
                 break;
-             
-			   case MSG_SET_DICTITEMS:{
-                    QMetaObject::invokeMethod((QObject *)m_owner,
+            }
+
+            case MSG_SET_DICTITEMS:{
+                QMetaObject::invokeMethod((QObject *)m_owner,
                                               "onUpdateExplText",
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));
-                }
-			    break;
+                break;
+            }
                 
-                case MSG_SET_CAPWORD_DICTITEM: {
-                    QMetaObject::invokeMethod((QObject *)m_owner,
+            case MSG_SET_CAPWORD_DICTITEM: {
+                QMetaObject::invokeMethod((QObject *)m_owner,
                                               "onUpdateCapWordExplText",
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));
-                }
                 break;
+            }
 
-                case MSG_SET_LANLIST: {
-                     QMetaObject::invokeMethod((QObject *)m_owner,
+            case MSG_SET_LANLIST: {
+                QMetaObject::invokeMethod((QObject *)m_owner,
                                               "onSetLanComboBox",
                                               Qt::QueuedConnection,
                                               Q_ARG(QString, QString(msg.strArg1.c_str())),
                                               Q_ARG(QString, QString(msg.strArg2.c_str())),
                                               Q_ARG(void*, msg.pArg1));
-                }
                 break;
             }
+
+            case MSG_QUIT: {
+                m_reqAbort = true;
+                break;
+            }
+            default:
+                break;
+            }
+
         } else {
+            m_reqAbort = true;
             //printf("{QtMessager} no message eixt\n");
             break;
-		}
-	}while(!m_reqAbort);
+        }
+    }while(!m_reqAbort);
 }
 
 void QtMessager::abort()
@@ -78,7 +88,8 @@ void QtMessager::abort()
 	if(m_thread && m_thread->isRunning())
 	{
 	    m_reqAbort = true;
-            m_msgQ->unblockAll();
+            m_msgQ->push(MSG_QUIT);
+            //m_msgQ->unblockAll();
 	    m_thread->quit();
 	    m_thread->wait();
 	}

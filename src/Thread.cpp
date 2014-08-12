@@ -38,12 +38,8 @@ Thread::Thread(int sleep, bool once)
 
 Thread::~Thread()
 {
-    abort();
-    waitThreadExit();
-
-#ifdef WIN32
-    CloseHandle(m_thrdHandle);
-#endif
+    if (!m_stop)
+        stop();
 }
 
 void Thread::start()
@@ -62,6 +58,12 @@ void Thread::start()
         m_stop = true;
         g_log.e("{Thread} create thread failure ret(%d)\n", ret);
     }
+}
+
+void Thread::stop()
+{
+    abort();
+    waitThreadExit();
 }
 
 void Thread::abort()
@@ -85,6 +87,7 @@ void Thread::waitThreadExit()
         pthread_join(m_threadId, NULL);
 #elif defined(WIN32)
         WaitForSingleObject(m_thrdHandle, INFINITE);
+        CloseHandle(m_thrdHandle);
 #endif
     }
 }
