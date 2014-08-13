@@ -111,7 +111,7 @@ private slots:
     void on_cwsClipboardCheckBox_clicked(bool checked);
 
     void on_cwsSelectionCheckBox_clicked(bool checked);
-    //void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
+
     void on_cwsEnableCheckBox_clicked(bool checked);
 
     void on_cwsMouseCheckBox_clicked(bool checked);
@@ -121,6 +121,14 @@ private slots:
     void on_cwsAutoCloseEnCheckBox_clicked(bool checked);
 
     void on_fontsizeComboBox_activated(int index);
+
+    void onSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
+
+    void onTrayCwsEnable(bool checked);
+    void onTrayCwsClipboard(bool checked);
+    void onTrayCwsSelection(bool checked);
+    void onTrayCwsMouse(bool checked);
+    void onTrayMenuClose();
 
 protected :
     //bool winEvent( MSG * message, long * result);
@@ -132,6 +140,13 @@ private:
     void unregisterHotkey(int key);
     int  capwordMode();
     void readHelpText(QString &help);
+
+    QMenu* creatTrayContextMenu();
+    QAction* m_trayCwsEnableAct;
+    QAction* m_trayCwsSelectionAct;
+    QAction* m_trayCwsMouseAct;
+    QAction* m_trayCwsClipboardAct;
+
 
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;

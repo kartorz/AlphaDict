@@ -20,7 +20,7 @@ static bool isSeparatorA(char c)
     int i = 0;
     if (c == '\0')
         return true;
-    if (c > 128)
+    if (c >= 128)
         return false;
     if ((c >= 'a' &&  c <= 'z')
         ||(c >= 'A' && c <= 'Z')) 

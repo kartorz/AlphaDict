@@ -1,6 +1,7 @@
 #include "MessageQueue.h"
 #include "QtMessager.h"
 #include "Application.h"
+#include "Log.h"
 
 QtMessager::QtMessager(MainWindow* owner,  DictIndexModel* inxModel, MessageQueue* q)
 :m_reqAbort(false)
@@ -97,4 +98,5 @@ void QtMessager::abort()
 
 void QtMessager::onExit()
 {
+    g_log.d("QtMessager::onExit\n");
 }

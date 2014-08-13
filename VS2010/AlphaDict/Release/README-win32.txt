@@ -9,7 +9,8 @@
    If the program initialization failure, check alphadict.log, delete configure.xml and try again.
 
 4) You can download more dictionaries from "http://pan.baidu.com/s/1dD9v12D"
- 
+
+
 Read "doc/README.en" get more information.
  
 Author's email: joni.kartorz.lee@gmail.com.
