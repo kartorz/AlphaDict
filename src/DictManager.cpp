@@ -24,7 +24,7 @@ void LookupTask::doWork()
 {
     DictItemList itemList;
     m_dict->lookup(m_input, itemList);
-    m_dmgr->onAddLookupResult(m_id, itemList);        
+    m_dmgr->onAddLookupResult(m_id, itemList);
 }
 
 void LookupTask::abort()
@@ -187,6 +187,7 @@ void DictManager::lookup(const string& input, const int which, const int flags)
                 m_dictOpen[which].pending = "";
                 m_dictOpen[which].flag = flags;
                 TaskManager::getInstance()->addTask(m_dictOpen[which].task, 0);
+                //g_log(LOG_DEBUG,"lookup, flags (%d)\n", flags);
             }
         }
     }
@@ -211,6 +212,7 @@ void DictManager::onAddLookupResult(int which, DictItemList& items)
         Message msg;
         msg.strArg1 = m_dictOpen[which].pending;
         msg.iArg1 = which;
+        msg.iArg2 = m_dictOpen[which].flag;
         msg.id = MSG_DICT_PENDING_QUERY;
         m_dictOpen[which].pending = "";
         g_application.sysMessageQ()->push(msg);

@@ -91,11 +91,11 @@ install-%: % install-dirs
 install-system: install-dirs
 	install -m 0666 "system/configure.xml.in"      "$(DATADIR)/configure.xml.in"
 	install -m 0666 "system/language.txt"          "$(DATADIR)/language.txt"
+	install -m 0666  system/help.*                 "$(DATADIR)/"
 	install -m 0666 "gui/qt/uitr_cn.qm"            "$(DATADIR)/uitr_cn.qm"
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"
-	install -m 0666 ../doc/help.*                  "$(DATADIR)/"
 
 	$(INSTALL) -d  $(DATADIR)/tools
 	@for FILE in `ls tools`; do \

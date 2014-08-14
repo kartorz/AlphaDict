@@ -65,8 +65,9 @@ public:
 
 class XMLUtil {
 public:
-    static XMLElement* child(XMLElement *parent, int n);
-    static int childrenSize(XMLElement *parent);
+    static XMLElement* Child(XMLElement *parent, int n);
+    static int ChildrenSize(XMLElement *parent);
+    static string Attribute(const XMLElement *e, const char* attr, const char* defval);
 };
 
 }

@@ -79,6 +79,12 @@ private slots:
     void on_fontsizeComboBox_activated(int index);
 
 >>>>>>> 1.2
+    void on_systemTrayCheckBox_clicked(bool checked);
+
+    void on_fontComboBox_activated(const QString &arg1);
+
+    void on_resetSettingToolButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

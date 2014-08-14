@@ -58,7 +58,7 @@ void SysMessager::processMessage()
         }
         
         case MSG_DICT_PENDING_QUERY: {
-            DictManager::getReference().lookup(msg.strArg1, msg.iArg1);
+            DictManager::getReference().lookup(msg.strArg1, msg.iArg1, msg.iArg2);
             break;
         }
 

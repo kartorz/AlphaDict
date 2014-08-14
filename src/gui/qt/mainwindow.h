@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-friend class  CapWordDialog;
+friend class  QtMessager;
 
 public:
     static void showToolTip(QString info, int displayTimeMS=1500);
@@ -33,7 +33,6 @@ public:
     void registerSysExit(void (*exit)()) { onSysExit = exit; }
 
     void initDelay();
-
 
     QtMessager *m_messager;
 
@@ -124,6 +123,12 @@ private slots:
 
     void onSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
+    void on_systemTrayCheckBox_clicked(bool checked);
+
+    void on_fontComboBox_activated(const QString &arg1);
+
+    void on_resetSettingToolButton_clicked();
+
     void onTrayCwsEnable(bool checked);
     void onTrayCwsClipboard(bool checked);
     void onTrayCwsSelection(bool checked);
@@ -134,6 +139,7 @@ protected :
     //bool winEvent( MSG * message, long * result);
     bool nativeEvent(const QByteArray & eventType, void * message, long * result);
     virtual bool eventFilter( QObject *watched, QEvent *event);
+    virtual void closeEvent(QCloseEvent * event);
 
 private:
     void registerHotkey(int key);
@@ -147,7 +153,7 @@ private:
     QAction* m_trayCwsMouseAct;
     QAction* m_trayCwsClipboardAct;
 
-
+    CapWordDialog* m_capWordDialog;
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
 
@@ -161,7 +167,6 @@ private:
     QString m_capword;
     void (*onSysExit)();
 
-    CapWordDialog* m_capWordDialog;
     bool m_cwdEnableTemp;
 };
 

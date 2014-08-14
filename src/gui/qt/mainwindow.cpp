@@ -7,6 +7,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QEvent>
 #include <QtGui/QCursor>
+#include <QtGui/QFontDatabase> 
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -31,7 +32,6 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_capWordDialog(NULL),
     m_cwdEnableTemp(true)
 {
     ui->setupUi(this);
@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon icon;
     icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
     m_systray->setIcon(icon);
+    //m_systray->show();
     connect(m_systray,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,
@@ -95,6 +96,7 @@ MainWindow::~MainWindow()
 {
     delete m_messager;
     delete ui;
+    delete m_capWordDialog;
     g_log.d("~MainWindow\n");
 }
 
@@ -113,13 +115,13 @@ QMenu* MainWindow::creatTrayContextMenu()
     m_trayCwsSelectionAct->setChecked(m_config->m_cws.bselection);
     connect(m_trayCwsSelectionAct, SIGNAL(triggered(bool)), this, SLOT(onTrayCwsSelection(bool)));
     trayMenu->addAction(m_trayCwsSelectionAct);
-
+#ifdef _WINDOWS
     m_trayCwsMouseAct = new QAction(tr("Capture Word by Mouse Over"), this);
     m_trayCwsMouseAct->setCheckable(true);
     m_trayCwsMouseAct->setChecked(m_config->m_cws.bmouse);
     connect(m_trayCwsMouseAct, SIGNAL(triggered(bool)), this, SLOT(onTrayCwsMouse(bool)));
     trayMenu->addAction(m_trayCwsMouseAct);
-
+#endif
     m_trayCwsClipboardAct = new QAction(tr("Capture Word by Clipboard"), this);
     m_trayCwsClipboardAct->setCheckable(true);
     m_trayCwsClipboardAct->setChecked(m_config->m_cws.bclipboard);
@@ -128,7 +130,7 @@ QMenu* MainWindow::creatTrayContextMenu()
 
     trayMenu->addSeparator();
 
-    QAction* newAct = new QAction(tr("Close"), this);
+    QAction* newAct = new QAction(tr("Exit"), this);
     connect(newAct, SIGNAL(triggered()), this, SLOT(onTrayMenuClose()));
     trayMenu->addAction(newAct);
 
@@ -143,9 +145,18 @@ void MainWindow::initDelay()
     if (m_config->m_cws.benable) {
         registerHotkey(m_config->m_cws.shortcutKey);
     #ifdef _WINDOWS
-        TextOutHookServer::getReference().inject((HWND)effectiveWinId());
+        WId wid = effectiveWinId();
+        g_log.i("inject to wid(%d)\n", (int)wid);
+        TextOutHookServer::getReference().inject((HWND)wid);
         TextOutHookServer::getReference().captureTextEnable(capwordMode());
     #endif
+    }
+
+    QFontDatabase::WritingSystem wsys [] = {QFontDatabase::Latin, QFontDatabase::Latin, QFontDatabase::SimplifiedChinese };
+    ui->fontComboBox->setWritingSystem(wsys[m_config->m_setting.uilanID]);
+    if (m_config->m_setting.font == "") {
+        string curfont = ui->fontComboBox->currentFont().family().toUtf8().data();
+        m_config->writeFont(curfont);
     }
 }
 
@@ -250,13 +261,17 @@ void MainWindow::onUpdateExplText(void *v)
 
 void MainWindow::onUpdateCapWordExplText(void *v)
 {
+    if (v == NULL)
+        return;
+
     DictItemList* itemList = (DictItemList*) v;
 
     //QPoint pos = QCursor::pos();
     m_capWordDialog->moveToCursor();
-    m_capWordDialog->setDictItemList(itemList);
+    m_capWordDialog->setDictItemList(m_capword, itemList);
     //dlg->exec();
-    m_capWordDialog->show();
+    if (m_capWordDialog->isHidden())
+        m_capWordDialog->show();
     m_capWordDialog->raise();
     m_capWordDialog->activateWindow();
     //::SetCapture() /* win32 -- it seems not work */
@@ -287,13 +302,13 @@ void MainWindow::on_saveButton_clicked()
     QString word = ui->inputLineEdit->text();
     
     if (word == "") {
-        showToolTip(tr("empty string"));
+        showToolTip(tr("Empty String"));
         return;
     }
     if (m_vbookModel->add(word)) {
-        showToolTip(tr("add to vocabulary book,success"));
+        showToolTip(tr("Add to vocabulary book,success"));
     } else {
-        showToolTip(tr("add to vocabulary book,failure"));
+        showToolTip(tr("Add to vocabulary book,failure"));
     }
 }
 
@@ -381,9 +396,13 @@ void MainWindow::onActionSettingPageAdded()
 	        }
             ui->uilanComboBox->setCurrentIndex(m_config->m_setting.uilanID);
             ui->fontsizeComboBox->setCurrentIndex(m_config->m_setting.fontsize-9);
+  
             ui->cwsShortcutkeyComboBox->setCurrentIndex(m_config->m_cws.shortcutKey);
 
-            Qt::CheckState ckstate = m_config->m_cws.bselection ? Qt::Checked : Qt::Unchecked;
+            Qt::CheckState ckstate = m_config->m_setting.bsystemTray ? Qt::Checked : Qt::Unchecked;         
+            ui->systemTrayCheckBox->setCheckState(ckstate);
+
+            ckstate = m_config->m_cws.bselection ? Qt::Checked : Qt::Unchecked;
             ui->cwsSelectionCheckBox->setCheckState(ckstate);
 
             ckstate = m_config->m_cws.bclipboard ? Qt::Checked : Qt::Unchecked;
@@ -444,6 +463,7 @@ void MainWindow::onActionHelpPageAdded()
             QString help;
             m_initHelpPage = true;
             readHelpText(help);
+            ui->helpTextEdit->setPlainText("");
             ui->helpTextEdit->setPlainText(help);
         }
         inx = ui->tabWidget->addTab(ui->helpTab, QApplication::translate("MainWindow", "Help", 0));
@@ -516,7 +536,7 @@ void MainWindow::on_vbInput_editingFinished()
         on_vbnextItemTlBtn_clicked();
         ui->vbInput->clear();
     } else {
-        showToolTip(tr("try again"));        
+        showToolTip(tr("Try Again"));        
     }
 }
 
@@ -526,7 +546,7 @@ void MainWindow::on_vbpreItemTlBtn_clicked()
     if (m_vbookModel->preExamExpl(text)) {
         ui->vbExplLabel->setText(text);
     } else {
-        showToolTip(tr("the first item"));
+        showToolTip(tr("The First Item"));
     }
 }
 
@@ -536,7 +556,7 @@ void MainWindow::on_vbnextItemTlBtn_clicked()
     if (m_vbookModel->nextExamExpl(text)) {
         ui->vbExplLabel->setText(text);
     } else {
-        showToolTip(tr("the last item"));
+        showToolTip(tr("The Last Item"));
     }
 }
 
@@ -584,12 +604,14 @@ void MainWindow::onClipboardDataChanged()
     #ifdef _LINUX
         if (m_config->m_cws.bclipboard) {
     #elif defined(_WINDOWS)
-        if (m_config->m_cws.bclipboard || m_config->m_cws.bselection) {
+        if ((m_config->m_cws.bclipboard) || 
+            (m_config->m_cws.bselection)) {
     #endif
             const QClipboard *clipboard = QApplication::clipboard();
             QString input = clipboard->text(QClipboard::Clipboard).trimmed();
             if (input != "") {
                 m_capword = input;
+                //m_capWordDialog->show();
                 g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
             }
         }
@@ -662,8 +684,8 @@ void MainWindow::on_cwsMouseCheckBox_clicked(bool checked)
     m_config->writeCwsMouse(checked);
 #ifdef _WINDOWS
     TextOutHookServer::getReference().captureTextEnable(capwordMode());
-#endif
     m_trayCwsMouseAct->setChecked(checked);
+#endif
 }
 
 void MainWindow::on_cwsShortcutkeyComboBox_activated(int index)
@@ -684,6 +706,22 @@ void MainWindow::on_cwsAutoCloseEnCheckBox_clicked(bool checked)
 void MainWindow::on_fontsizeComboBox_activated(int index)
 {
     m_config->writeFontSize(index+9);   
+}
+
+void MainWindow::on_systemTrayCheckBox_clicked(bool checked)
+{
+    m_config->writeSystemTray(checked);
+}
+
+void MainWindow::on_fontComboBox_activated(const QString &arg1)
+{
+    m_config->writeFont(string(arg1.toUtf8().data()));
+    //this->setStatusTip(tr("Need restart to make it valid"));
+}
+
+void MainWindow::on_resetSettingToolButton_clicked()
+{
+    m_config->reset();
 }
 
 void MainWindow::onSysTrayActivated(QSystemTrayIcon::ActivationReason reason)
@@ -722,7 +760,22 @@ void MainWindow::onTrayCwsMouse(bool checked)
 void MainWindow::onTrayMenuClose()
 {
     close();
-    //QCloseEvent 
+}
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    if (!m_systray->isVisible()) {
+        if (m_config->m_setting.bsystemTray) {
+            m_systray->show();
+            this->hide();
+            event->ignore();
+        } else {
+            event->accept();
+        }
+    } else {
+        m_systray->hide();
+        event->accept();
+    }
 }
 
 //bool MainWindow::winEvent(MSG * message, long * result)
@@ -736,9 +789,11 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     unsigned int message = ((MSG *)msg)->message;
     switch (message) {
     case WM_CW_LBUTTON:
+        //g_log.d("WM_CW_LBUTTON\n");
         if (!m_capWordDialog->isHidden()) {
             int x = (int)(((MSG *)msg)->wParam);
             int y = (int)(((MSG *)msg)->lParam);
+            //g_log.d("WM_CW_LBUTTON, x,y(%d, %d)\n", x,y);
             QPoint pos(x,y);
             QRect rect = m_capWordDialog->frameGeometry();
             if (!rect.contains(pos)) {
@@ -755,23 +810,32 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
         g_log.d("error when capture word on win32, error code(%d)\n", errcode);
         return true;
     }
-
+#if 0
+    case WM_CW_SELECTION:
+    {
+        //m_cwdSelectionMsg = true;
+        return true;
+    }
+#endif
     case WM_CW_TEXTA:
     {
-       char *strbuf = TextOutHookServer::getReference().getCaptureText(true);
-       QString input = QString::fromLocal8Bit((char *)strbuf);
-       if (input != "") {
-           m_capword = input;
-           g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
-       } else {
-           //m_capWordDialog->close();
-       }
-       return true;
+        char strbuf[256];
+        TextOutHookServer::getReference().getCaptureText(strbuf, 256, false);
+
+        QString input = QString::fromLocal8Bit((char *)strbuf);
+        if (input != "") {
+            m_capword = input;
+            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+        } else {
+            //m_capWordDialog->close();
+        }
+        return true;
     }
 
     case WM_CW_TEXTW:
     {
-       char *strbuf = TextOutHookServer::getReference().getCaptureText(true);
+       char strbuf[256];
+       TextOutHookServer::getReference().getCaptureText(strbuf, 256, true);
        QString input = QString::fromWCharArray((const wchar_t *)strbuf);
        if (input != "") {
            m_capword = input;
@@ -795,10 +859,10 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
                     TextOutHookServer::getReference().captureTextEnable(capwordMode());
                 } else {
                     TextOutHookServer::getReference().captureTextEnable(0);
-                    m_capWordDialog->close();
+                    if (!m_capWordDialog->isHidden())
+                        m_capWordDialog->close();
                 }
             }
-            //g_log.d("win hotkey %d, %d\n", x,y);
         }
         return true;
     }
@@ -810,6 +874,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
         g_log.d("capture word debug message(%d, %d)\n", x, y);
         return true;
     }
+#if 0
     // case SIZE_MINIMIZED
     case WM_CLOSE:
     {
@@ -817,7 +882,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
         hide();
         return true;
     }
-
+#endif
     default:
         break;
     }
@@ -835,7 +900,7 @@ bool MainWindow::eventFilter( QObject * watched, QEvent * event )
         if (key == m_config->m_cws.shortcutKey + 'A' && 
             modifier == (Qt::ControlModifier|Qt::AltModifier)) {
             m_cwdEnableTemp = !m_cwdEnableTemp;
-            if (!m_cwdEnableTemp)
+            if (!m_cwdEnableTemp && !m_capWordDialog->isHidden())
                 m_capWordDialog->close();
             //X11Util::forwardHotKey(m_config->m_cws.shortcutKey);
             return true;
@@ -875,8 +940,11 @@ int MainWindow::capwordMode()
 #ifdef _WINDOWS
     if (m_config->m_cws.bmouse)
         mode |= CAPMODE_MOUSE_OVER;
+
     if (m_config->m_cws.bselection)
         mode |= CAPMODE_MOUSE_SELECTION;
+    
+    g_log.d("capwordMode %d\n", mode);
 #endif
     return mode;
 }
@@ -892,6 +960,7 @@ void MainWindow::readHelpText(QString &help)
    wchar_t *wHelpPath= CharUtil::utf8srtowcs(helpPath.c_str());
    if (wHelpPath != NULL) {
        pHelpFile = _wfopen(wHelpPath, L"rb");
+       free(wHelpPath);
    }
 #else
     pHelpFile = fopen(helpPath.c_str(),"rb");
@@ -904,18 +973,19 @@ void MainWindow::readHelpText(QString &help)
 
 void MainWindow::onAppExit()
 {
-   m_capWordDialog->close();
-
    if (m_config->m_cws.benable)
        this->unregisterHotkey(m_config->m_cws.shortcutKey);
 
 #ifdef WIN32
-    TextOutHookServer::getReference().uninject();
+    m_cwdEnableTemp = false;
+    TextOutHookServer::getReference().unloadHookLib();
 #endif
     (*onSysExit)();
     // After all the tasks are stopped.
     m_messager->abort();
+    
+    /* May cause crash when dialog on mainwindow, I don't know why, need more check */
+    //m_capWordDialog->close();
+
 //    QCoreApplication::quit();
 }
-
-

@@ -1,10 +1,9 @@
 
 AlphaDict 1.2:
-	(Todo):
-        Support Screen Translation (take a word from screen and translate).
+        -- Support Screen Translation (take a word from screen and translate).
+        -- System Tray.
 
 AlphaDict 1.1
-	(Todo):
 	-- Release windows version.
 	-- Added vocubulary book.
         -- Support dictionaries of "IDP" and "dicts.info".

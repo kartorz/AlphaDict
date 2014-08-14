@@ -5,14 +5,14 @@
 #include "VBookModel.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Log.h"
 
+// QDialog(owner) causes closing mainwindow when app resides at system tray. 
 CapWordDialog::CapWordDialog(MainWindow *owner, bool autoclose, int inv):
     QDialog(NULL),
     ui(new Ui::CapWordDialog),
-    m_owner(owner),
     m_bAutoClose(autoclose),
-    m_autoCloseInterval(inv),
-    m_bAutoCloseCancle(false)
+    m_autoCloseInterval(inv)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
@@ -20,11 +20,16 @@ CapWordDialog::CapWordDialog(MainWindow *owner, bool autoclose, int inv):
     //setAttribute(Qt::WA_TranslucentBackground, true);
     //move(QCursor::pos().x()+CWD_X_OFFSET, QCursor::pos().y()+CWD_Y_OFFSET);
     //qApp->installEventFilter(this);
+    m_timer = new QTimer(this);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(close()));
+    m_timer->setSingleShot(true);
 }
 
 CapWordDialog::~CapWordDialog()
 {
-    m_owner->m_capWordDialog = NULL;
+    m_timer->stop();
+    close();
+    g_log.d("~CapWordDialog\n");
     delete ui;
 }
 
@@ -33,8 +38,11 @@ void CapWordDialog::moveToCursor()
     move(QCursor::pos().x()+CWD_X_OFFSET, QCursor::pos().y()+CWD_Y_OFFSET);
 }
 
-void CapWordDialog::setDictItemList(DictItemList *itemList)
+void CapWordDialog::setDictItemList(QString &word, DictItemList *itemList)
 {
+    //DictItemList* itemList = (DictItemList*) v;
+    m_capword = word;
+
     ui->textEdit->clear();
 
     QTextCursor cursor(ui->textEdit->textCursor());
@@ -45,7 +53,7 @@ void CapWordDialog::setDictItemList(DictItemList *itemList)
 
     titleFormat.setFontWeight(QFont::DemiBold);
     //cursor.insertBlock();
-    cursor.insertText(m_owner->m_capword, titleFormat);
+    cursor.insertText(m_capword, titleFormat);
     text = QString::fromUtf8((*itemList)[0].phonetic.c_str());
     text = text.trimmed();
     if (text != "") {
@@ -60,35 +68,26 @@ void CapWordDialog::setDictItemList(DictItemList *itemList)
     text = text.trimmed();
     cursor.insertText(text,bodyFormat);
     ui->textEdit->moveCursor(QTextCursor::Start);
+    
+    if (m_bAutoClose)
+        m_timer->start(m_autoCloseInterval);
 
     delete itemList;
-
-    if (m_bAutoClose) {
-        m_bAutoCloseCancle = false;
-        QTimer::singleShot(m_autoCloseInterval, this, SLOT(on_autoClose()));
-    }
 }
 
+#if 0
 void CapWordDialog::on_saveToolButton_clicked()
 {
-    QString word = m_owner->m_capword;
+    QString word = m_capword;
     if (word != "") {
-        if (m_owner->m_vbookModel->add(word)) {
-            MainWindow::showToolTip(tr("add to vocabulary book,success"));
-        } else {
-            MainWindow::showToolTip(tr("add to vocabulary book,failure"));
-        }
     }
 }
 
 void CapWordDialog::on_dictToolButton_clicked()
 {
     close();
-
-    m_owner->ui->inputLineEdit->setText(m_owner->m_capword);
-    m_owner->activateWindow();
-    m_owner->showNormal();
 }
+#endif
 
 bool CapWordDialog::event(QEvent * event)
 {
@@ -98,21 +97,15 @@ bool CapWordDialog::event(QEvent * event)
             close();
         break;
 
+    case QEvent::Close:
     case QEvent::Enter:
-        m_bAutoCloseCancle = true;
+        m_timer->stop();
         break;
 
     default:
         break;
     }
     return QWidget::event(event);
-}
-
-void CapWordDialog::on_autoClose()
-{
-    if (!m_bAutoCloseCancle) {
-        close();
-    }
 }
 
 #if 0

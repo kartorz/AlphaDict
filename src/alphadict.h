@@ -11,7 +11,8 @@
 #ifdef _LINUX
 #include "config.h"
 #endif
-#define AL_VERSION  "1.0"
+
+#define AL_VERSION  "1.2"
 
 #define AL_ASSERT(cond, msg)  \
 do { \

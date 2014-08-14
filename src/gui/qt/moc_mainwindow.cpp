@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[58];
-    char stringdata[1344];
+    QByteArrayData data[61];
+    char stringdata[1434];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -82,11 +82,14 @@ QT_MOC_LITERAL(49, 1169, 29),
 QT_MOC_LITERAL(50, 1199, 18),
 QT_MOC_LITERAL(51, 1218, 33),
 QT_MOC_LITERAL(52, 1252, 6),
-QT_MOC_LITERAL(53, 1259, 15),
-QT_MOC_LITERAL(54, 1275, 18),
-QT_MOC_LITERAL(55, 1294, 18),
-QT_MOC_LITERAL(56, 1313, 14),
-QT_MOC_LITERAL(57, 1328, 15)
+QT_MOC_LITERAL(53, 1259, 29),
+QT_MOC_LITERAL(54, 1289, 25),
+QT_MOC_LITERAL(55, 1315, 33),
+QT_MOC_LITERAL(56, 1349, 15),
+QT_MOC_LITERAL(57, 1365, 18),
+QT_MOC_LITERAL(58, 1384, 18),
+QT_MOC_LITERAL(59, 1403, 14),
+QT_MOC_LITERAL(60, 1418, 15)
     },
     "MainWindow\0onUpdateExplText\0\0v\0"
     "onUpdateCapWordExplText\0onSetLanComboBox\0"
@@ -126,7 +129,10 @@ QT_MOC_LITERAL(57, 1328, 15)
     "on_cwsAutoCloseEnCheckBox_clicked\0"
     "on_fontsizeComboBox_activated\0"
     "onSysTrayActivated\0QSystemTrayIcon::ActivationReason\0"
-    "reason\0onTrayCwsEnable\0onTrayCwsClipboard\0"
+    "reason\0on_systemTrayCheckBox_clicked\0"
+    "on_fontComboBox_activated\0"
+    "on_resetSettingToolButton_clicked\0"
+    "onTrayCwsEnable\0onTrayCwsClipboard\0"
     "onTrayCwsSelection\0onTrayCwsMouse\0"
     "onTrayMenuClose"
 };
@@ -138,7 +144,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      48,   14, // methods
+      51,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -146,54 +152,57 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  254,    2, 0x0a /* Public */,
-       4,    1,  257,    2, 0x0a /* Public */,
-       5,    3,  260,    2, 0x0a /* Public */,
-       8,    1,  267,    2, 0x08 /* Private */,
-      10,    1,  270,    2, 0x08 /* Private */,
-      11,    0,  273,    2, 0x08 /* Private */,
-      12,    1,  274,    2, 0x08 /* Private */,
-      13,    0,  277,    2, 0x08 /* Private */,
-      14,    1,  278,    2, 0x08 /* Private */,
-      16,    1,  281,    2, 0x08 /* Private */,
-      17,    0,  284,    2, 0x08 /* Private */,
-      18,    0,  285,    2, 0x08 /* Private */,
-      19,    0,  286,    2, 0x08 /* Private */,
-      20,    0,  287,    2, 0x08 /* Private */,
-      21,    1,  288,    2, 0x08 /* Private */,
-      22,    0,  291,    2, 0x08 /* Private */,
-      23,    0,  292,    2, 0x08 /* Private */,
-      24,    1,  293,    2, 0x08 /* Private */,
-      25,    0,  296,    2, 0x08 /* Private */,
-      26,    0,  297,    2, 0x08 /* Private */,
-      27,    1,  298,    2, 0x08 /* Private */,
-      28,    1,  301,    2, 0x08 /* Private */,
-      29,    0,  304,    2, 0x08 /* Private */,
-      30,    0,  305,    2, 0x08 /* Private */,
-      31,    0,  306,    2, 0x08 /* Private */,
-      32,    0,  307,    2, 0x08 /* Private */,
-      33,    1,  308,    2, 0x08 /* Private */,
-      34,    1,  311,    2, 0x08 /* Private */,
-      35,    0,  314,    2, 0x08 /* Private */,
-      36,    0,  315,    2, 0x08 /* Private */,
-      37,    0,  316,    2, 0x08 /* Private */,
-      38,    0,  317,    2, 0x08 /* Private */,
-      39,    0,  318,    2, 0x08 /* Private */,
-      40,    0,  319,    2, 0x08 /* Private */,
-      41,    0,  320,    2, 0x08 /* Private */,
-      42,    1,  321,    2, 0x08 /* Private */,
-      44,    1,  324,    2, 0x08 /* Private */,
-      45,    1,  327,    2, 0x08 /* Private */,
-      46,    1,  330,    2, 0x08 /* Private */,
-      47,    1,  333,    2, 0x08 /* Private */,
-      48,    1,  336,    2, 0x08 /* Private */,
-      49,    1,  339,    2, 0x08 /* Private */,
-      50,    1,  342,    2, 0x08 /* Private */,
-      53,    1,  345,    2, 0x08 /* Private */,
-      54,    1,  348,    2, 0x08 /* Private */,
-      55,    1,  351,    2, 0x08 /* Private */,
-      56,    1,  354,    2, 0x08 /* Private */,
-      57,    0,  357,    2, 0x08 /* Private */,
+       1,    1,  269,    2, 0x0a /* Public */,
+       4,    1,  272,    2, 0x0a /* Public */,
+       5,    3,  275,    2, 0x0a /* Public */,
+       8,    1,  282,    2, 0x08 /* Private */,
+      10,    1,  285,    2, 0x08 /* Private */,
+      11,    0,  288,    2, 0x08 /* Private */,
+      12,    1,  289,    2, 0x08 /* Private */,
+      13,    0,  292,    2, 0x08 /* Private */,
+      14,    1,  293,    2, 0x08 /* Private */,
+      16,    1,  296,    2, 0x08 /* Private */,
+      17,    0,  299,    2, 0x08 /* Private */,
+      18,    0,  300,    2, 0x08 /* Private */,
+      19,    0,  301,    2, 0x08 /* Private */,
+      20,    0,  302,    2, 0x08 /* Private */,
+      21,    1,  303,    2, 0x08 /* Private */,
+      22,    0,  306,    2, 0x08 /* Private */,
+      23,    0,  307,    2, 0x08 /* Private */,
+      24,    1,  308,    2, 0x08 /* Private */,
+      25,    0,  311,    2, 0x08 /* Private */,
+      26,    0,  312,    2, 0x08 /* Private */,
+      27,    1,  313,    2, 0x08 /* Private */,
+      28,    1,  316,    2, 0x08 /* Private */,
+      29,    0,  319,    2, 0x08 /* Private */,
+      30,    0,  320,    2, 0x08 /* Private */,
+      31,    0,  321,    2, 0x08 /* Private */,
+      32,    0,  322,    2, 0x08 /* Private */,
+      33,    1,  323,    2, 0x08 /* Private */,
+      34,    1,  326,    2, 0x08 /* Private */,
+      35,    0,  329,    2, 0x08 /* Private */,
+      36,    0,  330,    2, 0x08 /* Private */,
+      37,    0,  331,    2, 0x08 /* Private */,
+      38,    0,  332,    2, 0x08 /* Private */,
+      39,    0,  333,    2, 0x08 /* Private */,
+      40,    0,  334,    2, 0x08 /* Private */,
+      41,    0,  335,    2, 0x08 /* Private */,
+      42,    1,  336,    2, 0x08 /* Private */,
+      44,    1,  339,    2, 0x08 /* Private */,
+      45,    1,  342,    2, 0x08 /* Private */,
+      46,    1,  345,    2, 0x08 /* Private */,
+      47,    1,  348,    2, 0x08 /* Private */,
+      48,    1,  351,    2, 0x08 /* Private */,
+      49,    1,  354,    2, 0x08 /* Private */,
+      50,    1,  357,    2, 0x08 /* Private */,
+      53,    1,  360,    2, 0x08 /* Private */,
+      54,    1,  363,    2, 0x08 /* Private */,
+      55,    0,  366,    2, 0x08 /* Private */,
+      56,    1,  367,    2, 0x08 /* Private */,
+      57,    1,  370,    2, 0x08 /* Private */,
+      58,    1,  373,    2, 0x08 /* Private */,
+      59,    1,  376,    2, 0x08 /* Private */,
+      60,    0,  379,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,
@@ -239,6 +248,9 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Bool,   43,
     QMetaType::Void, QMetaType::Int,   15,
     QMetaType::Void, 0x80000000 | 51,   52,
+    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::QString,    9,
+    QMetaType::Void,
     QMetaType::Void, QMetaType::Bool,   43,
     QMetaType::Void, QMetaType::Bool,   43,
     QMetaType::Void, QMetaType::Bool,   43,
@@ -296,11 +308,14 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 40: _t->on_cwsAutoCloseEnCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 41: _t->on_fontsizeComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 42: _t->onSysTrayActivated((*reinterpret_cast< QSystemTrayIcon::ActivationReason(*)>(_a[1]))); break;
-        case 43: _t->onTrayCwsEnable((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 44: _t->onTrayCwsClipboard((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 45: _t->onTrayCwsSelection((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 46: _t->onTrayCwsMouse((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 47: _t->onTrayMenuClose(); break;
+        case 43: _t->on_systemTrayCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 44: _t->on_fontComboBox_activated((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 45: _t->on_resetSettingToolButton_clicked(); break;
+        case 46: _t->onTrayCwsEnable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 47: _t->onTrayCwsClipboard((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 48: _t->onTrayCwsSelection((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 49: _t->onTrayCwsMouse((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 50: _t->onTrayMenuClose(); break;
         default: ;
         }
     }
@@ -331,13 +346,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 48)
+        if (_id < 51)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 48;
+        _id -= 51;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 48)
+        if (_id < 51)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 48;
+        _id -= 51;
     }
     return _id;
 }

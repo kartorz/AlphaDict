@@ -24,6 +24,8 @@ using namespace boost::filesystem;
 
 #define DICTNODE_NUM_MAX   48
 
+#define CONF_VERSION  1
+
 #define XML_TAG_CWS "capture-word-setting"
 #define XML_TAG_SETTING  "setting"
 
@@ -71,6 +73,7 @@ int Configure::initialization()
          }
          //Util::copyFile(m_dataDir + "/language.txt.in", m_homeDir + "/language.txt");
     }
+
     if (!Util::isFileExist(m_configFile)) {
         if (Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile) == false) {
         #ifdef WIN32
@@ -87,7 +90,7 @@ int Configure::initialization()
         // Reload configure file
         Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
         ret = load(m_configFile);
-        g_log.w("{Configure} load configure.xml failure, reload\n");
+        g_log.w("{Configure} load configure.xml failure, restore to default setting\n");
     }
 
     loadLanguage();
@@ -112,6 +115,14 @@ int Configure::load(const string& xmlpath)
     if (rootElement == NULL) {
         g_log.e("{Configure} can't get root element %s\n", xmlpath.c_str());
         return ERR_LDCFG;    
+    } else {
+        bool reset = rootElement->IntAttribute("reset");
+        if (reset)
+            return ERR_LDCFG;
+
+        int ver = rootElement->IntAttribute("version");
+        if (ver != CONF_VERSION)
+            return ERR_LDCFG; // Recreate configure.xml
     }
 
     XMLElement* tempElement = rootElement->FirstChildElement("srclan");
@@ -196,10 +207,10 @@ int Configure::load(const string& xmlpath)
         m_cws.autoCloseEn = tempElement->BoolAttribute("AutoCloseEnable");
         m_cws.autoCloseInv= tempElement->IntAttribute("AutoCloseInterval");
     } else {
-        m_cws.benable    = true;
+        m_cws.benable    = false;
         m_cws.bselection = true;
         m_cws.bmouse     = false;
-        m_cws.bclipboard = true;
+        m_cws.bclipboard = false;
         m_cws.shortcutKey = 'g'-'a';
         m_cws.autoCloseEn  = true;
         m_cws.autoCloseInv = 1000*10;
@@ -218,11 +229,15 @@ int Configure::load(const string& xmlpath)
 
     tempElement = rootElement->FirstChildElement(XML_TAG_SETTING);
     if (tempElement) {
-        m_setting.uilanID = tempElement->IntAttribute("uilan");
-        m_setting.fontsize = tempElement->IntAttribute("fontsize");
+        m_setting.uilanID     = tempElement->IntAttribute("uilan");
+        m_setting.fontsize    = tempElement->IntAttribute("fontsize");
+        m_setting.font        = util::XMLUtil::Attribute(tempElement, "font", "");
+        m_setting.bsystemTray = tempElement->BoolAttribute("systemtray");
     } else {
-        m_setting.uilanID = UILAN_EN;
-        m_setting.fontsize = 11;
+        m_setting.uilanID = UILAN_NONE;
+        m_setting.fontsize = 10;
+        m_setting.font = "";
+        m_setting.bsystemTray = false;
 
         XMLElement* e = m_doc.NewElement(XML_TAG_SETTING);
         e->SetAttribute("uilan", m_setting.uilanID);
@@ -315,6 +330,7 @@ void Configure::moveDictItem(int index, bool down)
         g_log(LOG_ERROR, "{Configure} move to a invalid row(%d)\n", newindex);
         return;
     }
+
     struct DictNode tempNode = m_dictNodes[index];
     m_dictNodes[index] = m_dictNodes[newindex];
     m_dictNodes[newindex] = tempNode;
@@ -344,6 +360,7 @@ void Configure::moveDictItem(int index, bool down)
         e = e->NextSiblingElement();
     }
     dictElement->InsertAfterChild(afterThisElement, addThisElement);
+    m_dirty = true;
 }
 
 void Configure::enableDict(int index, bool en)
@@ -352,7 +369,7 @@ void Configure::enableDict(int index, bool en)
         SpinLock lock(m_cs);
         m_dictNodes[index].en = en;
         XMLElement* p = m_doc.RootElement()->FirstChildElement("dict");
-        XMLElement* e = util::XMLUtil::child(p, index);
+        XMLElement* e = util::XMLUtil::Child(p, index);
         e->SetAttribute("en",  en);
         m_dirty = true;
     }
@@ -364,7 +381,7 @@ void Configure::writeDictItem(int item)
         return;
     SpinLock lock(m_cs);
     XMLElement* dictElement = XMLHandle(m_doc.RootElement()).FirstChildElement("dict").ToElement();
-    XMLElement* e = util::XMLUtil::child(dictElement, item);
+    XMLElement* e = util::XMLUtil::Child(dictElement, item);
     if (e == NULL) {
         e = m_doc.NewElement("d");
         e->SetAttribute("open",   m_dictNodes[item].open.c_str());
@@ -412,9 +429,7 @@ void Configure::writeDictItem(int item)
         txt = XMLHandle(e).FirstChildElement("summary").FirstChild().ToText();
         if (txt)
             txt->SetValue(m_dictNodes[item].summary.c_str());
-
     }
-
     /*printf("writeDictItem(%s): %d, %s -> %s\n", ndname.c_str(), 
            item, m_dictNodes[item].srclan.c_str(), m_dictNodes[item].detlan.c_str());*/
     m_dirty = true;
@@ -455,6 +470,7 @@ void Configure::writeUILanID(int id)
         //stream << id;
         XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
         e->SetAttribute("uilan", m_setting.uilanID);
+        m_dirty = true;
     }
 }
 
@@ -464,63 +480,98 @@ void Configure::writeFontSize(int size)
 	    m_setting.fontsize = size;
         XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
         e->SetAttribute("fontsize", m_setting.fontsize);
+        m_dirty = true;
+    }
+}
+
+void Configure::writeFont(string font)
+{
+    if (m_setting.font != font) {
+	    m_setting.font = font;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
+        e->SetAttribute("font", m_setting.font.c_str());
+        m_dirty = true;
+    }
+}
+
+void Configure::writeSystemTray(bool en)
+{
+    if (m_setting.bsystemTray != en) {
+	m_setting.bsystemTray = en;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
+        e->SetAttribute("systemtray", m_setting.bsystemTray);
+        m_dirty = true;
     }
 }
 
 void Configure::writeCwsSelection(bool en)
 {
-    m_cws.bselection = en;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("selection",  m_cws.bselection);
-    m_dirty = true;
+    if (m_cws.bselection != en) {
+        m_cws.bselection = en;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("selection",  m_cws.bselection);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeCwsClipboard(bool en)
 {
-    m_cws.bclipboard = en;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("clipboard",  m_cws.bselection);
-    m_dirty = true;
+    if (m_cws.bclipboard != en) {
+        m_cws.bclipboard = en;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("clipboard",  m_cws.bclipboard);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeCwsShortcutKey(int shortcutKey)
 {
-    m_cws.shortcutKey = shortcutKey;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("shortcutkey",  m_cws.shortcutKey);
-    m_dirty = true;
+    if (m_cws.shortcutKey != shortcutKey) {
+        m_cws.shortcutKey = shortcutKey;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("shortcutkey",  m_cws.shortcutKey);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeCwsMouse(bool en)
 {
-    m_cws.bmouse = en;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("mouse",  m_cws.bmouse);
-    m_dirty = true;
+    if (m_cws.bmouse != en) {
+        m_cws.bmouse = en;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("mouse",  m_cws.bmouse);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeCwsEnable(bool en)
 {
-    m_cws.benable = en;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("enable",  m_cws.benable);
-    m_dirty = true;
+    if (m_cws.benable != en) {
+        m_cws.benable = en;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("enable",  m_cws.benable);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeCwsAutoCloseEn(bool en)
 {
-    m_cws.autoCloseEn = en;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("AutoCloseEnable", m_cws.autoCloseEn);
-    m_dirty = true;
+    if (m_cws.autoCloseEn != en) {
+        m_cws.autoCloseEn = en;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("AutoCloseEnable", m_cws.autoCloseEn);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeCwsAutoCloseInv(int inv)
 {
-    m_cws.autoCloseInv = inv;
-    XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
-    e->SetAttribute("AutoCloseInterval", m_cws.autoCloseInv);
-    m_dirty = true;
+    if (m_cws.autoCloseInv != inv) {
+        m_cws.autoCloseInv = inv;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_CWS).ToElement();
+        e->SetAttribute("AutoCloseInterval", m_cws.autoCloseInv);
+        m_dirty = true;
+    }
 }
 
 void Configure::writeXml()
@@ -530,6 +581,13 @@ void Configure::writeXml()
        m_dirty = false;
        m_doc.SaveFile(m_configFile.c_str());
     }
+}
+
+void Configure::reset()
+{
+    /* It seems no way to close xml in 'm_doc', so it is risk that overwrite.
+       we will overwrite when start*/
+    m_doc.RootElement()->SetAttribute("reset", true);
 }
 
 int Configure::findDict(const string& path, const vector<string>& dictFiles)

@@ -4,8 +4,9 @@
 #include "Application.h"
 
 #if CONFIG_QT5
-#include <QtWidgets/QApplication>
 #include <QtCore/QTranslator>
+#include <QtCore/QLocale>
+#include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
 #include <QtWidgets/QMessageBox>
 #include "gui/qt/mainwindow.h"
@@ -36,14 +37,31 @@ int main(int argc, char* argv[])
 #endif
     QTranslator translator;
     QApplication a(argc, argv);
-    QFont font = a.font();
 
     int fontsize = g_application.m_configure->m_setting.fontsize;
-    if (fontsize != font.pointSize()) {
-        if (fontsize > 0) {
+
+    if (g_application.m_configure->m_setting.font == "") {
+    #ifdef _WINDOWS
+        QFont font = QFont(QString("Courier"), fontsize);
+        a.setFont(font);
+    #else
+        QFont font = a.font();
+        if (fontsize != font.pointSize()) {
             font.setPointSize(fontsize);
             a.setFont(font);
         }
+    #endif
+    } else {
+        string family = g_application.m_configure->m_setting.font;
+        QFont font = QFont(QString::fromUtf8(family.c_str()), fontsize);
+        a.setFont(font);
+    }
+
+    if (g_application.m_configure->m_setting.uilanID == UILAN_NONE) {
+        if (QLocale::system().language() == QLocale::Chinese)
+            g_application.m_configure->writeUILanID(UILAN_CN);
+        else
+            g_application.m_configure->writeUILanID(UILAN_EN);
     }
 
     if (g_application.m_configure->m_setting.uilanID == UILAN_CN) {

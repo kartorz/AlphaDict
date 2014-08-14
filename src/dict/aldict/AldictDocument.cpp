@@ -545,9 +545,11 @@ void AldictDocument::writeToXml(const std::string& path)
 bool AldictDocument::support(const string& dictname)
 {
 #ifdef WIN32
-   wchar_t *wdictname = CharUtil::utf8srtowcs(dictname.c_str());
-   if (wdictname != NULL)
-       m_dictFile = _wfopen(wdictname, L"rb"); 
+    wchar_t *wdictname = CharUtil::utf8srtowcs(dictname.c_str());
+    if (wdictname != NULL) {
+        m_dictFile = _wfopen(wdictname, L"rb");
+        free(wdictname);
+    }
 #else
    m_dictFile = fopen(dictname.c_str(),"rb");
 #endif

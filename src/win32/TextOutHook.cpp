@@ -1,10 +1,15 @@
+/*
+ *  Fix me : There is a radom crash when uninstall hook, the cause should be that
+ *           The TextOutHooks are called when being uninstalled. 
+ */
+
 #include "HookAPI.h"
 
 #pragma data_seg(".STRBUF")
 CHAR  g_strbuf[256] = {0};
 BOOL  g_bCapture = FALSE;
 POINT g_pMouse;
-HWND  g_hHookServer = NULL;
+HWND  g_hHookServer = 0;
 BOOL  g_bWChr = false;
 int   g_tPos = -1;
 int   g_cbString = -1;
@@ -225,37 +230,42 @@ BOOL WINAPI ExtTextOutWHook(HDC hdc, int nXStart, int nYStart, UINT fuOptions,
 
 static void InstallTextOutHooks()
 {
-    if (TextOutAOri == NULL)
-        HookAPI("gdi32.dll", "TextOutA",    (PROC)TextOutAHook,    (PROC*)&TextOutAOri);
-    if (TextOutWOri == NULL)
-        HookAPI("gdi32.dll", "TextOutW",    (PROC)TextOutWHook,    (PROC*)&TextOutWOri);
-    if (ExtTextOutAOri == NULL)
-        HookAPI("gdi32.dll", "ExtTextOutA", (PROC)ExtTextOutAHook, (PROC*)&ExtTextOutAOri);
-    if (ExtTextOutWOri == NULL)
-        HookAPI("gdi32.dll", "ExtTextOutW", (PROC)ExtTextOutWHook, (PROC*)&ExtTextOutWOri);
+    TextOutAOri = NULL;
+    HookAPI("gdi32.dll", "TextOutA",    (PROC)TextOutAHook,    (PROC*)&TextOutAOri);
+    
+    TextOutWOri = NULL;
+    HookAPI("gdi32.dll", "TextOutW",    (PROC)TextOutWHook,    (PROC*)&TextOutWOri);
+    
+    ExtTextOutAOri = NULL;
+    HookAPI("gdi32.dll", "ExtTextOutA", (PROC)ExtTextOutAHook, (PROC*)&ExtTextOutAOri);
+    
+    ExtTextOutWOri = NULL;
+    HookAPI("gdi32.dll", "ExtTextOutW", (PROC)ExtTextOutWHook, (PROC*)&ExtTextOutWOri);
 }
 
 static void UninstallTextOutHooks()
 {
     if (TextOutAOri != NULL) {
         HookAPI("gdi32.dll", "TextOutA", (PROC)TextOutAOri, NULL);
-        TextOutAOri = NULL;
     }
 
     if (TextOutWOri != NULL) {
         HookAPI("gdi32.dll", "TextOutW", (PROC)TextOutWOri, NULL);
-        TextOutWOri = NULL;
     }
 
     if (ExtTextOutAOri != NULL) {
         HookAPI("gdi32.dll", "ExtTextOutA", (PROC)ExtTextOutAOri, NULL);
-        ExtTextOutAOri = NULL;
     }
 
     if (ExtTextOutWOri != NULL) {
         HookAPI("gdi32.dll", "ExtTextOutW", (PROC)ExtTextOutWOri, NULL);
-        ExtTextOutWOri = NULL;
+        //ExtTextOutWOri = NULL; /* May ExtTextOutWHook is being called.  */
     }
+
+    Sleep(20); // Wait TextOutHook series functions exit -- don't know if necessay.
+    /* Don't know exactly what happens if TextOutHook series are called 
+       when TextOutHooks are being uninstall. It seems Sleep(20) not help. */
+
 }
 
 extern "C" __declspec(dllexport) BOOL 

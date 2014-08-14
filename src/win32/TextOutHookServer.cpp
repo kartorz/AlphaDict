@@ -58,7 +58,7 @@ TextOutHookServer& TextOutHookServer::getReference()
     return textOutSrv;
 }
 
-TextOutHookServer::TextOutHookServer()
+TextOutHookServer::TextOutHookServer(): m_loadLib(false)
 {
     m_hDriverInjecter = LoadLibraryEx(L"TextOutHookInjecter", NULL, 0);
     if (m_hDriverInjecter) {
@@ -67,6 +67,7 @@ TextOutHookServer::TextOutHookServer()
         _getCaptureText = (getCaptureText_t)GetProcAddress(m_hDriverInjecter, "GetCaptureText");
         getDllCount = (getDllCount_t)GetProcAddress(m_hDriverInjecter, "GetDllCount");
         captureTextEnable = (captureTextEnable_t)GetProcAddress(m_hDriverInjecter, "CaptureTextEnable");
+        m_loadLib = true;
     } else {
         inject = injectDummy;
         uninject = uninjectDummy;
@@ -76,23 +77,61 @@ TextOutHookServer::TextOutHookServer()
     }
 }
 
+TextOutHookServer::~TextOutHookServer()
+{
+    unloadHookLib();
+}
+
+void TextOutHookServer::unloadHookLib()
+{
+    if (m_loadLib && m_hDriverInjecter) {
+
+        uninject();
+#if 0
+        inject = injectDummy;
+        uninject = uninjectDummy;
+        _getCaptureText = getCaptureTextDummy;
+        getDllCount = getDllCountDummy;
+        captureTextEnable = captureTextEnableDummy;
+#endif
+        FreeLibrary(m_hDriverInjecter);
+        m_loadLib = false;
+        m_hDriverInjecter = NULL;
+        g_log.d("TextOutHookServer::unloadHookLib\n");
+    }
+}
+
+
+void TextOutHookServer::getCaptureText(char *strbuf, int bufLength, bool isWChr)
+{
+    int start, end, pos=0, nString=0;
+    int copysize, copystart;
+    int MAX_BUFLEN = bufLength;
+
+    //MutexLock lock(m_cs);
+#if 0  // for test
+    if (isWChr) {
+        memset(strbuf, 0, MAX_BUFLEN);
+        wchar_t wtest[] =  L"°¢¶û·¨´Êµä";
+        //strbuf[0] = L"°¢¶û·¨´Êµä";
+        memcpy(strbuf, (char*)wtest, sizeof(wtest));
+    } else {
+        memset(strbuf, 0, MAX_BUFLEN);
+        char test[] = "alphadict";
+        memcpy(strbuf, test, sizeof(test));
+    }
+    return;
+#endif
 
 #define IS_SEPARATOR_LOOP(pos, bWChr) \
 if (bWChr) { \
-    wchar_t wc = ((WCHAR *)m_strbuf)[pos]; \
+    wchar_t wc = ((WCHAR *)strbuf)[pos]; \
     if (isSeparatorW(wc)) break; \
 } else {  \
-    if (isSeparatorA(m_strbuf[pos]))  break; \
+    if (isSeparatorA(strbuf[pos]))  break; \
 }
-
-char * TextOutHookServer::getCaptureText(bool isWChr)
-{
-    int start, end, pos, nString;
-    int copysize, copystart;
-
-    _getCaptureText(m_strbuf, &pos, &nString);
-
-    if ( pos >= 0  && pos < nString) {
+    _getCaptureText(strbuf, &pos, &nString);
+    if ( pos >= 0  && pos < nString && nString < MAX_BUFLEN) {
         for (start = pos; start >= 0; start--) {
             IS_SEPARATOR_LOOP(start, isWChr)
         }
@@ -110,30 +149,21 @@ char * TextOutHookServer::getCaptureText(bool isWChr)
                 copystart = copystart * sizeof(wchar_t);
             }
 
-            if (copystart < 254) {
-                /* It should be 255 for ANSI string, but it doesn't matter, 
+            if (copystart < MAX_BUFLEN-2) {
+                /* It should be MAX_BUFLEN-1 for ANSI string, but it doesn't matter, 
                    Let us simplify this.*/
-                if (copystart + copysize < 254) {
-                    memmove(m_strbuf, m_strbuf+copystart, copysize);
-                    m_strbuf[copysize] = '\0';
-                    m_strbuf[copysize+1] = '\0';
-                    return m_strbuf;;
+                if (copystart + copysize < MAX_BUFLEN-2) {
+                    memmove(strbuf, strbuf+copystart, copysize);
+                    strbuf[copysize] = '\0';
+                    strbuf[copysize+1] = '\0';
+                    return;
                 }
             }
         } // end > start
     }
 
 /* something wrong */
-    m_strbuf[0] = '\0';
-    m_strbuf[1] = '\0';
-    return m_strbuf;
-}
-
-TextOutHookServer::~TextOutHookServer()
-{
-    if (m_hDriverInjecter) {
-        uninject();
-        FreeLibrary(m_hDriverInjecter);
-    }
+    strbuf[0] = '\0';
+    strbuf[1] = '\0';
 }
 

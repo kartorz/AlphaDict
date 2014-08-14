@@ -160,3 +160,18 @@ void MainWindow::on_fontsizeComboBox_activated(int index)
 
 }
 >>>>>>> 1.2
+
+void MainWindow::on_systemTrayCheckBox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_fontComboBox_activated(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_resetSettingToolButton_clicked()
+{
+
+}

@@ -9,9 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source Files\dict">
-      <UniqueIdentifier>{5b6a111d-2fa4-4c5e-b048-eff62b6dcf91}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\dict">
       <UniqueIdentifier>{507280ca-4fe2-47cf-9427-8a0c02655844}</UniqueIdentifier>
     </Filter>
@@ -24,6 +21,9 @@
     </Filter>
     <Filter Include="Header Files\gui">
       <UniqueIdentifier>{8c1d83e4-dcf6-4292-bc0d-d92f63a2ef5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dict">
+      <UniqueIdentifier>{5b6a111d-2fa4-4c5e-b048-eff62b6dcf91}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

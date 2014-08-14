@@ -40,6 +40,7 @@ public:
     int  start();
     void stop();
     bool isInit() {return m_init;}
+
     /* TaskCallBack*/
     virtual void onTaskDone();
     MessageQueue* sysMessageQ() { return m_sysMessageQ; }

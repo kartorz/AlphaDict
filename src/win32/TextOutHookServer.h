@@ -17,6 +17,7 @@ enum {
     WM_CW_TEXTA,
     WM_CW_TEXTW,
     WM_CW_LBUTTON,
+    WM_CW_SELECTION,
     WM_CW_DEBUG,
 };
 
@@ -27,7 +28,9 @@ public:
     TextOutHookServer();
     ~TextOutHookServer();
     void extractWord();
-    char *getCaptureText(bool isWChr);
+    void getCaptureText(char *strbuf, int bufLength, bool isWChr);
+    void unloadHookLib();
+
     injectDriver_t   inject;
     uninjectDriver_t uninject;
     getDllCount_t    getDllCount;
@@ -35,9 +38,9 @@ public:
 
 private:
     getCaptureText_t _getCaptureText;
-
+    bool m_loadLib;
     HINSTANCE m_hDriverInjecter;
-    char m_strbuf[256];
+    //MutexCriticalSection m_cs;
 };
 
 #endif

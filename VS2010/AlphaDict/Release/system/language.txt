@@ -4,3 +4,5 @@ japanese
 german
 French
 Korean
+danish
+greek

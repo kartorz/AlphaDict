@@ -51,7 +51,7 @@ void QtMessager::doWork()
             }
                 
             case MSG_SET_CAPWORD_DICTITEM: {
-                QMetaObject::invokeMethod((QObject *)m_owner,
+                QMetaObject::invokeMethod((QObject *)(m_owner),
                                               "onUpdateCapWordExplText",
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));

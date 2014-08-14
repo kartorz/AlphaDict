@@ -30,6 +30,8 @@ enum CwsShortcutKey {
 struct Setting {
     int  uilanID;
     int  fontsize;
+    string font;
+    bool bsystemTray;
 };
 
 struct CaptureWordSetting {
@@ -43,7 +45,8 @@ struct CaptureWordSetting {
 };
 
 enum UILanID {
-    UILAN_EN = 0,
+    UILAN_NONE = -1, // Auto detect.
+    UILAN_EN,
     UILAN_CN,
 };
 
@@ -64,6 +67,8 @@ public:
     void writeDetLan(const string& lan);
     void writeUILanID(int id);
     void writeFontSize(int size);
+    void writeFont(string font);
+    void writeSystemTray(bool en);
     void writeCwsSelection(bool en);
     void writeCwsClipboard(bool en);
     void writeCwsMouse(bool en);
@@ -72,6 +77,7 @@ public:
     void writeCwsAutoCloseEn(bool en);
     void writeCwsAutoCloseInv(int Inv);
     void writeXml();
+    void reset();
 
     vector<string> m_languages;
     string m_dataDir;

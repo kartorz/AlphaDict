@@ -30,7 +30,7 @@ static BOOL IsNT()
     memset(&stOSVI, 0, sizeof(OSVERSIONINFO));
     stOSVI.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     bRet = GetVersionEx(&stOSVI);
-    _ASSERT(TRUE == bRet);
+    //_ASSERT(TRUE == bRet);
     if (FALSE == bRet)
         return FALSE;
     return (VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId);
@@ -163,8 +163,11 @@ GetNamedImportDescriptor(HMODULE hModule, LPCSTR szImportModule)
     // check .idata section
     if (pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress == 0)
         return NULL;
-    PIMAGE_IMPORT_DESCRIPTOR pImportDesc = MakePtr(PIMAGE_IMPORT_DESCRIPTOR, pDOSHeader,
-    pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+
+    PIMAGE_IMPORT_DESCRIPTOR pImportDesc = MakePtr(
+        PIMAGE_IMPORT_DESCRIPTOR,
+        pDOSHeader,
+        pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress );
 
     while (pImportDesc->Name) {
         PSTR szCurrMod = MakePtr(PSTR, pDOSHeader, pImportDesc->Name);
@@ -184,20 +187,20 @@ static BOOL ImportHookFunction(HMODULE hModule, LPCSTR szImportModule,
                           LPCSTR szHookFunc, PROC pHookFunc, PROC* pOrigFuncPtr)
 {
     if (szImportModule == NULL || szHookFunc == NULL) {
-        _ASSERT(FALSE);
+        //_ASSERT(FALSE);
         SetLastErrorEx(ERROR_INVALID_PARAMETER, SLE_ERROR);
         return FALSE;
     }
 
     // The address above 0x80000000  is shared by all processes.
     if (!IsNT() && ((DWORD)hModule >= 0x80000000)) {
-        _ASSERT(FALSE);
+        //_ASSERT(FALSE);
         SetLastErrorEx(ERROR_INVALID_HANDLE, SLE_ERROR);
         return FALSE;
     }
 
-    if (pOrigFuncPtr) {
-        //memset(pOrigFuncPtr, NULL, sizeof(PROC));
+    if (!pHookFunc) {
+        return FALSE;
     }
 
     PIMAGE_IMPORT_DESCRIPTOR pImportDesc = GetNamedImportDescriptor(hModule, szImportModule);
@@ -215,16 +218,9 @@ static BOOL ImportHookFunction(HMODULE hModule, LPCSTR szImportModule,
             if ('/0' == pByName->Name[0])
                 goto NEXT_THUNK;
 
-            BOOL bDoHook = FALSE;
-
-            /*if ((szHookFunc[0] == pByName->Name[0])
-                && (_strcmpi(szHookFunc, (char*)pByName->Name) == 0))*/
-            if (lstrcmpiA(szHookFunc, (char*)pByName->Name) == 0)  // not case-sensitive
-            {
-                if (pHookFunc)
-                    bDoHook = TRUE;
-            }
-            if (bDoHook) {
+            //BOOL bDoHook = FALSE;
+            if ((szHookFunc[0] == pByName->Name[0]) &&
+                lstrcmpA(szHookFunc, (char*)pByName->Name) == 0) {
                 // change  mem's protection state.
                 MEMORY_BASIC_INFORMATION mbi_thunk;
                 VirtualQuery(pRealThunk, &mbi_thunk, sizeof(MEMORY_BASIC_INFORMATION));
@@ -245,28 +241,42 @@ static BOOL ImportHookFunction(HMODULE hModule, LPCSTR szImportModule,
                                &dwOldProtect);
                 SetLastError(ERROR_SUCCESS);
                 return TRUE;
-            } // bDoHook
+            }
         }// if (IMAGE_ORDINAL_FLAG
 
 NEXT_THUNK:
         pOrigThunk++;
         pRealThunk++;
     }
-    return TRUE;
+    return FALSE;
 }
-
 
 BOOL HookAPI(LPCSTR szImportModule, LPCSTR szHookFunc, PROC pHookFunc, PROC* pOrigFuncPtr)
 {
     HANDLE hSnapshot;
     MODULEENTRY32 me;
     me.dwSize = sizeof(MODULEENTRY32);
-    BOOL bOk;
+    BOOL bOk = FALSE;
     if ((szImportModule == NULL) || (szHookFunc == NULL)) {
         return FALSE;
     }
 
-    hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+    int rty = 1000;
+    do {
+        hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+        if(hSnapshot == (HANDLE)INVALID_HANDLE_VALUE ||
+           hSnapshot == (HANDLE)ERROR_BAD_LENGTH) {
+            Sleep(10);
+            continue;
+        }
+
+        bOk = true;
+        break;
+    }while (--rty > 0);
+
+    if (!bOk)
+        return FALSE;
+
     bOk = Module32First(hSnapshot,&me);
     while (bOk) {
         ImportHookFunction(me.hModule, szImportModule, szHookFunc, pHookFunc, pOrigFuncPtr);

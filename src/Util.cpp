@@ -16,7 +16,9 @@ using namespace boost::filesystem;
 #include "alphadict.h"
 #include "string.h"
 #include "Util.h"
+#ifdef WIN32
 #include "win32/WIN32Util.h"
+#endif
 
 unsigned int Util::getTimeMS()
 {
@@ -231,7 +233,7 @@ void* ReadFile::operator()(FILE *f, size_t length)
     return ptr;	
 }
 
-XMLElement* XMLUtil::child(XMLElement *parent, int n /*0..n*/)
+XMLElement* XMLUtil::Child(XMLElement *parent, int n /*0..n*/)
 {
     XMLElement* e = parent->FirstChildElement();
     if (!e)
@@ -246,7 +248,7 @@ XMLElement* XMLUtil::child(XMLElement *parent, int n /*0..n*/)
     return e;
 }
 
-int XMLUtil::childrenSize(XMLElement *parent)
+int XMLUtil::ChildrenSize(XMLElement *parent)
 {
     XMLElement* e = parent->FirstChildElement();
     int size = 0;
@@ -255,6 +257,17 @@ int XMLUtil::childrenSize(XMLElement *parent)
         e = e->NextSiblingElement();
     }
     return size;
+}
+
+string XMLUtil::Attribute(const XMLElement *e, const char* attr, const char* defval)
+{
+    string val;
+    const char *attrval = e->Attribute(attr);
+    if (attrval)
+        val  = string(attrval);
+    else
+        val = string(defval);
+    return val;
 }
 
 }
