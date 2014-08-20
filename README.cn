@@ -20,14 +20,14 @@
 
 许可证
 =======
-阿尔法词典在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布.
+Alpha词典在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布.
 你可以通过 gpl-2.0.txt 文件, 或者 网页 "http://www.gnu.org/copyleft/gpl.html" 了解相关的许可证信息。
 
 
 安装需要的开发包
 ==============
 
-"阿尔法词典"依赖如下开发包:
+"Alpha词典"依赖如下开发包:
   1) QT5(gui): "http://qt-project.org/downloads" 
   2) boost: "http://www.boost.org/"
 
@@ -66,7 +66,7 @@ windows
 
 如何制作词典
 ==========
-"阿尔法词典"有一个开发的词典格式, "doc/(dictionary_inner.pdf,front-end_format.xml)" 是词典格式文档。
+"Alpha词典"有一个开发的词典格式, "doc/(dictionary_inner.pdf,front-end_format.xml)" 是词典格式文档。
 鼓励用户制作自己的词典.
 
 通常情况下，你只需要了解 'front-end_format.xml', 能制作词典只需要2个步骤.
@@ -84,16 +84,16 @@ doc/alphadict_en-ch.xml 是一个例子, 你可以参考它来制作自己的词
 词典路径
 =======
 
-windows    :  '安装路径'/dicts
+windows    :  '安装路径'/system/dicts
 linux, unix:  /usr/local/share/alphadict/dicts
 
 
 如何使用第三方词典
 ===============
-对一些词典格式，"阿尔法词典"不提供直接的支持，需要使用工具进行转换, 转换为 "阿尔法词典"的前端xml格式。
+对一些词典格式，"Alpha词典"不提供直接的支持，需要使用工具进行转换, 转换为 "Alpha词典"的前端xml格式。
 可能大家觉得有点麻烦， 这些工具全部是 python 脚本，使用起来非常简单，也便于修改。它们的位置在: 
     /usr/local/share/alphadict/tools  -- linux, unix
-    '安装目录'/tools -- win32.
+    '安装目录'/sytem/tools -- win32.
 我会预先制作一下词典, 最好的办法还是自己去转换，因为一些词典会自动更新。
 
 $ python xx_toaldictxml.py

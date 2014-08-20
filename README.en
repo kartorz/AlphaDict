@@ -89,7 +89,7 @@ doc/alphadict_en-ch.xml is a example, You can refrence them to build your dictio
 Where to Put Dictionaries
 =========================
 
-For windows    :  'installing direcotry'/dicts
+For windows    :  'installing direcotry'/system/dicts
 For linux, unix:  /usr/local/share/alphadict/dicts
 
 
