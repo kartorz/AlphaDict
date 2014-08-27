@@ -544,21 +544,28 @@ echocheck "QT5 header"
   inc_tmp=""
   ld_tmp=""
   res_comment="check if the qt5 dev(el) packages are installed"
-  for I in $(echo $extra_cflags | sed s/-I//g) /usr/include/qt5; do
-    if test -f "$I/QtWidgets/QMainWindow" ; then
-        inc_tmp="-I$I -I$I/QtCore -I$I/QtGui -I$I/QtWidgets"
+
+  if header_check  QtWidgets/QMainWindow ; then
+    res_comment=""
+    _qt5_headers="yes"
+  else
+    for I in $(echo $extra_cflags | sed s/-I//g) /usr/include  /usr/include/x86_64-linux-gnu \
+      /usr/include/i386-linux-gnu /usr/local/include; do
+      if test -f "$I/qt5/QtWidgets/QMainWindow" ; then
+        inc_tmp="-I$I/qt5"
         res_comment=""
         _qt5_headers="yes"
-    fi
-    break
-  done
+        break
+      fi
+    done
+  fi
 echores "$_qt5_headers"
 
 echocheck "QT5 libraries"
   if test "$_qt5" = "auto" ; then
     _qt5="no";
     if test "$_qt5_headers" = "yes" ; then
-      for I in "" /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
+      for I in "" /usr/lib/x86_64-linux-gnu   /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
         if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
           def_qt5='#define CONFIG_QT5 1'
           ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
