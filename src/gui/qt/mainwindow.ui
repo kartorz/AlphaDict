@@ -70,7 +70,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="iconSize">
      <size>
@@ -428,7 +428,7 @@
         <property name="geometry">
          <rect>
           <x>50</x>
-          <y>321</y>
+          <y>340</y>
           <width>32</width>
           <height>32</height>
          </rect>
@@ -457,7 +457,7 @@
         <property name="geometry">
          <rect>
           <x>175</x>
-          <y>322</y>
+          <y>340</y>
           <width>32</width>
           <height>32</height>
          </rect>
@@ -485,10 +485,10 @@
        <widget class="QPlainTextEdit" name="vbexplTextEdit">
         <property name="geometry">
          <rect>
-          <x>306</x>
-          <y>36</y>
-          <width>368</width>
-          <height>240</height>
+          <x>320</x>
+          <y>10</y>
+          <width>371</width>
+          <height>261</height>
          </rect>
         </property>
         <property name="undoRedoEnabled">
@@ -503,9 +503,35 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>281</width>
-          <height>290</height>
+          <width>251</width>
+          <height>321</height>
          </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>320</x>
+          <y>310</y>
+          <width>41</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Spell</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="spellInputLineEdit">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>299</y>
+          <width>321</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
         </property>
        </widget>
       </widget>

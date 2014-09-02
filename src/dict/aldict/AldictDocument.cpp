@@ -53,10 +53,10 @@ bool AldictDocument::loadDict(const std::string& dictpath)
     m_dictFile = fopen(dictpath.c_str(),"rb");
 #endif
 	if (m_dictFile == NULL) {
-	    g_log.e("Can't open dict file:(%s)", dictpath.c_str());
+	    g_sysLog.e("Can't open dict file:(%s)", dictpath.c_str());
 		return false;
 	}
-	g_log.i("read meta data of(%s)\n", dictpath.c_str());
+	g_sysLog.i("read meta data of(%s)\n", dictpath.c_str());
 	if (readHeader()) {
 	    readChrIndex();	
 	    return true;
@@ -77,7 +77,7 @@ bool AldictDocument::readHeader()
 	    m_dataLoc = ald_read_u32(m_header.loc_data);
         return true;
     }
-    g_log.i("not a alphadict's dictionary\n");
+    g_sysLog.i("not a alphadict's dictionary\n");
     return false;
 }
 
@@ -88,7 +88,7 @@ void AldictDocument::readChrIndex()
 	address_t len = (m_strIndexLoc - m_chrIndexLoc)*ALD_BLOCK;
 	void* chrblock = maclloc_t(len);
 
-    g_log.d("{readChrIndex}, charindex size == (%d)bytes \n", len);
+    g_sysLog.d("{readChrIndex}, charindex size == (%d)bytes \n", len);
 	fseek(m_dictFile, (m_chrIndexLoc-1)*ALD_BLOCK, SEEK_SET);
 	read(m_dictFile, chrblock, len);
 
@@ -110,13 +110,13 @@ void AldictDocument::loadIndexTree(tree_node<aldict_charindex>::treeNodePtr pare
     u16 len = ald_read_u16(parInx.len_content);
 
     if (len > 5000) {
-        g_log.w("{loadIndexTree} more than 5000 child need to be loaded, someting wrong?\n");
+        g_sysLog.w("{loadIndexTree} more than 5000 child need to be loaded, someting wrong?\n");
     }
 
-	//g_log.d("{loadIndexTree} parent loc: (%u-->0x%x), len:(%d)\n", loc, loc, len);
+	//g_sysLog.d("{loadIndexTree} parent loc: (%u-->0x%x), len:(%d)\n", loc, loc, len);
 	if ((loc & 0x80000000) == 0 && len > 0) { /* non-leaf */
         if (loc + (len-1) * sizeof(struct aldict_charindex) > blksize) {
-            g_log.e("{loadIndexTree} (loc(%u) --> len(%u) )over char index aread\n", loc, len);
+            g_sysLog.e("{loadIndexTree} (loc(%u) --> len(%u) )over char index aread\n", loc, len);
             return;
         }
 
@@ -390,7 +390,7 @@ bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
                 if (loadIndex(str, inx+1, stat, parent->child(i), indexList) == false)
                     return false;
             } else {
-                g_log.d("{loadIndex} index is too long, should't happen\n");
+                g_sysLog.d("{loadIndex} index is too long, should't happen\n");
                 return false;
             }
         }
@@ -404,7 +404,7 @@ bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
         char* pinx = CharUtil::ucs4StrToUTF8Str(str);
         //char* pinx = Util::wcsrtombs_r(str);
         if (pinx == NULL) {
-            g_log.e("{loadIndex} invalid wcstring\n");
+            g_sysLog.e("{loadIndex} invalid wcstring\n");
             return false;
         }
         strparent = string(pinx);
@@ -434,7 +434,7 @@ bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
         int block_nr = m_strIndexLoc+bk_off;
         u8 *buf_start, *buf_end;
         if (bk_off > m_dataLoc - m_strIndexLoc) {
-             g_log.e("{loadIndex} a invalid addr (%x\n", loc);
+             g_sysLog.e("{loadIndex} a invalid addr (%x\n", loc);
              return false;
         }
 
@@ -463,7 +463,7 @@ bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
 
             // Check pStrInx.
             if (pStrInx->len_str[0] == 0) {
-                g_log.e("{loadIndex} read a invalid data area \n");
+                g_sysLog.e("{loadIndex} read a invalid data area \n");
                 return false;
 	        }
 
@@ -530,7 +530,7 @@ void* AldictDocument::getBlock(int blk)
             free(ptr);
             return NULL;
         }
-        g_log.e("getBlock can't malloc(ALD_BLOCK)\n");
+        g_sysLog.e("getBlock can't malloc(ALD_BLOCK)\n");
         return NULL;
     } else {
        return iter->second;
@@ -554,7 +554,7 @@ bool AldictDocument::support(const string& dictname)
    m_dictFile = fopen(dictname.c_str(),"rb");
 #endif
 	if (m_dictFile == NULL) {
-	    g_log.e("Can't open dict file:(%s)", dictname.c_str());
+	    g_sysLog.e("Can't open dict file:(%s)", dictname.c_str());
 		return false;
 	}
 

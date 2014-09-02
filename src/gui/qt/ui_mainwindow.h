@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.0
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -65,6 +65,8 @@ public:
     QToolButton *vbclearToolButton;
     QPlainTextEdit *vbexplTextEdit;
     QListView *vbookListView;
+    QLabel *label_3;
+    QLineEdit *spellInputLineEdit;
     QWidget *vbModeTab;
     QToolButton *vbpreItemTlBtn;
     QToolButton *vbnextItemTlBtn;
@@ -259,7 +261,7 @@ public:
         listModeTable->setObjectName(QStringLiteral("listModeTable"));
         vbdelToolButton = new QToolButton(listModeTable);
         vbdelToolButton->setObjectName(QStringLiteral("vbdelToolButton"));
-        vbdelToolButton->setGeometry(QRect(50, 321, 32, 32));
+        vbdelToolButton->setGeometry(QRect(50, 340, 32, 32));
         QIcon icon11;
         icon11.addFile(QStringLiteral(":/res/remove.png"), QSize(), QIcon::Normal, QIcon::Off);
         vbdelToolButton->setIcon(icon11);
@@ -267,7 +269,7 @@ public:
         vbdelToolButton->setAutoRaise(true);
         vbclearToolButton = new QToolButton(listModeTable);
         vbclearToolButton->setObjectName(QStringLiteral("vbclearToolButton"));
-        vbclearToolButton->setGeometry(QRect(175, 322, 32, 32));
+        vbclearToolButton->setGeometry(QRect(175, 340, 32, 32));
         QIcon icon12;
         icon12.addFile(QStringLiteral(":/res/clear_all.png"), QSize(), QIcon::Normal, QIcon::Off);
         vbclearToolButton->setIcon(icon12);
@@ -275,12 +277,19 @@ public:
         vbclearToolButton->setAutoRaise(true);
         vbexplTextEdit = new QPlainTextEdit(listModeTable);
         vbexplTextEdit->setObjectName(QStringLiteral("vbexplTextEdit"));
-        vbexplTextEdit->setGeometry(QRect(306, 36, 368, 240));
+        vbexplTextEdit->setGeometry(QRect(320, 10, 371, 261));
         vbexplTextEdit->setUndoRedoEnabled(false);
         vbexplTextEdit->setReadOnly(true);
         vbookListView = new QListView(listModeTable);
         vbookListView->setObjectName(QStringLiteral("vbookListView"));
-        vbookListView->setGeometry(QRect(10, 10, 281, 290));
+        vbookListView->setGeometry(QRect(10, 10, 251, 321));
+        label_3 = new QLabel(listModeTable);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setGeometry(QRect(320, 310, 41, 17));
+        spellInputLineEdit = new QLineEdit(listModeTable);
+        spellInputLineEdit->setObjectName(QStringLiteral("spellInputLineEdit"));
+        spellInputLineEdit->setGeometry(QRect(370, 299, 321, 32));
+        spellInputLineEdit->setReadOnly(false);
         vocabularyTabWidget->addTab(listModeTable, QString());
         vbModeTab = new QWidget();
         vbModeTab->setObjectName(QStringLiteral("vbModeTab"));
@@ -487,7 +496,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
         vocabularyTabWidget->setCurrentIndex(0);
         settingTabWidget->setCurrentIndex(0);
 
@@ -555,6 +564,7 @@ public:
         vbclearToolButton->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Delete all items</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         vbclearToolButton->setText(QApplication::translate("MainWindow", "...", 0));
+        label_3->setText(QApplication::translate("MainWindow", "Spell", 0));
         vocabularyTabWidget->setTabText(vocabularyTabWidget->indexOf(listModeTable), QApplication::translate("MainWindow", "List", 0));
         vbpreItemTlBtn->setText(QApplication::translate("MainWindow", "...", 0));
         vbnextItemTlBtn->setText(QApplication::translate("MainWindow", "...", 0));

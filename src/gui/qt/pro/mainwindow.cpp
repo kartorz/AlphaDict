@@ -175,3 +175,8 @@ void MainWindow::on_resetSettingToolButton_clicked()
 {
 
 }
+
+void MainWindow::on_spellInputLineEdit_editingFinished()
+{
+
+}

@@ -26,13 +26,13 @@ bool VocabularyBook::load(const string& bookfile)
     }
     
     if (m_doc.LoadFile(bookfile.c_str()) != XML_NO_ERROR) {
-        g_log(LOG_ERROR, "can't load vocabulary book\n");
+        g_sysLog(LOG_ERROR, "can't load vocabulary book\n");
         return false;
     }
 
     XMLElement* rootElement = m_doc.FirstChildElement();
     if (rootElement == false) {
-        g_log(LOG_ERROR, "can't get root element of vocabulary book xml file\n");
+        g_sysLog(LOG_ERROR, "can't get root element of vocabulary book xml file\n");
         return false;      
     }
 

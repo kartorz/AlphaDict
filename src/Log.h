@@ -31,6 +31,6 @@ private:
     SpinCriticalSection m_crs;
 };
 
-extern  Log g_log;
+extern  Log g_sysLog;
 
 #endif

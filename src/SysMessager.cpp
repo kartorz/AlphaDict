@@ -29,7 +29,7 @@ void SysMessager::onStartup()
 
 void SysMessager::onExit()
 {
-    g_log(LOG_DEBUG, "SysMessager: onExit()\n");
+    g_sysLog(LOG_DEBUG, "SysMessager: onExit()\n");
 }
 
 void SysMessager::doWork()
@@ -45,7 +45,7 @@ void SysMessager::processMessage()
         //printf("{SysMessager} no message, exit\n");
         return;
     }
-    //g_log(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
+    //g_sysLog(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
 	switch (msg.id) {
         case MSG_DICT_QUERY: {
             DictManager::getReference().lookup(msg.strArg1);

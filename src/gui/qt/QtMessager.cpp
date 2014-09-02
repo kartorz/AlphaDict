@@ -98,5 +98,5 @@ void QtMessager::abort()
 
 void QtMessager::onExit()
 {
-    g_log.d("QtMessager::onExit\n");
+    g_sysLog.d("QtMessager::onExit\n");
 }

@@ -13,7 +13,7 @@
 #include "Log.h"
 #include "Util.h"
 
-Log g_log;
+Log g_sysLog;
 
 Log::Log()
 : m_level(LOG_ERROR)

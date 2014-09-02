@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.2.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,20 +12,20 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.0. It"
+#error "This file was generated using the moc from 5.2.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[61];
-    char stringdata[1434];
+    QByteArrayData data[62];
+    char stringdata[1473];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
-        - idx * sizeof(QByteArrayData)) \
+    offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
+        - idx * sizeof(QByteArrayData) \
     )
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
@@ -85,11 +85,12 @@ QT_MOC_LITERAL(52, 1252, 6),
 QT_MOC_LITERAL(53, 1259, 29),
 QT_MOC_LITERAL(54, 1289, 25),
 QT_MOC_LITERAL(55, 1315, 33),
-QT_MOC_LITERAL(56, 1349, 15),
-QT_MOC_LITERAL(57, 1365, 18),
-QT_MOC_LITERAL(58, 1384, 18),
-QT_MOC_LITERAL(59, 1403, 14),
-QT_MOC_LITERAL(60, 1418, 15)
+QT_MOC_LITERAL(56, 1349, 37),
+QT_MOC_LITERAL(57, 1387, 15),
+QT_MOC_LITERAL(58, 1403, 18),
+QT_MOC_LITERAL(59, 1422, 18),
+QT_MOC_LITERAL(60, 1441, 14),
+QT_MOC_LITERAL(61, 1456, 15)
     },
     "MainWindow\0onUpdateExplText\0\0v\0"
     "onUpdateCapWordExplText\0onSetLanComboBox\0"
@@ -132,9 +133,10 @@ QT_MOC_LITERAL(60, 1418, 15)
     "reason\0on_systemTrayCheckBox_clicked\0"
     "on_fontComboBox_activated\0"
     "on_resetSettingToolButton_clicked\0"
+    "on_spellInputLineEdit_editingFinished\0"
     "onTrayCwsEnable\0onTrayCwsClipboard\0"
     "onTrayCwsSelection\0onTrayCwsMouse\0"
-    "onTrayMenuClose"
+    "onTrayMenuClose\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -144,7 +146,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      51,   14, // methods
+      52,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -152,57 +154,58 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  269,    2, 0x0a /* Public */,
-       4,    1,  272,    2, 0x0a /* Public */,
-       5,    3,  275,    2, 0x0a /* Public */,
-       8,    1,  282,    2, 0x08 /* Private */,
-      10,    1,  285,    2, 0x08 /* Private */,
-      11,    0,  288,    2, 0x08 /* Private */,
-      12,    1,  289,    2, 0x08 /* Private */,
-      13,    0,  292,    2, 0x08 /* Private */,
-      14,    1,  293,    2, 0x08 /* Private */,
-      16,    1,  296,    2, 0x08 /* Private */,
-      17,    0,  299,    2, 0x08 /* Private */,
-      18,    0,  300,    2, 0x08 /* Private */,
-      19,    0,  301,    2, 0x08 /* Private */,
-      20,    0,  302,    2, 0x08 /* Private */,
-      21,    1,  303,    2, 0x08 /* Private */,
-      22,    0,  306,    2, 0x08 /* Private */,
-      23,    0,  307,    2, 0x08 /* Private */,
-      24,    1,  308,    2, 0x08 /* Private */,
-      25,    0,  311,    2, 0x08 /* Private */,
-      26,    0,  312,    2, 0x08 /* Private */,
-      27,    1,  313,    2, 0x08 /* Private */,
-      28,    1,  316,    2, 0x08 /* Private */,
-      29,    0,  319,    2, 0x08 /* Private */,
-      30,    0,  320,    2, 0x08 /* Private */,
-      31,    0,  321,    2, 0x08 /* Private */,
-      32,    0,  322,    2, 0x08 /* Private */,
-      33,    1,  323,    2, 0x08 /* Private */,
-      34,    1,  326,    2, 0x08 /* Private */,
-      35,    0,  329,    2, 0x08 /* Private */,
-      36,    0,  330,    2, 0x08 /* Private */,
-      37,    0,  331,    2, 0x08 /* Private */,
-      38,    0,  332,    2, 0x08 /* Private */,
-      39,    0,  333,    2, 0x08 /* Private */,
-      40,    0,  334,    2, 0x08 /* Private */,
-      41,    0,  335,    2, 0x08 /* Private */,
-      42,    1,  336,    2, 0x08 /* Private */,
-      44,    1,  339,    2, 0x08 /* Private */,
-      45,    1,  342,    2, 0x08 /* Private */,
-      46,    1,  345,    2, 0x08 /* Private */,
-      47,    1,  348,    2, 0x08 /* Private */,
-      48,    1,  351,    2, 0x08 /* Private */,
-      49,    1,  354,    2, 0x08 /* Private */,
-      50,    1,  357,    2, 0x08 /* Private */,
-      53,    1,  360,    2, 0x08 /* Private */,
-      54,    1,  363,    2, 0x08 /* Private */,
-      55,    0,  366,    2, 0x08 /* Private */,
-      56,    1,  367,    2, 0x08 /* Private */,
-      57,    1,  370,    2, 0x08 /* Private */,
-      58,    1,  373,    2, 0x08 /* Private */,
-      59,    1,  376,    2, 0x08 /* Private */,
-      60,    0,  379,    2, 0x08 /* Private */,
+       1,    1,  274,    2, 0x0a,
+       4,    1,  277,    2, 0x0a,
+       5,    3,  280,    2, 0x0a,
+       8,    1,  287,    2, 0x08,
+      10,    1,  290,    2, 0x08,
+      11,    0,  293,    2, 0x08,
+      12,    1,  294,    2, 0x08,
+      13,    0,  297,    2, 0x08,
+      14,    1,  298,    2, 0x08,
+      16,    1,  301,    2, 0x08,
+      17,    0,  304,    2, 0x08,
+      18,    0,  305,    2, 0x08,
+      19,    0,  306,    2, 0x08,
+      20,    0,  307,    2, 0x08,
+      21,    1,  308,    2, 0x08,
+      22,    0,  311,    2, 0x08,
+      23,    0,  312,    2, 0x08,
+      24,    1,  313,    2, 0x08,
+      25,    0,  316,    2, 0x08,
+      26,    0,  317,    2, 0x08,
+      27,    1,  318,    2, 0x08,
+      28,    1,  321,    2, 0x08,
+      29,    0,  324,    2, 0x08,
+      30,    0,  325,    2, 0x08,
+      31,    0,  326,    2, 0x08,
+      32,    0,  327,    2, 0x08,
+      33,    1,  328,    2, 0x08,
+      34,    1,  331,    2, 0x08,
+      35,    0,  334,    2, 0x08,
+      36,    0,  335,    2, 0x08,
+      37,    0,  336,    2, 0x08,
+      38,    0,  337,    2, 0x08,
+      39,    0,  338,    2, 0x08,
+      40,    0,  339,    2, 0x08,
+      41,    0,  340,    2, 0x08,
+      42,    1,  341,    2, 0x08,
+      44,    1,  344,    2, 0x08,
+      45,    1,  347,    2, 0x08,
+      46,    1,  350,    2, 0x08,
+      47,    1,  353,    2, 0x08,
+      48,    1,  356,    2, 0x08,
+      49,    1,  359,    2, 0x08,
+      50,    1,  362,    2, 0x08,
+      53,    1,  365,    2, 0x08,
+      54,    1,  368,    2, 0x08,
+      55,    0,  371,    2, 0x08,
+      56,    0,  372,    2, 0x08,
+      57,    1,  373,    2, 0x08,
+      58,    1,  376,    2, 0x08,
+      59,    1,  379,    2, 0x08,
+      60,    1,  382,    2, 0x08,
+      61,    0,  385,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,
@@ -250,6 +253,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, 0x80000000 | 51,   52,
     QMetaType::Void, QMetaType::Bool,   43,
     QMetaType::Void, QMetaType::QString,    9,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Bool,   43,
     QMetaType::Void, QMetaType::Bool,   43,
@@ -311,11 +315,12 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 43: _t->on_systemTrayCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 44: _t->on_fontComboBox_activated((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 45: _t->on_resetSettingToolButton_clicked(); break;
-        case 46: _t->onTrayCwsEnable((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 47: _t->onTrayCwsClipboard((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 48: _t->onTrayCwsSelection((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 49: _t->onTrayCwsMouse((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 50: _t->onTrayMenuClose(); break;
+        case 46: _t->on_spellInputLineEdit_editingFinished(); break;
+        case 47: _t->onTrayCwsEnable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 48: _t->onTrayCwsClipboard((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 49: _t->onTrayCwsSelection((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 50: _t->onTrayCwsMouse((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 51: _t->onTrayMenuClose(); break;
         default: ;
         }
     }
@@ -346,13 +351,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 51)
+        if (_id < 52)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 51;
+        _id -= 52;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 51)
+        if (_id < 52)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 51;
+        _id -= 52;
     }
     return _id;
 }

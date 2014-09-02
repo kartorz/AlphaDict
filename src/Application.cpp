@@ -23,7 +23,7 @@ void InitTask::doWork()
 void SlowJob::doWork()
 {
     //printf("slowjob dowork\n");
-    //g_log.d("slowjob dowork\n");
+    //g_sysLog.d("slowjob dowork\n");
     m_owner->slowJob();
 }
 
@@ -48,7 +48,7 @@ Application::~Application()
        all the tasks should be stopped. */
     delete m_uiMessageQ;
     delete m_sysMessageQ;
-    g_log.d("~Application\n");
+    g_sysLog.d("~Application\n");
 }
 
 int Application::start()
@@ -62,8 +62,8 @@ int Application::initialization()
 {
     int ret = 0;
     TaskManager::getInstance()->start(MAX_WORK_THREAD);
-    g_log.setLevel(LOG_DEBUG);
-    g_log(LOG_INFO, "Application initialization\n");
+    g_sysLog.setLevel(LOG_DEBUG);
+    g_sysLog(LOG_INFO, "Application initialization\n");
 
     m_sysMessager->start();
     if ((ret = m_configure->initialization()) != 0)

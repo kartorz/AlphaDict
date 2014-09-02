@@ -29,7 +29,7 @@ CapWordDialog::~CapWordDialog()
 {
     m_timer->stop();
     close();
-    g_log.d("~CapWordDialog\n");
+    g_sysLog.d("~CapWordDialog\n");
     delete ui;
 }
 
@@ -111,7 +111,7 @@ bool CapWordDialog::event(QEvent * event)
 #if 0
 bool CapWordDialog::eventFilter( QObject * watched, QEvent * event )
 {
-    //g_log.e("event type2 %d\n", event->type());
+    //g_sysLog.e("event type2 %d\n", event->type());
     return false;
 }
 #endif

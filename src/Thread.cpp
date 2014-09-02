@@ -56,7 +56,7 @@ void Thread::start()
 
     if (ret == false) {
         m_stop = true;
-        g_log.e("{Thread} create thread failure ret(%d)\n", ret);
+        g_sysLog.e("{Thread} create thread failure ret(%d)\n", ret);
     }
 }
 

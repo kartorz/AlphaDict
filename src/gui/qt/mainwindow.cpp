@@ -97,7 +97,7 @@ MainWindow::~MainWindow()
     delete m_messager;
     delete ui;
     delete m_capWordDialog;
-    g_log.d("~MainWindow\n");
+    g_sysLog.d("~MainWindow\n");
 }
 
 QMenu* MainWindow::creatTrayContextMenu()
@@ -146,7 +146,7 @@ void MainWindow::initDelay()
         registerHotkey(m_config->m_cws.shortcutKey);
     #ifdef _WINDOWS
         WId wid = effectiveWinId();
-        g_log.i("inject to wid(%d)\n", (int)wid);
+        g_sysLog.i("inject to wid(%d)\n", (int)wid);
         TextOutHookServer::getReference().inject((HWND)wid);
         TextOutHookServer::getReference().captureTextEnable(capwordMode());
     #endif
@@ -574,6 +574,11 @@ void MainWindow::on_vbookListView_activated(const QModelIndex &index)
     on_vbookListView_clicked(index);
 }
 
+void MainWindow::on_spellInputLineEdit_editingFinished()
+{
+    ui->spellInputLineEdit->clear();
+}
+
 void MainWindow::showToolTip(QString info, int displayTimeMS)
 {
     //showToolTip(info, w, this, displayTimeMS);
@@ -789,11 +794,11 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     unsigned int message = ((MSG *)msg)->message;
     switch (message) {
     case WM_CW_LBUTTON:
-        //g_log.d("WM_CW_LBUTTON\n");
+        //g_sysLog.d("WM_CW_LBUTTON\n");
         if (!m_capWordDialog->isHidden()) {
             int x = (int)(((MSG *)msg)->wParam);
             int y = (int)(((MSG *)msg)->lParam);
-            //g_log.d("WM_CW_LBUTTON, x,y(%d, %d)\n", x,y);
+            //g_sysLog.d("WM_CW_LBUTTON, x,y(%d, %d)\n", x,y);
             QPoint pos(x,y);
             QRect rect = m_capWordDialog->frameGeometry();
             if (!rect.contains(pos)) {
@@ -807,7 +812,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     case WM_CW_ERROR:
     {
         DWORD errcode = (DWORD)(((MSG *)msg)->wParam);
-        g_log.d("error when capture word on win32, error code(%d)\n", errcode);
+        g_sysLog.d("error when capture word on win32, error code(%d)\n", errcode);
         return true;
     }
 #if 0
@@ -871,7 +876,7 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
     {
         int x = (int)(((MSG *)msg)->wParam);
         int y = (int)(((MSG *)msg)->lParam);
-        g_log.d("capture word debug message(%d, %d)\n", x, y);
+        g_sysLog.d("capture word debug message(%d, %d)\n", x, y);
         return true;
     }
 #if 0
@@ -944,7 +949,7 @@ int MainWindow::capwordMode()
     if (m_config->m_cws.bselection)
         mode |= CAPMODE_MOUSE_SELECTION;
     
-    g_log.d("capwordMode %d\n", mode);
+    g_sysLog.d("capwordMode %d\n", mode);
 #endif
     return mode;
 }

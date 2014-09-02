@@ -85,6 +85,8 @@ private slots:
 
     void on_resetSettingToolButton_clicked();
 
+    void on_spellInputLineEdit_editingFinished();
+
 private:
     Ui::MainWindow *ui;
 };

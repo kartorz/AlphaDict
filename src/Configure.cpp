@@ -50,7 +50,7 @@ int Configure::initialization()
     int ret = 0;
     Util::usrProfileDir(m_homeDir);
     m_configFile = m_homeDir + "/configure.xml";
-    g_log(LOG_INFO, "home direcotry:(%s)\n", m_homeDir.c_str());
+    g_sysLog(LOG_INFO, "home direcotry:(%s)\n", m_homeDir.c_str());
 
 #ifdef WIN32
     Util::execDir(m_dataDir);
@@ -58,14 +58,14 @@ int Configure::initialization()
 #else
     m_dataDir = DATADIR;
 #endif
-    g_log(LOG_INFO, "system dir :(%s)\n", m_dataDir.c_str());
+    g_sysLog(LOG_INFO, "system dir :(%s)\n", m_dataDir.c_str());
     if (!Util::isDirExist(m_homeDir)) {
          if (Util::createDir(m_homeDir)) {
              //string path = m_dataDir;
              Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
          } else {
          #ifdef WIN32
-             g_log.e("can't create home direcotry\n");
+             g_sysLog.e("can't create home direcotry\n");
              return ERR_MKHOME;
          #else
              AL_ASSERT(false, "can't create home direcotry\n");
@@ -77,7 +77,7 @@ int Configure::initialization()
     if (!Util::isFileExist(m_configFile)) {
         if (Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile) == false) {
         #ifdef WIN32
-            g_log.e("{Configure} can't copy cofigure.xml.in \n");
+            g_sysLog.e("{Configure} can't copy cofigure.xml.in \n");
             return ERR_CPCFG;
         #else
             AL_ASSERT(false, "{Configure} can't copy cofigure.xml.in \n");
@@ -90,7 +90,7 @@ int Configure::initialization()
         // Reload configure file
         Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
         ret = load(m_configFile);
-        g_log.w("{Configure} load configure.xml failure, restore to default setting\n");
+        g_sysLog.w("{Configure} load configure.xml failure, restore to default setting\n");
     }
 
     loadLanguage();
@@ -107,13 +107,13 @@ int Configure::initialization()
 int Configure::load(const string& xmlpath)
 {
     if (m_doc.LoadFile(xmlpath.c_str()) != XML_NO_ERROR) {
-        g_log.e("{Configure} can't load xml %s\n", xmlpath.c_str());
+        g_sysLog.e("{Configure} can't load xml %s\n", xmlpath.c_str());
         return ERR_LDCFG;
     }
 
     XMLElement* rootElement = m_doc.RootElement();
     if (rootElement == NULL) {
-        g_log.e("{Configure} can't get root element %s\n", xmlpath.c_str());
+        g_sysLog.e("{Configure} can't get root element %s\n", xmlpath.c_str());
         return ERR_LDCFG;    
     } else {
         bool reset = rootElement->IntAttribute("reset");
@@ -278,7 +278,7 @@ void Configure::scanDictDir(const string& path, vector<string>& dictFiles)
             dictFiles.push_back(utf8path);
         }
     } catch (const filesystem_error& ex) {
-        g_log(LOG_ERROR, "{scanDictDir}: %s\n", ex.what());
+        g_sysLog(LOG_ERROR, "{scanDictDir}: %s\n", ex.what());
     }
 #else
     struct dirent *ep;
@@ -302,7 +302,7 @@ void Configure::loadLanguage()
     string path = m_dataDir + "/language.txt";
     FILE *f = fopen(path.c_str(),"r");
     if (!f) {
-        g_log(LOG_ERROR, "can find language file\n");
+        g_sysLog(LOG_ERROR, "can find language file\n");
         return;
     }
 
@@ -327,7 +327,7 @@ void Configure::moveDictItem(int index, bool down)
 {
     int newindex = down ? index + 1 : index - 1;
     if (newindex < 0 || newindex >= m_dictNodes.size()) {
-        g_log(LOG_ERROR, "{Configure} move to a invalid row(%d)\n", newindex);
+        g_sysLog(LOG_ERROR, "{Configure} move to a invalid row(%d)\n", newindex);
         return;
     }
 

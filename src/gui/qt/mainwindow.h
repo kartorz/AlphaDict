@@ -129,6 +129,8 @@ private slots:
 
     void on_resetSettingToolButton_clicked();
 
+    void on_spellInputLineEdit_editingFinished();
+
     void onTrayCwsEnable(bool checked);
     void onTrayCwsClipboard(bool checked);
     void onTrayCwsSelection(bool checked);

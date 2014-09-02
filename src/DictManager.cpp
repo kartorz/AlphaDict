@@ -124,7 +124,7 @@ bool DictManager::loadDict(bool more)
                 m_dictOpen[m_dictTotal].dict = dict;
                 m_dictOpen[m_dictTotal].dictId = iter - nodeVec.begin();
                 m_dictTotal++;
-                g_log(LOG_DEBUG,"DictManager::loadDict(%s)\n", iter->path.c_str());
+                g_sysLog(LOG_DEBUG,"DictManager::loadDict(%s)\n", iter->path.c_str());
                 goto EXIT;
             }
         }
@@ -139,7 +139,7 @@ void DictManager::reloadDict()
 {
     if (!m_bReload) {
         m_bReload = true;
-        g_log(LOG_DEBUG,"DictManager::reloadDict\n");
+        g_sysLog(LOG_DEBUG,"DictManager::reloadDict\n");
         TaskManager::getInstance()->addTask(new LoadDictTask(), 0);
     }
 }
@@ -187,7 +187,7 @@ void DictManager::lookup(const string& input, const int which, const int flags)
                 m_dictOpen[which].pending = "";
                 m_dictOpen[which].flag = flags;
                 TaskManager::getInstance()->addTask(m_dictOpen[which].task, 0);
-                //g_log(LOG_DEBUG,"lookup, flags (%d)\n", flags);
+                //g_sysLog(LOG_DEBUG,"lookup, flags (%d)\n", flags);
             }
         }
     }
