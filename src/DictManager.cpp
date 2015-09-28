@@ -23,8 +23,8 @@ LookupTask::LookupTask(const string& input, int id, DictManager* dmgr)
 void LookupTask::doWork()
 {
     DictItemList itemList;
-    m_dict->lookup(m_input, itemList);
-    m_dmgr->onAddLookupResult(m_id, itemList);
+    bool lookupResult = m_dict->lookup(m_input, itemList);
+    m_dmgr->onAddLookupResult(m_id, itemList, lookupResult);
 }
 
 void LookupTask::abort()
@@ -193,17 +193,20 @@ void DictManager::lookup(const string& input, const int which, const int flags)
     }
 }
 
-void DictManager::onAddLookupResult(int which, DictItemList& items)
+void DictManager::onAddLookupResult(int which, DictItemList& items, bool lookupResult)
 {
     MutexLock lock(m_cs);
-    
-    DictItemList* arg1 = new DictItemList();
-    *arg1 = items;
-    int did = m_dictOpen[which].dictId;
-    (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
-    int msgid = m_dictOpen[which].flag == 
-        QUERY_CAPWORD_FLAG ? MSG_SET_CAPWORD_DICTITEM : MSG_SET_DICTITEMS;
-    g_application.uiMessageQ()->push(msgid, -1, (void *)arg1); /* UI should delete arg1 */
+
+    if (m_dictOpen[which].flag  != QUERY_CAPWORD_FLAG  
+      || (m_dictOpen[which].flag  == QUERY_CAPWORD_FLAG && lookupResult)) {
+        DictItemList* arg1 = new DictItemList();
+        *arg1 = items;
+        int did = m_dictOpen[which].dictId;
+        (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
+        int msgid = m_dictOpen[which].flag == 
+            QUERY_CAPWORD_FLAG ? MSG_SET_CAPWORD_DICTITEM : MSG_SET_DICTITEMS;
+        g_application.uiMessageQ()->push(msgid, -1, (void *)arg1); /* UI should delete arg1 */
+    }
 
     m_dictOpen[which].task = NULL; /* TaskManager will delete this pointer */
     //printf("{onAddLookupResult} %u\n", Util::getTimeMS());

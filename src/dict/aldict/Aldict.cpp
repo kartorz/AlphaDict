@@ -53,7 +53,8 @@ bool Aldict::lookup(const string& word, DictItemList& itemList)
             return true;
         }else {
             iDictItem item;
-            item.expl = "Do you want to lookup:\n\n";
+
+            item.expl = "Do you want to lookup\n\n";
             for (int i=0; i<candidate.size(); i++) {
                 item.expl +=  candidate[i]->index;
                 item.expl += '\n';
@@ -64,9 +65,9 @@ bool Aldict::lookup(const string& word, DictItemList& itemList)
             return false;
         }
     }
-    iDictItem i;
-    itemList.push_back(i);
-	return false;
+    //iDictItem i;
+    //itemList.push_back(i);
+    return false;
 }
 
 string Aldict::identifier()

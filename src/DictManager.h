@@ -60,7 +60,7 @@ public:
     bool hasDict() { return m_dictTotal > 0;}
 
 private:
-    void onAddLookupResult(int which, DictItemList& items);
+    void onAddLookupResult(int which, DictItemList& items, bool lookupResult);
     bool loadDict(bool more=false);
     bool matchDict(const string& srcLan, const string& detLan);
     iDict* createHandleByDict(const string dictpath);

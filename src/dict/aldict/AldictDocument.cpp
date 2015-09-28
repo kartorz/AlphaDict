@@ -21,6 +21,7 @@
 
 #define INDEXARRY_LEN_MAX  256
 
+
 AldictDocument::AldictDocument():m_indexTree(NULL)
 {
 }
@@ -147,6 +148,7 @@ bool AldictDocument::lookup(const string& word, vector<struct aldict_dataitem>& 
     }
 
     lookupCandidate(lookupStat.currentNode, lookupStat.advance, candidate);
+    
     return false;
 }
 

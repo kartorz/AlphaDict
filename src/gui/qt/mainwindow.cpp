@@ -616,8 +616,13 @@ void MainWindow::onClipboardDataChanged()
             QString input = clipboard->text(QClipboard::Clipboard).trimmed();
             if (input != "") {
                 m_capword = input;
-                //m_capWordDialog->show();
-                g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+                std::string u8input = std::string(input.toUtf8().data());
+                if (Util::isValidInput(u8input)) {
+                    //m_capWordDialog->show();
+                    g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, u8input);
+                }
+            } else if (!m_capWordDialog->isHidden()) {
+                m_capWordDialog->close();
             }
         }
     }
@@ -631,7 +636,11 @@ void MainWindow::onClipboardSelectionChanged()
         QString input = clipboard->text(QClipboard::Selection).trimmed();
         if (input != "") {
             m_capword = input;
-            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
+            std::string u8input = std::string(input.toUtf8().data());
+            if (Util::isValidInput(u8input)) {
+                //m_capWordDialog->show();
+                g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, u8input);
+            }            
         } else if (!m_capWordDialog->isHidden()) {
             m_capWordDialog->close();
         }

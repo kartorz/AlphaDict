@@ -13,12 +13,14 @@ class Util
 {
 public:
     static unsigned int getTimeMS();
-
+    static unsigned long long getAbsTimeSeconds();
+    static string getDate();
     static bool isDirExist(const string& dir);
     static bool isFileExist(const string& filename);
     static bool copyFile(const string& from, const string& to);
     static void copyDir(const string& from, const string& to);
     static bool createDir(const string& path);
+    static string replaceSuffix(const string& path, const string suffix);
 
     static void currentDir(string& path);
     static void usrProfileDir(string& path);
@@ -26,6 +28,15 @@ public:
     static void tempDir(string& path);
     static void removeFileName(string& path);
     static void sleep(int ms/*milliseconds*/);
+
+    static bool isValidInput(string& str);
+    static bool isValidEnglishChar(char c);
+
+    static int stringToInt(string strInt);
+    static string intToString(int i);
+
+    // Replace /old/ with /new/ of the /ori/ up to /count/ /old/ occurs. 
+    //static string replaceString(string& ori, string old, string new, int count);
 };
 
 namespace util {

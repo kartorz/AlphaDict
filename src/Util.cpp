@@ -10,15 +10,18 @@
 #include <dirent.h>
 # endif
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 using namespace boost::filesystem;
 
 #include "alphadict.h"
 #include "string.h"
 #include "Util.h"
+#include "Configure.h"
 #ifdef WIN32
 #include "win32/WIN32Util.h"
 #endif
+
 
 unsigned int Util::getTimeMS()
 {
@@ -39,6 +42,20 @@ unsigned int Util::getTimeMS()
 	return(now_mstime - start_mstime);
 #endif
 }
+
+unsigned long long Util::getAbsTimeSeconds()
+{
+	struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec;
+}
+
+string Util::getDate()
+{
+    struct tm* dt = localtime(NULL);
+    return "";
+}
+
 
 bool Util::isDirExist(const string& dir)
 {
@@ -61,6 +78,12 @@ bool Util::isFileExist(const string& filename)
     if (S_IFREG & attr.st_mode)
         return true;
     return false;
+}
+
+string Util::replaceSuffix(const string& path, const string suffix)
+{
+    boost::filesystem::path p(path);
+    return p.replace_extension(suffix).c_str();
 }
 
 bool Util::createDir(const string& path)
@@ -193,6 +216,61 @@ void Util::sleep(int ms)
         usleep((ms%1000)*1000);
 #endif
 }
+
+
+bool Util::isValidInput(string& str)
+{
+    #define MAX_PHRASE_LEN  200
+    if (str.length() >  MAX_PHRASE_LEN || str.empty())
+        return false;
+
+    // Check English
+    if (isValidEnglishChar(str[0]))
+    {
+        for (int i=0; i<str.length(); i++) {
+            char c = str[i];
+            if (!(isValidEnglishChar(c) || c == ' '))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool Util::isValidEnglishChar(char c)
+{
+    if (c >= 'A' && c <= 'Z')
+        return true;
+
+    if (c >= 'a' && c <= 'z')
+        return true;
+
+    return false;
+}
+
+
+int Util::stringToInt(string strInt)
+{
+    //strtol
+    //atoi
+    return boost::lexical_cast<int>(strInt);
+}
+
+string Util::intToString(int i)
+{
+    //snprintf
+    //std::strstream
+    string ret;
+    std::stringstream ss;
+    ss << i;
+    ss >> ret;
+   return ret;
+}
+
+/*string Util::replaceString(string& ori, string old, string new, int count)
+{
+
+}*/
 
 namespace util {
 
