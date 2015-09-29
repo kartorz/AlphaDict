@@ -2,5 +2,13 @@
 *.o
 *.i
 *.d
+*.aldict
 AlConvert
 AlphaDict
+config.h
+config.log
+config.mak
+cscope.out
+.disk
+gui/qt/build-qt-Desktop-Debug
+gui/qt/pro

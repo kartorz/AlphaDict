@@ -1,0 +1,7 @@
+*.aldict
+*.pyc
+*.rar
+*.gz
+*.patch
+resource
+temp

@@ -10,7 +10,7 @@ FUN_LOCAL_DIRS = $(shell ls $(1) -lA | grep ^d  | awk '{print $$9}')
 
 include config.mak
 
-subdirs := convert lib dict gui
+subdirs := convert lib dict db gui
 incs := $(foreach dir, $(subdirs), $(dir)/Makefile.inc)
 include $(incs)
 
@@ -20,6 +20,7 @@ SRCS_ALPHADICT += main.cpp    \
              SpinLock.cpp     \
              ThdCond.cpp      \
              Thread.cpp       \
+             Configure.cpp    \
              Util.cpp         \
              CharUtil.cpp     \
              X11Util.cpp      \
@@ -27,12 +28,11 @@ SRCS_ALPHADICT += main.cpp    \
              SysMessager.cpp  \
              TaskManager.cpp  \
              DictManager.cpp  \
-             Configure.cpp    \
              VocabularyBook.cpp \
              Application.cpp  \
              $(SRCS_DICT-yes) \
-	         $(SRCS_GUI-yes)  \
-
+			 $(SRCS_GUI-yes)  \
+			 $(SRCS_DB-yes) \
 
 OBJS_TINYXML := $(SRCS_TINYXML:%.cpp=%.o)
 

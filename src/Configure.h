@@ -7,6 +7,8 @@
 #include <vector>
 #include <map>
 
+#include "SpinLock.h"
+
 using namespace std;
 using namespace tinyxml2;
 
@@ -90,7 +92,7 @@ public:
 
     vector<struct DictNode> m_dictNodes;
 
-    string getVBPath() { return m_homeDir+"/vbook.xml";}
+    string getVBPath() { return m_homeDir+"/vbook";}  // suffix is defined at db class.
 
 private:
     int  load(const string& xmlpath);

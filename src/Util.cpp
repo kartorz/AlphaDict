@@ -12,6 +12,7 @@
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 using namespace boost::filesystem;
 
 #include "alphadict.h"
@@ -52,8 +53,23 @@ unsigned long long Util::getAbsTimeSeconds()
 
 string Util::getDate()
 {
-    struct tm* dt = localtime(NULL);
-    return "";
+    time_t tm = time(NULL);
+    struct tm* dt = localtime(&tm);
+    string year = intToString(dt->tm_year + 1900);
+    string mon = intToString(dt->tm_mon + 1); // in the range 0 to 11.
+    string day = intToString(dt->tm_mday);    // in the range 1 to 31.
+
+    string dateformat = "YYYY-MM-DD";
+    string format = "YYYY";
+    boost::algorithm::replace_first(dateformat, format, year);
+    
+	format = "MM";
+    boost::algorithm::replace_first(dateformat, format, mon);
+
+	format = "DD";
+    boost::algorithm::replace_first(dateformat, format, day);
+
+    return dateformat;
 }
 
 
