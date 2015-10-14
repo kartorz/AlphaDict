@@ -13,6 +13,7 @@
 #endif
 
 #define AL_VERSION  "1.2"
+#define NPOS  -1
 
 #define AL_ASSERT(cond, msg)  \
 do { \

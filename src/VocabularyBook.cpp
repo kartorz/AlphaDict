@@ -10,14 +10,13 @@
 #include "db/DBUtil.h"
 
 // argn: reserve for use in the future.
-const string VocabularyBook::s_tblWordColumnName[] = {"word",             "expl", "count",   "complexity", "date", "date_seconds", "arg1", "arg2", "arg3"};
-const string VocabularyBook::s_tblWordColumnType[] = {"TEXT PRIMARY KEY", "TEXT", "INTEGER", "INTEGER",    "TEXT", "INTEGER",      "TEXT", "TEXT", "TEXT"};
-const int VocabularyBook::s_tblWordRowLen = 9;
+const string VocabularyBook::s_tblWordColumnName[] = {"word",             "expl", "count",   "complexity", "date", "arg1", "arg2", "arg3"};
+const string VocabularyBook::s_tblWordColumnType[] = {"TEXT PRIMARY KEY", "TEXT", "INTEGER", "INTEGER",    "TEXT", "TEXT", "TEXT", "TEXT"};
+const int VocabularyBook::s_tblWordRowLen = 8;
 const string VocabularyBook::s_tblWordName = "tbl_word";
 
 VocabularyBook::VocabularyBook()
 {
-//    m_total = 5000;
     m_db = DBFactory::create();
 }
 
@@ -29,13 +28,15 @@ VocabularyBook::VocabularyBook(const string&  bookfile)
 
 bool VocabularyBook::load(const string& bookfile)
 {
+    m_total = VB_CAPACITY;
+
     string dbfile = bookfile + m_db->suffix();    
     if (Util::isFileExist(dbfile)) {
-        m_db->open(dbfile);  // will create db file.
+        m_db->open(dbfile);
         loadDB(dbfile);
     } else {
-        m_db->open(dbfile);  // create db file
-        m_db->createTable(s_tblWordName, s_tblWordColumnName, s_tblWordColumnName, s_tblWordRowLen);
+        m_db->open(dbfile);  // will create db file.
+        m_db->createTable(s_tblWordName, s_tblWordColumnName, s_tblWordColumnType, s_tblWordRowLen);
 
         loadXml(bookfile + ".xml"); // Used to use xml to save data.
     }
@@ -45,11 +46,13 @@ bool VocabularyBook::loadDB(const string& dbfile)
 {
     vector< vector<string> > table = m_db->queryTable(s_tblWordName);
     for (int row = 0; row < table.size(); row++) {
+        //g_sysLog(LOG_DEBUG, "[loadDB]: (%s,%s,%s,%s)\n", table[row][0].c_str(), table[row][1].c_str(), table[row][2].c_str(), table[row][3].c_str());
         struct VBookItem item;
         item.word = table[row][0];
         item.expl = table[row][1];
         item.count = Util::stringToInt(table[row][2]);
-        item.date = table[row][3];
+        item.complexity = Util::stringToInt(table[row][3]);
+        item.date = table[row][4];
 
         m_wdlist.push_back(item);
     }
@@ -89,7 +92,7 @@ bool VocabularyBook::loadXml(const string& bookfile)
         if (!wordExist(word)) {
             add(word, expl);
         } else {
-            updateCount(word, getCount(word) + 1);   
+            incCount(word);
         }
 
 		wordElement = wordElement->NextSiblingElement();
@@ -108,6 +111,9 @@ bool VocabularyBook::wordExist(const string& word)
 bool VocabularyBook::add(const string& word)
 {
     if (!wordExist(word)) {
+        if (m_wdlist.size() >= m_total)
+            return false;
+
         DictItemList itemList;
         DictManager::getReference().lookup(word, 0, itemList);
 
@@ -118,27 +124,40 @@ bool VocabularyBook::add(const string& word)
         }
 //    if (expl == "")
 //        return false;
-        add(word, expl);
-    } else {
-        updateCount(word, getCount(word) + 1);
+        return add(word, expl);
     }
-    return false;
+ 
+    incCount(word);
+    return true;
 }
 
 bool VocabularyBook::add(const string& word, const string& expl)
 {
     string date =  Util::getDate();
-    string val[s_tblWordRowLen] = {word, expl, "1", date};
-    m_db->insertTable(s_tblWordName, s_tblWordColumnName, val, s_tblWordRowLen);
+    string val[s_tblWordRowLen] = {word, expl, "1", "1", date};
+    bool ret = m_db->insertTable(s_tblWordName, s_tblWordColumnName, val, s_tblWordRowLen);
 
     struct VBookItem item;
     item.word = word;
     item.expl = expl;
     item.count = 1;
+    item.complexity = 1;
     item.date = date;
 
     m_wdlist.push_back(item);
+    return ret;
 }
+
+void VocabularyBook::incCount(const string& word)
+{
+    int row = findRow(word);
+    if (row != NPOS) {
+        ++m_wdlist[row].count;
+        updateCount(word, m_wdlist[row].count);
+    } else {
+        updateCount(word, getCount(word) + 1);
+    }
+ }
 
 int VocabularyBook::getCount(const string& word)
 {
@@ -163,28 +182,37 @@ void VocabularyBook::updateCount(const string& word,  int count)
     m_db->updateTable(s_tblWordName, col, val, 1, cond);
 }
 
+void VocabularyBook::setComplexity(const int row, int cmplx)
+{
+    if (row < m_wdlist.size()) {
+        updateComplexity(m_wdlist[row].word, cmplx);
+        m_wdlist[row].complexity = cmplx;
+    }
+}
+
+void VocabularyBook::updateComplexity(const string& word, int cmplx)
+{
+    string col[] = {"complexity"};
+    string val[] = {Util::intToString(cmplx)};
+
+    string cond = "WHERE word == \'?\'";
+    cond = DBUtil::addParam(cond, word);
+
+    m_db->updateTable(s_tblWordName, col, val, 1, cond);
+}
+
 void VocabularyBook::remove(const int row)
 {
-/*    XMLElement* root = m_doc.RootElement();
-    XMLElement* itemElement = root->FirstChildElement();
-    ELEMENT_ADVANCE(itemElement, row);
-
-    root->DeleteChild(itemElement);*/
-
-    list<struct VBookItem>::iterator iter = m_wdlist.begin();
-    ITER_ADVANCE(iter, row);
-    m_wdlist.erase(iter);
-//    m_doc.SaveFile(m_bookpath.c_str());
+    if (row < m_wdlist.size()) {
+        m_db->deleteTable(s_tblWordName, "word", m_wdlist[row].word);
+        m_wdlist.erase(m_wdlist.begin() + row);
+    }
 }
 
 void VocabularyBook::clear()
 {
     m_wdlist.clear();
-/*    XMLElement* root = m_doc.RootElement();
-    if (root) {
-        root->DeleteChildren();
-        m_doc.SaveFile(m_bookpath.c_str());
-    }*/
+    m_db->deleteTable(s_tblWordName);
 }
 
 int VocabularyBook::size() const
@@ -194,17 +222,49 @@ int VocabularyBook::size() const
 
 string VocabularyBook::getWord(const int row) const
 {
+    /*
     list<struct VBookItem>::iterator iter = m_wdlist.begin();
     ITER_ADVANCE(iter, row);
     return (*iter).word;
+    */
+    return (row < m_wdlist.size()) ?  m_wdlist[row].word : "";
 }
 
 string VocabularyBook::getExpl(const int row) const
 {
-    if ( row < m_wdlist.size()) {
-        list<struct VBookItem>::iterator iter = m_wdlist.begin();
-        ITER_ADVANCE(iter, row);
-        return (*iter).expl;
+    return (row < m_wdlist.size()) ?  m_wdlist[row].expl : "";
+}
+
+VBookItem VocabularyBook::getItem(const int row) const
+{
+    VBookItem ret;
+    return  (row < m_wdlist.size()) ?  m_wdlist[row] : ret;
+}
+
+VBookItem VocabularyBook::getItem(const string& word) const
+{
+    string cond = "WHERE word == \'?\'";
+    cond = DBUtil::addParam(cond, word);
+    vector< vector<string> > table = m_db->queryTable(s_tblWordName, s_tblWordColumnName, s_tblWordRowLen, cond);
+
+    struct VBookItem item;
+    if (table.size() == 1) {
+        item.word = table[0][0];
+        item.expl = table[0][1];
+        item.count = Util::stringToInt(table[0][2]);
+        item.complexity = Util::stringToInt(table[0][3]);
+        item.date = table[0][4];
     }
-    return "";
+    return item;
+}
+
+int VocabularyBook::findRow(const string& word)
+{
+    vector<struct VBookItem>::iterator iter = m_wdlist.begin();
+    for (int i = 0; i < m_wdlist.size(); i++, iter++) {
+        if ((*iter).word == word)
+            return i;
+    }
+
+    return NPOS; 
 }

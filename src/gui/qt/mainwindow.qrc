@@ -17,5 +17,9 @@
         <file>res/appicon.png</file>
         <file>res/app.ico</file>
         <file>res/help.png</file>
+        <file>res/ok.png</file>
+        <file>res/error.png</file>
+        <file>res/down-48*48.png</file>
+        <file>res/up-48*48.png</file>
     </qresource>
 </RCC>

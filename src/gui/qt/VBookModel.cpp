@@ -3,7 +3,7 @@
 
 #define LIST_SIZE_MAX 1000
 
-VBookModel::VBookModel(const string& vbookpath):m_examIndex(0),m_currentRow(0)
+VBookModel::VBookModel(const string& vbookpath):m_currentRow(0),m_mode(StudyMode),m_score(0)
 {
     m_vocabularyBook = new VocabularyBook(vbookpath);
 }
@@ -18,6 +18,16 @@ int VBookModel::rowCount(const QModelIndex &parent) const
     return m_vocabularyBook->size();
 }
 
+int VBookModel::columnCount(const QModelIndex &parent) const
+{
+    return m_vocabularyBook->colummCount();
+}
+
+QModelIndex VBookModel::curIndex() const
+{
+    return index(m_currentRow, 0);
+}
+
 QVariant VBookModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -27,7 +37,34 @@ QVariant VBookModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (role == Qt::DisplayRole) {
-        return QString::fromUtf8(m_vocabularyBook->getWord(index.row()).c_str());
+        //printf("%d, %d\n", index.row(), index.column());
+        //return QString::fromUtf8(m_vocabularyBook->getItem(index.row()).c_str());
+        VBookItem item = m_vocabularyBook->getItem(index.row());
+
+        switch (index.column()) {
+            case 0:
+                //printf("%s\n", item.word.c_str());
+                if (m_mode == StudyMode || m_examResult[index.row()]) {
+                    return QString::fromUtf8(item.word.c_str());
+                }
+
+                return QString("  -------------------- ");
+
+            case 1: {
+                int cmplxty = (item.complexity + item.count) / 3;
+                if (cmplxty <= 0) 
+                    cmplxty = 1;
+                else if (cmplxty > 10)
+                    cmplxty = 10;
+
+                QString asterisk;
+                for (int i = 0; i < cmplxty; i++)  asterisk += "*";
+                return asterisk;
+            }
+            case 2:
+                return QString::fromUtf8(item.date.c_str());
+        }
+        return QVariant();
      } else {
         return QVariant();
     }
@@ -38,10 +75,12 @@ QVariant VBookModel::headerData(int section, Qt::Orientation orientation, int ro
      if (role != Qt::DisplayRole)
          return QVariant();
 
-     if (orientation == Qt::Horizontal)
-         return QString("Column %1").arg(section);
+     if (orientation == Qt::Horizontal) {
+         return QVariant();
+         //return QString("Column %1").arg(section);
+     }
      else
-         return QString("Row %1").arg(section);
+         return QString("%1").arg(section);
 }
 
 bool VBookModel::add(const QString& word)
@@ -78,12 +117,48 @@ QString VBookModel::expl(const int row) const
     return QString::fromUtf8(m_vocabularyBook->getExpl(row).c_str());
 }
 
-QString VBookModel::curExamExpl() const
+void VBookModel::setMode(enum VBookMode mode)
 {
-    return expl(m_currentRow);
+    beginResetModel();
+
+    m_mode = mode;
+    if (mode == ExamMode) {
+        m_examResult.assign(m_vocabularyBook->size(), false);
+    } else {
+        m_examResult.clear();
+    }
+
+    endResetModel();
 }
 
-bool VBookModel::nextExamExpl(QString& text)
+QModelIndex VBookModel::moveUp()
+{
+    if (m_currentRow > 0) {
+        --m_currentRow;
+    }
+    return curIndex();
+}
+
+QModelIndex VBookModel::moveDown()
+{
+    if (m_currentRow < m_vocabularyBook->size()-1) {
+        ++m_currentRow;
+    }
+    return curIndex();
+}
+
+QModelIndex VBookModel::moveToFirst()
+{
+    m_currentRow = 0;
+    return index(0, 0);
+}
+
+/*QString VBookModel::curExamExpl() const
+{
+    return expl(m_currentRow);
+}*/
+
+/*bool VBookModel::nextExamExpl(QString& text)
 {
     if (m_examIndex < m_vocabularyBook->size()-1) {
         text = expl(++m_examIndex);
@@ -99,12 +174,33 @@ bool VBookModel::preExamExpl(QString& text)
         return true;
     }    
     return false;
-}
+}*/
 
-bool VBookModel::testInput(const QString& input, int& score)
+bool VBookModel::study(const QString& input)
 {
-    string result = m_vocabularyBook->getWord(m_examIndex);
+    string result = m_vocabularyBook->getWord(m_currentRow);
     if (result.compare(input.toUtf8().data()) == 0)
         return true;
+    return false;
+}
+
+bool VBookModel::exam(const QString& input, QString& score)
+{
+    if (m_mode == ExamMode) {        
+        VBookItem item = m_vocabularyBook->getItem(m_currentRow);
+        string word = item.word;
+        if (word.compare(input.toUtf8().data()) == 0) {
+            if (m_examResult[m_currentRow] == false) {
+                ++m_score;
+                m_examResult[m_currentRow] = true;
+                m_vocabularyBook->setComplexity(m_currentRow, --item.complexity);
+            }
+            score = QString("%1 / %2").arg(m_score).arg(m_vocabularyBook->size());
+            return true;
+        }
+        
+        m_vocabularyBook->setComplexity(m_currentRow, ++item.complexity);
+        score = QString("%1 / %2").arg(m_score).arg(m_vocabularyBook->size());
+    }
     return false;
 }

@@ -78,8 +78,6 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
-    void on_vocabularyTabWidget_currentChanged(int index);
-
     void on_vbdelToolButton_clicked();
 
     void on_vbclearToolButton_clicked();
@@ -88,12 +86,15 @@ private slots:
 
     void on_vbnextItemTlBtn_clicked();
 
-    void on_vbookListView_clicked(const QModelIndex &index);
+    void on_vbModeComboBox_currentIndexChanged(int index);
 
-    void on_vbookListView_activated(const QModelIndex &index);
+    void on_vbookTableView_clicked(const QModelIndex &index);
+
+    void on_vbookTableView_activated(const QModelIndex &index);
     
     void on_vbInput_editingFinished();
-    //void on_vocabularyTabWidget_currentChanged(int index);
+
+    void on_vbExplHideradioButton_clicked(bool checked);
 
     void onAppExit();
 
@@ -129,7 +130,6 @@ private slots:
 
     void on_resetSettingToolButton_clicked();
 
-    void on_spellInputLineEdit_editingFinished();
 
     void onTrayCwsEnable(bool checked);
     void onTrayCwsClipboard(bool checked);
@@ -149,6 +149,8 @@ private:
     int  capwordMode();
     void readHelpText(QString &help);
 
+    inline void showVBookExpl(int row);
+
     QMenu* creatTrayContextMenu();
     QAction* m_trayCwsEnableAct;
     QAction* m_trayCwsSelectionAct;
@@ -158,6 +160,7 @@ private:
     CapWordDialog* m_capWordDialog;
     DictIndexModel* m_dictIndexModel;
     VBookModel*     m_vbookModel;
+    bool m_bHideVBookExpl;
 
     Ui::MainWindow *ui;
     QSystemTrayIcon* m_systray;

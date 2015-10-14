@@ -23,14 +23,13 @@
 #include <QtWidgets/QListView>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QPlainTextEdit>
-#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -59,23 +58,16 @@ public:
     QToolButton *netdictButton;
     QToolButton *queryButton;
     QWidget *vocabularyTab;
-    QTabWidget *vocabularyTabWidget;
-    QWidget *listModeTable;
+    QLineEdit *vbInput;
+    QRadioButton *vbExplHideradioButton;
+    QTableView *vbookTableView;
     QToolButton *vbdelToolButton;
     QToolButton *vbclearToolButton;
-    QPlainTextEdit *vbexplTextEdit;
-    QListView *vbookListView;
-    QLabel *label_3;
-    QLineEdit *spellInputLineEdit;
-    QWidget *vbModeTab;
+    QLabel *vbExplLabel;
+    QComboBox *vbModeComboBox;
     QToolButton *vbpreItemTlBtn;
     QToolButton *vbnextItemTlBtn;
-    QLineEdit *vbInput;
-    QLabel *vbScoreLabel;
-    QScrollArea *scrollArea;
-    QWidget *scrollAreaWidgetContents;
-    QVBoxLayout *verticalLayout;
-    QLabel *vbExplLabel;
+    QLabel *vbExamScoreLabel;
     QWidget *settingTab;
     QTabWidget *settingTabWidget;
     QWidget *tab;
@@ -252,89 +244,87 @@ public:
         tabWidget->addTab(dictTab, QString());
         vocabularyTab = new QWidget();
         vocabularyTab->setObjectName(QStringLiteral("vocabularyTab"));
-        vocabularyTabWidget = new QTabWidget(vocabularyTab);
-        vocabularyTabWidget->setObjectName(QStringLiteral("vocabularyTabWidget"));
-        vocabularyTabWidget->setGeometry(QRect(-1, -3, 717, 422));
-        vocabularyTabWidget->setFocusPolicy(Qt::NoFocus);
-        vocabularyTabWidget->setTabPosition(QTabWidget::South);
-        listModeTable = new QWidget();
-        listModeTable->setObjectName(QStringLiteral("listModeTable"));
-        vbdelToolButton = new QToolButton(listModeTable);
+        vbInput = new QLineEdit(vocabularyTab);
+        vbInput->setObjectName(QStringLiteral("vbInput"));
+        vbInput->setGeometry(QRect(179, 30, 290, 32));
+        vbInput->setReadOnly(false);
+        vbExplHideradioButton = new QRadioButton(vocabularyTab);
+        vbExplHideradioButton->setObjectName(QStringLiteral("vbExplHideradioButton"));
+        vbExplHideradioButton->setGeometry(QRect(600, 30, 81, 23));
+        vbookTableView = new QTableView(vocabularyTab);
+        vbookTableView->setObjectName(QStringLiteral("vbookTableView"));
+        vbookTableView->setGeometry(QRect(70, 80, 460, 320));
+        QPalette palette;
+        QBrush brush(QColor(0, 0, 255, 255));
+        brush.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Active, QPalette::Text, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::Text, brush);
+        QBrush brush1(QColor(124, 120, 119, 255));
+        brush1.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Disabled, QPalette::Text, brush1);
+        vbookTableView->setPalette(palette);
+        QFont font;
+        font.setFamily(QStringLiteral("Sans Serif"));
+        vbookTableView->setFont(font);
+        vbookTableView->setFocusPolicy(Qt::TabFocus);
+        vbookTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        vbookTableView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+        vbookTableView->setSelectionMode(QAbstractItemView::SingleSelection);
+        vbookTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+        vbookTableView->horizontalHeader()->setVisible(false);
+        vbookTableView->horizontalHeader()->setHighlightSections(true);
+        vbookTableView->horizontalHeader()->setProperty("showSortIndicator", QVariant(false));
+        vbookTableView->verticalHeader()->setDefaultSectionSize(50);
+        vbookTableView->verticalHeader()->setHighlightSections(false);
+        vbdelToolButton = new QToolButton(vocabularyTab);
         vbdelToolButton->setObjectName(QStringLiteral("vbdelToolButton"));
-        vbdelToolButton->setGeometry(QRect(50, 340, 32, 32));
+        vbdelToolButton->setGeometry(QRect(20, 110, 32, 32));
         QIcon icon11;
         icon11.addFile(QStringLiteral(":/res/remove.png"), QSize(), QIcon::Normal, QIcon::Off);
         vbdelToolButton->setIcon(icon11);
         vbdelToolButton->setIconSize(QSize(32, 32));
         vbdelToolButton->setAutoRaise(true);
-        vbclearToolButton = new QToolButton(listModeTable);
+        vbclearToolButton = new QToolButton(vocabularyTab);
         vbclearToolButton->setObjectName(QStringLiteral("vbclearToolButton"));
-        vbclearToolButton->setGeometry(QRect(175, 340, 32, 32));
+        vbclearToolButton->setGeometry(QRect(20, 160, 32, 32));
         QIcon icon12;
         icon12.addFile(QStringLiteral(":/res/clear_all.png"), QSize(), QIcon::Normal, QIcon::Off);
         vbclearToolButton->setIcon(icon12);
         vbclearToolButton->setIconSize(QSize(32, 32));
         vbclearToolButton->setAutoRaise(true);
-        vbexplTextEdit = new QPlainTextEdit(listModeTable);
-        vbexplTextEdit->setObjectName(QStringLiteral("vbexplTextEdit"));
-        vbexplTextEdit->setGeometry(QRect(320, 10, 371, 261));
-        vbexplTextEdit->setUndoRedoEnabled(false);
-        vbexplTextEdit->setReadOnly(true);
-        vbookListView = new QListView(listModeTable);
-        vbookListView->setObjectName(QStringLiteral("vbookListView"));
-        vbookListView->setGeometry(QRect(10, 10, 251, 321));
-        label_3 = new QLabel(listModeTable);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(320, 310, 41, 17));
-        spellInputLineEdit = new QLineEdit(listModeTable);
-        spellInputLineEdit->setObjectName(QStringLiteral("spellInputLineEdit"));
-        spellInputLineEdit->setGeometry(QRect(370, 299, 321, 32));
-        spellInputLineEdit->setReadOnly(false);
-        vocabularyTabWidget->addTab(listModeTable, QString());
-        vbModeTab = new QWidget();
-        vbModeTab->setObjectName(QStringLiteral("vbModeTab"));
-        vbpreItemTlBtn = new QToolButton(vbModeTab);
-        vbpreItemTlBtn->setObjectName(QStringLiteral("vbpreItemTlBtn"));
-        vbpreItemTlBtn->setGeometry(QRect(109, 187, 24, 52));
-        vbpreItemTlBtn->setFocusPolicy(Qt::NoFocus);
-        vbpreItemTlBtn->setIcon(icon5);
-        vbpreItemTlBtn->setAutoRaise(false);
-        vbnextItemTlBtn = new QToolButton(vbModeTab);
-        vbnextItemTlBtn->setObjectName(QStringLiteral("vbnextItemTlBtn"));
-        vbnextItemTlBtn->setGeometry(QRect(541, 187, 24, 52));
-        vbnextItemTlBtn->setFocusPolicy(Qt::NoFocus);
-        vbnextItemTlBtn->setIcon(icon6);
-        vbnextItemTlBtn->setAutoRaise(false);
-        vbInput = new QLineEdit(vbModeTab);
-        vbInput->setObjectName(QStringLiteral("vbInput"));
-        vbInput->setGeometry(QRect(200, 39, 270, 27));
-        vbInput->setFocusPolicy(Qt::TabFocus);
-        vbScoreLabel = new QLabel(vbModeTab);
-        vbScoreLabel->setObjectName(QStringLiteral("vbScoreLabel"));
-        vbScoreLabel->setGeometry(QRect(520, 50, 67, 17));
-        scrollArea = new QScrollArea(vbModeTab);
-        scrollArea->setObjectName(QStringLiteral("scrollArea"));
-        scrollArea->setGeometry(QRect(160, 90, 350, 250));
-        scrollArea->setLineWidth(0);
-        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollArea->setWidgetResizable(true);
-        scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 348, 248));
-        verticalLayout = new QVBoxLayout(scrollAreaWidgetContents);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        vbExplLabel = new QLabel(scrollAreaWidgetContents);
+        vbExplLabel = new QLabel(vocabularyTab);
         vbExplLabel->setObjectName(QStringLiteral("vbExplLabel"));
-        vbExplLabel->setTextFormat(Qt::PlainText);
+        vbExplLabel->setGeometry(QRect(538, 80, 167, 320));
+        QPalette palette1;
+        palette1.setBrush(QPalette::Active, QPalette::Text, brush);
+        palette1.setBrush(QPalette::Inactive, QPalette::Text, brush);
+        palette1.setBrush(QPalette::Disabled, QPalette::Text, brush1);
+        vbExplLabel->setPalette(palette1);
+        vbExplLabel->setFont(font);
+        vbExplLabel->setScaledContents(false);
         vbExplLabel->setWordWrap(true);
-
-        verticalLayout->addWidget(vbExplLabel);
-
-        scrollArea->setWidget(scrollAreaWidgetContents);
-        vocabularyTabWidget->addTab(vbModeTab, QString());
+        vbModeComboBox = new QComboBox(vocabularyTab);
+        vbModeComboBox->setObjectName(QStringLiteral("vbModeComboBox"));
+        vbModeComboBox->setGeometry(QRect(74, 30, 81, 32));
+        vbpreItemTlBtn = new QToolButton(vocabularyTab);
+        vbpreItemTlBtn->setObjectName(QStringLiteral("vbpreItemTlBtn"));
+        vbpreItemTlBtn->setGeometry(QRect(17, 210, 38, 38));
+        QIcon icon13;
+        icon13.addFile(QStringLiteral(":/res/up-48*48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        vbpreItemTlBtn->setIcon(icon13);
+        vbpreItemTlBtn->setIconSize(QSize(48, 48));
+        vbpreItemTlBtn->setAutoRaise(true);
+        vbnextItemTlBtn = new QToolButton(vocabularyTab);
+        vbnextItemTlBtn->setObjectName(QStringLiteral("vbnextItemTlBtn"));
+        vbnextItemTlBtn->setGeometry(QRect(18, 266, 38, 38));
+        QIcon icon14;
+        icon14.addFile(QStringLiteral(":/res/down-48*48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        vbnextItemTlBtn->setIcon(icon14);
+        vbnextItemTlBtn->setIconSize(QSize(48, 48));
+        vbnextItemTlBtn->setAutoRaise(true);
+        vbExamScoreLabel = new QLabel(vocabularyTab);
+        vbExamScoreLabel->setObjectName(QStringLiteral("vbExamScoreLabel"));
+        vbExamScoreLabel->setGeometry(QRect(495, 33, 86, 25));
         tabWidget->addTab(vocabularyTab, QString());
         settingTab = new QWidget();
         settingTab->setObjectName(QStringLiteral("settingTab"));
@@ -455,18 +445,18 @@ public:
         dictDownToolButton->setObjectName(QStringLiteral("dictDownToolButton"));
         dictDownToolButton->setGeometry(QRect(185, 329, 59, 30));
         dictDownToolButton->setFocusPolicy(Qt::ClickFocus);
-        QIcon icon13;
-        icon13.addFile(QStringLiteral(":/res/down.png"), QSize(), QIcon::Normal, QIcon::Off);
-        dictDownToolButton->setIcon(icon13);
+        QIcon icon15;
+        icon15.addFile(QStringLiteral(":/res/down.png"), QSize(), QIcon::Normal, QIcon::Off);
+        dictDownToolButton->setIcon(icon15);
         dictDownToolButton->setIconSize(QSize(32, 32));
         dictDownToolButton->setAutoRaise(false);
         dictUpToolButton = new QToolButton(tab_2);
         dictUpToolButton->setObjectName(QStringLiteral("dictUpToolButton"));
         dictUpToolButton->setGeometry(QRect(49, 329, 59, 30));
         dictUpToolButton->setFocusPolicy(Qt::ClickFocus);
-        QIcon icon14;
-        icon14.addFile(QStringLiteral(":/res/up.png"), QSize(), QIcon::Normal, QIcon::Off);
-        dictUpToolButton->setIcon(icon14);
+        QIcon icon16;
+        icon16.addFile(QStringLiteral(":/res/up.png"), QSize(), QIcon::Normal, QIcon::Off);
+        dictUpToolButton->setIcon(icon16);
         dictUpToolButton->setIconSize(QSize(32, 32));
         dictUpToolButton->setAutoRaise(false);
         settingTabWidget->addTab(tab_2, QString());
@@ -497,7 +487,6 @@ public:
         retranslateUi(MainWindow);
 
         tabWidget->setCurrentIndex(1);
-        vocabularyTabWidget->setCurrentIndex(0);
         settingTabWidget->setCurrentIndex(0);
 
 
@@ -546,31 +535,35 @@ public:
 #ifndef QT_NO_TOOLTIP
         saveButton->setToolTip(QApplication::translate("MainWindow", "Add to vocabulary book", 0));
 #endif // QT_NO_TOOLTIP
-        saveButton->setText(QApplication::translate("MainWindow", "...", 0));
+        saveButton->setText(QString());
 #ifndef QT_NO_TOOLTIP
         netdictButton->setToolTip(QApplication::translate("MainWindow", "No action", 0));
 #endif // QT_NO_TOOLTIP
-        netdictButton->setText(QApplication::translate("MainWindow", "...", 0));
+        netdictButton->setText(QString());
 #ifndef QT_NO_TOOLTIP
         queryButton->setToolTip(QApplication::translate("MainWindow", "Lookup", 0));
 #endif // QT_NO_TOOLTIP
-        queryButton->setText(QApplication::translate("MainWindow", "...", 0));
+        queryButton->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(dictTab), QApplication::translate("MainWindow", "Dictionary", 0));
+        vbExplHideradioButton->setText(QApplication::translate("MainWindow", "Hide", 0));
 #ifndef QT_NO_TOOLTIP
         vbdelToolButton->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Delete a item</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        vbdelToolButton->setText(QApplication::translate("MainWindow", "...", 0));
+        vbdelToolButton->setText(QString());
 #ifndef QT_NO_TOOLTIP
         vbclearToolButton->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Delete all items</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        vbclearToolButton->setText(QApplication::translate("MainWindow", "...", 0));
-        label_3->setText(QApplication::translate("MainWindow", "Spell", 0));
-        vocabularyTabWidget->setTabText(vocabularyTabWidget->indexOf(listModeTable), QApplication::translate("MainWindow", "List", 0));
-        vbpreItemTlBtn->setText(QApplication::translate("MainWindow", "...", 0));
-        vbnextItemTlBtn->setText(QApplication::translate("MainWindow", "...", 0));
-        vbScoreLabel->setText(QString());
+        vbclearToolButton->setText(QString());
         vbExplLabel->setText(QString());
-        vocabularyTabWidget->setTabText(vocabularyTabWidget->indexOf(vbModeTab), QApplication::translate("MainWindow", "Exam", 0));
+#ifndef QT_NO_TOOLTIP
+        vbpreItemTlBtn->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Move  up a  item</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        vbpreItemTlBtn->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        vbnextItemTlBtn->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Move down a item</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        vbnextItemTlBtn->setText(QString());
+        vbExamScoreLabel->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(vocabularyTab), QApplication::translate("MainWindow", "VocabularyBook", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_3->setToolTip(QString());

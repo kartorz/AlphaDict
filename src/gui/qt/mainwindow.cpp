@@ -8,6 +8,7 @@
 #include <QtCore/QEvent>
 #include <QtGui/QCursor>
 #include <QtGui/QFontDatabase> 
+#include <QtGui/QtEvents>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -32,7 +33,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_cwdEnableTemp(true)
+    m_cwdEnableTemp(true),
+    m_bHideVBookExpl(false)
 {
     ui->setupUi(this);
     //ui->tabWidget->setTabsClosable(true);
@@ -53,7 +55,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->indexListView->setModel(m_dictIndexModel);
 
     m_vbookModel = new VBookModel(m_config->getVBPath());
-    ui->vbookListView->setModel(m_vbookModel);
+    ui->vbookTableView->setModel(m_vbookModel);
+    int columnWidth[] = {250,100,82};
+    for (int i = 0; i < 3; i++)  ui->vbookTableView->setColumnWidth(i,columnWidth[i]);
 
     m_messager = new QtMessager(this, m_dictIndexModel, g_application.uiMessageQ());
     m_messager->start();
@@ -440,11 +444,18 @@ void MainWindow::onActionVcbularyPageAdded()
 {
     int inx = ui->tabWidget->indexOf(ui->vocabularyTab);
     if (inx == -1) {
-        ui->vbexplTextEdit->setPlainText("");
-        ui->vbExplLabel->setText(m_vbookModel->curExamExpl());
+        ui->vbExplLabel->setText("");
+        ui->vbExplLabel->setText(m_vbookModel->expl(m_vbookModel->getCurrentRow()));
+        
+        //ui->vbExplLabel->setText("");
+        //ui->vbExplLabel->setText(m_vbookModel->curExamExpl());
+        ui->vbModeComboBox->addItem(tr("study"));
+        ui->vbModeComboBox->addItem(tr("exam"));
+
         //ui->vbScoreLabel->setText("0");
         //QIcon icon;
         //icon.addFile(QStringLiteral(":/res/vocabulary.png"), QSize(), QIcon::Normal, QIcon::Off);
+        //ui->vbookTableView->
         inx = ui->tabWidget->addTab(ui->vocabularyTab, QApplication::translate("MainWindow", "VocabulayBook", 0));
         ui->tabWidget->setCurrentIndex(inx);
     } else {
@@ -453,6 +464,8 @@ void MainWindow::onActionVcbularyPageAdded()
         else
             ui->tabWidget->setCurrentIndex(inx);
     }
+
+    ui->vbookTableView->setCurrentIndex(m_vbookModel->curIndex());
 }
 
 void MainWindow::onActionHelpPageAdded()
@@ -463,8 +476,8 @@ void MainWindow::onActionHelpPageAdded()
             QString help;
             m_initHelpPage = true;
             readHelpText(help);
-            ui->helpTextEdit->setPlainText("");
-            ui->helpTextEdit->setPlainText(help);
+            ui->helpTextEdit->setText("");
+            ui->helpTextEdit->setText(help);
         }
         inx = ui->tabWidget->addTab(ui->helpTab, QApplication::translate("MainWindow", "Help", 0));
         ui->tabWidget->setCurrentIndex(inx);
@@ -502,81 +515,117 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         g_application.sysMessageQ()->push(MSG_RELOAD_DICT, -1, -1);
 }
 
-void MainWindow::on_vocabularyTabWidget_currentChanged(int index)
+void MainWindow::showVBookExpl(int row)
 {
-    if (index == 1) {
-        ui->vbexplTextEdit->setPlainText("");
-        ui->vbExplLabel->setText(m_vbookModel->curExamExpl());
+    if (m_bHideVBookExpl == true) {
+         ui->vbExplLabel->setText("");
+    } else {
+         ui->vbExplLabel->setText(m_vbookModel->expl(row));
     }
+}
+
+void MainWindow::on_vbExplHideradioButton_clicked(bool checked)
+{
+    m_bHideVBookExpl = checked;
+    showVBookExpl(m_vbookModel->getCurrentRow());
 }
 
 void MainWindow::on_vbdelToolButton_clicked()
 {
-    int currentIndex = ui->vbookListView->currentIndex().row();
+    int currentIndex = ui->vbookTableView->currentIndex().row();
     if (currentIndex != -1) {
         QModelIndex current = m_vbookModel->remove(currentIndex);
-        ui->vbexplTextEdit->setPlainText("");
-        ui->vbookListView->setCurrentIndex(current);
+        showVBookExpl(current.row());
+        ui->vbookTableView->setCurrentIndex(current);
     }
 }
 
 void MainWindow::on_vbclearToolButton_clicked()
 {
-    ui->vbexplTextEdit->setPlainText("");
+    ui->vbExplLabel->setText("");
     m_vbookModel->clear();
+}
+
+void MainWindow::on_vbpreItemTlBtn_clicked()
+{
+    QModelIndex inx = m_vbookModel->moveUp();
+    showVBookExpl(inx.row());
+    ui->vbookTableView->setCurrentIndex(inx);
+
+    //    showToolTip(tr("The First Item"));
+}
+
+void MainWindow::on_vbnextItemTlBtn_clicked()
+{
+    QModelIndex inx = m_vbookModel->moveDown();
+    showVBookExpl(inx.row());
+    ui->vbookTableView->setCurrentIndex(inx);
+    //    showToolTip(tr("The Last Item"));
 }
 
 void MainWindow::on_vbInput_editingFinished()
 {
     QString input = ui->vbInput->text();
-    int score = 0;
-    //if (m_vbookModel->testInput(input, score)) {
-    //ui->vbExplLabel->setText(QString("%1").arg(score));
-    if (m_vbookModel->testInput(input, score)) {
-        on_vbnextItemTlBtn_clicked();
+    if (input.trimmed().isEmpty())
+        return;
+
+    if (m_vbookModel->getMode() == ExamMode) {    
+        QString score;
+        if (m_vbookModel->exam(input, score)) {
+            if (m_vbookModel->isLastRow()) {
+                QModelIndex inx = m_vbookModel->moveToFirst();
+                showVBookExpl(inx.row());
+                ui->vbookTableView->setCurrentIndex(inx);
+            } else {
+                on_vbnextItemTlBtn_clicked();
+            }
+            ui->vbInput->clear();
+            //ui->vbExamScoreLabel->setText(QString("%1").arg(score));
+            //ui->vbExamResultLabel->setPixmap(QPixmap(QString::fromUtf8(":/res/ok.png")));
+        } else {
+            ui->vbInput->clear();
+            //showToolTip(tr("Try Again"));
+            //ui->vbExamResultLabel->setPixmap(QPixmap(QString::fromUtf8(":/res/error.png")));
+        }
+
+        ui->vbExamScoreLabel->setText(score);
+    } else {
         ui->vbInput->clear();
-    } else {
-        showToolTip(tr("Try Again"));        
+        if (m_vbookModel->study(input)) {
+            on_vbnextItemTlBtn_clicked();
+        }
     }
 }
 
-void MainWindow::on_vbpreItemTlBtn_clicked()
+void MainWindow::on_vbModeComboBox_currentIndexChanged(int index)
 {
-    QString text;
-    if (m_vbookModel->preExamExpl(text)) {
-        ui->vbExplLabel->setText(text);
+     /*if (index == 1)
+         ui->vbookTableView->hideColumn(0);
+     else
+         ui->vbookTableView->showColumn(0);*/   
+    m_vbookModel->setMode((enum VBookMode)index);
+    if(index == 1) { 
+        ui->vbdelToolButton->setDisabled(true);
+        ui->vbclearToolButton->setDisabled(true);
     } else {
-        showToolTip(tr("The First Item"));
+        ui->vbdelToolButton->setDisabled(false);
+        ui->vbclearToolButton->setDisabled(false);
+
+        ui->vbExamScoreLabel->setText("");
     }
+    ui->vbookTableView->setCurrentIndex(m_vbookModel->curIndex());
 }
 
-void MainWindow::on_vbnextItemTlBtn_clicked()
-{
-    QString text;
-    if (m_vbookModel->nextExamExpl(text)) {
-        ui->vbExplLabel->setText(text);
-    } else {
-        showToolTip(tr("The Last Item"));
-    }
-}
-
-void MainWindow::on_vbookListView_clicked(const QModelIndex &index)
+void MainWindow::on_vbookTableView_clicked(const QModelIndex &index)
 {
     QString expl = m_vbookModel->expl(index.row());
     m_vbookModel->setCurrentRow(index.row());
-    expl.trimmed();
-    ui->vbexplTextEdit->setPlainText(expl);
-
+    showVBookExpl(index.row());
 }
 
-void MainWindow::on_vbookListView_activated(const QModelIndex &index)
+void MainWindow::on_vbookTableView_activated(const QModelIndex &index)
 {
-    on_vbookListView_clicked(index);
-}
-
-void MainWindow::on_spellInputLineEdit_editingFinished()
-{
-    ui->spellInputLineEdit->clear();
+    on_vbookTableView_clicked(index);
 }
 
 void MainWindow::showToolTip(QString info, int displayTimeMS)

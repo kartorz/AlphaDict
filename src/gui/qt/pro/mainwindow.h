@@ -87,6 +87,12 @@ private slots:
 
     void on_spellInputLineEdit_editingFinished();
 
+    void on_vbListExplHideradioButton_clicked(bool checked);
+
+    void on_vbookModeComboBox_currentIndexChanged(int index);
+
+    void on_vbpreItemTlBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -27,4 +27,5 @@ gui/qt/qrc_mainwindow.cpp:  gui/qt/mainwindow.qrc \
 uitr:
 	lupdate -no-recursive  -verbose gui/qt -ts gui/qt/uitr_cn.ts
 	linguist gui/qt/uitr_cn.ts
-#   V it, select release
+	lrelease gui/qt/uitr_cn.ts  -qm  gui/qt/uitr_cn.qm
+

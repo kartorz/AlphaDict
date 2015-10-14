@@ -1,11 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QtWidgets/QToolTip>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //QModelIndex  i();
+   QString str;
+   str.trimmed().isEmpty()
+ //   ui->vbookTableView->setCurrentIndex();
+     //ui->vbookTableView->
+   //ui->vbdelToolButton->setDisabled();
+    //QAbstractTableModel m;
+   // m.index(0,1);
+
 }
 
 MainWindow::~MainWindow()
@@ -155,11 +165,10 @@ void MainWindow::on_actionHelp_triggered()
 
 }
 
-void MainWindow::on_fontsizeComboBox_activated(int index)
+void MainWindow::on_fontsizeComboBox_activated(int index)ss
 {
 
 }
->>>>>>> 1.2
 
 void MainWindow::on_systemTrayCheckBox_clicked(bool checked)
 {
@@ -177,6 +186,21 @@ void MainWindow::on_resetSettingToolButton_clicked()
 }
 
 void MainWindow::on_spellInputLineEdit_editingFinished()
+{
+
+}
+
+void MainWindow::on_vbListExplHideradioButton_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_vbookModeComboBox_currentIndexChanged(int index)
+{
+
+}
+
+void MainWindow::on_vbpreItemTlBtn_clicked()
 {
 
 }

@@ -17,7 +17,7 @@ public:
 
     // Read records of /colname/ from table /tblname/ where /cond/ meets.
     // [cond]: condition clause, eg: "WHERE col1 == 'v1'" 
-    virtual vector< vector<string> > queryTable(const string tblname, const string colname[], const int collen, const string& cond) = 0;
+    virtual vector< vector<string> > queryTable(const string tblname, const string colname[], const int collen, const string cond = "") = 0;
 
     // Check a row with /keys/ if exist. 
     virtual bool rowExist(const string tblname, string keyName[], string keyVal[], int keyLen) = 0;
@@ -31,10 +31,14 @@ public:
     virtual bool insertTable(const string tblname, const string colname[], const string colval[], const int length) = 0;
 
     // Modify a table table /tblname/ with the value /val/ according to column /col/ when /cond/ meets.
-    virtual bool updateTable(const string tblname, const string colname[], const string colval[], const int length, string& cond) = 0;
+    virtual bool updateTable(const string tblname, const string colname[], const string colval[], const int length, string cond = "") = 0;
 
     // If cond meets, then modify the table /tblname/, or inseart a row to the table.
-    virtual bool writeTable(const string tblname, const vector<string>& col, const vector<string>& val, string& cond) = 0;
+    virtual bool writeTable(const string tblname, const vector<string>& col, const vector<string>& val, string cond = "") = 0;
+
+    virtual bool deleteTable(const string tblname, const string key, const string val) = 0;
+
+    virtual bool deleteTable(const string tblname, const string cond = "") = 0;
 
     virtual const string vendor() = 0;
     

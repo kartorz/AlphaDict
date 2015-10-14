@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[62];
-    char stringdata[1473];
+    char stringdata[1470];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -57,40 +57,40 @@ QT_MOC_LITERAL(24, 500, 26),
 QT_MOC_LITERAL(25, 527, 32),
 QT_MOC_LITERAL(26, 560, 21),
 QT_MOC_LITERAL(27, 582, 27),
-QT_MOC_LITERAL(28, 610, 37),
-QT_MOC_LITERAL(29, 648, 26),
-QT_MOC_LITERAL(30, 675, 28),
-QT_MOC_LITERAL(31, 704, 25),
-QT_MOC_LITERAL(32, 730, 26),
-QT_MOC_LITERAL(33, 757, 24),
-QT_MOC_LITERAL(34, 782, 26),
-QT_MOC_LITERAL(35, 809, 26),
-QT_MOC_LITERAL(36, 836, 9),
-QT_MOC_LITERAL(37, 846, 24),
-QT_MOC_LITERAL(38, 871, 25),
-QT_MOC_LITERAL(39, 897, 21),
-QT_MOC_LITERAL(40, 919, 22),
-QT_MOC_LITERAL(41, 942, 27),
-QT_MOC_LITERAL(42, 970, 31),
-QT_MOC_LITERAL(43, 1002, 7),
-QT_MOC_LITERAL(44, 1010, 31),
-QT_MOC_LITERAL(45, 1042, 28),
-QT_MOC_LITERAL(46, 1071, 27),
-QT_MOC_LITERAL(47, 1099, 35),
-QT_MOC_LITERAL(48, 1135, 33),
-QT_MOC_LITERAL(49, 1169, 29),
-QT_MOC_LITERAL(50, 1199, 18),
-QT_MOC_LITERAL(51, 1218, 33),
-QT_MOC_LITERAL(52, 1252, 6),
-QT_MOC_LITERAL(53, 1259, 29),
-QT_MOC_LITERAL(54, 1289, 25),
-QT_MOC_LITERAL(55, 1315, 33),
-QT_MOC_LITERAL(56, 1349, 37),
-QT_MOC_LITERAL(57, 1387, 15),
-QT_MOC_LITERAL(58, 1403, 18),
-QT_MOC_LITERAL(59, 1422, 18),
-QT_MOC_LITERAL(60, 1441, 14),
-QT_MOC_LITERAL(61, 1456, 15)
+QT_MOC_LITERAL(28, 610, 26),
+QT_MOC_LITERAL(29, 637, 28),
+QT_MOC_LITERAL(30, 666, 25),
+QT_MOC_LITERAL(31, 692, 26),
+QT_MOC_LITERAL(32, 719, 37),
+QT_MOC_LITERAL(33, 757, 25),
+QT_MOC_LITERAL(34, 783, 27),
+QT_MOC_LITERAL(35, 811, 26),
+QT_MOC_LITERAL(36, 838, 32),
+QT_MOC_LITERAL(37, 871, 7),
+QT_MOC_LITERAL(38, 879, 9),
+QT_MOC_LITERAL(39, 889, 24),
+QT_MOC_LITERAL(40, 914, 25),
+QT_MOC_LITERAL(41, 940, 21),
+QT_MOC_LITERAL(42, 962, 22),
+QT_MOC_LITERAL(43, 985, 27),
+QT_MOC_LITERAL(44, 1013, 31),
+QT_MOC_LITERAL(45, 1045, 31),
+QT_MOC_LITERAL(46, 1077, 28),
+QT_MOC_LITERAL(47, 1106, 27),
+QT_MOC_LITERAL(48, 1134, 35),
+QT_MOC_LITERAL(49, 1170, 33),
+QT_MOC_LITERAL(50, 1204, 29),
+QT_MOC_LITERAL(51, 1234, 18),
+QT_MOC_LITERAL(52, 1253, 33),
+QT_MOC_LITERAL(53, 1287, 6),
+QT_MOC_LITERAL(54, 1294, 29),
+QT_MOC_LITERAL(55, 1324, 25),
+QT_MOC_LITERAL(56, 1350, 33),
+QT_MOC_LITERAL(57, 1384, 15),
+QT_MOC_LITERAL(58, 1400, 18),
+QT_MOC_LITERAL(59, 1419, 18),
+QT_MOC_LITERAL(60, 1438, 14),
+QT_MOC_LITERAL(61, 1453, 15)
     },
     "MainWindow\0onUpdateExplText\0\0v\0"
     "onUpdateCapWordExplText\0onSetLanComboBox\0"
@@ -110,19 +110,20 @@ QT_MOC_LITERAL(61, 1456, 15)
     "on_uilanComboBox_activated\0"
     "on_indexLineEdit_editingFinished\0"
     "on_saveButton_clicked\0on_tabWidget_currentChanged\0"
-    "on_vocabularyTabWidget_currentChanged\0"
     "on_vbdelToolButton_clicked\0"
     "on_vbclearToolButton_clicked\0"
     "on_vbpreItemTlBtn_clicked\0"
     "on_vbnextItemTlBtn_clicked\0"
-    "on_vbookListView_clicked\0"
-    "on_vbookListView_activated\0"
-    "on_vbInput_editingFinished\0onAppExit\0"
-    "onActionSettingPageAdded\0"
+    "on_vbModeComboBox_currentIndexChanged\0"
+    "on_vbookTableView_clicked\0"
+    "on_vbookTableView_activated\0"
+    "on_vbInput_editingFinished\0"
+    "on_vbExplHideradioButton_clicked\0"
+    "checked\0onAppExit\0onActionSettingPageAdded\0"
     "onActionVcbularyPageAdded\0"
     "onActionHelpPageAdded\0onClipboardDataChanged\0"
     "onClipboardSelectionChanged\0"
-    "on_cwsClipboardCheckBox_clicked\0checked\0"
+    "on_cwsClipboardCheckBox_clicked\0"
     "on_cwsSelectionCheckBox_clicked\0"
     "on_cwsEnableCheckBox_clicked\0"
     "on_cwsMouseCheckBox_clicked\0"
@@ -133,7 +134,6 @@ QT_MOC_LITERAL(61, 1456, 15)
     "reason\0on_systemTrayCheckBox_clicked\0"
     "on_fontComboBox_activated\0"
     "on_resetSettingToolButton_clicked\0"
-    "on_spellInputLineEdit_editingFinished\0"
     "onTrayCwsEnable\0onTrayCwsClipboard\0"
     "onTrayCwsSelection\0onTrayCwsMouse\0"
     "onTrayMenuClose\0"
@@ -175,21 +175,21 @@ static const uint qt_meta_data_MainWindow[] = {
       25,    0,  316,    2, 0x08,
       26,    0,  317,    2, 0x08,
       27,    1,  318,    2, 0x08,
-      28,    1,  321,    2, 0x08,
-      29,    0,  324,    2, 0x08,
-      30,    0,  325,    2, 0x08,
-      31,    0,  326,    2, 0x08,
-      32,    0,  327,    2, 0x08,
+      28,    0,  321,    2, 0x08,
+      29,    0,  322,    2, 0x08,
+      30,    0,  323,    2, 0x08,
+      31,    0,  324,    2, 0x08,
+      32,    1,  325,    2, 0x08,
       33,    1,  328,    2, 0x08,
       34,    1,  331,    2, 0x08,
       35,    0,  334,    2, 0x08,
-      36,    0,  335,    2, 0x08,
-      37,    0,  336,    2, 0x08,
-      38,    0,  337,    2, 0x08,
-      39,    0,  338,    2, 0x08,
-      40,    0,  339,    2, 0x08,
-      41,    0,  340,    2, 0x08,
-      42,    1,  341,    2, 0x08,
+      36,    1,  335,    2, 0x08,
+      38,    0,  338,    2, 0x08,
+      39,    0,  339,    2, 0x08,
+      40,    0,  340,    2, 0x08,
+      41,    0,  341,    2, 0x08,
+      42,    0,  342,    2, 0x08,
+      43,    0,  343,    2, 0x08,
       44,    1,  344,    2, 0x08,
       45,    1,  347,    2, 0x08,
       46,    1,  350,    2, 0x08,
@@ -197,15 +197,15 @@ static const uint qt_meta_data_MainWindow[] = {
       48,    1,  356,    2, 0x08,
       49,    1,  359,    2, 0x08,
       50,    1,  362,    2, 0x08,
-      53,    1,  365,    2, 0x08,
+      51,    1,  365,    2, 0x08,
       54,    1,  368,    2, 0x08,
-      55,    0,  371,    2, 0x08,
-      56,    0,  372,    2, 0x08,
-      57,    1,  373,    2, 0x08,
-      58,    1,  376,    2, 0x08,
-      59,    1,  379,    2, 0x08,
-      60,    1,  382,    2, 0x08,
-      61,    0,  385,    2, 0x08,
+      55,    1,  371,    2, 0x08,
+      56,    0,  374,    2, 0x08,
+      57,    1,  375,    2, 0x08,
+      58,    1,  378,    2, 0x08,
+      59,    1,  381,    2, 0x08,
+      60,    1,  384,    2, 0x08,
+      61,    0,  387,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void, QMetaType::VoidStar,    3,
@@ -229,36 +229,36 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   15,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   15,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
     QMetaType::Void, QMetaType::QModelIndex,   15,
     QMetaType::Void, QMetaType::QModelIndex,   15,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   37,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   43,
-    QMetaType::Void, QMetaType::Bool,   43,
-    QMetaType::Void, QMetaType::Bool,   43,
-    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Bool,   37,
+    QMetaType::Void, QMetaType::Bool,   37,
+    QMetaType::Void, QMetaType::Bool,   37,
+    QMetaType::Void, QMetaType::Bool,   37,
     QMetaType::Void, QMetaType::Int,   15,
-    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Bool,   37,
     QMetaType::Void, QMetaType::Int,   15,
-    QMetaType::Void, 0x80000000 | 51,   52,
-    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, 0x80000000 | 52,   53,
+    QMetaType::Void, QMetaType::Bool,   37,
     QMetaType::Void, QMetaType::QString,    9,
     QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   43,
-    QMetaType::Void, QMetaType::Bool,   43,
-    QMetaType::Void, QMetaType::Bool,   43,
-    QMetaType::Void, QMetaType::Bool,   43,
+    QMetaType::Void, QMetaType::Bool,   37,
+    QMetaType::Void, QMetaType::Bool,   37,
+    QMetaType::Void, QMetaType::Bool,   37,
+    QMetaType::Void, QMetaType::Bool,   37,
     QMetaType::Void,
 
        0        // eod
@@ -290,32 +290,32 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 18: _t->on_indexLineEdit_editingFinished(); break;
         case 19: _t->on_saveButton_clicked(); break;
         case 20: _t->on_tabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 21: _t->on_vocabularyTabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 22: _t->on_vbdelToolButton_clicked(); break;
-        case 23: _t->on_vbclearToolButton_clicked(); break;
-        case 24: _t->on_vbpreItemTlBtn_clicked(); break;
-        case 25: _t->on_vbnextItemTlBtn_clicked(); break;
-        case 26: _t->on_vbookListView_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 27: _t->on_vbookListView_activated((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 21: _t->on_vbdelToolButton_clicked(); break;
+        case 22: _t->on_vbclearToolButton_clicked(); break;
+        case 23: _t->on_vbpreItemTlBtn_clicked(); break;
+        case 24: _t->on_vbnextItemTlBtn_clicked(); break;
+        case 25: _t->on_vbModeComboBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 26: _t->on_vbookTableView_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 27: _t->on_vbookTableView_activated((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
         case 28: _t->on_vbInput_editingFinished(); break;
-        case 29: _t->onAppExit(); break;
-        case 30: _t->onActionSettingPageAdded(); break;
-        case 31: _t->onActionVcbularyPageAdded(); break;
-        case 32: _t->onActionHelpPageAdded(); break;
-        case 33: _t->onClipboardDataChanged(); break;
-        case 34: _t->onClipboardSelectionChanged(); break;
-        case 35: _t->on_cwsClipboardCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 36: _t->on_cwsSelectionCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 37: _t->on_cwsEnableCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 38: _t->on_cwsMouseCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 39: _t->on_cwsShortcutkeyComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 40: _t->on_cwsAutoCloseEnCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 41: _t->on_fontsizeComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 42: _t->onSysTrayActivated((*reinterpret_cast< QSystemTrayIcon::ActivationReason(*)>(_a[1]))); break;
-        case 43: _t->on_systemTrayCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 44: _t->on_fontComboBox_activated((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 45: _t->on_resetSettingToolButton_clicked(); break;
-        case 46: _t->on_spellInputLineEdit_editingFinished(); break;
+        case 29: _t->on_vbExplHideradioButton_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 30: _t->onAppExit(); break;
+        case 31: _t->onActionSettingPageAdded(); break;
+        case 32: _t->onActionVcbularyPageAdded(); break;
+        case 33: _t->onActionHelpPageAdded(); break;
+        case 34: _t->onClipboardDataChanged(); break;
+        case 35: _t->onClipboardSelectionChanged(); break;
+        case 36: _t->on_cwsClipboardCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 37: _t->on_cwsSelectionCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 38: _t->on_cwsEnableCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 39: _t->on_cwsMouseCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 40: _t->on_cwsShortcutkeyComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 41: _t->on_cwsAutoCloseEnCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 42: _t->on_fontsizeComboBox_activated((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 43: _t->onSysTrayActivated((*reinterpret_cast< QSystemTrayIcon::ActivationReason(*)>(_a[1]))); break;
+        case 44: _t->on_systemTrayCheckBox_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 45: _t->on_fontComboBox_activated((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 46: _t->on_resetSettingToolButton_clicked(); break;
         case 47: _t->onTrayCwsEnable((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 48: _t->onTrayCwsClipboard((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 49: _t->onTrayCwsSelection((*reinterpret_cast< bool(*)>(_a[1]))); break;

@@ -59,6 +59,9 @@ $ AlphaDict
 
 $ make uninstall
 
+$ make uitr
+  make muti-language.
+
 windows
 -------
 # VS2010 #
