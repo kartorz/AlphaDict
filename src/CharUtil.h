@@ -13,10 +13,10 @@ public:
 
     static char*    mbsrtoutf8s(const char *mbs);
     static wchar_t* utf8srtowcs(const char *u8s);
-    static wchar_t  mbrtowc_r(char** mb);
-    static wchar_t* mbsrtowcs_r(const char *mb);
-    static char*    wcsrtombs_r(const wchar_t *wc);
-    static int      wcrtomb_r(char* s, wchar_t *wc);
+    static wchar_t  mbrtowc(char** mb);
+    static wchar_t* mbsrtowcs(const char *mb);
+    static char*    wcsrtombs(const wchar_t *wc);
+    static int      wcrtomb(char* s, wchar_t *wc);
 };
 
 #endif

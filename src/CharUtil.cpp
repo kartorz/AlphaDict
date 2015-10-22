@@ -191,11 +191,11 @@ wchar_t* CharUtil::utf8srtowcs(const char *u8s)
 #endif
 }
 /* This piece of code comes from an example of mbrtowc function of GNU libc. */
-wchar_t CharUtil::mbrtowc_r(char** mb)
+wchar_t CharUtil::mbrtowc(char** mb)
 {
 	wchar_t wctmp[1];
 	size_t len = strlen(*mb);
-	size_t nbytes = mbrtowc(wctmp, *mb, len, NULL);
+	size_t nbytes = ::mbrtowc(wctmp, *mb, len, NULL);
 	if (nbytes > 0) {
 		if (nbytes > (size_t)-2)
 			return 0;
@@ -204,9 +204,9 @@ wchar_t CharUtil::mbrtowc_r(char** mb)
 	}
 }
 
-int CharUtil::wcrtomb_r(char* s, wchar_t *wc)
+int CharUtil::wcrtomb(char* s, wchar_t *wc)
 {
-    int nbytes = wcrtomb(s, *wc, NULL);
+    int nbytes = ::wcrtomb(s, *wc, NULL);
     if (nbytes == (size_t) -1)
         /* Error in the conversion. */
         return -1;
@@ -214,13 +214,13 @@ int CharUtil::wcrtomb_r(char* s, wchar_t *wc)
 }
 
 // Caller should release pointer 'wchar_t*'
-wchar_t* CharUtil::mbsrtowcs_r(const char *mb)
+wchar_t* CharUtil::mbsrtowcs(const char *mb)
 {
     size_t len = strlen(mb);
     len = (len+1)*sizeof(wchar_t);
     wchar_t *result = (wchar_t *)malloc(len);
     memset(result, L'\0', len);
-    size_t ret = mbsrtowcs(result, &mb, len, NULL);
+    size_t ret = ::mbsrtowcs(result, &mb, len, NULL);
     if (ret == (size_t)-1) {
         free(result);
         return NULL;
@@ -228,20 +228,20 @@ wchar_t* CharUtil::mbsrtowcs_r(const char *mb)
     return result;
 }
 
-char* CharUtil::wcsrtombs_r(const wchar_t *wc)
+char* CharUtil::wcsrtombs(const wchar_t *wc)
 {
     size_t len = wcslen(wc);
     len = len*sizeof(wchar_t) + 1;
     char *result = (char *)malloc(len);
     memset(result, '\0', len);
-    size_t ret = wcsrtombs(result, &wc, len, NULL);
+    size_t ret = ::wcsrtombs(result, &wc, len, NULL);
     if (ret == (size_t)-1) {
         if (result[0] == '\0') {
             free(result);
-            printf("{wcsrtombs_r}: invalid wc string\n");
+            printf("{wcsrtombs}: invalid wc string\n");
             return NULL;
         } else {
-            printf("{wcsrtombs_r}: (%s), encounter a invalid wide character(0x%x)\n", result, *wc);
+            printf("{wcsrtombs}: (%s), encounter a invalid wide character(0x%x)\n", result, *wc);
         }
     }
     return result;
