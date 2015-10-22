@@ -538,6 +538,22 @@ EOF
 cxx_check $ld_tmp  && 
   extra_ldflags="$extra_ldflags -lboost_system  -lboost_filesystem" _boost=yes
 echores "$_boost"
+test "$_boost" = no && die "Please check and install libboost above ver 1.5"
+
+echocheck "sqlite3"
+_sqlite3=no
+ld_tmp="-lsqlite3"
+cat > $TMPCPP <<EOF
+#include <sqlite3.h>
+int main(void) {
+sqlite3_sourceid();
+return 0;
+}
+EOF
+cxx_check $ld_tmp  &&
+  extra_ldflags="$extra_ldflags -lsqlite3" _sqlite3=yes
+echores "$_sqlite3"
+test "$_sqlite3" = no && die "Please check and install sqlite3"
 
 echocheck "QT5 header"
   _qt5_headers="no"
