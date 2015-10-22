@@ -160,7 +160,6 @@ Section "AlphaDict" SecAlphaDict
   SectionIn RO
   SectionIn 1 2
   ;ADD YOUR OWN FILES HERE...
-
   SetOutPath "$INSTDIR"
   File "${_root}\app.ico"
   File "${_root}\Release\*.exe"
