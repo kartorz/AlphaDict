@@ -13,6 +13,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
+
 using namespace boost::filesystem;
 
 #include "alphadict.h"
@@ -281,6 +282,49 @@ string Util::intToString(int i)
     ss << i;
     ss >> ret;
    return ret;
+}
+
+string Util::stringCaseChange(const string& str, int start, int len)
+{
+    string ret = str;
+    if (str.length() >= start + len) {
+        for (int i = 0; i < len; i++) {
+            char chr = str.at(start + i);
+            if (islower(chr))
+                chr = toupper(chr);
+            else
+                chr = tolower(chr);
+            ret = ret.replace(start + i, 1, 1, chr);
+        }
+    }
+
+    return ret;
+}
+
+string Util::stringCaseToLower(const string& str)
+{
+    return boost::algorithm::to_lower_copy(str);
+#if 0
+    string ret;
+    for (int i = 0; i < str.length(); i++) {
+        char chr = str.at(i);
+        ret += tolower(chr);
+    }
+    return ret;
+#endif
+}
+
+string Util::stringCaseToUpper(const string& str)
+{
+    return boost::algorithm::to_upper_copy(str);
+#if 0
+    string ret;
+    for (int i = 0; i < str.length(); i++) {
+        char chr = str.at(i);
+        ret += toupper(chr);
+    }
+    return ret;
+#endif
 }
 
 /*string Util::replaceString(string& ori, string old, string new, int count)

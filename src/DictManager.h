@@ -65,6 +65,7 @@ private:
     bool matchDict(const string& srcLan, const string& detLan);
     iDict* createHandleByDict(const string dictpath);
     iDict* createHandleByIdenitfier(const string identi);
+    bool lookupIgnoreCase(iDict* dict, const string& input, DictItemList& items);
 
     struct DictOpen{
         iDict *dict;

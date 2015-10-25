@@ -24,7 +24,16 @@ void LookupTask::doWork()
 {
     DictItemList itemList;
     bool lookupResult = m_dict->lookup(m_input, itemList);
-    m_dmgr->onAddLookupResult(m_id, itemList, lookupResult);
+    if (lookupResult) {
+        m_dmgr->onAddLookupResult(m_id, itemList, lookupResult);
+    } else {
+        DictItemList itemList2;
+        lookupResult = m_dmgr->lookupIgnoreCase(m_dict, m_input, itemList2);
+        if (lookupResult)
+            m_dmgr->onAddLookupResult(m_id, itemList2, lookupResult);
+        else
+            m_dmgr->onAddLookupResult(m_id, itemList, lookupResult);
+    }
 }
 
 void LookupTask::abort()
@@ -149,11 +158,21 @@ void DictManager::lookup(const string& input, const int which, DictItemList& ite
     MutexLock lock(m_cs);
     if (m_dictTotal > 0) {            
         if (which == -1) {
-            for (int i=0; i<m_dictTotal; i++)
-                m_dictOpen[i].dict->lookup(input, items);
+            for (int i = 0; i < m_dictTotal; i++) {
+                if (!m_dictOpen[i].dict->lookup(input, items)){
+                    DictItemList items2;
+                    if (lookupIgnoreCase(m_dictOpen[i].dict, input, items2))
+                        items = items2;
+                }
+            }
         } else {
-            if (which < m_dictTotal)
-                m_dictOpen[which].dict->lookup(input, items);
+            if (which < m_dictTotal) {
+                if (!m_dictOpen[which].dict->lookup(input, items)) {
+                    DictItemList items2;
+                    if (lookupIgnoreCase(m_dictOpen[which].dict, input, items2))
+                        items = items2;
+                }
+            }
         }
     }
 }
@@ -220,6 +239,38 @@ void DictManager::onAddLookupResult(int which, DictItemList& items, bool lookupR
         m_dictOpen[which].pending = "";
         g_application.sysMessageQ()->push(msg);
     }
+}
+
+bool DictManager::lookupIgnoreCase(iDict* dict, const string& input, DictItemList& items)
+{
+    // Fisrt of all,  Change the first char's case.
+    /* {input}: a lot of
+     * {dict}: A lot of
+     * or, reverse.
+     */
+    string str = Util::stringCaseChange(input, 0, 1);
+    if (str == input) // It's not a latin string.    
+        return false;
+    if (dict->lookup(str, items))
+        return true;
+
+    // Then,  convert input to lower case.
+    /* {input}: BOY, BOy, bOY, etc.
+     * {dict} : boy */
+    items.clear();
+    str = Util::stringCaseToLower(input);
+    if (str != input && dict->lookup(str, items))
+        return true;
+
+    // Then,  convert input to lower case.
+    /* {input}: add
+       {dict}: ADD */
+    items.clear();
+    str = Util::stringCaseToUpper(input);
+    if (str != input && dict->lookup(str, items))
+        return true;
+
+    return false;
 }
 
 int DictManager::getIndexList(IndexList& indexList, int start, int end, const string& startwith)

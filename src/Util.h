@@ -35,6 +35,11 @@ public:
     static int stringToInt(string strInt);
     static string intToString(int i);
 
+    // [str]: should be Latin alphabetic string.
+    static string stringCaseChange(const string& str, int start, int len);
+    static string stringCaseToLower(const string& str);
+    static string stringCaseToUpper(const string& str);
+
     // Replace /old/ with /new/ of the /ori/ up to /count/ /old/ occurs. 
     //static string replaceString(string& ori, string old, string new, int count);
 };
