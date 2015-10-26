@@ -234,15 +234,27 @@ void MainWindow::onUpdateExplText(void *v)
     text = QString::fromUtf8((*itemList)[0].dictname.c_str());
     text = text.trimmed();
     cursor.insertText(text, boldFormat);
+    cursor.insertBlock();
+    cursor.insertText("- - - -");
+    cursor.insertBlock();
     //cursor.insertBlock(itemBlock);
-
     for (unsigned i=0; i< itemList->size(); i++) {
         cursor.insertBlock();
         titleFormat.setFontWeight(QFont::DemiBold);
+        int fpsize = titleFormat.fontPointSize();
+        if (fpsize == 0) fpsize = m_config->m_setting.fontsize;
+
+        titleFormat.setFontPointSize(fpsize + 2);
+        text = QString::fromUtf8((*itemList)[i].word.c_str());
+        cursor.insertText(text, titleFormat);
+
+        titleFormat.setFontPointSize(fpsize);
         text = QString::fromUtf8((*itemList)[i].phonetic.c_str());
         text = text.trimmed();
         if (text != "") {
             cursor.insertBlock();
+            //qDebug() << text;
+            text = text.replace('\n', "    ");
             cursor.insertText(text, titleFormat);
             cursor.insertBlock();
         }

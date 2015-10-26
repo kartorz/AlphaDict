@@ -221,7 +221,7 @@ void DictManager::onAddLookupResult(int which, DictItemList& items, bool lookupR
         DictItemList* arg1 = new DictItemList();
         *arg1 = items;
         int did = m_dictOpen[which].dictId;
-        (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
+        (*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
         int msgid = m_dictOpen[which].flag == 
             QUERY_CAPWORD_FLAG ? MSG_SET_CAPWORD_DICTITEM : MSG_SET_DICTITEMS;
         g_application.uiMessageQ()->push(msgid, -1, (void *)arg1); /* UI should delete arg1 */
@@ -294,7 +294,7 @@ void DictManager::onClick(int row, iIndexItem* item)
     DictItemList* arg1 = new DictItemList();
     arg1->push_back(m_dictOpen[0].dict->onClick(row, item));
     int did = m_dictOpen[0].dictId;
-    (*arg1)[0].dictname = g_application.m_configure->m_dictNodes[did].name;
+    (*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
     g_application.uiMessageQ()->push(MSG_SET_DICTITEMS, -1, (void *)arg1);
 }
 

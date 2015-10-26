@@ -46,14 +46,16 @@ bool Aldict::lookup(const string& word, DictItemList& itemList)
                     free(d.ptr_expl);
                 }
     	        free(d.ptr_word);
-
+                item.word = word;
+                item.dictname = (char *)m_doc.m_header.d_identi;
                 itemList.push_back(item);
             }
             addToDictCache(word, itemList);
             return true;
         }else {
             iDictItem item;
-
+            item.word = word;
+            item.dictname = (char *) m_doc.m_header.d_identi;
             item.expl = "Do you want to lookup\n\n";
             for (int i=0; i<candidate.size(); i++) {
                 item.expl +=  candidate[i]->index;

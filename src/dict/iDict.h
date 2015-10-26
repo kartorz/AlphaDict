@@ -34,9 +34,12 @@ public:
     }
     ~iDictItem(){}
 
-    std::string dictname;  /* utf-8 bytes */
-	std::string phonetic; /* utf-8 bytes */
-	std::string expl;     /* utf-8 bytes */
+    // The follow strings are all based utf-8.
+    std::string word;
+    std::string dictname;
+    std::string dictFileName;
+    std::string phonetic;
+    std::string expl;
     bool bfind;
     void *opaque;
 };

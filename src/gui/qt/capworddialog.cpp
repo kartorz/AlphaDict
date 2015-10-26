@@ -53,7 +53,8 @@ void CapWordDialog::setDictItemList(QString &word, DictItemList *itemList)
 
     titleFormat.setFontWeight(QFont::DemiBold);
     //cursor.insertBlock();
-    cursor.insertText(m_capword, titleFormat);
+    text = QString::fromUtf8((*itemList)[0].word.c_str());
+    cursor.insertText(text, titleFormat);
     text = QString::fromUtf8((*itemList)[0].phonetic.c_str());
     text = text.trimmed();
     if (text != "") {
