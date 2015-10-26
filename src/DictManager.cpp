@@ -155,22 +155,25 @@ void DictManager::reloadDict()
 
 void DictManager::lookup(const string& input, const int which, DictItemList& items)
 {
-    MutexLock lock(m_cs);
-    if (m_dictTotal > 0) {            
-        if (which == -1) {
-            for (int i = 0; i < m_dictTotal; i++) {
-                if (!m_dictOpen[i].dict->lookup(input, items)){
-                    DictItemList items2;
-                    if (lookupIgnoreCase(m_dictOpen[i].dict, input, items2))
-                        items = items2;
+    if (!input.empty()) {
+        MutexLock lock(m_cs);
+
+        if (m_dictTotal > 0) {
+            if (which == -1) {
+                for (int i = 0; i < m_dictTotal; i++) {
+                    if (!m_dictOpen[i].dict->lookup(input, items)){
+                        DictItemList items2;
+                        if (lookupIgnoreCase(m_dictOpen[i].dict, input, items2))
+                            items = items2;
+                    }
                 }
-            }
-        } else {
-            if (which < m_dictTotal) {
-                if (!m_dictOpen[which].dict->lookup(input, items)) {
-                    DictItemList items2;
-                    if (lookupIgnoreCase(m_dictOpen[which].dict, input, items2))
-                        items = items2;
+            } else {
+                if (which < m_dictTotal) {
+                    if (!m_dictOpen[which].dict->lookup(input, items)) {
+                        DictItemList items2;
+                        if (lookupIgnoreCase(m_dictOpen[which].dict, input, items2))
+                            items = items2;
+                    }
                 }
             }
         }
@@ -179,34 +182,37 @@ void DictManager::lookup(const string& input, const int which, DictItemList& ite
 
 void DictManager::lookup(const string& input, const int which, const int flags)
 {
-    MutexLock lock(m_cs);
+    if (!input.empty()) {
 
-    if (m_dictTotal == 0)
-        return;
-    if (which == -1) {
-        for (int i=0; i<m_dictTotal; i++) {
-            if (m_dictOpen[i].task != NULL) {
-                //m_dictOpen[i].task->abort(); // need enter into onAddLookupResult
-                m_dictOpen[i].pending = input; 
-               /* The Task will use the variable 'm_dictOpen', 
-                  can't assign m_dictOpen[i] a new pinter directly. */
-            } else {
-                m_dictOpen[i].task = new LookupTask(input, i, this);
-                m_dictOpen[i].pending = "";
-                m_dictOpen[i].flag = flags;
-                TaskManager::getInstance()->addTask(m_dictOpen[i].task, 0);
+        MutexLock lock(m_cs);
+
+        if (m_dictTotal == 0)
+            return;
+        if (which == -1) {
+            for (int i=0; i<m_dictTotal; i++) {
+                if (m_dictOpen[i].task != NULL) {
+                    //m_dictOpen[i].task->abort(); // need enter into onAddLookupResult
+                    m_dictOpen[i].pending = input;
+                    /* The Task will use the variable 'm_dictOpen',
+                       can't assign m_dictOpen[i] a new pinter directly. */
+                } else {
+                    m_dictOpen[i].task = new LookupTask(input, i, this);
+                    m_dictOpen[i].pending = "";
+                    m_dictOpen[i].flag = flags;
+                    TaskManager::getInstance()->addTask(m_dictOpen[i].task, 0);
+                }
             }
-        }
-    } else {
-        if (which < m_dictTotal) {
-            if (m_dictOpen[which].task != NULL) {
-                m_dictOpen[which].pending = input;
-            } else {
-                m_dictOpen[which].task = new LookupTask(input, which, this);
-                m_dictOpen[which].pending = "";
-                m_dictOpen[which].flag = flags;
-                TaskManager::getInstance()->addTask(m_dictOpen[which].task, 0);
-                //g_sysLog(LOG_DEBUG,"lookup, flags (%d)\n", flags);
+        } else {
+            if (which < m_dictTotal) {
+                if (m_dictOpen[which].task != NULL) {
+                    m_dictOpen[which].pending = input;
+                } else {
+                    m_dictOpen[which].task = new LookupTask(input, which, this);
+                    m_dictOpen[which].pending = "";
+                    m_dictOpen[which].flag = flags;
+                    TaskManager::getInstance()->addTask(m_dictOpen[which].task, 0);
+                    //g_sysLog(LOG_DEBUG,"lookup, flags (%d)\n", flags);
+                }
             }
         }
     }

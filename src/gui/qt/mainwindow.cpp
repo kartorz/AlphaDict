@@ -187,8 +187,10 @@ void MainWindow::on_inputLineEdit_textChanged(const QString &arg1)
 void MainWindow::on_queryButton_clicked()
 {
     QString input = ui->inputLineEdit->text().trimmed();
-	g_application.sysMessageQ()->push(MSG_DICT_QUERY, std::string(input.toUtf8().data()));
-    ui->dictTextEdit->document()->clear();
+    if (!input.isEmpty()) {
+        g_application.sysMessageQ()->push(MSG_DICT_QUERY, std::string(input.toUtf8().data()));
+        ui->dictTextEdit->document()->clear();
+    }
 }
 
 void MainWindow::on_indexListView_clicked(const QModelIndex &index)
@@ -284,7 +286,7 @@ void MainWindow::onUpdateCapWordExplText(void *v)
 
     //QPoint pos = QCursor::pos();
     m_capWordDialog->moveToCursor();
-    m_capWordDialog->setDictItemList(m_capword, itemList);
+    m_capWordDialog->setDictItemList(itemList);
     //dlg->exec();
     if (m_capWordDialog->isHidden())
         m_capWordDialog->show();
@@ -676,7 +678,6 @@ void MainWindow::onClipboardDataChanged()
             const QClipboard *clipboard = QApplication::clipboard();
             QString input = clipboard->text(QClipboard::Clipboard).trimmed();
             if (input != "") {
-                m_capword = input;
                 std::string u8input = std::string(input.toUtf8().data());
                 if (Util::isValidInput(u8input)) {
                     //m_capWordDialog->show();
@@ -696,7 +697,6 @@ void MainWindow::onClipboardSelectionChanged()
         
         QString input = clipboard->text(QClipboard::Selection).trimmed();
         if (input != "") {
-            m_capword = input;
             std::string u8input = std::string(input.toUtf8().data());
             if (Util::isValidInput(u8input)) {
                 //m_capWordDialog->show();
@@ -899,7 +899,6 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
 
         QString input = QString::fromLocal8Bit((char *)strbuf);
         if (input != "") {
-            m_capword = input;
             g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
         } else {
             //m_capWordDialog->close();
@@ -913,7 +912,6 @@ bool MainWindow::nativeEvent(const QByteArray & eventType, void * msg, long * re
        TextOutHookServer::getReference().getCaptureText(strbuf, 256, true);
        QString input = QString::fromWCharArray((const wchar_t *)strbuf);
        if (input != "") {
-           m_capword = input;
            g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, std::string(input.toUtf8().data()));
        } else {
            //m_capWordDialog->close();

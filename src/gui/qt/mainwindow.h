@@ -169,7 +169,6 @@ private:
     bool m_initSettingPage;
     bool m_initHelpPage;
 
-    QString m_capword;
     void (*onSysExit)();
 
     bool m_cwdEnableTemp;

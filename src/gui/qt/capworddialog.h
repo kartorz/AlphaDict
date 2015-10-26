@@ -28,7 +28,7 @@ public:
     void setAutoClose(bool autoclose) {m_bAutoClose = autoclose;}
     void setAutoCloseInterval(int inv) {m_autoCloseInterval = inv;}
 
-    void setDictItemList(QString &word, DictItemList *v);
+    void setDictItemList(DictItemList *v);
 
 protected:
     bool event(QEvent * event);
@@ -43,7 +43,6 @@ private:
     bool m_bAutoClose;
     int  m_autoCloseInterval;
 
-    QString m_capword;
     QTimer *m_timer;
     Ui::CapWordDialog *ui;
 };

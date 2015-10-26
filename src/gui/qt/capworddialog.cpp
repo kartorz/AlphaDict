@@ -38,10 +38,9 @@ void CapWordDialog::moveToCursor()
     move(QCursor::pos().x()+CWD_X_OFFSET, QCursor::pos().y()+CWD_Y_OFFSET);
 }
 
-void CapWordDialog::setDictItemList(QString &word, DictItemList *itemList)
+void CapWordDialog::setDictItemList(DictItemList *itemList)
 {
     //DictItemList* itemList = (DictItemList*) v;
-    m_capword = word;
 
     ui->textEdit->clear();
 
