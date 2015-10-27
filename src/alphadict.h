@@ -12,7 +12,7 @@
 #include "config.h"
 #endif
 
-#define AL_VERSION  "1.2"
+#define AL_VERSION  "1.3"
 #define NPOS  -1
 
 #define AL_ASSERT(cond, msg)  \
