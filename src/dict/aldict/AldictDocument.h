@@ -12,18 +12,18 @@ using namespace std;
 class AldictDocument
 {
 public:
-	 AldictDocument();
-	~AldictDocument();
+    AldictDocument();
+    ~AldictDocument();
 
-	bool loadDict(const std::string& path);
-	bool lookup(const string& word, vector<struct aldict_dataitem>& items, IndexList& candidate);
+    bool loadDict(const std::string& path);
+    bool lookup(const string& word, vector<struct aldict_dataitem>& items, IndexList& candidate);
     struct aldict_dataitem dataitem(address_t addr);
 
-	void writeToXml(const string& path);
-	int  getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
-    bool support(const string& dictname);
+    void writeToXml(const string& path);
+    int  getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
+    bool support(const string& dictpath);
 
-	struct aldict_header m_header;
+    struct aldict_header m_header;
 private:
     struct IndexStat {
         int start;
@@ -37,19 +37,19 @@ private:
         vector<address_t> locs;
     };
 
-	void loadIndexTree(tree_node<aldict_charindex>::treeNodePtr parent,
+    void loadIndexTree(tree_node<aldict_charindex>::treeNodePtr parent,
                        void *chrblock, address_t size);
 
     bool loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
                    tree_node<aldict_charindex>::treeNodePtr parent,
                    IndexList& indexList);
 
-	bool readHeader();
-	void readChrIndex();
+    bool readHeader();
+    void readChrIndex();
 
-	bool lookup(char *strkey, tree_node<aldict_charindex>::treeNodePtr parent,
+    bool lookup(char *strkey, tree_node<aldict_charindex>::treeNodePtr parent,
                struct LookupStat& lookupStat);
-	bool lookup(char *strkey, address_t off, int len, struct LookupStat& lookupStat);
+    bool lookup(char *strkey, address_t off, int len, struct LookupStat& lookupStat);
     void lookupCandidate(tree_node<aldict_charindex>::treeNodePtr parent,
                          string& header, IndexList& candidate);
     int  bsearch(tree_node<aldict_charindex>::treeNodePtr parent,
@@ -60,12 +60,12 @@ private:
     tree_node<aldict_charindex>::treeNodePtr
     findTreeNode(char *strkey, tree_node<aldict_charindex>::treeNodePtr parent, int* remain);
 
-	kary_tree2<aldict_charindex> *m_indexTree;
-	address_t m_chrIndexLoc;
-	address_t m_strIndexLoc;
-	address_t m_dataLoc;
-	FILE *m_dictFile;
-	IndexList m_indexList;
+    kary_tree2<aldict_charindex> *m_indexTree;
+    address_t m_chrIndexLoc;
+    address_t m_strIndexLoc;
+    address_t m_dataLoc;
+    FILE *m_dictFile;
+    IndexList m_indexList;
     int m_indexStart;
     int m_indexEnd;
     int m_indexNumber;

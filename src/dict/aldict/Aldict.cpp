@@ -9,14 +9,14 @@ Aldict::Aldict():m_bLoad(false)
 {
 }
 
-Aldict::Aldict(const string& dictname):m_bLoad(false)
+Aldict::Aldict(const string& dictpath):m_bLoad(false)
 {
-	m_doc.loadDict(dictname);
+	m_doc.loadDict(dictpath);
 }
 
-bool Aldict::load(const string& dictname)
+bool Aldict::load(const string& dictpath)
 {
-    m_bLoad = m_doc.loadDict(dictname);
+    m_bLoad = m_doc.loadDict(dictpath);
     return m_bLoad;
 }
 
@@ -94,9 +94,9 @@ iDictItem Aldict::onClick(int row, iIndexItem* item)
     return i;
 }
 
-bool Aldict::support(const string& dictname)
+bool Aldict::support(const string& dictpath)
 {
-    return m_doc.support(dictname);
+    return m_doc.support(dictpath);
 }
 
 void Aldict::getLanguage(string& from, string& to)
@@ -203,6 +203,10 @@ void Aldict::addToIndexCache(const string key, const iIndexItem& item)
 
 void Aldict::dataItemTodictItem(const struct aldict_dataitem& d, iDictItem& i)
 {
+    i.dictname = (char *)m_doc.m_header.d_identi;
+    i.word = string((const char*)d.ptr_word, (int)d.len_word);
+    free(d.ptr_word);
+
     if (d.len_phon > 0) {
         i.phonetic = string((const char*)d.ptr_phon, (int)d.len_phon);
         free(d.ptr_phon);
@@ -211,5 +215,5 @@ void Aldict::dataItemTodictItem(const struct aldict_dataitem& d, iDictItem& i)
         i.expl = string((const char*)d.ptr_expl, (int)d.len_expl);
         free(d.ptr_expl);
     }
-	free(d.ptr_word);
+
 }

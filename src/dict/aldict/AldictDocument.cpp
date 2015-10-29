@@ -544,19 +544,19 @@ void AldictDocument::writeToXml(const std::string& path)
 
 }
 
-bool AldictDocument::support(const string& dictname)
+bool AldictDocument::support(const string& dictpath)
 {
 #ifdef WIN32
-    wchar_t *wdictname = CharUtil::utf8srtowcs(dictname.c_str());
+    wchar_t *wdictname = CharUtil::utf8srtowcs(dictpath.c_str());
     if (wdictname != NULL) {
         m_dictFile = _wfopen(wdictname, L"rb");
         free(wdictname);
     }
 #else
-   m_dictFile = fopen(dictname.c_str(),"rb");
+   m_dictFile = fopen(dictpath.c_str(),"rb");
 #endif
 	if (m_dictFile == NULL) {
-	    g_sysLog.e("Can't open dict file:(%s)", dictname.c_str());
+	    g_sysLog.e("Can't open dict file:(%s)", dictpath.c_str());
 		return false;
 	}
 

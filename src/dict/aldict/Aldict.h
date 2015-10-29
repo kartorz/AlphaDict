@@ -9,7 +9,7 @@ using namespace std;
 class Aldict: public iDict
 {
 public:
-    Aldict(const string& dictname);
+    Aldict(const string& dictpath);
     Aldict();
     ~Aldict();
     virtual bool lookup(const string& word, DictItemList& itemList);
@@ -17,8 +17,8 @@ public:
     virtual int getIndexList(IndexList& indexList, int start, int end, const string& startwith="");
     virtual iDictItem onClick(int row, iIndexItem* item);
     virtual string identifier();
-    virtual bool support(const string& dictname);
-    virtual bool load(const string& dictname);
+    virtual bool support(const string& dictpath);
+    virtual bool load(const string& dictpath);
     virtual void getLanguage(string& from, string& to);
     virtual void summary(string& text);
 

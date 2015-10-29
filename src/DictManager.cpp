@@ -300,7 +300,7 @@ void DictManager::onClick(int row, iIndexItem* item)
     DictItemList* arg1 = new DictItemList();
     arg1->push_back(m_dictOpen[0].dict->onClick(row, item));
     int did = m_dictOpen[0].dictId;
-    (*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
+    //(*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
     g_application.uiMessageQ()->push(MSG_SET_DICTITEMS, -1, (void *)arg1);
 }
 
