@@ -48,8 +48,12 @@ public:
         addToVbToolButton->setObjectName(QStringLiteral("addToVbToolButton"));
         addToVbToolButton->setGeometry(QRect(351, 7, 28, 28));
         QIcon icon;
-        icon.addFile(QStringLiteral(":/res/plus_24x24.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QStringLiteral(":/res/favorite.png"), QSize(), QIcon::Normal, QIcon::Off);
         addToVbToolButton->setIcon(icon);
+        addToVbToolButton->setIconSize(QSize(32, 32));
+        addToVbToolButton->setAutoExclusive(false);
+        addToVbToolButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        addToVbToolButton->setAutoRaise(true);
 
         retranslateUi(CapWordDialog);
 
