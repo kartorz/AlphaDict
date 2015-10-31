@@ -38,11 +38,14 @@ private slots:
 //    void on_saveToolButton_clicked();
 
 //    void on_dictToolButton_clicked();
+//    void on_textEdit_customContextMenuRequested(const QPoint &pos);
+    void on_addToVbToolButton_clicked();
 
 private:
+    MainWindow *m_owner;
+    QString m_capword;
     bool m_bAutoClose;
     int  m_autoCloseInterval;
-
     QTimer *m_timer;
     Ui::CapWordDialog *ui;
 };

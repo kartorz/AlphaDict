@@ -30,9 +30,12 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>380</width>
+     <width>350</width>
      <height>180</height>
     </rect>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
    </property>
    <property name="acceptDrops">
     <bool>false</bool>
@@ -44,7 +47,26 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QToolButton" name="addToVbToolButton">
+   <property name="geometry">
+    <rect>
+     <x>351</x>
+     <y>7</y>
+     <width>28</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/res/plus_24x24.png</normaloff>:/res/plus_24x24.png</iconset>
+   </property>
+  </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="mainwindow.qrc"/>
+ </resources>
  <connections/>
 </ui>

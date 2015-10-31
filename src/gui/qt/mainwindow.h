@@ -22,8 +22,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-friend class  QtMessager;
-
+friend class QtMessager;
+friend class CapWordDialog;
 public:
     static void showToolTip(QString info, int displayTimeMS=1500);
     static void showToolTip(QString info, QPoint pos, int displayTimeMS=1500);

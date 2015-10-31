@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'capworddialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.0
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,6 +16,7 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QTextEdit>
+#include <QtWidgets/QToolButton>
 
 QT_BEGIN_NAMESPACE
 
@@ -23,6 +24,7 @@ class Ui_CapWordDialog
 {
 public:
     QTextEdit *textEdit;
+    QToolButton *addToVbToolButton;
 
     void setupUi(QDialog *CapWordDialog)
     {
@@ -35,12 +37,19 @@ public:
         CapWordDialog->setModal(false);
         textEdit = new QTextEdit(CapWordDialog);
         textEdit->setObjectName(QStringLiteral("textEdit"));
-        textEdit->setGeometry(QRect(0, 0, 380, 180));
+        textEdit->setGeometry(QRect(0, 0, 350, 180));
+        textEdit->setContextMenuPolicy(Qt::DefaultContextMenu);
         textEdit->setAcceptDrops(false);
 #ifndef QT_NO_STATUSTIP
         textEdit->setStatusTip(QStringLiteral(""));
 #endif // QT_NO_STATUSTIP
         textEdit->setReadOnly(true);
+        addToVbToolButton = new QToolButton(CapWordDialog);
+        addToVbToolButton->setObjectName(QStringLiteral("addToVbToolButton"));
+        addToVbToolButton->setGeometry(QRect(351, 7, 28, 28));
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/res/plus_24x24.png"), QSize(), QIcon::Normal, QIcon::Off);
+        addToVbToolButton->setIcon(icon);
 
         retranslateUi(CapWordDialog);
 
@@ -50,6 +59,7 @@ public:
     void retranslateUi(QDialog *CapWordDialog)
     {
         CapWordDialog->setWindowTitle(QApplication::translate("CapWordDialog", "Capture Word", 0));
+        addToVbToolButton->setText(QString());
     } // retranslateUi
 
 };

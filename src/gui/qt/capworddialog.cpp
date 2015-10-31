@@ -1,4 +1,5 @@
 #include <QtCore/QTimer>
+#include <QtWidgets/QMenu>
 
 #include "capworddialog.h"
 #include "ui_capworddialog.h"
@@ -12,7 +13,8 @@ CapWordDialog::CapWordDialog(MainWindow *owner, bool autoclose, int inv):
     QDialog(NULL),
     ui(new Ui::CapWordDialog),
     m_bAutoClose(autoclose),
-    m_autoCloseInterval(inv)
+    m_autoCloseInterval(inv),
+    m_owner(owner)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
@@ -41,7 +43,6 @@ void CapWordDialog::moveToCursor()
 void CapWordDialog::setDictItemList(DictItemList *itemList)
 {
     //DictItemList* itemList = (DictItemList*) v;
-
     ui->textEdit->clear();
 
     QTextCursor cursor(ui->textEdit->textCursor());
@@ -52,7 +53,8 @@ void CapWordDialog::setDictItemList(DictItemList *itemList)
 
     titleFormat.setFontWeight(QFont::DemiBold);
     //cursor.insertBlock();
-    text = QString::fromUtf8((*itemList)[0].word.c_str());
+    m_capword = QString::fromUtf8((*itemList)[0].word.c_str());
+    text = m_capword;
     cursor.insertText(text, titleFormat);
     text = QString::fromUtf8((*itemList)[0].phonetic.c_str());
     text = text.trimmed();
@@ -115,3 +117,20 @@ bool CapWordDialog::eventFilter( QObject * watched, QEvent * event )
     return false;
 }
 #endif
+#if 0
+void CapWordDialog::on_textEdit_customContextMenuRequested(const QPoint &pos)
+{
+    QMenu *menu = ui->textEdit->createStandardContextMenu();
+    menu->addAction(tr("My Menu Item"));
+    menu->exec(mapToGlobal(pos));
+}
+#endif
+
+void CapWordDialog::on_addToVbToolButton_clicked()
+{
+    if (m_capword != ""  && m_owner->m_vbookModel->add(m_capword)) {
+        m_owner->showToolTip(tr("Add to vocabulary book,success"));
+    } else {
+        m_owner->showToolTip(tr("Add to vocabulary book,failure"));
+    }
+}
