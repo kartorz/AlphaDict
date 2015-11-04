@@ -33,12 +33,12 @@ bool VocabularyBook::load(const string& bookfile)
     string dbfile = bookfile + m_db->suffix();    
     if (Util::isFileExist(dbfile)) {
         m_db->open(dbfile);
-        loadDB(dbfile);
+        return loadDB(dbfile);
     } else {
         m_db->open(dbfile);  // will create db file.
         m_db->createTable(s_tblWordName, s_tblWordColumnName, s_tblWordColumnType, s_tblWordRowLen);
 
-        loadXml(bookfile + ".xml"); // Used to use xml to save data.
+        return loadXml(bookfile + ".xml"); // Used to use xml to save data.
     }
 }
 
@@ -56,6 +56,7 @@ bool VocabularyBook::loadDB(const string& dbfile)
 
         m_wdlist.push_back(item);
     }
+	return true;
 }
 
 bool VocabularyBook::loadXml(const string& bookfile)

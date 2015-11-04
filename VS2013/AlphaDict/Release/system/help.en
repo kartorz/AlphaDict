@@ -1,0 +1,104 @@
+* About AlphaDict
+=================
+
+  version: 1.3
+  AlphaDict by joni lee (li liqiong) <joni.kartorz.lee@gmail.com>.
+
+  It's a lightweight, open-source dictionary software with a open dict format,
+  that you can make your own dictionary.
+
+  You can download software, code, dicts and get information from the below URLs.
+    sourceforge: "http://sourceforge.net/projects/alphadict"
+    github     : "https://github.com/kartorz/AlphaDict"
+    wiki       : "https://github.com/kartorz/AlphaDict/wiki"
+    netdisk    : "http://pan.baidu.com/s/1dD9v12D"
+
+* Dictionary Format
+===================
+
+  AlphaDict has a custom dictionary format including a back-end inner format 
+  (doc/dictionary_inner.pdf) and a front-end xml format (doc/front-end_format.xml).
+
+  Usually, user should edit "front-end" xml, then use AlConvert(.exe) to convert.
+  More detail about dictionary, see "README" doc or "wiki".
+
+
+* Dictionary Selection
+======================
+
+  AlphaDict supports a variety of languages. It selects dict accroding to language instead of input text.
+  It checks dicts one by one from top to buttom of dict list, util find a dict to fit the lanague on 
+  "Dictionary page". 
+
+  Usr can choose source and destination language on "Dictionary page", change the order of dict in list 
+  on "Setting page". AlphaDict will choose dict according to the change for setting.
+
+  For example:
+      "any" --> "any"         : Select the first dict definitely.
+      "any" --> "chinese"     : Select the first dict that its destionation language
+                                  being "chinese" or "any".
+      "english" --> "chinese" : Select the first dict that its source language being
+                                  "english" or "any", and its destionation language
+                                  being "chinese" or "any".
+
+      "any" value of language can match any language (in other words, not specified).
+
+
+* Capture Word of Screen
+========================
+
+  AlphaDict supports three capture methods, Shortcut Key to enable/disable this function, 
+  and auto close the Capture Word Dialog.
+
+  Three Capture Methods
+  ---------------------
+  . Mouse Selection
+    Select text by mouse: press left button of mouse, then move mouse, unpress the button finally.
+    AlphaDict will capture the selection word and translate.
+
+    Support all most Applications like (IE, Adobe pdf, firefox, etc).
+
+  . Mouse Over
+    Move the mouse cursor over a text.
+    AlphaDict will extract the word within the text under mouse cursor to translate.
+
+    Don't support the Applications using custom rendering font instead of "TextOut" 
+    APIs, like (IE, firefox, Adobe PDF)--You should use "Mouse Selection" or 
+    "Clipboard" to capture instead.
+
+  . Clipboard
+    Copy the text to clipboard.
+    AlphaDict will listen the clipboard change, get this text and translate.
+
+  User can change setting on "Dict Setting Page".
+
+  Shortcut Key
+  ------------
+  It's annoying AlphaDict pops Capture Word Dialog always. So, AlphaDict provides a shortcut key, 
+  you can disalbe or enable the capture function alternately.
+  The default Shortcut key is "ctrl + alt + G" -- G is the key not the capital letter.
+
+  How to Close Capture Word Dialog
+  --------------------------------
+  . "ESC" key.
+    If dialog can't be closed, user should click the Capture Word Dialog first.
+    (focus on the dialog), then press "ESC" key.
+
+  . Mouse click outside of dialog.
+    Currently, AlphaDict does't support win64 applications and some other 
+    applications, like "IE". 
+    If dialog can't be closed, user should click the Capture Word Dialog first 
+    (focus on the dialog),then click outside of the dialog.
+
+  . Auto close(10s).
+    User can enable/disalbe "autoclose" on "Dict Setting Page".
+    When mouse over this dialog, "autoclose" will be disable.
+
+* System Setting
+================
+The following setting should restart application to make it valid.
+  . UI Language
+  . Font
+  . Font Size
+  . Restore to Default Setting
+
