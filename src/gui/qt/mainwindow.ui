@@ -70,7 +70,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -656,7 +656,7 @@
       </property>
       <property name="icon">
        <iconset resource="mainwindow.qrc">
-        <normaloff>:/res/up-48*48.png</normaloff>:/res/up-48*48.png</iconset>
+        <normaloff>:/res/up-48x48.png</normaloff>:/res/up-48x48.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -685,7 +685,7 @@
       </property>
       <property name="icon">
        <iconset resource="mainwindow.qrc">
-        <normaloff>:/res/down-48*48.png</normaloff>:/res/down-48*48.png</iconset>
+        <normaloff>:/res/down-48x48.png</normaloff>:/res/down-48x48.png</iconset>
       </property>
       <property name="iconSize">
        <size>

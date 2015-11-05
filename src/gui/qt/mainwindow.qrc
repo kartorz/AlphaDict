@@ -21,5 +21,7 @@
         <file>res/error.png</file>
         <file>res/plus_24x24.png</file>
         <file>res/minus_24x24.png</file>
+        <file>res/down-48x48.png</file>
+        <file>res/up-48x48.png</file>
     </qresource>
 </RCC>
