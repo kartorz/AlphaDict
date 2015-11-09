@@ -6,6 +6,7 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QDebug>
 #include <QtCore/QEvent>
+#include <QtCore/QSettings>
 #include <QtGui/QCursor>
 #include <QtGui/QFontDatabase> 
 #include <QtGui/QtEvents>
@@ -37,6 +38,12 @@ MainWindow::MainWindow(QWidget *parent) :
     m_bHideVBookExpl(false)
 {
     ui->setupUi(this);
+
+	QSettings settings(APP_ORGANIZATION, APP_NAME);
+	if (settings.contains(KEY_WIN_GEOMETRY)) {
+		restoreGeometry(settings.value(KEY_WIN_GEOMETRY).toByteArray());
+	}
+
     //ui->tabWidget->setTabsClosable(true);
     //ui->queryButton->setStyleSheet("background-image:url(:/res/search.png)");
     //ui->queryButton->setIconSize(QSize(64,64));
@@ -839,6 +846,9 @@ void MainWindow::onTrayMenuClose()
 
 void MainWindow::closeEvent(QCloseEvent * event)
 {
+	QSettings settings(APP_ORGANIZATION, APP_NAME);
+	settings.setValue("geometry", saveGeometry());
+
     if (!m_systray->isVisible()) {
         if (m_config->m_setting.bsystemTray) {
             m_systray->show();

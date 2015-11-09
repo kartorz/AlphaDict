@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>536</height>
+    <width>732</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,10 +16,22 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>708</width>
+    <height>524</height>
+   </size>
+  </property>
   <property name="maximumSize">
    <size>
-    <width>730</width>
-    <height>542</height>
+    <width>756</width>
+    <height>572</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="focusPolicy">
@@ -47,8 +59,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>718</width>
-      <height>451</height>
+      <width>732</width>
+      <height>464</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -70,7 +82,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <property name="iconSize">
      <size>
@@ -723,15 +735,15 @@
        <rect>
         <x>-1</x>
         <y>-3</y>
-        <width>717</width>
-        <height>422</height>
+        <width>732</width>
+        <height>444</height>
        </rect>
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
       <property name="tabPosition">
-       <enum>QTabWidget::South</enum>
+       <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -745,8 +757,8 @@
          <rect>
           <x>-1</x>
           <y>0</y>
-          <width>340</width>
-          <height>385</height>
+          <width>355</width>
+          <height>439</height>
          </rect>
         </property>
         <property name="toolTip">
@@ -764,8 +776,8 @@
         <widget class="QLabel" name="uilanLabel">
          <property name="geometry">
           <rect>
-           <x>17</x>
-           <y>37</y>
+           <x>25</x>
+           <y>66</y>
            <width>99</width>
            <height>17</height>
           </rect>
@@ -777,8 +789,8 @@
         <widget class="QComboBox" name="uilanComboBox">
          <property name="geometry">
           <rect>
-           <x>120</x>
-           <y>31</y>
+           <x>128</x>
+           <y>60</y>
            <width>210</width>
            <height>27</height>
           </rect>
@@ -800,8 +812,8 @@
         <widget class="QLabel" name="fontSizeLabel">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>115</y>
+           <x>27</x>
+           <y>161</y>
            <width>87</width>
            <height>17</height>
           </rect>
@@ -813,8 +825,8 @@
         <widget class="QComboBox" name="fontsizeComboBox">
          <property name="geometry">
           <rect>
-           <x>119</x>
-           <y>110</y>
+           <x>126</x>
+           <y>156</y>
            <width>211</width>
            <height>27</height>
           </rect>
@@ -841,8 +853,8 @@
         <widget class="QLabel" name="fontLabel">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>76</y>
+           <x>25</x>
+           <y>113</y>
            <width>87</width>
            <height>17</height>
           </rect>
@@ -855,9 +867,9 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>170</y>
+           <y>207</y>
            <width>118</width>
-           <height>22</height>
+           <height>25</height>
           </rect>
          </property>
          <property name="layoutDirection">
@@ -876,8 +888,8 @@
          </property>
          <property name="geometry">
           <rect>
-           <x>120</x>
-           <y>70</y>
+           <x>125</x>
+           <y>107</y>
            <width>209</width>
            <height>27</height>
           </rect>
@@ -1377,8 +1389,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>-3</x>
         <y>-1</y>
-        <width>720</width>
-        <height>421</height>
+        <width>732</width>
+        <height>438</height>
        </rect>
       </property>
       <property name="readOnly">

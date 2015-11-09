@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.0. It"
+#error "This file was generated using the moc from 5.5.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,77 +20,78 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[62];
-    char stringdata[1469];
+    char stringdata0[1469];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
-QT_MOC_LITERAL(0, 0, 10),
-QT_MOC_LITERAL(1, 11, 16),
-QT_MOC_LITERAL(2, 28, 0),
-QT_MOC_LITERAL(3, 29, 1),
-QT_MOC_LITERAL(4, 31, 23),
-QT_MOC_LITERAL(5, 55, 16),
-QT_MOC_LITERAL(6, 72, 3),
-QT_MOC_LITERAL(7, 76, 3),
-QT_MOC_LITERAL(8, 80, 37),
-QT_MOC_LITERAL(9, 118, 4),
-QT_MOC_LITERAL(10, 123, 37),
-QT_MOC_LITERAL(11, 161, 32),
-QT_MOC_LITERAL(12, 194, 28),
-QT_MOC_LITERAL(13, 223, 22),
-QT_MOC_LITERAL(14, 246, 24),
-QT_MOC_LITERAL(15, 271, 5),
-QT_MOC_LITERAL(16, 277, 26),
-QT_MOC_LITERAL(17, 304, 28),
-QT_MOC_LITERAL(18, 333, 28),
-QT_MOC_LITERAL(19, 362, 26),
-QT_MOC_LITERAL(20, 389, 26),
-QT_MOC_LITERAL(21, 416, 25),
-QT_MOC_LITERAL(22, 442, 27),
-QT_MOC_LITERAL(23, 470, 29),
-QT_MOC_LITERAL(24, 500, 26),
-QT_MOC_LITERAL(25, 527, 32),
-QT_MOC_LITERAL(26, 560, 21),
-QT_MOC_LITERAL(27, 582, 27),
-QT_MOC_LITERAL(28, 610, 26),
-QT_MOC_LITERAL(29, 637, 28),
-QT_MOC_LITERAL(30, 666, 25),
-QT_MOC_LITERAL(31, 692, 26),
-QT_MOC_LITERAL(32, 719, 37),
-QT_MOC_LITERAL(33, 757, 25),
-QT_MOC_LITERAL(34, 783, 27),
-QT_MOC_LITERAL(35, 811, 26),
-QT_MOC_LITERAL(36, 838, 32),
-QT_MOC_LITERAL(37, 871, 7),
-QT_MOC_LITERAL(38, 879, 9),
-QT_MOC_LITERAL(39, 889, 24),
-QT_MOC_LITERAL(40, 914, 25),
-QT_MOC_LITERAL(41, 940, 21),
-QT_MOC_LITERAL(42, 962, 22),
-QT_MOC_LITERAL(43, 985, 27),
-QT_MOC_LITERAL(44, 1013, 31),
-QT_MOC_LITERAL(45, 1045, 31),
-QT_MOC_LITERAL(46, 1077, 28),
-QT_MOC_LITERAL(47, 1106, 27),
-QT_MOC_LITERAL(48, 1134, 35),
-QT_MOC_LITERAL(49, 1170, 33),
-QT_MOC_LITERAL(50, 1204, 29),
-QT_MOC_LITERAL(51, 1234, 18),
-QT_MOC_LITERAL(52, 1253, 33),
-QT_MOC_LITERAL(53, 1287, 6),
-QT_MOC_LITERAL(54, 1294, 29),
-QT_MOC_LITERAL(55, 1324, 25),
-QT_MOC_LITERAL(56, 1350, 33),
-QT_MOC_LITERAL(57, 1384, 15),
-QT_MOC_LITERAL(58, 1400, 18),
-QT_MOC_LITERAL(59, 1419, 18),
-QT_MOC_LITERAL(60, 1438, 14),
-QT_MOC_LITERAL(61, 1453, 15)
+QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
+QT_MOC_LITERAL(1, 11, 16), // "onUpdateExplText"
+QT_MOC_LITERAL(2, 28, 0), // ""
+QT_MOC_LITERAL(3, 29, 1), // "v"
+QT_MOC_LITERAL(4, 31, 23), // "onUpdateCapWordExplText"
+QT_MOC_LITERAL(5, 55, 16), // "onSetLanComboBox"
+QT_MOC_LITERAL(6, 72, 3), // "src"
+QT_MOC_LITERAL(7, 76, 3), // "det"
+QT_MOC_LITERAL(8, 80, 37), // "on_srcLanComboBox_currentInde..."
+QT_MOC_LITERAL(9, 118, 4), // "arg1"
+QT_MOC_LITERAL(10, 123, 37), // "on_detLanComboBox_currentInde..."
+QT_MOC_LITERAL(11, 161, 32), // "on_inputLineEdit_editingFinished"
+QT_MOC_LITERAL(12, 194, 28), // "on_inputLineEdit_textChanged"
+QT_MOC_LITERAL(13, 223, 22), // "on_queryButton_clicked"
+QT_MOC_LITERAL(14, 246, 24), // "on_indexListView_clicked"
+QT_MOC_LITERAL(15, 271, 5), // "index"
+QT_MOC_LITERAL(16, 277, 26), // "on_indexListView_activated"
+QT_MOC_LITERAL(17, 304, 28), // "on_pgdownToolButton1_clicked"
+QT_MOC_LITERAL(18, 333, 28), // "on_pgdownToolButton2_clicked"
+QT_MOC_LITERAL(19, 362, 26), // "on_pgupToolButton1_clicked"
+QT_MOC_LITERAL(20, 389, 26), // "on_pgupToolButton2_clicked"
+QT_MOC_LITERAL(21, 416, 25), // "on_dictListWidget_clicked"
+QT_MOC_LITERAL(22, 442, 27), // "on_dictUpToolButton_clicked"
+QT_MOC_LITERAL(23, 470, 29), // "on_dictDownToolButton_clicked"
+QT_MOC_LITERAL(24, 500, 26), // "on_uilanComboBox_activated"
+QT_MOC_LITERAL(25, 527, 32), // "on_indexLineEdit_editingFinished"
+QT_MOC_LITERAL(26, 560, 21), // "on_saveButton_clicked"
+QT_MOC_LITERAL(27, 582, 27), // "on_tabWidget_currentChanged"
+QT_MOC_LITERAL(28, 610, 26), // "on_vbdelToolButton_clicked"
+QT_MOC_LITERAL(29, 637, 28), // "on_vbclearToolButton_clicked"
+QT_MOC_LITERAL(30, 666, 25), // "on_vbpreItemTlBtn_clicked"
+QT_MOC_LITERAL(31, 692, 26), // "on_vbnextItemTlBtn_clicked"
+QT_MOC_LITERAL(32, 719, 37), // "on_vbModeComboBox_currentInde..."
+QT_MOC_LITERAL(33, 757, 25), // "on_vbookTableView_clicked"
+QT_MOC_LITERAL(34, 783, 27), // "on_vbookTableView_activated"
+QT_MOC_LITERAL(35, 811, 26), // "on_vbInput_editingFinished"
+QT_MOC_LITERAL(36, 838, 32), // "on_vbExplHideradioButton_clicked"
+QT_MOC_LITERAL(37, 871, 7), // "checked"
+QT_MOC_LITERAL(38, 879, 9), // "onAppExit"
+QT_MOC_LITERAL(39, 889, 24), // "onActionSettingPageAdded"
+QT_MOC_LITERAL(40, 914, 25), // "onActionVcbularyPageAdded"
+QT_MOC_LITERAL(41, 940, 21), // "onActionHelpPageAdded"
+QT_MOC_LITERAL(42, 962, 22), // "onClipboardDataChanged"
+QT_MOC_LITERAL(43, 985, 27), // "onClipboardSelectionChanged"
+QT_MOC_LITERAL(44, 1013, 31), // "on_cwsClipboardCheckBox_clicked"
+QT_MOC_LITERAL(45, 1045, 31), // "on_cwsSelectionCheckBox_clicked"
+QT_MOC_LITERAL(46, 1077, 28), // "on_cwsEnableCheckBox_clicked"
+QT_MOC_LITERAL(47, 1106, 27), // "on_cwsMouseCheckBox_clicked"
+QT_MOC_LITERAL(48, 1134, 35), // "on_cwsShortcutkeyComboBox_act..."
+QT_MOC_LITERAL(49, 1170, 33), // "on_cwsAutoCloseEnCheckBox_cli..."
+QT_MOC_LITERAL(50, 1204, 29), // "on_fontsizeComboBox_activated"
+QT_MOC_LITERAL(51, 1234, 18), // "onSysTrayActivated"
+QT_MOC_LITERAL(52, 1253, 33), // "QSystemTrayIcon::ActivationRe..."
+QT_MOC_LITERAL(53, 1287, 6), // "reason"
+QT_MOC_LITERAL(54, 1294, 29), // "on_systemTrayCheckBox_clicked"
+QT_MOC_LITERAL(55, 1324, 25), // "on_fontComboBox_activated"
+QT_MOC_LITERAL(56, 1350, 33), // "on_resetSettingToolButton_cli..."
+QT_MOC_LITERAL(57, 1384, 15), // "onTrayCwsEnable"
+QT_MOC_LITERAL(58, 1400, 18), // "onTrayCwsClipboard"
+QT_MOC_LITERAL(59, 1419, 18), // "onTrayCwsSelection"
+QT_MOC_LITERAL(60, 1438, 14), // "onTrayCwsMouse"
+QT_MOC_LITERAL(61, 1453, 15) // "onTrayMenuClose"
+
     },
     "MainWindow\0onUpdateExplText\0\0v\0"
     "onUpdateCapWordExplText\0onSetLanComboBox\0"
@@ -268,6 +269,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         MainWindow *_t = static_cast<MainWindow *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->onUpdateExplText((*reinterpret_cast< void*(*)>(_a[1]))); break;
         case 1: _t->onUpdateCapWordExplText((*reinterpret_cast< void*(*)>(_a[1]))); break;
@@ -328,7 +330,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 
 const QMetaObject MainWindow::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_MainWindow.data,
-      qt_meta_data_MainWindow,  qt_static_metacall, 0, 0}
+      qt_meta_data_MainWindow,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -339,8 +341,8 @@ const QMetaObject *MainWindow::metaObject() const
 
 void *MainWindow::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_MainWindow.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_MainWindow.stringdata0))
         return static_cast<void*>(const_cast< MainWindow*>(this));
     return QMainWindow::qt_metacast(_clname);
 }

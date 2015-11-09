@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.0
+** Created by: Qt User Interface Compiler version 5.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -106,13 +106,15 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(720, 536);
+        MainWindow->resize(732, 548);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
-        MainWindow->setMaximumSize(QSize(730, 542));
+        MainWindow->setMinimumSize(QSize(708, 524));
+        MainWindow->setMaximumSize(QSize(756, 572));
+        MainWindow->setSizeIncrement(QSize(0, 0));
         MainWindow->setFocusPolicy(Qt::NoFocus);
         QIcon icon;
         icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -141,7 +143,7 @@ public:
         centralWidget->setFocusPolicy(Qt::NoFocus);
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 718, 451));
+        tabWidget->setGeometry(QRect(0, 0, 732, 464));
         QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Maximum);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -331,42 +333,42 @@ public:
         settingTab->setEnabled(true);
         settingTabWidget = new QTabWidget(settingTab);
         settingTabWidget->setObjectName(QStringLiteral("settingTabWidget"));
-        settingTabWidget->setGeometry(QRect(-1, -3, 717, 422));
+        settingTabWidget->setGeometry(QRect(-1, -3, 732, 444));
         settingTabWidget->setFocusPolicy(Qt::NoFocus);
-        settingTabWidget->setTabPosition(QTabWidget::South);
+        settingTabWidget->setTabPosition(QTabWidget::West);
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         groupBox_3 = new QGroupBox(tab);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(-1, 0, 340, 385));
+        groupBox_3->setGeometry(QRect(-1, 0, 355, 439));
         groupBox_3->setStyleSheet(QLatin1String("#groupBox_3 { \n"
 "     border: 1px solid gray; \n"
 "     border-radius: 1px; \n"
 " } "));
         uilanLabel = new QLabel(groupBox_3);
         uilanLabel->setObjectName(QStringLiteral("uilanLabel"));
-        uilanLabel->setGeometry(QRect(17, 37, 99, 17));
+        uilanLabel->setGeometry(QRect(25, 66, 99, 17));
         uilanComboBox = new QComboBox(groupBox_3);
         uilanComboBox->setObjectName(QStringLiteral("uilanComboBox"));
-        uilanComboBox->setGeometry(QRect(120, 31, 210, 27));
+        uilanComboBox->setGeometry(QRect(128, 60, 210, 27));
         fontSizeLabel = new QLabel(groupBox_3);
         fontSizeLabel->setObjectName(QStringLiteral("fontSizeLabel"));
-        fontSizeLabel->setGeometry(QRect(20, 115, 87, 17));
+        fontSizeLabel->setGeometry(QRect(27, 161, 87, 17));
         fontsizeComboBox = new QComboBox(groupBox_3);
         fontsizeComboBox->setObjectName(QStringLiteral("fontsizeComboBox"));
-        fontsizeComboBox->setGeometry(QRect(119, 110, 211, 27));
+        fontsizeComboBox->setGeometry(QRect(126, 156, 211, 27));
         fontLabel = new QLabel(groupBox_3);
         fontLabel->setObjectName(QStringLiteral("fontLabel"));
-        fontLabel->setGeometry(QRect(20, 76, 87, 17));
+        fontLabel->setGeometry(QRect(25, 113, 87, 17));
         systemTrayCheckBox = new QCheckBox(groupBox_3);
         systemTrayCheckBox->setObjectName(QStringLiteral("systemTrayCheckBox"));
-        systemTrayCheckBox->setGeometry(QRect(20, 170, 118, 22));
+        systemTrayCheckBox->setGeometry(QRect(20, 207, 118, 25));
         systemTrayCheckBox->setLayoutDirection(Qt::LeftToRight);
         systemTrayCheckBox->setTristate(false);
         fontComboBox = new QFontComboBox(groupBox_3);
         fontComboBox->setObjectName(QStringLiteral("fontComboBox"));
         fontComboBox->setEnabled(true);
-        fontComboBox->setGeometry(QRect(120, 70, 209, 27));
+        fontComboBox->setGeometry(QRect(125, 107, 209, 27));
         fontComboBox->setEditable(false);
         resetSettingToolButton = new QToolButton(groupBox_3);
         resetSettingToolButton->setObjectName(QStringLiteral("resetSettingToolButton"));
@@ -465,7 +467,7 @@ public:
         helpTab->setObjectName(QStringLiteral("helpTab"));
         helpTextEdit = new QTextEdit(helpTab);
         helpTextEdit->setObjectName(QStringLiteral("helpTextEdit"));
-        helpTextEdit->setGeometry(QRect(-3, -1, 720, 421));
+        helpTextEdit->setGeometry(QRect(-3, -1, 732, 438));
         helpTextEdit->setReadOnly(true);
         tabWidget->addTab(helpTab, QString());
         MainWindow->setCentralWidget(centralWidget);
@@ -486,7 +488,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
         settingTabWidget->setCurrentIndex(0);
 
 

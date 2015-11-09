@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'DictIndexModel.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'DictIndexModel.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.0. It"
+#error "This file was generated using the moc from 5.5.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,22 +20,23 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_DictIndexModel_t {
     QByteArrayData data[7];
-    char stringdata[69];
+    char stringdata0[69];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_DictIndexModel_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_DictIndexModel_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_DictIndexModel_t qt_meta_stringdata_DictIndexModel = {
     {
-QT_MOC_LITERAL(0, 0, 14),
-QT_MOC_LITERAL(1, 15, 16),
-QT_MOC_LITERAL(2, 32, 0),
-QT_MOC_LITERAL(3, 33, 6),
-QT_MOC_LITERAL(4, 40, 9),
-QT_MOC_LITERAL(5, 50, 15),
-QT_MOC_LITERAL(6, 66, 2)
+QT_MOC_LITERAL(0, 0, 14), // "DictIndexModel"
+QT_MOC_LITERAL(1, 15, 16), // "onResetIndexList"
+QT_MOC_LITERAL(2, 32, 0), // ""
+QT_MOC_LITERAL(3, 33, 6), // "string"
+QT_MOC_LITERAL(4, 40, 9), // "startwith"
+QT_MOC_LITERAL(5, 50, 15), // "updateIndexList"
+QT_MOC_LITERAL(6, 66, 2) // "pg"
+
     },
     "DictIndexModel\0onResetIndexList\0\0"
     "string\0startwith\0updateIndexList\0pg"
@@ -72,6 +73,7 @@ void DictIndexModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         DictIndexModel *_t = static_cast<DictIndexModel *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->onResetIndexList((*reinterpret_cast< string(*)>(_a[1]))); break;
         case 1: _t->onResetIndexList(); break;
@@ -84,7 +86,7 @@ void DictIndexModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
 
 const QMetaObject DictIndexModel::staticMetaObject = {
     { &QAbstractListModel::staticMetaObject, qt_meta_stringdata_DictIndexModel.data,
-      qt_meta_data_DictIndexModel,  qt_static_metacall, 0, 0}
+      qt_meta_data_DictIndexModel,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -95,8 +97,8 @@ const QMetaObject *DictIndexModel::metaObject() const
 
 void *DictIndexModel::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_DictIndexModel.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_DictIndexModel.stringdata0))
         return static_cast<void*>(const_cast< DictIndexModel*>(this));
     return QAbstractListModel::qt_metacast(_clname);
 }

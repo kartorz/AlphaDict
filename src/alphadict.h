@@ -12,8 +12,14 @@
 #include "config.h"
 #endif
 
+#define APP_NAME "AlphaDict"
+#define APP_ORGANIZATION "Alpha Team"
+
+#define KEY_WIN_GEOMETRY "geometry"
+
 #define AL_VERSION  "1.3"
 #define NPOS  -1
+
 
 #define AL_ASSERT(cond, msg)  \
 do { \

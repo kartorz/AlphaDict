@@ -106,7 +106,7 @@ void CALLBACK TimerFunc(HWND hWnd,UINT nMsg,UINT nTimerid,DWORD dwTime)
             if (!g_hTextOutHook) {
                 DWORD  ret;
                 DWORD  wParam = GetLastError();
-                SendMessageTimeout(g_hHookServer, WM_CW_ERROR, (WPARAM)wParam, 0, SMTO_ABORTIFHUNG, MSG_TIMEOUT, &ret);
+                SendMessageTimeout(g_hHookServer, WM_CW_ERROR, (WPARAM)wParam, 0, SMTO_ABORTIFHUNG, MSG_TIMEOUT, (PDWORD_PTR)&ret);
             }
         }
 
@@ -130,7 +130,7 @@ void CALLBACK TimerFunc(HWND hWnd,UINT nMsg,UINT nTimerid,DWORD dwTime)
                         BOOL  isWChr;
                         if (_CaptureTextEnable(g_hHookServer, hWnd, g_pMouse, &isWChr)) {
                             if (isWChr)  msgID++;
-                            SendMessageTimeout(g_hHookServer, msgID, 0, 0, SMTO_ABORTIFHUNG, 50, &ret);
+							SendMessageTimeout(g_hHookServer, msgID, 0, 0, SMTO_ABORTIFHUNG, 50, (PDWORD_PTR)&ret);
                         }
                     }
                 }
@@ -162,7 +162,7 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
         if (wParam == WM_LBUTTONDOWN || wParam == WM_NCLBUTTONDOWN ) {
             POINT pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
             DWORD  ret;
-            SendMessageTimeout(g_hHookServer, WM_CW_LBUTTON, pMouse.x, pMouse.y, SMTO_ABORTIFHUNG, 20, &ret);
+			SendMessageTimeout(g_hHookServer, WM_CW_LBUTTON, pMouse.x, pMouse.y, SMTO_ABORTIFHUNG, 20, (PDWORD_PTR)&ret);
             if (g_iCapMode & CAPMODE_MOUSE_SELECTION) {
                     g_pMouse = pMouse;
                     g_selectionStatus = 1;
@@ -175,7 +175,7 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
                 if ((g_iCapMode & CAPMODE_MOUSE_OVER) && (!g_bLButtonDown)) {
                     if (!g_bSelectionText /* wait processing seletion timer.*/) {
                     #ifdef TEXTOUT_HOOK
-                        g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+                        g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, (TIMERPROC)TimerFunc);
                         g_timerValid = true;
                      #endif
                      }
@@ -192,7 +192,7 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
                     g_selectionStatus = 3;
                     g_bSelectionText = TRUE;
                     g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
-                    g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, TimerFunc);
+					g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, (TIMERPROC)TimerFunc);
                     g_timerValid = true;
                 }
             }
