@@ -60,9 +60,10 @@ void CapWordDialog::setDictItemList(DictItemList *itemList)
     text = text.trimmed();
     if (text != "") {
         cursor.insertBlock();
+        text = text.replace('\n', "    ");
         cursor.insertText(text, titleFormat);
+        cursor.insertBlock();
     }
-    cursor.insertBlock();
 
     bodyFormat.setFontWeight(QFont::Light);
     cursor.insertBlock(itemBlock);

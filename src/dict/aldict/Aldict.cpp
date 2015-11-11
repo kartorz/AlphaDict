@@ -23,7 +23,7 @@ bool Aldict::load(const string& dictpath)
 bool Aldict::lookup(const string& word, DictItemList& itemList)
 {
     MutexLock lock(m_cs);
-
+    //printf("lookup: %s\n", word.c_str());
     if (m_bLoad && !word.empty()) {
         if (lookupCache(word, itemList))
             return true;
@@ -53,17 +53,25 @@ bool Aldict::lookup(const string& word, DictItemList& itemList)
             addToDictCache(word, itemList);
             return true;
         }else {
-            iDictItem item;
-            item.word = word;
-            item.dictname = (char *) m_doc.m_header.d_identi;
-            item.expl = "Do you want to lookup\n\n";
-            for (int i=0; i<candidate.size(); i++) {
-                item.expl +=  candidate[i]->index;
-                item.expl += '\n';
+            if (candidate.size() > 0) {
+                iDictItem item = onClick(-1, candidate[0]);
+                item.word = candidate[0]->index;
+                item.dictname = (char *) m_doc.m_header.d_identi;
+                item.expl += "\n\n=================\n";
+                for (int i=0; i<candidate.size(); i++) {
+                    item.expl +=  candidate[i]->index;
+                    item.expl += ";    ";
 
-                addToIndexCache(candidate[i]->index, *candidate[i]);
+                    addToIndexCache(candidate[i]->index, *candidate[i]);
+                }
+                itemList.push_back(item);
+            } else {
+               iDictItem item;
+               item.word = word;
+               item.dictname = (char *) m_doc.m_header.d_identi;
+               itemList.push_back(item);
             }
-            itemList.push_back(item);            
+
             return false;
         }
     }

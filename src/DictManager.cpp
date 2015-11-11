@@ -28,7 +28,7 @@ void LookupTask::doWork()
         m_dmgr->onAddLookupResult(m_id, itemList, lookupResult);
     } else {
         DictItemList itemList2;
-        lookupResult = m_dmgr->lookupIgnoreCase(m_dict, m_input, itemList2);
+        lookupResult = m_dmgr->lookupIgnoreGrammarCase(m_dict, m_input, itemList2);
         if (lookupResult)
             m_dmgr->onAddLookupResult(m_id, itemList2, lookupResult);
         else
@@ -163,7 +163,7 @@ void DictManager::lookup(const string& input, const int which, DictItemList& ite
                 for (int i = 0; i < m_dictTotal; i++) {
                     if (!m_dictOpen[i].dict->lookup(input, items)){
                         DictItemList items2;
-                        if (lookupIgnoreCase(m_dictOpen[i].dict, input, items2))
+                        if (lookupIgnoreGrammarCase(m_dictOpen[i].dict, input, items2))
                             items = items2;
                     }
                 }
@@ -171,7 +171,7 @@ void DictManager::lookup(const string& input, const int which, DictItemList& ite
                 if (which < m_dictTotal) {
                     if (!m_dictOpen[which].dict->lookup(input, items)) {
                         DictItemList items2;
-                        if (lookupIgnoreCase(m_dictOpen[which].dict, input, items2))
+                        if (lookupIgnoreGrammarCase(m_dictOpen[which].dict, input, items2))
                             items = items2;
                     }
                 }
@@ -222,8 +222,8 @@ void DictManager::onAddLookupResult(int which, DictItemList& items, bool lookupR
 {
     MutexLock lock(m_cs);
 
-    if (m_dictOpen[which].flag  != QUERY_CAPWORD_FLAG  
-      || (m_dictOpen[which].flag  == QUERY_CAPWORD_FLAG && lookupResult)) {
+    if (true/*m_dictOpen[which].flag  != QUERY_CAPWORD_FLAG
+      || (m_dictOpen[which].flag  == QUERY_CAPWORD_FLAG && lookupResult)*/) {
         DictItemList* arg1 = new DictItemList();
         *arg1 = items;
         int did = m_dictOpen[which].dictId;
@@ -247,34 +247,76 @@ void DictManager::onAddLookupResult(int which, DictItemList& items, bool lookupR
     }
 }
 
-bool DictManager::lookupIgnoreCase(iDict* dict, const string& input, DictItemList& items)
+bool DictManager::lookupIgnoreGrammarCase(iDict* dict, const string& input, DictItemList& items)
 {
     // Fisrt of all,  Change the first char's case.
     /* {input}: a lot of
      * {dict}: A lot of
      * or, reverse.
      */
-    string str = Util::stringCaseChange(input, 0, 1);
-    if (str == input) // It's not a latin string.    
+    string strs[3];
+    strs[0] = Util::stringCaseChange(input, 0, 1);
+    if (strs[0] == input) // It's not a latin string.
         return false;
-    if (dict->lookup(str, items))
+    if (dict->lookup(strs[0], items))
         return true;
 
     // Then,  convert input to lower case.
     /* {input}: BOY, BOy, bOY, etc.
      * {dict} : boy */
     items.clear();
-    str = Util::stringCaseToLower(input);
-    if (str != input && dict->lookup(str, items))
+    strs[1] = Util::stringCaseToLower(input);
+    if (strs[1] != input && dict->lookup(strs[1], items))
         return true;
 
     // Then,  convert input to lower case.
     /* {input}: add
        {dict}: ADD */
     items.clear();
-    str = Util::stringCaseToUpper(input);
-    if (str != input && dict->lookup(str, items))
+    strs[2] = Util::stringCaseToUpper(input);
+    if (strs[2] != input && dict->lookup(strs[2], items))
         return true;
+
+    items.clear();
+    for (int i = 0; i < 3; i++) {
+        if (lookupIgnoreEnglishGrammar(dict, strs[i], items))
+           return true;
+    }
+
+    items.clear();
+    return false;
+}
+
+bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItemList& items)
+{
+    string subfix = input.substr(input.length()-1, 1);
+    string sx1[] = {"s", "d", "r"};
+    for (int i = 0; i < 3; i++) {
+        if (subfix.compare(sx1[i]) == 0) {
+            if (dict->lookup(input.substr(0, input.length()-1), items))
+                return true;
+        }
+    }
+
+    items.clear();
+    subfix = input.substr(input.length()-2, 2);
+    string sx2[] = {"es", "ed", "er"};
+    for (int i = 0; i < 3; i++) {
+        if (subfix.compare(sx2[i]) == 0) {
+            if (dict->lookup(input.substr(0, input.length()-2), items))
+                return true;
+       }
+    }
+
+    items.clear();
+    subfix = input.substr(input.length()-3, 3);
+    string sx3[] = {"ing", "est"};
+    for (int i = 0; i < 2; i++) {
+        if (subfix.compare(sx3[i]) == 0) {
+            if (dict->lookup(input.substr(0, input.length()-3), items))
+                 return true;
+        }
+    }
 
     return false;
 }
