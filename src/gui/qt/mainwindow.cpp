@@ -290,8 +290,8 @@ void MainWindow::onUpdateCapWordExplText(void *v)
     //dlg->exec();
     if (m_capWordDialog->isHidden())
         m_capWordDialog->show();
-    m_capWordDialog->raise();
-    m_capWordDialog->activateWindow();
+    //m_capWordDialog->raise();
+    //m_capWordDialog->activateWindow();
     //::SetCapture() /* win32 -- it seems not work */
 }
 

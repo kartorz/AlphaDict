@@ -20,7 +20,7 @@ class CapWordDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CapWordDialog(MainWindow *owner, bool autoclose=true, int inv=1000*10);
+    explicit CapWordDialog(MainWindow *owner, bool autoclose=true, int inv=1000*3.5);
     virtual ~CapWordDialog();
 
     //void setDictItemList(DictItemList *v);

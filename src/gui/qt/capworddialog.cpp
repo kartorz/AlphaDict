@@ -101,8 +101,13 @@ bool CapWordDialog::event(QEvent * event)
         break;
 
     case QEvent::Close:
+        m_timer->stop();
+        break;
+
     case QEvent::Enter:
         m_timer->stop();
+        activateWindow();
+        raise();
         break;
 
     default:
