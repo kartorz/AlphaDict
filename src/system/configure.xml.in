@@ -6,8 +6,8 @@
           Windows: "installing dir/dicts"
   -->
   <dir></dir>
-  <srclan>any</srclan>
-  <detlan>any</detlan>
+  <srclan>english</srclan>
+  <detlan>chinese</detlan>
   <dict>
     <!--
       <d open="" en=""/>

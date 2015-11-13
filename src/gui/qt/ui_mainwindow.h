@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.2.1
+** Created by: Qt User Interface Compiler version 5.3.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -310,7 +310,7 @@ public:
         vbpreItemTlBtn->setObjectName(QStringLiteral("vbpreItemTlBtn"));
         vbpreItemTlBtn->setGeometry(QRect(17, 210, 38, 38));
         QIcon icon13;
-        icon13.addFile(QStringLiteral(":/res/up-48*48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon13.addFile(QStringLiteral(":/res/up-48x48.png"), QSize(), QIcon::Normal, QIcon::Off);
         vbpreItemTlBtn->setIcon(icon13);
         vbpreItemTlBtn->setIconSize(QSize(48, 48));
         vbpreItemTlBtn->setAutoRaise(true);
@@ -318,7 +318,7 @@ public:
         vbnextItemTlBtn->setObjectName(QStringLiteral("vbnextItemTlBtn"));
         vbnextItemTlBtn->setGeometry(QRect(18, 266, 38, 38));
         QIcon icon14;
-        icon14.addFile(QStringLiteral(":/res/down-48*48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon14.addFile(QStringLiteral(":/res/down-48x48.png"), QSize(), QIcon::Normal, QIcon::Off);
         vbnextItemTlBtn->setIcon(icon14);
         vbnextItemTlBtn->setIconSize(QSize(48, 48));
         vbnextItemTlBtn->setAutoRaise(true);
@@ -486,7 +486,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
         settingTabWidget->setCurrentIndex(0);
 
 

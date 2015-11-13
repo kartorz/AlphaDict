@@ -47,9 +47,17 @@ unsigned int Util::getTimeMS()
 
 unsigned long long Util::getAbsTimeSeconds()
 {
+#if defined(WIN32)
+	LARGE_INTEGER  large_interger;
+	QueryPerformanceFrequency(&large_interger);
+	double dff = large_interger.QuadPart;
+	QueryPerformanceCounter(&large_interger);
+	return (unsigned long long)(large_interger.QuadPart * 1000 / dff);
+#else
 	struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec;
+#endif
 }
 
 string Util::getDate()
@@ -100,7 +108,7 @@ bool Util::isFileExist(const string& filename)
 string Util::replaceSuffix(const string& path, const string suffix)
 {
     boost::filesystem::path p(path);
-    return p.replace_extension(suffix).c_str();
+    return p.replace_extension(suffix).string();
 }
 
 bool Util::createDir(const string& path)
