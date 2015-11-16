@@ -9,6 +9,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDesktopWidget>
 #include "gui/qt/mainwindow.h"
 #endif
 
@@ -85,8 +86,9 @@ read README-win32.txt for more information \n").arg(ret);
     }
 
     MainWindow w;
-    w.raise();
-    w.activateWindow();
+    w.move((a.desktop()->width() - w.width()) / 2, (a.desktop()->height() - w.height()) / 2);
+    //w.raise();
+    //w.activateWindow();
     w.show();
     w.registerSysExit(on_exit);
     w.initDelay();
