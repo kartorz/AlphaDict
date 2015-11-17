@@ -96,7 +96,7 @@ install-system: install-dirs
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"
-	install -m 0666 "gui/res/appicon.png"          "$(DATADIR)/AlphaDict.png"
+	install -m 0666 "gui/qt/res/appicon.png"       "$(DATADIR)/AlphaDict.png"
 
 	$(INSTALL) -d  $(DATADIR)/tools
 	@for FILE in `ls tools`; do \
