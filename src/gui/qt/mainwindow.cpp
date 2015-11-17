@@ -297,8 +297,8 @@ void MainWindow::onUpdateCapWordExplText(void *v)
     //dlg->exec();
     if (m_capWordDialog->isHidden())
         m_capWordDialog->show();
-    //m_capWordDialog->raise();
-    //m_capWordDialog->activateWindow();
+    m_capWordDialog->raise();
+    m_capWordDialog->activateWindow();
     //::SetCapture() /* win32 -- it seems not work */
 }
 
@@ -712,9 +712,9 @@ void MainWindow::onClipboardSelectionChanged()
         } else if (!m_capWordDialog->isHidden()) {
             m_capWordDialog->close();
         }
+        //qDebug() <<  clipboard->text(QClipboard::Selection);
     }
-    //qDebug() <<  clipboard->text(QClipboard::Selection);
-    //qDebug() << QCursor::pos().x() << ":" << QCursor::pos().y();
+        //qDebug() << QCursor::pos().x() << ":" << QCursor::pos().y();
 }
 
 void MainWindow::on_cwsClipboardCheckBox_clicked(bool checked)
