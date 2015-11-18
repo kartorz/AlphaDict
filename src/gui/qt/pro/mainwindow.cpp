@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets/QToolTip>
+#include <QtCore/QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
    //ui->vbdelToolButton->setDisabled();
     //QAbstractTableModel m;
    // m.index(0,1);
-
+QSettings settings(APP_ORGANIZATION, APP_NAME);
+   settings.clear();
 }
 
 MainWindow::~MainWindow()

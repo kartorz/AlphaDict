@@ -6,7 +6,6 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QDebug>
 #include <QtCore/QEvent>
-#include <QtCore/QSettings>
 #include <QtGui/QCursor>
 #include <QtGui/QFontDatabase> 
 #include <QtGui/QtEvents>
@@ -35,14 +34,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_cwdEnableTemp(true),
-    m_bHideVBookExpl(false)
+    m_bHideVBookExpl(false),
+	m_setting(APP_ORGANIZATION, APP_NAME)
 {
     ui->setupUi(this);
 
-	QSettings settings(APP_ORGANIZATION, APP_NAME);
-	if (settings.contains(KEY_WIN_GEOMETRY)) {
-		restoreGeometry(settings.value(KEY_WIN_GEOMETRY).toByteArray());
-	}
+	/*if (m_setting.contains(KEY_WIN_GEOMETRY)) {
+		restoreGeometry(m_setting.value(KEY_WIN_GEOMETRY).toByteArray());
+	}*/
 
     //ui->tabWidget->setTabsClosable(true);
     //ui->queryButton->setStyleSheet("background-image:url(:/res/search.png)");
@@ -803,6 +802,7 @@ void MainWindow::on_fontComboBox_activated(const QString &arg1)
 
 void MainWindow::on_resetSettingToolButton_clicked()
 {
+	m_setting.clear();
     m_config->reset();
 }
 
@@ -846,8 +846,7 @@ void MainWindow::onTrayMenuClose()
 
 void MainWindow::closeEvent(QCloseEvent * event)
 {
-	QSettings settings(APP_ORGANIZATION, APP_NAME);
-	settings.setValue("geometry", saveGeometry());
+	//m_setting.setValue("geometry", saveGeometry());
 
     if (!m_systray->isVisible()) {
         if (m_config->m_setting.bsystemTray) {

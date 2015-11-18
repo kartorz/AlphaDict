@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QModelIndexList>
+#include <QtCore/QSettings>
 #include <QtWidgets/QSystemTrayIcon>
 #include <QtGui/QClipboard>
 
@@ -166,6 +167,7 @@ private:
     QSystemTrayIcon* m_systray;
 
     Configure* m_config;
+	QSettings m_setting;
     bool m_initSettingPage;
     bool m_initHelpPage;
 

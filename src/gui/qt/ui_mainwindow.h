@@ -17,6 +17,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFontComboBox>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -98,6 +99,7 @@ public:
     QToolButton *dictDownToolButton;
     QToolButton *dictUpToolButton;
     QWidget *helpTab;
+    QHBoxLayout *horizontalLayout;
     QTextEdit *helpTextEdit;
     QStatusBar *statusBar;
     QToolBar *toolBar;
@@ -107,13 +109,13 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(732, 548);
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setMinimumSize(QSize(708, 524));
-        MainWindow->setMaximumSize(QSize(756, 572));
+        MainWindow->setMaximumSize(QSize(732, 548));
         MainWindow->setSizeIncrement(QSize(0, 0));
         MainWindow->setFocusPolicy(Qt::NoFocus);
         QIcon icon;
@@ -143,7 +145,7 @@ public:
         centralWidget->setFocusPolicy(Qt::NoFocus);
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 732, 464));
+        tabWidget->setGeometry(QRect(0, 0, 732, 462));
         QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Maximum);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -151,6 +153,10 @@ public:
         tabWidget->setSizePolicy(sizePolicy1);
         tabWidget->setFocusPolicy(Qt::NoFocus);
         tabWidget->setLayoutDirection(Qt::LeftToRight);
+        tabWidget->setStyleSheet(QLatin1String("#tabWidget { \n"
+"     border: 0px solid gray; \n"
+"     border-radius: 0px; \n"
+" } "));
         tabWidget->setTabPosition(QTabWidget::North);
         tabWidget->setTabShape(QTabWidget::Rounded);
         tabWidget->setIconSize(QSize(20, 20));
@@ -333,17 +339,29 @@ public:
         settingTab->setEnabled(true);
         settingTabWidget = new QTabWidget(settingTab);
         settingTabWidget->setObjectName(QStringLiteral("settingTabWidget"));
-        settingTabWidget->setGeometry(QRect(-1, -3, 732, 444));
+        settingTabWidget->setGeometry(QRect(0, 0, 732, 436));
         settingTabWidget->setFocusPolicy(Qt::NoFocus);
+        settingTabWidget->setStyleSheet(QLatin1String("#setting_Tab { \n"
+"     border: 0px solid gray; \n"
+"     border-radius: 0px; \n"
+" } "));
         settingTabWidget->setTabPosition(QTabWidget::West);
+        settingTabWidget->setElideMode(Qt::ElideNone);
+        settingTabWidget->setDocumentMode(true);
+        settingTabWidget->setTabsClosable(false);
+        settingTabWidget->setTabBarAutoHide(false);
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
+        tab->setStyleSheet(QLatin1String("#tab { \n"
+"     border: 0px solid gray; \n"
+"     border-radius: 0px; \n"
+" } "));
         groupBox_3 = new QGroupBox(tab);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(-1, 0, 355, 439));
+        groupBox_3->setGeometry(QRect(-1, 0, 355, 430));
         groupBox_3->setStyleSheet(QLatin1String("#groupBox_3 { \n"
-"     border: 1px solid gray; \n"
-"     border-radius: 1px; \n"
+"     border: 0px solid gray; \n"
+"     border-radius: 0px; \n"
 " } "));
         uilanLabel = new QLabel(groupBox_3);
         uilanLabel->setObjectName(QStringLiteral("uilanLabel"));
@@ -376,10 +394,14 @@ public:
         settingTabWidget->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
+        tab_2->setStyleSheet(QLatin1String("#tab_2 { \n"
+"     border: 0px solid gray; \n"
+"     border-radius: 0px; \n"
+" } "));
         cwsGroupBox = new QGroupBox(tab_2);
         cwsGroupBox->setObjectName(QStringLiteral("cwsGroupBox"));
         cwsGroupBox->setEnabled(true);
-        cwsGroupBox->setGeometry(QRect(300, 10, 413, 371));
+        cwsGroupBox->setGeometry(QRect(290, 10, 393, 371));
         cwsGroupBox->setAutoFillBackground(false);
         cwsGroupBox->setStyleSheet(QLatin1String("#cwsGroupBox { \n"
 "     border: 1px solid gray; \n"
@@ -390,10 +412,13 @@ public:
         cwsGroupBox1 = new QGroupBox(cwsGroupBox);
         cwsGroupBox1->setObjectName(QStringLiteral("cwsGroupBox1"));
         cwsGroupBox1->setGeometry(QRect(10, 40, 392, 80));
+        cwsGroupBox1->setAutoFillBackground(false);
         cwsGroupBox1->setStyleSheet(QLatin1String("#cwsGroupBox1{ \n"
-"     border: 1px solid gray; \n"
-"     border-radius: 1px; \n"
-" } "));
+"     border: 0px solid gray; \n"
+"     border-radius: 0px;\n"
+" }"));
+        cwsGroupBox1->setFlat(false);
+        cwsGroupBox1->setCheckable(false);
         cwsShortcutkeylabel = new QLabel(cwsGroupBox1);
         cwsShortcutkeylabel->setObjectName(QStringLiteral("cwsShortcutkeylabel"));
         cwsShortcutkeylabel->setGeometry(QRect(93, 40, 106, 20));
@@ -414,9 +439,10 @@ public:
         cwsGroupBox2->setObjectName(QStringLiteral("cwsGroupBox2"));
         cwsGroupBox2->setGeometry(QRect(10, 150, 391, 80));
         cwsGroupBox2->setStyleSheet(QLatin1String("#cwsGroupBox2{ \n"
-"     border: 1px solid gray; \n"
+"     border: 0px solid gray; \n"
 "     border-radius: 1px; \n"
 " } "));
+        cwsGroupBox2->setFlat(false);
         cwsSelectionCheckBox = new QCheckBox(cwsGroupBox2);
         cwsSelectionCheckBox->setObjectName(QStringLiteral("cwsSelectionCheckBox"));
         cwsSelectionCheckBox->setGeometry(QRect(9, 38, 151, 22));
@@ -430,7 +456,7 @@ public:
         cwsGroupBox3->setObjectName(QStringLiteral("cwsGroupBox3"));
         cwsGroupBox3->setGeometry(QRect(10, 261, 391, 80));
         cwsGroupBox3->setStyleSheet(QLatin1String("#cwsGroupBox3{ \n"
-"     border: 1px solid gray; \n"
+"     border: 0px solid gray; \n"
 "     border-radius: 1px; \n"
 " } "));
         cwsAutoCloseEnCheckBox = new QCheckBox(cwsGroupBox3);
@@ -465,10 +491,16 @@ public:
         tabWidget->addTab(settingTab, QString());
         helpTab = new QWidget();
         helpTab->setObjectName(QStringLiteral("helpTab"));
+        horizontalLayout = new QHBoxLayout(helpTab);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         helpTextEdit = new QTextEdit(helpTab);
         helpTextEdit->setObjectName(QStringLiteral("helpTextEdit"));
-        helpTextEdit->setGeometry(QRect(-3, -1, 732, 438));
         helpTextEdit->setReadOnly(true);
+
+        horizontalLayout->addWidget(helpTextEdit);
+
         tabWidget->addTab(helpTab, QString());
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
@@ -488,7 +520,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
         settingTabWidget->setCurrentIndex(0);
 
 

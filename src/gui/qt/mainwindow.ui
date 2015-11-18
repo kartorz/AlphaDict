@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -24,8 +24,8 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>756</width>
-    <height>572</height>
+    <width>732</width>
+    <height>548</height>
    </size>
   </property>
   <property name="sizeIncrement">
@@ -60,7 +60,7 @@
       <x>0</x>
       <y>0</y>
       <width>732</width>
-      <height>464</height>
+      <height>462</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -75,6 +75,12 @@
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
     </property>
+    <property name="styleSheet">
+     <string notr="true">#tabWidget { 
+     border: 0px solid gray; 
+     border-radius: 0px; 
+ } </string>
+    </property>
     <property name="tabPosition">
      <enum>QTabWidget::North</enum>
     </property>
@@ -82,7 +88,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -733,14 +739,20 @@
      <widget class="QTabWidget" name="settingTabWidget">
       <property name="geometry">
        <rect>
-        <x>-1</x>
-        <y>-3</y>
+        <x>0</x>
+        <y>0</y>
         <width>732</width>
-        <height>444</height>
+        <height>436</height>
        </rect>
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#setting_Tab { 
+     border: 0px solid gray; 
+     border-radius: 0px; 
+ } </string>
       </property>
       <property name="tabPosition">
        <enum>QTabWidget::West</enum>
@@ -748,7 +760,25 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <property name="elideMode">
+       <enum>Qt::ElideNone</enum>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
+      </property>
       <widget class="QWidget" name="tab">
+       <property name="styleSheet">
+        <string notr="true">#tab { 
+     border: 0px solid gray; 
+     border-radius: 0px; 
+ } </string>
+       </property>
        <attribute name="title">
         <string>General</string>
        </attribute>
@@ -758,7 +788,7 @@
           <x>-1</x>
           <y>0</y>
           <width>355</width>
-          <height>439</height>
+          <height>430</height>
          </rect>
         </property>
         <property name="toolTip">
@@ -766,8 +796,8 @@
         </property>
         <property name="styleSheet">
          <string notr="true">#groupBox_3 { 
-     border: 1px solid gray; 
-     border-radius: 1px; 
+     border: 0px solid gray; 
+     border-radius: 0px; 
  } </string>
         </property>
         <property name="title">
@@ -920,6 +950,12 @@
        </widget>
       </widget>
       <widget class="QWidget" name="tab_2">
+       <property name="styleSheet">
+        <string notr="true">#tab_2 { 
+     border: 0px solid gray; 
+     border-radius: 0px; 
+ } </string>
+       </property>
        <attribute name="title">
         <string>Dict</string>
        </attribute>
@@ -929,9 +965,9 @@
         </property>
         <property name="geometry">
          <rect>
-          <x>300</x>
+          <x>290</x>
           <y>10</y>
-          <width>413</width>
+          <width>393</width>
           <height>371</height>
          </rect>
         </property>
@@ -965,14 +1001,23 @@
          <property name="toolTip">
           <string/>
          </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
          <property name="styleSheet">
           <string notr="true">#cwsGroupBox1{ 
-     border: 1px solid gray; 
-     border-radius: 1px; 
- } </string>
+     border: 0px solid gray; 
+     border-radius: 0px;
+ }</string>
          </property>
          <property name="title">
           <string>Enable Setting</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
          </property>
          <widget class="QLabel" name="cwsShortcutkeylabel">
           <property name="geometry">
@@ -1205,12 +1250,15 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="styleSheet">
           <string notr="true">#cwsGroupBox2{ 
-     border: 1px solid gray; 
+     border: 0px solid gray; 
      border-radius: 1px; 
  } </string>
          </property>
          <property name="title">
           <string>Capture Method</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
          <widget class="QCheckBox" name="cwsSelectionCheckBox">
           <property name="geometry">
@@ -1272,7 +1320,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="styleSheet">
           <string notr="true">#cwsGroupBox3{ 
-     border: 1px solid gray; 
+     border: 0px solid gray; 
      border-radius: 1px; 
  } </string>
          </property>
@@ -1384,19 +1432,15 @@ p, li { white-space: pre-wrap; }
      <attribute name="title">
       <string>Help</string>
      </attribute>
-     <widget class="QTextEdit" name="helpTextEdit">
-      <property name="geometry">
-       <rect>
-        <x>-3</x>
-        <y>-1</y>
-        <width>732</width>
-        <height>438</height>
-       </rect>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTextEdit" name="helpTextEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>
