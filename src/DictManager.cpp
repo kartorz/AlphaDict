@@ -359,7 +359,7 @@ void DictManager::setDictSrcLan(string& srclan)
             if (did != 0 || !matchDict(srclan, detlan))
                 reloadDict();
         } else {
-            reloadDict();        
+            reloadDict();
         }
     }
 }
@@ -405,7 +405,8 @@ bool DictManager::matchDict(const string& dictSrcLan, const string& dictDetLan)
         else if (dictDetLan == config->m_detLan)
             det_match = true;
     }
-
+    g_sysLog(LOG_DEBUG, "{matchDict} xml:[%s -> %s], det:[%s, %s]\n",
+        config->m_srcLan.c_str(), config->m_detLan.c_str(), dictSrcLan.c_str(), dictDetLan.c_str());
     if (src_match && det_match)
         return true;
     return false;

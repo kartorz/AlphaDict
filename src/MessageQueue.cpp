@@ -91,8 +91,8 @@ bool MessageQueue::pop(Message& msg, bool bwait)
     } else {
         SpinLock m_lock(m_crs);
     	if (!m_queue.empty()) {
-            msg = m_queue.back();
-            m_queue.pop_back();
+            msg = m_queue.front();
+            m_queue.pop_front();
             ret = true;
         }
     }
@@ -104,8 +104,8 @@ void MessageQueue::onConsume(void* v)
 {
     SpinLock m_lock(m_crs);
     //printf("onConsume(%s)\n", m_identify.c_str());
-    *((Message *)v)  = m_queue.back();
-    m_queue.pop_back();
+    *((Message *)v)  = m_queue.front();
+    m_queue.pop_front();
 }
 
 void MessageQueue::flush()

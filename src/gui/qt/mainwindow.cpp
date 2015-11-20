@@ -305,6 +305,9 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
 {
     vector<string> *pVec = (vector<string>*) v;
     vector<string>::iterator iter;
+
+    ui->detLanComboBox->blockSignals(true);
+
     ui->detLanComboBox->addItem("any");
     ui->srcLanComboBox->addItem("any");
 
@@ -319,6 +322,8 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
 
     i = ui->detLanComboBox->findText(det);
     ui->detLanComboBox->setCurrentIndex(i);
+
+    ui->detLanComboBox->blockSignals(false);
 }
 
 void MainWindow::on_saveButton_clicked()
