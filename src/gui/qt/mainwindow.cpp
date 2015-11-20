@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_vbookModel = new VBookModel(m_config->getVBPath());
     ui->vbookTableView->setModel(m_vbookModel);
-    int columnWidth[] = {250,100,82};
+    int columnWidth[] = {220,100,124};
     for (int i = 0; i < 3; i++)  ui->vbookTableView->setColumnWidth(i,columnWidth[i]);
 
     m_messager = new QtMessager(this, m_dictIndexModel, g_application.uiMessageQ());
@@ -443,7 +443,7 @@ void MainWindow::onActionSettingPageAdded()
             ckstate = m_config->m_cws.autoCloseEn ? Qt::Checked : Qt::Unchecked;
             ui->cwsAutoCloseEnCheckBox->setCheckState(ckstate);
 
-        #ifdef _LINUX
+        #if 1// _LINUX
             ui->cwsMouseCheckBox->hide();
         #elif defined(_WINDOWS)
             ckstate = m_config->m_cws.bmouse ? Qt::Checked : Qt::Unchecked;

@@ -17,4 +17,5 @@ uic.exe  mainwindow.ui      -o    ui_mainwindow.h
 uic.exe  capworddialog.ui      -o    ui_capworddialog.h
 
 rcc.exe  -no-compress -name mainwindow    mainwindow.qrc -o  qrc_mainwindow.cpp
+
 pause

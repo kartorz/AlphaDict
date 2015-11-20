@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.2.1
+** Created by: Qt User Interface Compiler version 5.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -84,17 +84,17 @@ public:
     QWidget *tab_2;
     QGroupBox *cwsGroupBox;
     QGroupBox *cwsGroupBox1;
-    QLabel *cwsShortcutkeylabel;
     QCheckBox *cwsEnableCheckBox;
-    QLabel *label_2;
-    QComboBox *cwsShortcutkeyComboBox;
-    QLabel *cwsShortcutkeylabel_2;
     QGroupBox *cwsGroupBox2;
     QCheckBox *cwsSelectionCheckBox;
     QCheckBox *cwsClipboardCheckBox;
     QCheckBox *cwsMouseCheckBox;
     QGroupBox *cwsGroupBox3;
     QCheckBox *cwsAutoCloseEnCheckBox;
+    QLabel *label_2;
+    QComboBox *cwsShortcutkeyComboBox;
+    QLabel *cwsShortcutkeylabel;
+    QLabel *cwsShortcutkeylabel_2;
     QListWidget *dictListWidget;
     QToolButton *dictDownToolButton;
     QToolButton *dictUpToolButton;
@@ -357,35 +357,35 @@ public:
 " } "));
         groupBox_3 = new QGroupBox(tab);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(-1, 0, 355, 430));
+        groupBox_3->setGeometry(QRect(0, 0, 355, 430));
         groupBox_3->setStyleSheet(QLatin1String("#groupBox_3 { \n"
 "     border: 0px solid gray; \n"
 "     border-radius: 0px; \n"
 " } "));
         uilanLabel = new QLabel(groupBox_3);
         uilanLabel->setObjectName(QStringLiteral("uilanLabel"));
-        uilanLabel->setGeometry(QRect(25, 66, 99, 17));
+        uilanLabel->setGeometry(QRect(25, 66, 109, 17));
         uilanComboBox = new QComboBox(groupBox_3);
         uilanComboBox->setObjectName(QStringLiteral("uilanComboBox"));
-        uilanComboBox->setGeometry(QRect(128, 60, 210, 27));
+        uilanComboBox->setGeometry(QRect(139, 60, 210, 27));
         fontSizeLabel = new QLabel(groupBox_3);
         fontSizeLabel->setObjectName(QStringLiteral("fontSizeLabel"));
-        fontSizeLabel->setGeometry(QRect(27, 161, 87, 17));
+        fontSizeLabel->setGeometry(QRect(27, 161, 102, 17));
         fontsizeComboBox = new QComboBox(groupBox_3);
         fontsizeComboBox->setObjectName(QStringLiteral("fontsizeComboBox"));
-        fontsizeComboBox->setGeometry(QRect(126, 156, 211, 27));
+        fontsizeComboBox->setGeometry(QRect(137, 156, 211, 27));
         fontLabel = new QLabel(groupBox_3);
         fontLabel->setObjectName(QStringLiteral("fontLabel"));
         fontLabel->setGeometry(QRect(25, 113, 87, 17));
         systemTrayCheckBox = new QCheckBox(groupBox_3);
         systemTrayCheckBox->setObjectName(QStringLiteral("systemTrayCheckBox"));
-        systemTrayCheckBox->setGeometry(QRect(20, 207, 118, 25));
+        systemTrayCheckBox->setGeometry(QRect(20, 207, 157, 25));
         systemTrayCheckBox->setLayoutDirection(Qt::LeftToRight);
         systemTrayCheckBox->setTristate(false);
         fontComboBox = new QFontComboBox(groupBox_3);
         fontComboBox->setObjectName(QStringLiteral("fontComboBox"));
         fontComboBox->setEnabled(true);
-        fontComboBox->setGeometry(QRect(125, 107, 209, 27));
+        fontComboBox->setGeometry(QRect(136, 107, 209, 27));
         fontComboBox->setEditable(false);
         resetSettingToolButton = new QToolButton(groupBox_3);
         resetSettingToolButton->setObjectName(QStringLiteral("resetSettingToolButton"));
@@ -400,7 +400,7 @@ public:
         cwsGroupBox = new QGroupBox(tab_2);
         cwsGroupBox->setObjectName(QStringLiteral("cwsGroupBox"));
         cwsGroupBox->setEnabled(true);
-        cwsGroupBox->setGeometry(QRect(290, 10, 393, 371));
+        cwsGroupBox->setGeometry(QRect(290, 10, 395, 371));
         cwsGroupBox->setAutoFillBackground(false);
         cwsGroupBox->setStyleSheet(QLatin1String("#cwsGroupBox { \n"
 "     border: 1px solid gray; \n"
@@ -410,7 +410,7 @@ public:
         cwsGroupBox->setChecked(false);
         cwsGroupBox1 = new QGroupBox(cwsGroupBox);
         cwsGroupBox1->setObjectName(QStringLiteral("cwsGroupBox1"));
-        cwsGroupBox1->setGeometry(QRect(10, 40, 392, 80));
+        cwsGroupBox1->setGeometry(QRect(10, 40, 384, 101));
         cwsGroupBox1->setAutoFillBackground(false);
         cwsGroupBox1->setStyleSheet(QLatin1String("#cwsGroupBox1{ \n"
 "     border: 0px solid gray; \n"
@@ -418,25 +418,12 @@ public:
 " }"));
         cwsGroupBox1->setFlat(false);
         cwsGroupBox1->setCheckable(false);
-        cwsShortcutkeylabel = new QLabel(cwsGroupBox1);
-        cwsShortcutkeylabel->setObjectName(QStringLiteral("cwsShortcutkeylabel"));
-        cwsShortcutkeylabel->setGeometry(QRect(93, 40, 106, 20));
         cwsEnableCheckBox = new QCheckBox(cwsGroupBox1);
         cwsEnableCheckBox->setObjectName(QStringLiteral("cwsEnableCheckBox"));
         cwsEnableCheckBox->setGeometry(QRect(8, 38, 82, 22));
-        label_2 = new QLabel(cwsGroupBox1);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(372, 40, 16, 17));
-        cwsShortcutkeyComboBox = new QComboBox(cwsGroupBox1);
-        cwsShortcutkeyComboBox->setObjectName(QStringLiteral("cwsShortcutkeyComboBox"));
-        cwsShortcutkeyComboBox->setGeometry(QRect(280, 37, 85, 27));
-        cwsShortcutkeyComboBox->setEditable(false);
-        cwsShortcutkeylabel_2 = new QLabel(cwsGroupBox1);
-        cwsShortcutkeylabel_2->setObjectName(QStringLiteral("cwsShortcutkeylabel_2"));
-        cwsShortcutkeylabel_2->setGeometry(QRect(203, 40, 83, 20));
         cwsGroupBox2 = new QGroupBox(cwsGroupBox);
         cwsGroupBox2->setObjectName(QStringLiteral("cwsGroupBox2"));
-        cwsGroupBox2->setGeometry(QRect(10, 150, 391, 80));
+        cwsGroupBox2->setGeometry(QRect(10, 160, 385, 71));
         cwsGroupBox2->setStyleSheet(QLatin1String("#cwsGroupBox2{ \n"
 "     border: 0px solid gray; \n"
 "     border-radius: 1px; \n"
@@ -444,23 +431,38 @@ public:
         cwsGroupBox2->setFlat(false);
         cwsSelectionCheckBox = new QCheckBox(cwsGroupBox2);
         cwsSelectionCheckBox->setObjectName(QStringLiteral("cwsSelectionCheckBox"));
-        cwsSelectionCheckBox->setGeometry(QRect(9, 38, 151, 22));
+        cwsSelectionCheckBox->setGeometry(QRect(9, 38, 177, 22));
         cwsClipboardCheckBox = new QCheckBox(cwsGroupBox2);
         cwsClipboardCheckBox->setObjectName(QStringLiteral("cwsClipboardCheckBox"));
-        cwsClipboardCheckBox->setGeometry(QRect(160, 38, 103, 22));
+        cwsClipboardCheckBox->setGeometry(QRect(201, 38, 129, 22));
         cwsMouseCheckBox = new QCheckBox(cwsGroupBox2);
         cwsMouseCheckBox->setObjectName(QStringLiteral("cwsMouseCheckBox"));
-        cwsMouseCheckBox->setGeometry(QRect(265, 38, 123, 22));
+        cwsMouseCheckBox->setEnabled(true);
+        cwsMouseCheckBox->setGeometry(QRect(276, 38, 108, 20));
+        cwsMouseCheckBox->setCheckable(true);
         cwsGroupBox3 = new QGroupBox(cwsGroupBox);
         cwsGroupBox3->setObjectName(QStringLiteral("cwsGroupBox3"));
-        cwsGroupBox3->setGeometry(QRect(10, 261, 391, 80));
+        cwsGroupBox3->setGeometry(QRect(10, 261, 380, 80));
         cwsGroupBox3->setStyleSheet(QLatin1String("#cwsGroupBox3{ \n"
 "     border: 0px solid gray; \n"
 "     border-radius: 1px; \n"
 " } "));
         cwsAutoCloseEnCheckBox = new QCheckBox(cwsGroupBox3);
         cwsAutoCloseEnCheckBox->setObjectName(QStringLiteral("cwsAutoCloseEnCheckBox"));
-        cwsAutoCloseEnCheckBox->setGeometry(QRect(9, 38, 108, 21));
+        cwsAutoCloseEnCheckBox->setGeometry(QRect(9, 38, 133, 21));
+        label_2 = new QLabel(cwsGroupBox);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(371, 110, 16, 17));
+        cwsShortcutkeyComboBox = new QComboBox(cwsGroupBox);
+        cwsShortcutkeyComboBox->setObjectName(QStringLiteral("cwsShortcutkeyComboBox"));
+        cwsShortcutkeyComboBox->setGeometry(QRect(271, 105, 85, 27));
+        cwsShortcutkeyComboBox->setEditable(false);
+        cwsShortcutkeylabel = new QLabel(cwsGroupBox);
+        cwsShortcutkeylabel->setObjectName(QStringLiteral("cwsShortcutkeylabel"));
+        cwsShortcutkeylabel->setGeometry(QRect(22, 108, 128, 20));
+        cwsShortcutkeylabel_2 = new QLabel(cwsGroupBox);
+        cwsShortcutkeylabel_2->setObjectName(QStringLiteral("cwsShortcutkeylabel_2"));
+        cwsShortcutkeylabel_2->setGeometry(QRect(147, 108, 121, 20));
         dictListWidget = new QListWidget(tab_2);
         dictListWidget->setObjectName(QStringLiteral("dictListWidget"));
         dictListWidget->setGeometry(QRect(20, 10, 261, 300));
@@ -637,19 +639,24 @@ public:
 #endif // QT_NO_TOOLTIP
         cwsGroupBox1->setTitle(QApplication::translate("MainWindow", "Enable Setting", 0));
 #ifndef QT_NO_TOOLTIP
-        cwsShortcutkeylabel->setToolTip(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. </p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).</p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">On X11, if  shortcut key does't work, you can try clicking AlphaDict window.</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        cwsShortcutkeylabel->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Shortcut Key</span></p></body></html>", 0));
-#ifndef QT_NO_TOOLTIP
         cwsEnableCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Enable/disable capture</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         cwsEnableCheckBox->setText(QApplication::translate("MainWindow", "Enable", 0));
+        cwsGroupBox2->setTitle(QApplication::translate("MainWindow", "Capture Method", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsSelectionCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture by mouse selection or double click text (highlighted text).</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsSelectionCheckBox->setText(QApplication::translate("MainWindow", "Mouse Selection", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsClipboardCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture word of clipboard.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsClipboardCheckBox->setText(QApplication::translate("MainWindow", "Clipboard", 0));
+#ifndef QT_NO_TOOLTIP
+        cwsMouseCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture word by mouse over.</p><p>Not support  windows_x64  yet.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsMouseCheckBox->setText(QApplication::translate("MainWindow", "Mouse Over", 0));
+        cwsGroupBox3->setTitle(QApplication::translate("MainWindow", "Capture Dialog", 0));
+        cwsAutoCloseEnCheckBox->setText(QApplication::translate("MainWindow", "Autoclose", 0));
         label_2->setText(QApplication::translate("MainWindow", ">", 0));
         cwsShortcutkeyComboBox->clear();
         cwsShortcutkeyComboBox->insertItems(0, QStringList()
@@ -682,6 +689,16 @@ public:
         );
         cwsShortcutkeyComboBox->setCurrentText(QApplication::translate("MainWindow", "KEY_A", 0));
 #ifndef QT_NO_TOOLTIP
+        cwsShortcutkeylabel->setToolTip(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. </p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">On X11, if  shortcut key does't work, you can try clicking AlphaDict window.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        cwsShortcutkeylabel->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Shortcut Key</span></p></body></html>", 0));
+#ifndef QT_NO_TOOLTIP
         cwsShortcutkeylabel_2->setToolTip(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -690,22 +707,7 @@ public:
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">On X11, if  shortcut key does't work, you can try clicking AlphaDict window.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        cwsShortcutkeylabel_2->setText(QApplication::translate("MainWindow", "<html><head/><body><p>&lt;Ctrl+Alt+</p></body></html>", 0));
-        cwsGroupBox2->setTitle(QApplication::translate("MainWindow", "Capture Method", 0));
-#ifndef QT_NO_TOOLTIP
-        cwsSelectionCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture by mouse selection text (highlighted text).</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        cwsSelectionCheckBox->setText(QApplication::translate("MainWindow", "Mouse Selection", 0));
-#ifndef QT_NO_TOOLTIP
-        cwsClipboardCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture word of clipboard.</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        cwsClipboardCheckBox->setText(QApplication::translate("MainWindow", "Clipboard", 0));
-#ifndef QT_NO_TOOLTIP
-        cwsMouseCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture word by mouse over.</p><p>Not support  windows_x64  yet.</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        cwsMouseCheckBox->setText(QApplication::translate("MainWindow", "Mouse Over", 0));
-        cwsGroupBox3->setTitle(QApplication::translate("MainWindow", "Capture Dialog", 0));
-        cwsAutoCloseEnCheckBox->setText(QApplication::translate("MainWindow", "Autoclose", 0));
+        cwsShortcutkeylabel_2->setText(QApplication::translate("MainWindow", "<html><head/><body><p>&lt;Ctrl + Alt +</p></body></html>", 0));
 #ifndef QT_NO_TOOLTIP
         dictListWidget->setToolTip(QString());
 #endif // QT_NO_TOOLTIP

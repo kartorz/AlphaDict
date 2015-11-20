@@ -782,7 +782,7 @@
        <widget class="QGroupBox" name="groupBox_3">
         <property name="geometry">
          <rect>
-          <x>-1</x>
+          <x>0</x>
           <y>0</y>
           <width>355</width>
           <height>430</height>
@@ -805,7 +805,7 @@
           <rect>
            <x>25</x>
            <y>66</y>
-           <width>99</width>
+           <width>109</width>
            <height>17</height>
           </rect>
          </property>
@@ -816,7 +816,7 @@
         <widget class="QComboBox" name="uilanComboBox">
          <property name="geometry">
           <rect>
-           <x>128</x>
+           <x>139</x>
            <y>60</y>
            <width>210</width>
            <height>27</height>
@@ -841,7 +841,7 @@
           <rect>
            <x>27</x>
            <y>161</y>
-           <width>87</width>
+           <width>102</width>
            <height>17</height>
           </rect>
          </property>
@@ -852,7 +852,7 @@
         <widget class="QComboBox" name="fontsizeComboBox">
          <property name="geometry">
           <rect>
-           <x>126</x>
+           <x>137</x>
            <y>156</y>
            <width>211</width>
            <height>27</height>
@@ -895,7 +895,7 @@
           <rect>
            <x>20</x>
            <y>207</y>
-           <width>118</width>
+           <width>157</width>
            <height>25</height>
           </rect>
          </property>
@@ -915,7 +915,7 @@
          </property>
          <property name="geometry">
           <rect>
-           <x>125</x>
+           <x>136</x>
            <y>107</y>
            <width>209</width>
            <height>27</height>
@@ -964,7 +964,7 @@
          <rect>
           <x>290</x>
           <y>10</y>
-          <width>393</width>
+          <width>395</width>
           <height>371</height>
          </rect>
         </property>
@@ -991,8 +991,8 @@
           <rect>
            <x>10</x>
            <y>40</y>
-           <width>392</width>
-           <height>80</height>
+           <width>384</width>
+           <height>101</height>
           </rect>
          </property>
          <property name="toolTip">
@@ -1016,28 +1016,6 @@
          <property name="checkable">
           <bool>false</bool>
          </property>
-         <widget class="QLabel" name="cwsShortcutkeylabel">
-          <property name="geometry">
-           <rect>
-            <x>93</x>
-            <y>40</y>
-            <width>106</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="toolTip">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;On X11, if  shortcut key does't work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Shortcut Key&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
          <widget class="QCheckBox" name="cwsEnableCheckBox">
           <property name="geometry">
            <rect>
@@ -1054,195 +1032,14 @@ p, li { white-space: pre-wrap; }
            <string>Enable</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_2">
-          <property name="geometry">
-           <rect>
-            <x>372</x>
-            <y>40</y>
-            <width>16</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="cwsShortcutkeyComboBox">
-          <property name="geometry">
-           <rect>
-            <x>280</x>
-            <y>37</y>
-            <width>85</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-          <property name="currentText">
-           <string>KEY_A</string>
-          </property>
-          <item>
-           <property name="text">
-            <string>KEY_A</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_B</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_C</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_D</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_E</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_F</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_G</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_H</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_I</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_J</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_K</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_L</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_M</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_N</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_O</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_P</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_Q</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_R</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_S</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_T</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_U</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_V</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_W</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_X</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_Y</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KEY_Z</string>
-           </property>
-          </item>
-         </widget>
-         <widget class="QLabel" name="cwsShortcutkeylabel_2">
-          <property name="geometry">
-           <rect>
-            <x>203</x>
-            <y>40</y>
-            <width>83</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="toolTip">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;On X11, if  shortcut key does't work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;Ctrl+Alt+&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
         </widget>
         <widget class="QGroupBox" name="cwsGroupBox2">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>150</y>
-           <width>391</width>
-           <height>80</height>
+           <y>160</y>
+           <width>385</width>
+           <height>71</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -1262,12 +1059,12 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>9</x>
             <y>38</y>
-            <width>151</width>
+            <width>177</width>
             <height>22</height>
            </rect>
           </property>
           <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture by mouse selection text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture by mouse selection or double click text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
            <string>Mouse Selection</string>
@@ -1276,9 +1073,9 @@ p, li { white-space: pre-wrap; }
          <widget class="QCheckBox" name="cwsClipboardCheckBox">
           <property name="geometry">
            <rect>
-            <x>160</x>
+            <x>201</x>
             <y>38</y>
-            <width>103</width>
+            <width>129</width>
             <height>22</height>
            </rect>
           </property>
@@ -1290,12 +1087,15 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
          <widget class="QCheckBox" name="cwsMouseCheckBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="geometry">
            <rect>
-            <x>265</x>
+            <x>276</x>
             <y>38</y>
-            <width>123</width>
-            <height>22</height>
+            <width>108</width>
+            <height>20</height>
            </rect>
           </property>
           <property name="toolTip">
@@ -1304,6 +1104,9 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>Mouse Over</string>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
          </widget>
         </widget>
         <widget class="QGroupBox" name="cwsGroupBox3">
@@ -1311,7 +1114,7 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>10</x>
            <y>261</y>
-           <width>391</width>
+           <width>380</width>
            <height>80</height>
           </rect>
          </property>
@@ -1329,7 +1132,7 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>9</x>
             <y>38</y>
-            <width>108</width>
+            <width>133</width>
             <height>21</height>
            </rect>
           </property>
@@ -1337,6 +1140,209 @@ p, li { white-space: pre-wrap; }
            <string>Autoclose</string>
           </property>
          </widget>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>371</x>
+           <y>110</y>
+           <width>16</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>&gt;</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="cwsShortcutkeyComboBox">
+         <property name="geometry">
+          <rect>
+           <x>271</x>
+           <y>105</y>
+           <width>85</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <property name="currentText">
+          <string>KEY_A</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>KEY_A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_D</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_F</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_G</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_H</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_I</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_J</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_K</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_L</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_M</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_N</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_O</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_P</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_Q</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_S</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_U</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_V</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_W</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_Y</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>KEY_Z</string>
+          </property>
+         </item>
+        </widget>
+        <widget class="QLabel" name="cwsShortcutkeylabel">
+         <property name="geometry">
+          <rect>
+           <x>22</x>
+           <y>108</y>
+           <width>128</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;On X11, if  shortcut key does't work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Shortcut Key&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="cwsShortcutkeylabel_2">
+         <property name="geometry">
+          <rect>
+           <x>147</x>
+           <y>108</y>
+           <width>121</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;On X11, if  shortcut key does't work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;Ctrl + Alt +&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
         </widget>
        </widget>
        <widget class="QListWidget" name="dictListWidget">
