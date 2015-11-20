@@ -185,7 +185,7 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
                     }
                 }
             }
-        } else if (wParam == WM_LBUTTONUP || WM_NCLBUTTONUP) {
+		} else if (wParam == WM_LBUTTONUP || wParam == WM_NCLBUTTONUP) {
             g_bLButtonDown = false;
             if (g_iCapMode & CAPMODE_MOUSE_SELECTION){
                 if (g_selectionStatus == 2) {
@@ -196,8 +196,13 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
                     g_timerValid = true;
                 }
             }
-        }
-    ReleaseMutex(g_hSyncMutex);
+        }else if (wParam == WM_LBUTTONDBLCLK || wParam == WM_NCLBUTTONDBLCLK) {
+			g_bSelectionText = TRUE;
+			g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
+			g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, (TIMERPROC)TimerFunc);
+			g_timerValid = true;
+		}
+        ReleaseMutex(g_hSyncMutex);
     }
     }
     return CallNextHookEx(g_hMouseHook, nCode, wParam, lParam);
