@@ -26,7 +26,7 @@
   InstallDir "$PROGRAMFILES\AlphaDict"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKLM "Software\AlphaDict" ""
+  InstallDirRegKey HKLM "Software\AlphaDict"  "InstallDir"
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin ;highest
