@@ -94,10 +94,10 @@
   Setup will uninstall the previous version before proceeding with this installation.$\n\
   Click 'OK' to uninstall the previous version or 'Cancel' to cancel this install. "
 
-  LangString LNG_ReInstallWarnning ${LANG_SIMPCHINESE} "  "
+  ;LangString LNG_ReInstallWarnning ${LANG_SIMPCHINESE} "  "
   
-  ;LangString LNG_ReInstallWarnning ${LANG_SIMPCHINESE} "已经安装了一个老版本,继续安装之前,需要卸载老版本. $\n\
-  按 "确定" 卸载老版本, "取消" 停止本次安装"
+  LangString LNG_ReInstallWarnning ${LANG_SIMPCHINESE} "已经安装了一个老版本,继续安装之前,需要卸载老版本. $\n\
+  按 '确定' 卸载老版本, '取消' 停止本次安装"
 
   LangString LNG_UnInstallAlphaDict  ${LANG_ENGLISH} "Uninstall AlphaDict"
   LangString LNG_UnInstallAlphaDict  ${LANG_SIMPCHINESE} "卸载 Alpha词典"
@@ -178,6 +178,7 @@ Section "AlphaDict" SecAlphaDict
 
   SetOutPath "$INSTDIR\system\dicts"
   File "${_root}\Release\system\dicts\cedict_1_0_ts_mdbg.aldict"
+  File "${_root}\Release\system\dicts\langdao-ec-gb.aldict"
 
   SetOutPath "$INSTDIR\system\xmls"
   File "${_root}\Release\system\xmls\cedict_1_0_ts_mdbg.xml"
