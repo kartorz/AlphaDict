@@ -308,6 +308,7 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
 
     ui->detLanComboBox->blockSignals(true);
 
+    ui->detLanComboBox->clear();
     ui->detLanComboBox->addItem("any");
     ui->srcLanComboBox->addItem("any");
 
@@ -474,8 +475,12 @@ void MainWindow::onActionVcbularyPageAdded()
         
         //ui->vbExplLabel->setText("");
         //ui->vbExplLabel->setText(m_vbookModel->curExamExpl());
+        ui->detLanComboBox->blockSignals(true);
+
+        ui->vbModeComboBox->clear();
         ui->vbModeComboBox->addItem(tr("study"));
         ui->vbModeComboBox->addItem(tr("exam"));
+        ui->detLanComboBox->blockSignals(false);
 
         //ui->vbScoreLabel->setText("0");
         //QIcon icon;
