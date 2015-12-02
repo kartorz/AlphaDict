@@ -708,16 +708,23 @@ void MainWindow::onClipboardDataChanged()
 
 void MainWindow::onClipboardSelectionChanged()
 {
+    static QString lastInput = ""; // Sometimes, SelectionChanged occurs when click mouse.
+
     if (m_config->m_cws.bselection && m_cwdEnableTemp && m_config->m_cws.benable) {
         const QClipboard *clipboard = QApplication::clipboard();
         
         QString input = clipboard->text(QClipboard::Selection).trimmed();
         if (input != "") {
-            std::string u8input = std::string(input.toUtf8().data());
-            if (Util::isValidInput(u8input)) {
-                //m_capWordDialog->show();
-                g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, u8input);
-            }            
+            if (input != lastInput) {
+                lastInput = input;
+                std::string u8input = std::string(input.toUtf8().data());
+                if (Util::isValidInput(u8input)) {
+                    //m_capWordDialog->show();
+                    g_application.sysMessageQ()->push(MSG_CAPWORD_QUERY, u8input);
+                }
+	    } else {
+                lastInput = ""; // May choose the same word.
+            }
         } else if (!m_capWordDialog->isHidden()) {
             m_capWordDialog->close();
         }

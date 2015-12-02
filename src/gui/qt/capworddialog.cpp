@@ -110,10 +110,10 @@ bool CapWordDialog::event(QEvent * event)
         raise();
         break;
 
-	case QEvent::Leave:
-		if (m_bAutoClose)
-			m_timer->start(m_autoCloseInterval);
-		break;
+    case QEvent::Leave:
+        if (m_bAutoClose)
+            m_timer->start(m_autoCloseInterval);
+        break;
 
     default:
         break;

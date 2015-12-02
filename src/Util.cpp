@@ -252,7 +252,8 @@ bool Util::isValidInput(string& str)
     // Check English
     if (isValidEnglishChar(str[0]))
     {
-        for (int i=0; i<str.length(); i++) {
+        // Don't check last char, eg: boy, boy;
+        for (int i=0; i<str.length() - 1; i++) {
             char c = str[i];
             if (!(isValidEnglishChar(c) || c == ' '))
                 return false;
