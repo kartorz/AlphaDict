@@ -289,32 +289,38 @@ bool DictManager::lookupIgnoreGrammarCase(iDict* dict, const string& input, Dict
 
 bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItemList& items)
 {
-    string subfix = input.substr(input.length()-1, 1);
-    string sx1[] = {"s", "d", "r"};
-    for (int i = 0; i < 3; i++) {
-        if (subfix.compare(sx1[i]) == 0) {
-            if (dict->lookup(input.substr(0, input.length()-1), items))
-                return true;
+    if (input.length() > 1) {
+        string subfix = input.substr(input.length()-1, 1);
+        string sx[] = {"s", "d", "r"};
+        for (int i = 0; i < 3; i++) {
+            if (subfix.compare(sx[i]) == 0) {
+                if (dict->lookup(input.substr(0, input.length()-1), items))
+                    return true;
+            }
         }
     }
 
     items.clear();
-    subfix = input.substr(input.length()-2, 2);
-    string sx2[] = {"es", "ed", "er"};
-    for (int i = 0; i < 3; i++) {
-        if (subfix.compare(sx2[i]) == 0) {
-            if (dict->lookup(input.substr(0, input.length()-2), items))
-                return true;
-       }
+    if (input.length() > 2) {
+        string subfix = input.substr(input.length()-2, 2);
+        string sx[] = {"es", "ed", "er"};
+        for (int i = 0; i < 3; i++) {
+            if (subfix.compare(sx[i]) == 0) {
+                if (dict->lookup(input.substr(0, input.length()-2), items))
+                    return true;
+            }
+        }
     }
 
     items.clear();
-    subfix = input.substr(input.length()-3, 3);
-    string sx3[] = {"ing", "est"};
-    for (int i = 0; i < 2; i++) {
-        if (subfix.compare(sx3[i]) == 0) {
-            if (dict->lookup(input.substr(0, input.length()-3), items))
-                 return true;
+    if (input.length() > 3) {
+        string subfix = input.substr(input.length()-3, 3);
+        string sx[] = {"ing", "est"};
+        for (int i = 0; i < 2; i++) {
+            if (subfix.compare(sx[i]) == 0) {
+                if (dict->lookup(input.substr(0, input.length()-3), items))
+                    return true;
+            }
         }
     }
 

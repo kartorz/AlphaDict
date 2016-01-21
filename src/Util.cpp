@@ -245,7 +245,7 @@ void Util::sleep(int ms)
 
 bool Util::isValidInput(string& str)
 {
-    #define MAX_PHRASE_LEN  200
+    #define MAX_PHRASE_LEN  30
     if (str.length() >  MAX_PHRASE_LEN || str.empty())
         return false;
 
