@@ -60,7 +60,7 @@ ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 a11: AlphaDict AlConvert
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
-	$(AR) -r $@  $<
+	$(AR) -r $@  $^
 
 AlphaDict: $(OBJS_ALPHADICT)
 	$(CC) $^ $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
