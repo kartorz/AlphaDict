@@ -120,7 +120,7 @@ int CharUtil::ucs4slen(const u32 *ucs)
     while (*ucs++ != 0)
         len++;
     return len;
-};
+}
 
 u4char_t* CharUtil::utf8StrToUcs4Str(const char *u8s, size_t* u4slen)
 {

@@ -118,9 +118,11 @@ void MessageQueue::flush(int id)
 {
    SpinLock m_lock(m_crs);
    std::list<Message>::iterator it;
-   for (it = m_queue.begin(); it != m_queue.end(); it++) {       
+   for (it = m_queue.begin(); it != m_queue.end();) {
        if (it->id == id) {
-           m_queue.erase(it);
+           it = m_queue.erase(it);
+       } else {
+           ++it;
        }
    }
 }
