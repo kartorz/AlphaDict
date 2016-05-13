@@ -44,6 +44,11 @@ private:
                    tree_node<aldict_charindex>::treeNodePtr parent,
                    IndexList& indexList);
 
+    bool loadIndex(string startwith,
+                   struct aldict_charindex& chrInx,
+                   struct IndexStat *stat,
+                   IndexList& indexList);
+
     bool readHeader();
     void readChrIndex();
 

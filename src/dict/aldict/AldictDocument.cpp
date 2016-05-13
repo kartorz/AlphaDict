@@ -363,6 +363,22 @@ int AldictDocument::getIndexList(IndexList& indexList, int start, int end, const
         int remain;
         root = findTreeNode((char*)key.c_str(), root, &remain);
         string prefix = startwith.substr(0, startwith.length()-remain);
+
+        if (remain > 0) {
+            int num = 0;
+            struct aldict_charindex chrInx = root->children().size() == 0 ? root->value() : root->child(0)->value();
+            IndexList strIndexList;
+            loadIndex(prefix, chrInx, &stat, strIndexList);
+            for (int i = 0; i < strIndexList.size(); i++) {
+                string index = strIndexList[i]->index;
+                if (index.length() >= key.length() && index.substr(0, key.length()) == key) {
+                    num++;
+                    indexList.push_back(strIndexList[i]);
+                }
+            }
+            return num;
+        }
+
         //printf("%s, %s, %d\n", startwith.c_str(), prefix.c_str(), remain);
         char* pkey = (char *)(prefix.c_str());
         size_t u4len;
@@ -429,63 +445,78 @@ bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
             }
         }
         ++stat->number;
-	} else {
-        loc = loc & (~F_LOCSTRINX);
-        int bk_off = loc/ALD_BLOCK;
-        int addr_off = loc%ALD_BLOCK;
-        int block_nr = m_strIndexLoc+bk_off;
-        u8 *buf_start, *buf_end;
-        if (bk_off > m_dataLoc - m_strIndexLoc) {
-             g_sysLog.e("{loadIndex} a invalid addr (%x\n", loc);
-             return false;
-        }
+        return true;
+	}
 
+    return loadIndex(strparent, chrInx, stat, indexList);
+}
+
+/* load from string index area */
+bool AldictDocument::loadIndex(string startwith,
+                          struct aldict_charindex& chrInx,
+                          struct IndexStat *stat,
+                          IndexList& indexList)
+{
+	address_t loc = ald_read_u32(chrInx.location);
+	int length = ald_read_u16(chrInx.len_content);
+    if ((loc & F_LOCSTRINX) != F_LOCSTRINX)
+        return false;
+
+    loc = loc & (~F_LOCSTRINX);
+    int bk_off = loc/ALD_BLOCK;
+    int addr_off = loc%ALD_BLOCK;
+    int block_nr = m_strIndexLoc+bk_off;
+    u8 *buf_start, *buf_end;
+    if (bk_off > m_dataLoc - m_strIndexLoc) {
+        g_sysLog.e("{loadIndex} a invalid addr (%x\n", loc);
+        return false;
+    }
+
+    if ((buf_start = (u8 *)getBlock(block_nr)) == NULL)
+        return false;
+    buf_end = buf_start + ALD_BLOCK;
+
+    buf_start += addr_off; // move buf_start
+        
+    for (int item = 0; item < length; item++) {
+        struct aldict_stringindex *pStrInx;
+        if (buf_end <= buf_start || buf_end - buf_start < sizeof(struct aldict_stringindex))
+            goto READ_NEXT_BLOCK;
+           
+        pStrInx = (struct aldict_stringindex *) buf_start;
+        if (pStrInx->len_str[0] != 0)
+            goto LOADING;
+
+    READ_NEXT_BLOCK:
+        // Read next block
+        ++block_nr;
         if ((buf_start = (u8 *)getBlock(block_nr)) == NULL)
             return false;
         buf_end = buf_start + ALD_BLOCK;
+        pStrInx = (struct aldict_stringindex *) buf_start;
 
-        buf_start += addr_off; // move buf_start
-        
-		for (int item = 0; item < length; item++) {
-            struct aldict_stringindex *pStrInx;
-            if (buf_end <= buf_start || buf_end - buf_start < sizeof(struct aldict_stringindex))
-                goto READ_NEXT_BLOCK;
-           
-	        pStrInx = (struct aldict_stringindex *) buf_start;
-            if (pStrInx->len_str[0] != 0)
-                 goto LOADING;
+        // Check pStrInx.
+        if (pStrInx->len_str[0] == 0) {
+            g_sysLog.e("{loadIndex} read a invalid data area \n");
+            return false;
+        }
 
-        READ_NEXT_BLOCK:
-		    // Read next block
-            ++block_nr;
-            if ((buf_start = (u8 *)getBlock(block_nr)) == NULL)
+    LOADING:
+        if (stat->number >= stat->start) {
+            if (stat->end == -1 || stat->number < stat->end) {
+                string strinx = string((char*)(pStrInx->str), pStrInx->len_str[0]);
+                //printf("strinx %s, %d\n", strinx.c_str(), pStrInx->len_str[0]);
+                iIndexItem* item = new iIndexItem();
+                item->index = startwith + strinx;
+                item->addr = ald_read_u32(pStrInx->location);
+                indexList.push_back(item);
+            } else {
                 return false;
-            buf_end = buf_start + ALD_BLOCK;
-            pStrInx = (struct aldict_stringindex *) buf_start;
-
-            // Check pStrInx.
-            if (pStrInx->len_str[0] == 0) {
-                g_sysLog.e("{loadIndex} read a invalid data area \n");
-                return false;
-	        }
-
-       LOADING:
-            if (stat->number >= stat->start) {
-                if (stat->number < stat->end) {
-                    string strinx = string((char*)(pStrInx->str), pStrInx->len_str[0]);
-                    //printf("strinx %s, %d\n", strinx.c_str(), pStrInx->len_str[0]);
-                    iIndexItem* item = new iIndexItem();
-                    item->index = strparent + strinx;
-                    item->addr = ald_read_u32(pStrInx->location);
-                    indexList.push_back(item);
-                } else {
-                    return false;
-                }
             }
-            ++stat->number;
-            buf_start += 5 + pStrInx->len_str[0];
-		}
-	}
+        }
+        ++stat->number;
+        buf_start += 5 + pStrInx->len_str[0];
+    }
     return true;
 }
 

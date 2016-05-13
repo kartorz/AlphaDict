@@ -557,6 +557,8 @@ static void add_alias(IndexTreeRef indexTree, const XMLElement* wordElement, off
 static bool is_in_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr parent,
 			      int words, int depth)
 {
+    if (depth == 0 && parent->children().size() == 0)
+        return false;
 	if (parent->children().size() > STRINX_WORDS_MAX)
 		return false;
 	// firgure-3, if there is one more children, this node should be char index.
@@ -609,7 +611,7 @@ static void write_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr pa
                 nbytes_strinx += nbytes_str;
 			    struct aldict_stringindex *strinx = ( struct aldict_stringindex *)malloc(nbytes_strinx);
 			    memcpy(strinx->str, mbindex, nbytes_str);
-			    memcpy(strinx->location, charIndex.location, 4);
+			    memcpy(strinx->location, charIndex.location, sizeof(strinx->location));
 			    strinx->len_str[0] = nbytes_str;
                 
 			    off_t offset = check_block_bound(ftello(file), nbytes_strinx);
