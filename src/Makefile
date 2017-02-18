@@ -109,6 +109,7 @@ uninstall:
 
 clean:
 #	@find . -name "*.[oadi]" | xargs -I{} rm {}
+	@find gui/qt -name "moc_*" | xargs -I{} rm {}
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
 	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict AlConvert)
 

@@ -137,6 +137,7 @@ private slots:
     void onTrayCwsSelection(bool checked);
     void onTrayCwsMouse(bool checked);
     void onTrayMenuClose();
+    void onTrayMenuActivated();
 
 protected :
     //bool winEvent( MSG * message, long * result);

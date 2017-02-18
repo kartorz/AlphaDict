@@ -46,11 +46,11 @@
     </message>
     <message>
         <source>save to vocabulary book</source>
-        <translation type="vanished">保存到生词本</translation>
+        <translation type="obsolete">保存到生词本</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="vanished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>No action</source>
@@ -94,23 +94,23 @@
     </message>
     <message>
         <source>do work after restart</source>
-        <translation type="vanished">重启后生效</translation>
+        <translation type="obsolete">重启后生效</translation>
     </message>
     <message>
         <source>dict</source>
-        <translation type="vanished">词典</translation>
+        <translation type="obsolete">词典</translation>
     </message>
     <message>
         <source>capture word setting</source>
-        <translation type="vanished">取词设置</translation>
+        <translation type="obsolete">取词设置</translation>
     </message>
     <message>
         <source>enable setting</source>
-        <translation type="vanished">取词开关</translation>
+        <translation type="obsolete">取词开关</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;User can use this &apos;HotKey&apos;  disable or enable capture temporarily, &lt;/p&gt;&lt;p&gt;It don&apos;t change &apos;enable&apos;  state. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;用户可以使用快捷键临时打开或者关闭取词, &lt;/p&gt;&lt;p&gt;它不改变用户设置的开关状况 &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;用户可以使用快捷键临时打开或者关闭取词, &lt;/p&gt;&lt;p&gt;它不改变用户设置的开关状况 &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Enable</source>
@@ -119,15 +119,15 @@
     </message>
     <message>
         <source>not casp lock</source>
-        <translation type="vanished">不支持‘大写锁定’开启</translation>
+        <translation type="obsolete">不支持‘大写锁定’开启</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add to vocabulary book&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">添加到生词本</translation>
+        <translation type="obsolete">添加到生词本</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Need restart.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">需要重启</translation>
+        <translation type="obsolete">需要重启</translation>
     </message>
     <message>
         <source>Font Size</source>
@@ -136,7 +136,7 @@
     <message>
         <source>Need restart</source>
         <oldsource>Need restart.</oldsource>
-        <translation type="vanished">需要重启</translation>
+        <translation type="obsolete">需要重启</translation>
     </message>
     <message>
         <source>9</source>
@@ -200,7 +200,7 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture by mouse selection text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">通过鼠标选择文本（高亮）取词</translation>
+        <translation type="obsolete">通过鼠标选择文本（高亮）取词</translation>
     </message>
     <message>
         <source>Mouse Selection</source>
@@ -250,7 +250,7 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     </message>
     <message>
         <source>Exam</source>
-        <translation type="vanished">考试</translation>
+        <translation type="obsolete">考试</translation>
     </message>
     <message>
         <source>Help</source>
@@ -263,38 +263,38 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture by mouse selection text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture by selection text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
-        <translation type="vanished">通过鼠标选择文本（高亮）取词</translation>
+        <translation type="obsolete">通过鼠标选择文本（高亮）取词</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;enable/disable capture&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;取词开关&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;取词开关&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>capture method</source>
-        <translation type="vanished">取词方式</translation>
+        <translation type="obsolete">取词方式</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture  by selection text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture  selection word that is highlighted text.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;通过选择文本（高亮）取词.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;通过选择文本（高亮）取词.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Selection</source>
         <oldsource>selection</oldsource>
-        <translation type="vanished">选择</translation>
+        <translation type="obsolete">选择</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture word of clipboard.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture word from clipboard.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;通过剪贴板取词&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;通过剪贴板取词&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>vocabulary book</source>
-        <translation type="vanished">生词本</translation>
+        <translation type="obsolete">生词本</translation>
     </message>
     <message>
         <source>mouse selection</source>
-        <translation type="vanished">鼠标选择文本</translation>
+        <translation type="obsolete">鼠标选择文本</translation>
     </message>
     <message>
         <source>Clipboard</source>
@@ -304,27 +304,27 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture word by mouse over.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;capture word which  mouse is over.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;通过鼠标取词&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;通过鼠标取词&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>mouse</source>
-        <translation type="vanished">鼠标</translation>
+        <translation type="obsolete">鼠标</translation>
     </message>
     <message>
         <source>vbook</source>
-        <translation type="vanished">生词本</translation>
+        <translation type="obsolete">生词本</translation>
     </message>
     <message>
         <source>list</source>
-        <translation type="vanished">列表</translation>
+        <translation type="obsolete">列表</translation>
     </message>
     <message>
         <source>delete a item</source>
-        <translation type="vanished">删除一个条目</translation>
+        <translation type="obsolete">删除一个条目</translation>
     </message>
     <message>
         <source>delete all items</source>
-        <translation type="vanished">删除所有条目</translation>
+        <translation type="obsolete">删除所有条目</translation>
     </message>
     <message>
         <source>exam</source>
@@ -352,7 +352,7 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     </message>
     <message>
         <source>Stop</source>
-        <translation type="vanished">退出</translation>
+        <translation type="obsolete">退出</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -384,25 +384,25 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     <message>
         <source>The First Item</source>
         <oldsource>The first item</oldsource>
-        <translation type="vanished">第一个条目</translation>
+        <translation type="obsolete">第一个条目</translation>
     </message>
     <message>
         <source>The Last Item</source>
         <oldsource>The last item</oldsource>
-        <translation type="vanished">最后一个条目</translation>
+        <translation type="obsolete">最后一个条目</translation>
     </message>
     <message>
         <source>failure, maybe vocabulary book is full</source>
-        <translation type="vanished">添加失败，生词本可能已经存满了</translation>
+        <translation type="obsolete">添加失败，生词本可能已经存满了</translation>
     </message>
     <message>
         <source>failure, maybe vocabulary book is full (200)</source>
-        <translation type="vanished">添加失败，生词本可能已经存满了</translation>
+        <translation type="obsolete">添加失败，生词本可能已经存满了</translation>
     </message>
     <message>
         <source>Try Again</source>
         <oldsource>Try again</oldsource>
-        <translation type="vanished">加油,再试一次</translation>
+        <translation type="obsolete">加油,再试一次</translation>
     </message>
     <message>
         <source>English</source>
@@ -521,10 +521,6 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;Ctrl+Alt+&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture by mouse selection or double click text (highlighted text).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>通过鼠标选择或者双击文本（高亮）取词</translation>
     </message>
@@ -532,6 +528,15 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
         <source>Ctrl+O</source>
         <comment>File|Open</comment>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;Ctrl + Alt +&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate</source>
+        <translatorcomment>激活主窗口</translatorcomment>
+        <translation>激活</translation>
     </message>
 </context>
 </TS>

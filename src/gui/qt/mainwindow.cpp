@@ -140,7 +140,11 @@ QMenu* MainWindow::creatTrayContextMenu()
 
     trayMenu->addSeparator();
 
-    QAction* newAct = new QAction(tr("Exit"), this);
+    QAction* newAct = new QAction(tr("Activate"), this);
+    connect(newAct, SIGNAL(triggered()), this, SLOT(onTrayMenuActivated()));
+    trayMenu->addAction(newAct);
+
+    newAct = new QAction(tr("Exit"), this);
     connect(newAct, SIGNAL(triggered()), this, SLOT(onTrayMenuClose()));
     trayMenu->addAction(newAct);
 
@@ -859,6 +863,11 @@ void MainWindow::onTrayCwsMouse(bool checked)
 void MainWindow::onTrayMenuClose()
 {
     close();
+}
+
+void MainWindow::onTrayMenuActivated()
+{
+    onSysTrayActivated( QSystemTrayIcon::Trigger);
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)

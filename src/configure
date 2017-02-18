@@ -676,6 +676,7 @@ QT5=$_qt5
 MOC="$_qttooldir/moc"
 UIC="$_qttooldir/uic"
 RCC="$_qttooldir/rcc"
+QTTOOL_DIR=$_qttooldir
 EOF
 
 
