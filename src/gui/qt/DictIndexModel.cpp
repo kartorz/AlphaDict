@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#define INDEXLIST_SIZE_MAX  1000
+#define INDEXLIST_SIZE_MAX  10000
 #define OVERLAP_NR 100
 
 #define STRING_MORE_B1  "<--------"

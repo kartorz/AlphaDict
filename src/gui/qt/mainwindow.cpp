@@ -176,11 +176,13 @@ void MainWindow::initDelay()
 
 void MainWindow::on_srcLanComboBox_currentIndexChanged(const QString &arg1)
 {
+    g_sysLog.i("on_srcLanComboBox_currentIndexChanged\n");
     g_application.sysMessageQ()->push(MSG_SET_SRCLAN, std::string(arg1.toUtf8().data()));
 }
 
 void MainWindow::on_detLanComboBox_currentIndexChanged(const QString &arg1)
 {
+    g_sysLog.i("on_detLanComboBox_currentIndexChanged\n");
     g_application.sysMessageQ()->push(MSG_SET_DETLAN, std::string(arg1.toUtf8().data()));
 }
 
@@ -311,8 +313,11 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
     vector<string>::iterator iter;
 
     ui->detLanComboBox->blockSignals(true);
+    ui->srcLanComboBox->blockSignals(true);
 
     ui->detLanComboBox->clear();
+    ui->srcLanComboBox->clear();
+
     ui->detLanComboBox->addItem("any");
     ui->srcLanComboBox->addItem("any");
 
@@ -329,6 +334,7 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
     ui->detLanComboBox->setCurrentIndex(i);
 
     ui->detLanComboBox->blockSignals(false);
+    ui->srcLanComboBox->blockSignals(false);
 }
 
 void MainWindow::on_saveButton_clicked()
