@@ -299,11 +299,10 @@ void MainWindow::onUpdateCapWordExplText(void *v)
     //QPoint pos = QCursor::pos();
     m_capWordDialog->moveToCursor();
     m_capWordDialog->setDictItemList(itemList);
-    //dlg->exec();
-    if (m_capWordDialog->isHidden())
-        m_capWordDialog->show();
-    m_capWordDialog->raise();
+
+    m_capWordDialog->show();
     m_capWordDialog->activateWindow();
+    m_capWordDialog->raise();
     //::SetCapture() /* win32 -- it seems not work */
 }
 

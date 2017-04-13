@@ -17,7 +17,11 @@ CapWordDialog::CapWordDialog(MainWindow *owner, bool autoclose, int inv):
     m_owner(owner)
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
+#ifdef WIN32
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Popup)
+#else
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Popup | Qt::Dialog);
+#endif
     //setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     //setAttribute(Qt::WA_TranslucentBackground, true);
     //move(QCursor::pos().x()+CWD_X_OFFSET, QCursor::pos().y()+CWD_Y_OFFSET);
