@@ -31,8 +31,16 @@ void LookupTask::doWork()
         lookupResult = m_dmgr->lookupIgnoreGrammarCase(m_dict, m_input, itemList2);
         if (lookupResult)
             m_dmgr->onAddLookupResult(m_id, itemList2, lookupResult);
-        else
+        else {
+            if (m_dmgr->m_dictOpen[m_id].flag  == QUERY_CAPWORD_FLAG) {
+                if (m_input.length() - Util::stringCommonLen(m_input, itemList[0].word) > 3)
+                    itemList.clear();
+                else if (itemList[0].word.length() - Util::stringCommonLen(m_input, itemList[0].word) > 3)
+                    itemList.clear();
+            }
+
             m_dmgr->onAddLookupResult(m_id, itemList, lookupResult);
+        }
     }
 }
 
@@ -225,9 +233,11 @@ void DictManager::onAddLookupResult(int which, DictItemList& items, bool lookupR
     if (true/*m_dictOpen[which].flag  != QUERY_CAPWORD_FLAG
       || (m_dictOpen[which].flag  == QUERY_CAPWORD_FLAG && lookupResult)*/) {
         DictItemList* arg1 = new DictItemList();
-        *arg1 = items;
-        int did = m_dictOpen[which].dictId;
-        (*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
+        if (items.size() > 0) {
+            *arg1 = items;
+            int did = m_dictOpen[which].dictId;
+            (*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
+        }
         int msgid = m_dictOpen[which].flag == 
             QUERY_CAPWORD_FLAG ? MSG_SET_CAPWORD_DICTITEM : MSG_SET_DICTITEMS;
         g_application.uiMessageQ()->push(msgid, -1, (void *)arg1); /* UI should delete arg1 */
@@ -291,11 +301,12 @@ bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItem
 {
     if (input.length() > 1) {
         string subfix = input.substr(input.length()-1, 1);
-        string sx[] = {"s", "d", "r"};
-        for (int i = 0; i < 3; i++) {
+        string sx[] = {"s", "d", "r", "\0"};
+        for (int i = 0; sx[i] != "\0"; i++) {
             if (subfix.compare(sx[i]) == 0) {
                 if (dict->lookup(input.substr(0, input.length()-1), items))
                     return true;
+                break;
             }
         }
     }
@@ -303,22 +314,54 @@ bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItem
     items.clear();
     if (input.length() > 2) {
         string subfix = input.substr(input.length()-2, 2);
-        string sx[] = {"es", "ed", "er"};
-        for (int i = 0; i < 3; i++) {
+        string sx[] = {"es", "ed", "er", "ly", "\'s", "\'t", "\0"};
+        for (int i = 0; sx[i] != "\0"; i++) {
             if (subfix.compare(sx[i]) == 0) {
                 if (dict->lookup(input.substr(0, input.length()-2), items))
                     return true;
+                break;
             }
         }
     }
 
     items.clear();
     if (input.length() > 3) {
+        bool bCheck = false;
         string subfix = input.substr(input.length()-3, 3);
-        string sx[] = {"ing", "est"};
-        for (int i = 0; i < 2; i++) {
+        string sx[] = {"est", "n\'t", "\'re", "\'ll", "\'ve", "\0"};
+        for (int i = 0; sx[i] != "\0"; i++) {
             if (subfix.compare(sx[i]) == 0) {
                 if (dict->lookup(input.substr(0, input.length()-3), items))
+                    return true;
+                goto CHECK_4;
+            }
+        }
+
+        string sx2[] = {"ied", "ies", "ily", "ier", "\0"};
+        for (int i = 0; sx2[i] != "\0"; i++) {
+            if (subfix.compare(sx2[i]) == 0) {
+                if (dict->lookup(input.substr(0, input.length()-3) + "y", items))
+                    return true;
+                goto CHECK_4;
+            }
+        }
+
+        if (subfix.compare("ing") == 0) {
+            if (dict->lookup(input.substr(0, input.length()-3), items))
+                return true;
+            if (dict->lookup(input.substr(0, input.length()-3) + "e", items))
+                return true;
+        }
+    }
+
+CHECK_4:
+    items.clear();
+    if (input.length() > 4) {
+        string subfix = input.substr(input.length()-4, 4);
+        string sx[] = {"iest", "\0"};
+        for (int i = 0; sx[i] != "\0"; i++) {
+            if (subfix.compare(sx[i]) == 0) {
+                if (dict->lookup(input.substr(0, input.length()-4) + "y", items))
                     return true;
             }
         }

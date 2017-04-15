@@ -80,7 +80,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon icon;
     icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
     m_systray->setIcon(icon);
-    //m_systray->show();
     connect(m_systray,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,
@@ -200,8 +199,11 @@ void MainWindow::on_queryButton_clicked()
 {
     QString input = ui->inputLineEdit->text().trimmed();
     if (!input.isEmpty()) {
-        g_application.sysMessageQ()->push(MSG_DICT_QUERY, std::string(input.toUtf8().data()));
-        ui->dictTextEdit->document()->clear();
+        std::string u8input = std::string(input.toUtf8().data());
+        if (Util::isValidInput(u8input)) {
+            g_application.sysMessageQ()->push(MSG_DICT_QUERY, u8input);
+            ui->dictTextEdit->document()->clear();
+        }
     }
 }
 
@@ -295,15 +297,16 @@ void MainWindow::onUpdateCapWordExplText(void *v)
         return;
 
     DictItemList* itemList = (DictItemList*) v;
+    if (itemList->size() > 0) {
+        //QPoint pos = QCursor::pos();
+        m_capWordDialog->moveToCursor();
+        m_capWordDialog->setDictItemList(itemList);
 
-    //QPoint pos = QCursor::pos();
-    m_capWordDialog->moveToCursor();
-    m_capWordDialog->setDictItemList(itemList);
-
-    m_capWordDialog->show();
-    m_capWordDialog->activateWindow();
-    m_capWordDialog->raise();
-    //::SetCapture() /* win32 -- it seems not work */
+        m_capWordDialog->show();
+        m_capWordDialog->activateWindow();
+        m_capWordDialog->raise();
+        //::SetCapture() /* win32 -- it seems not work */
+    }
 }
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
@@ -763,6 +766,7 @@ void MainWindow::on_cwsEnableCheckBox_clicked(bool checked)
 {
     m_config->writeCwsEnable(checked);
     if (checked) {
+        m_cwdEnableTemp = true;
         this->registerHotkey(m_config->m_cws.shortcutKey);
     } else {
         this->unregisterHotkey(m_config->m_cws.shortcutKey);
@@ -878,7 +882,6 @@ void MainWindow::onTrayMenuActivated()
 void MainWindow::closeEvent(QCloseEvent * event)
 {
 	//m_setting.setValue("geometry", saveGeometry());
-
     if (!m_systray->isVisible()) {
         if (m_config->m_setting.bsystemTray) {
             m_systray->show();
@@ -1017,6 +1020,15 @@ bool MainWindow::eventFilter( QObject * watched, QEvent * event )
                 m_capWordDialog->close();
             //X11Util::forwardHotKey(m_config->m_cws.shortcutKey);
             return true;
+        }
+    }else if (event->type() == QEvent::WindowStateChange) {
+        if (windowState() == Qt::WindowNoState) {
+            static bool windowActive = false;
+            if (!windowActive) {
+                windowActive = true;
+                m_systray->show(); // Have to do this, I don't know why.
+                m_systray->hide();
+            }
         }
     }
     return false;

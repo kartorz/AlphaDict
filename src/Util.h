@@ -39,7 +39,7 @@ public:
     static string stringCaseChange(const string& str, int start, int len);
     static string stringCaseToLower(const string& str);
     static string stringCaseToUpper(const string& str);
-
+    static int    stringCommonLen(const string& str1, const string& str2, int start = 0);
     // Replace /old/ with /new/ of the /ori/ up to /count/ /old/ occurs. 
     //static string replaceString(string& ori, string old, string new, int count);
 };

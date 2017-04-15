@@ -252,10 +252,19 @@ bool Util::isValidInput(string& str)
     // Check English
     if (isValidEnglishChar(str[0]))
     {
-        // Don't check last char, eg: boy, boy;
-        for (int i=0; i<str.length() - 1; i++) {
+        int len;
+        // Trim the invalid english chars, eg boy, boy;
+        for (len = str.length();  len > 0; len--) {
+            char c = str[len - 1];
+            if (isValidEnglishChar(c))
+                break;
+        }
+        str = str.substr(0, len);
+
+        // Exclude 's, 't, etc..
+        for (int i=0; i < str.length(); i++) {
             char c = str[i];
-            if (!(isValidEnglishChar(c) || c == ' '))
+            if (!(isValidEnglishChar(c) || c == ' ' || c == '\''))
                 return false;
         }
     }
@@ -334,6 +343,16 @@ string Util::stringCaseToUpper(const string& str)
     }
     return ret;
 #endif
+}
+
+int Util::stringCommonLen(const string& str1, const string& str2, int start)
+{
+    const char* pstr1 = str1.c_str();
+    const char* pstr2 = str2.c_str();
+    int i = start;
+    for (; *(pstr1+i) != '\0' && *(pstr2+i) != '\0' && *(pstr1+i) == *(pstr2+i); i++) {
+    }
+    return i;
 }
 
 /*string Util::replaceString(string& ori, string old, string new, int count)
