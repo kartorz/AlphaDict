@@ -47,7 +47,7 @@ DEPS += $(SRCS_ALCONVERT:%.cpp=%.d)
 
 EXTRALIBS_ALPHADICT += $(EXTRALIBS)
 
-INSTALL_TARGETS-yes = install-system install-AlphaDict install-AlConvert
+INSTALL_TARGETS-yes = install-system install-AlphaDict install-AldConvert
 
 DIRS = . convert lib \
          dict dict/aldict \
@@ -57,7 +57,7 @@ ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
 ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 
-a11: AlphaDict AlConvert
+a11: AlphaDict AldConvert
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $^
@@ -65,7 +65,7 @@ lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 AlphaDict: $(OBJS_ALPHADICT)
 	$(CC) $^ $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
 
-AlConvert: $(OBJS_ALCONVERT)
+AldConvert: $(OBJS_ALCONVERT)
 	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@ 
 
 #%.d : %.cpp
@@ -103,7 +103,7 @@ install-system: install-dirs
 	    install -m 0755 "tools/$$FILE" "$(DATADIR)/tools/$$FILE"; done
 
 uninstall:
-	rm -f $(BINDIR)/AlphaDict $(BINDIR)/AlConvert
+	rm -f $(BINDIR)/AlphaDict $(BINDIR)/AldConvert
 	rm -f $(DATADIR)/configure.xml.in $(DATADIR)/language.txt
 	rm -f $(DATADIR)/tools -r
 
@@ -111,7 +111,7 @@ clean:
 #	@find . -name "*.[oadi]" | xargs -I{} rm {}
 	@find gui/qt -name "moc_*" | xargs -I{} rm {}
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
-	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict AlConvert)
+	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict AldConvert)
 
 distclean: clean
 	-@rm -rf config.*  gui/build-qt-Desktop-Debug  gui/build-qt-Desktop-Release
