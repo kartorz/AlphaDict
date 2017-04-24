@@ -299,7 +299,9 @@ bool DictManager::lookupIgnoreGrammarCase(iDict* dict, const string& input, Dict
 
 bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItemList& items)
 {
-    if (input.length() > 1) {
+    string strtemp = "";
+
+    if (input.length() > 2) {
         string subfix = input.substr(input.length()-1, 1);
         string sx[] = {"s", "d", "r", "\0"};
         for (int i = 0; sx[i] != "\0"; i++) {
@@ -312,61 +314,80 @@ bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItem
     }
 
     items.clear();
-    if (input.length() > 2) {
-        string subfix = input.substr(input.length()-2, 2);
-        string sx[] = {"es", "ed", "er", "ly", "\'s", "\'t", "\0"};
-        for (int i = 0; sx[i] != "\0"; i++) {
-            if (subfix.compare(sx[i]) == 0) {
-                if (dict->lookup(input.substr(0, input.length()-2), items))
-                    return true;
-                break;
-            }
-        }
-    }
-
-    items.clear();
     if (input.length() > 3) {
-        bool bCheck = false;
-        string subfix = input.substr(input.length()-3, 3);
-        string sx[] = {"est", "n\'t", "\'re", "\'ll", "\'ve", "\0"};
-        for (int i = 0; sx[i] != "\0"; i++) {
-            if (subfix.compare(sx[i]) == 0) {
-                if (dict->lookup(input.substr(0, input.length()-3), items))
-                    return true;
-                goto CHECK_4;
-            }
-        }
-
-        string sx2[] = {"ied", "ies", "ily", "ier", "\0"};
-        for (int i = 0; sx2[i] != "\0"; i++) {
-            if (subfix.compare(sx2[i]) == 0) {
-                if (dict->lookup(input.substr(0, input.length()-3) + "y", items))
-                    return true;
-                goto CHECK_4;
-            }
-        }
-
-        if (subfix.compare("ing") == 0) {
-            if (dict->lookup(input.substr(0, input.length()-3), items))
+        string subfix = input.substr(input.length()-2, 2);
+        if (subfix.at(0) == '\'') {
+            //"\'s", "\'t"  "n\'t",
+            if (dict->lookup(input.substr(0, input.length()-2), items))
                 return true;
-            if (dict->lookup(input.substr(0, input.length()-3) + "e", items))
-                return true;
+        } else {
+            string sx[] = {"es", "ed", "er", "en", "ly", "\0"};
+            for (int i = 0; sx[i] != "\0"; i++) {
+                if (subfix.compare(sx[i]) == 0) {
+                    if (dict->lookup(input.substr(0, input.length()-2), items))
+                        return true;
+
+                    //  ies --> y
+                    items.clear();
+                    if (input.at(input.length() - 3 ) ==  'i') {
+                        if (dict->lookup(input.substr(0, input.length()-3) + "y", items))
+                            return true;
+                    }
+
+                    // er --> e
+                    items.clear();
+                    if (dict->lookup(input.substr(0, input.length() - 1), items))
+                        return true;
+
+                    strtemp = input.substr(0, input.length()-2);
+                    break;
+                }
+            }
         }
     }
 
-CHECK_4:
     items.clear();
     if (input.length() > 4) {
-        string subfix = input.substr(input.length()-4, 4);
-        string sx[] = {"iest", "\0"};
-        for (int i = 0; sx[i] != "\0"; i++) {
-            if (subfix.compare(sx[i]) == 0) {
-                if (dict->lookup(input.substr(0, input.length()-4) + "y", items))
-                    return true;
+        bool bCheck = false;
+        string subfix = input.substr(input.length()-3, 3);
+        if (subfix.at(0) == '\'') {
+            //"\'re", "\'ll", "\'ve"
+            if (dict->lookup(input.substr(0, input.length()-3), items))
+                return true;
+        } else {
+            string sx[] = {"est","ing", "\0"};
+            for (int i = 0; sx[i] != "\0"; i++) {
+                if (subfix.compare(sx[i]) == 0) {
+                    if (dict->lookup(input.substr(0, input.length()-3), items))
+                        return true;
+
+                    items.clear();
+                    if (dict->lookup(input.substr(0, input.length()-3) + "e", items))
+                        return true;
+
+                    // iest --> y
+                    items.clear();
+                    if (i == 0 && input.at(input.length()-4 ) ==  'i') {
+                        if (dict->lookup(input.substr(0, input.length()-4) + "y", items))
+                            return true;
+                    }
+                    strtemp = input.substr(0, input.length()-3);
+                    break;
+                }
             }
         }
     }
 
+    items.clear();
+    if (strtemp.length() > 2) {
+        //stopped, written, hottest, etc
+        if (strtemp.at(strtemp.length()-1) == strtemp.at(strtemp.length()-2)) {
+            if (dict->lookup(strtemp.substr(0, strtemp.length()-1), items))
+                    return true;
+        }
+    }
+
+    items.clear();
     return false;
 }
 
