@@ -93,6 +93,8 @@ private slots:
 
     void on_vbpreItemTlBtn_clicked();
 
+    void on_inputComboBox_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 };

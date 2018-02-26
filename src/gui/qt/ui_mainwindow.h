@@ -45,7 +45,6 @@ public:
     QTabWidget *tabWidget;
     QWidget *dictTab;
     QListView *indexListView;
-    QLineEdit *inputLineEdit;
     QComboBox *srcLanComboBox;
     QComboBox *detLanComboBox;
     QLabel *label;
@@ -58,6 +57,7 @@ public:
     QToolButton *saveButton;
     QToolButton *netdictButton;
     QToolButton *queryButton;
+    QComboBox *inputComboBox;
     QWidget *vocabularyTab;
     QLineEdit *vbInput;
     QRadioButton *vbExplHideradioButton;
@@ -170,10 +170,6 @@ public:
         indexListView->setAcceptDrops(false);
         indexListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         indexListView->setProperty("showDropIndicator", QVariant(false));
-        inputLineEdit = new QLineEdit(dictTab);
-        inputLineEdit->setObjectName(QStringLiteral("inputLineEdit"));
-        inputLineEdit->setGeometry(QRect(450, 14, 211, 32));
-        inputLineEdit->setReadOnly(false);
         srcLanComboBox = new QComboBox(dictTab);
         srcLanComboBox->setObjectName(QStringLiteral("srcLanComboBox"));
         srcLanComboBox->setGeometry(QRect(169, 14, 113, 32));
@@ -249,6 +245,10 @@ public:
         queryButton->setIcon(icon10);
         queryButton->setIconSize(QSize(48, 48));
         queryButton->setAutoRaise(true);
+        inputComboBox = new QComboBox(dictTab);
+        inputComboBox->setObjectName(QStringLiteral("inputComboBox"));
+        inputComboBox->setGeometry(QRect(457, 14, 200, 32));
+        inputComboBox->setEditable(true);
         tabWidget->addTab(dictTab, QString());
         vocabularyTab = new QWidget();
         vocabularyTab->setObjectName(QStringLiteral("vocabularyTab"));

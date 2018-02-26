@@ -47,6 +47,8 @@ private slots:
 
     void on_detLanComboBox_currentIndexChanged(const QString &arg1);
 
+	void on_inputComboBox_currentIndexChanged(const QString &arg1);
+
     void on_inputLineEdit_editingFinished();
 
     void on_inputLineEdit_textChanged(const QString &arg1);
@@ -150,7 +152,7 @@ private:
     void unregisterHotkey(int key);
     int  capwordMode();
     void readHelpText(QString &help);
-
+	void lookup(const QString &input);
     inline void showVBookExpl(int row);
 
     QMenu* creatTrayContextMenu();
@@ -175,6 +177,8 @@ private:
     void (*onSysExit)();
 
     bool m_cwdEnableTemp;
+
+	QString m_preInput;
 };
 
 #endif // MAINWINDOW_H

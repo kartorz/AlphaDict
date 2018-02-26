@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(listViewEnterAccel, SIGNAL(activated()), this, SLOT(enterTreeItem()));
     QObject::connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(onClipboardDataChanged()));
     QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(onClipboardSelectionChanged()));
+    QObject::connect(ui->inputComboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(on_inputLineEdit_editingFinished()));
 
     m_config = g_application.m_configure;
     
@@ -175,35 +176,45 @@ void MainWindow::initDelay()
 
 void MainWindow::on_srcLanComboBox_currentIndexChanged(const QString &arg1)
 {
-    g_sysLog.i("on_srcLanComboBox_currentIndexChanged\n");
+    //g_sysLog.i("on_srcLanComboBox_currentIndexChanged\n");
     g_application.sysMessageQ()->push(MSG_SET_SRCLAN, std::string(arg1.toUtf8().data()));
 }
 
 void MainWindow::on_detLanComboBox_currentIndexChanged(const QString &arg1)
 {
-    g_sysLog.i("on_detLanComboBox_currentIndexChanged\n");
+    //g_sysLog.i("on_detLanComboBox_currentIndexChanged\n");
     g_application.sysMessageQ()->push(MSG_SET_DETLAN, std::string(arg1.toUtf8().data()));
+}
+
+void MainWindow::on_inputComboBox_currentIndexChanged(const QString &arg1)
+{
+	if (!arg1.isEmpty())
+		lookup(arg1);
 }
 
 void MainWindow::on_inputLineEdit_editingFinished()
 {
-    on_queryButton_clicked();
+	QString input = ui->inputComboBox->currentText().trimmed();
+    if (!input.isEmpty()) {
+		if (m_preInput == input)
+		{
+			m_preInput = "";
+			ui->inputComboBox->clearEditText();
+		} else {
+			m_preInput = input;
+		}
+    }
 }
 
 void MainWindow::on_inputLineEdit_textChanged(const QString &arg1)
 {
-
 }
 
 void MainWindow::on_queryButton_clicked()
 {
-    QString input = ui->inputLineEdit->text().trimmed();
+    QString input = ui->inputComboBox->currentText().trimmed();
     if (!input.isEmpty()) {
-        std::string u8input = std::string(input.toUtf8().data());
-        if (Util::isValidInput(u8input)) {
-            g_application.sysMessageQ()->push(MSG_DICT_QUERY, u8input);
-            ui->dictTextEdit->document()->clear();
-        }
+        lookup(input);
     }
 }
 
@@ -214,7 +225,9 @@ void MainWindow::on_indexListView_clicked(const QModelIndex &index)
 	    g_application.sysMessageQ()->push(MSG_DICT_INDEX_QUERY, index.row(), (void *)(m_dictIndexModel->item(index.row())));
 		ui->dictTextEdit->document()->clear();
 		QString text = QString::fromUtf8(item->index.c_str());
-		ui->inputLineEdit->setText(text);
+		ui->inputComboBox->setCurrentText(text);
+		if (ui->inputComboBox->findText(text) == -1)
+			ui->inputComboBox->addItem(text);
     }
 }
 
@@ -341,7 +354,7 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
 
 void MainWindow::on_saveButton_clicked()
 {
-    QString word = ui->inputLineEdit->text();
+    QString word = ui->inputComboBox->currentText();
     
     if (word == "") {
         showToolTip(tr("Empty String"));
@@ -1094,6 +1107,15 @@ void MainWindow::readHelpText(QString &help)
     bytes = (char *)read(pHelpFile, -1);
     help = QString::fromUtf8(bytes);
     //qDebug() << help;
+}
+
+void MainWindow::lookup(const QString &input)
+{
+	std::string u8input = std::string(input.toUtf8().data());
+	if (Util::isValidInput(u8input)) {
+		g_application.sysMessageQ()->push(MSG_DICT_QUERY, u8input);
+		ui->dictTextEdit->document()->clear();
+	}
 }
 
 void MainWindow::onAppExit()
