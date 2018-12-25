@@ -1,5 +1,6 @@
 
 gui/qt/moc_mainwindow.cpp: gui/qt/mainwindow.h
+	echo $(DEFINES) === $(INCLUDES) 
 	$(MOC) $(DEFINES) $(INCLUDES) gui/qt/mainwindow.h       -o gui/qt/moc_mainwindow.cpp
 
 gui/qt/moc_capworddialog.cpp: gui/qt/capworddialog.h

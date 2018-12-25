@@ -69,6 +69,7 @@ public:
     QToolButton *vbpreItemTlBtn;
     QToolButton *vbnextItemTlBtn;
     QLabel *vbExamScoreLabel;
+    QComboBox *vbcmbRepeatCount;
     QWidget *settingTab;
     QTabWidget *settingTabWidget;
     QWidget *tab;
@@ -254,14 +255,14 @@ public:
         vocabularyTab->setObjectName(QStringLiteral("vocabularyTab"));
         vbInput = new QLineEdit(vocabularyTab);
         vbInput->setObjectName(QStringLiteral("vbInput"));
-        vbInput->setGeometry(QRect(179, 30, 290, 32));
+        vbInput->setGeometry(QRect(120, 30, 290, 32));
         vbInput->setReadOnly(false);
         vbExplHideradioButton = new QRadioButton(vocabularyTab);
         vbExplHideradioButton->setObjectName(QStringLiteral("vbExplHideradioButton"));
-        vbExplHideradioButton->setGeometry(QRect(600, 30, 81, 23));
+        vbExplHideradioButton->setGeometry(QRect(620, 30, 81, 23));
         vbookTableView = new QTableView(vocabularyTab);
         vbookTableView->setObjectName(QStringLiteral("vbookTableView"));
-        vbookTableView->setGeometry(QRect(70, 80, 460, 320));
+        vbookTableView->setGeometry(QRect(70, 80, 460, 331));
         QPalette palette;
         QBrush brush(QColor(0, 0, 255, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -313,7 +314,7 @@ public:
         vbExplLabel->setWordWrap(true);
         vbModeComboBox = new QComboBox(vocabularyTab);
         vbModeComboBox->setObjectName(QStringLiteral("vbModeComboBox"));
-        vbModeComboBox->setGeometry(QRect(74, 30, 81, 32));
+        vbModeComboBox->setGeometry(QRect(20, 30, 81, 32));
         vbpreItemTlBtn = new QToolButton(vocabularyTab);
         vbpreItemTlBtn->setObjectName(QStringLiteral("vbpreItemTlBtn"));
         vbpreItemTlBtn->setGeometry(QRect(17, 210, 38, 38));
@@ -332,7 +333,12 @@ public:
         vbnextItemTlBtn->setAutoRaise(true);
         vbExamScoreLabel = new QLabel(vocabularyTab);
         vbExamScoreLabel->setObjectName(QStringLiteral("vbExamScoreLabel"));
-        vbExamScoreLabel->setGeometry(QRect(495, 33, 86, 25));
+        vbExamScoreLabel->setGeometry(QRect(510, 30, 86, 25));
+        vbcmbRepeatCount = new QComboBox(vocabularyTab);
+        vbcmbRepeatCount->setObjectName(QStringLiteral("vbcmbRepeatCount"));
+        vbcmbRepeatCount->setGeometry(QRect(430, 30, 61, 31));
+        vbcmbRepeatCount->setLayoutDirection(Qt::LeftToRight);
+        vbcmbRepeatCount->setEditable(false);
         tabWidget->addTab(vocabularyTab, QString());
         settingTab = new QWidget();
         settingTab->setObjectName(QStringLiteral("settingTab"));
@@ -521,7 +527,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
         settingTabWidget->setCurrentIndex(0);
 
 
@@ -599,6 +605,19 @@ public:
 #endif // QT_NO_TOOLTIP
         vbnextItemTlBtn->setText(QString());
         vbExamScoreLabel->setText(QString());
+        vbcmbRepeatCount->clear();
+        vbcmbRepeatCount->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "3", 0)
+         << QApplication::translate("MainWindow", "5", 0)
+         << QApplication::translate("MainWindow", "8", 0)
+         << QApplication::translate("MainWindow", "12", 0)
+         << QApplication::translate("MainWindow", "20", 0)
+         << QApplication::translate("MainWindow", "100", 0)
+        );
+#ifndef QT_NO_TOOLTIP
+        vbcmbRepeatCount->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>How many times for studying a word</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        vbcmbRepeatCount->setCurrentText(QApplication::translate("MainWindow", "3", "0"));
         tabWidget->setTabText(tabWidget->indexOf(vocabularyTab), QApplication::translate("MainWindow", "VocabularyBook", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_3->setToolTip(QString());

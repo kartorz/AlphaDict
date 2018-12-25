@@ -538,5 +538,46 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
         <translatorcomment>激活主窗口</translatorcomment>
         <translation>激活</translation>
     </message>
+    <message>
+        <source>3</source>
+        <comment>0</comment>
+        <translation type="unfinished">3</translation>
+    </message>
+    <message>
+        <source>3</source>
+        <translation type="unfinished">3</translation>
+    </message>
+    <message>
+        <source>4</source>
+        <translation type="unfinished">4</translation>
+    </message>
+    <message>
+        <source>5</source>
+        <translation type="unfinished">5</translation>
+    </message>
+    <message>
+        <source>8</source>
+        <translation type="unfinished">8</translation>
+    </message>
+    <message>
+        <source>12</source>
+        <translation type="unfinished">12</translation>
+    </message>
+    <message>
+        <source>20</source>
+        <translation type="unfinished">20</translation>
+    </message>
+    <message>
+        <source>100</source>
+        <translation type="unfinished">100</translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation type="unfinished">错误</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many times for studying a word&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">单词学习次数</translation>
+    </message>
 </context>
 </TS>

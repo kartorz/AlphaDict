@@ -9,5 +9,6 @@ SRCS_GUI-$(QT5) = gui/qt/mainwindow.cpp            \
                   gui/qt/moc_QtMessager.cpp        \
                   gui/qt/capworddialog.cpp         \
                   gui/qt/moc_capworddialog.cpp
- 
 
+QT_H-$(QT5) =   gui/qt/ui_mainwindow.h  \
+                gui/qt/ui_capworddialog.h

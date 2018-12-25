@@ -41,7 +41,7 @@ public:
     //bool nextExamExpl(QString& text);
     //bool preExamExpl(QString& text);
     bool exam(const QString& input, QString& score);
-    bool study(const QString& input);
+    int  study(const QString& input, int repeat);
 
     void setMode(enum VBookMode mode);
     enum VBookMode getMode() const {return m_mode;}
@@ -53,6 +53,7 @@ private:
     vector<bool> m_examResult;
     int m_currentRow;
     int m_score;
+    int m_studyCount;
 };
 
 #endif

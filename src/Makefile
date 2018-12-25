@@ -62,8 +62,8 @@ a11: AlphaDict AldConvert
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $^
 
-AlphaDict: $(OBJS_ALPHADICT)
-	$(CC) $^ $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
+AlphaDict: $(QT_H-yes) $(OBJS_ALPHADICT)
+	$(CC)  $(OBJS_ALPHADICT) $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
 
 AldConvert: $(OBJS_ALCONVERT)
 	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@ 

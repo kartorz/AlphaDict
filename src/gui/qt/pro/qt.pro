@@ -12,12 +12,20 @@ TARGET = qt
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    ../capworddialog.cpp
+SOURCES +=\
+    ../capworddialog.cpp \
+    ../DictIndexModel.cpp \
+    ../mainwindow.cpp \
+    ../VBookModel.cpp \
+    ../QtMessager.cpp
 
-HEADERS  += mainwindow.h \
-    ../capworddialog.h
+HEADERS  += \
+    ../capworddialog.h \
+    ../DictIndexModel.h \
+    ../mainwindow.h \
+    ../QtMessager.h \
+    ../VBookModel.h \
+    ../ui_mainwindow.h
 
 FORMS    += ../mainwindow.ui \
     ../capworddialog.ui

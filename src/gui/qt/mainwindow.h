@@ -49,9 +49,7 @@ private slots:
 
 	void on_inputComboBox_currentIndexChanged(const QString &arg1);
 
-    void on_inputLineEdit_editingFinished();
-
-    void on_inputLineEdit_textChanged(const QString &arg1);
+    void onInputLineEditEditingFinished();
 
     void on_queryButton_clicked();
 
@@ -146,6 +144,7 @@ protected :
     bool nativeEvent(const QByteArray & eventType, void * message, long * result);
     virtual bool eventFilter( QObject *watched, QEvent *event);
     virtual void closeEvent(QCloseEvent * event);
+    virtual void keyPressEvent(QKeyEvent *e);
 
 private:
     void registerHotkey(int key);

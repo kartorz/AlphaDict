@@ -39,6 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->vbcmbRepeatCount->setEditable(true);
+    ui->vbcmbRepeatCount->lineEdit()->setReadOnly(true);
+    ui->vbcmbRepeatCount->lineEdit()->setAlignment(Qt::AlignCenter);
+    ui->vbModeComboBox->setEditable(true);
+    ui->vbModeComboBox->lineEdit()->setReadOnly(true);
+    ui->vbModeComboBox->lineEdit()->setAlignment(Qt::AlignCenter);
+
 	/*if (m_setting.contains(KEY_WIN_GEOMETRY)) {
 		restoreGeometry(m_setting.value(KEY_WIN_GEOMETRY).toByteArray());
 	}*/
@@ -54,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(listViewEnterAccel, SIGNAL(activated()), this, SLOT(enterTreeItem()));
     QObject::connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(onClipboardDataChanged()));
     QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(onClipboardSelectionChanged()));
-    QObject::connect(ui->inputComboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(on_inputLineEdit_editingFinished()));
+    QObject::connect(ui->inputComboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(onInputLineEditEditingFinished()));
 
     m_config = g_application.m_configure;
     
@@ -63,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_vbookModel = new VBookModel(m_config->getVBPath());
     ui->vbookTableView->setModel(m_vbookModel);
-    int columnWidth[] = {220,100,124};
+    int columnWidth[] = {200,100,144};
     for (int i = 0; i < 3; i++)  ui->vbookTableView->setColumnWidth(i,columnWidth[i]);
 
     m_messager = new QtMessager(this, m_dictIndexModel, g_application.uiMessageQ());
@@ -192,7 +199,7 @@ void MainWindow::on_inputComboBox_currentIndexChanged(const QString &arg1)
 		lookup(arg1);
 }
 
-void MainWindow::on_inputLineEdit_editingFinished()
+void MainWindow::onInputLineEditEditingFinished()
 {
 	QString input = ui->inputComboBox->currentText().trimmed();
     if (!input.isEmpty()) {
@@ -204,10 +211,6 @@ void MainWindow::on_inputLineEdit_editingFinished()
 			m_preInput = input;
 		}
     }
-}
-
-void MainWindow::on_inputLineEdit_textChanged(const QString &arg1)
-{
 }
 
 void MainWindow::on_queryButton_clicked()
@@ -505,6 +508,7 @@ void MainWindow::onActionVcbularyPageAdded()
         ui->vbModeComboBox->clear();
         ui->vbModeComboBox->addItem(tr("study"));
         ui->vbModeComboBox->addItem(tr("exam"));
+
         ui->detLanComboBox->blockSignals(false);
 
         //ui->vbScoreLabel->setText("0");
@@ -645,9 +649,16 @@ void MainWindow::on_vbInput_editingFinished()
 
         ui->vbExamScoreLabel->setText(score);
     } else {
+        int repeat = ui->vbcmbRepeatCount->currentText().toInt();
         ui->vbInput->clear();
-        if (m_vbookModel->study(input)) {
+        int ret = m_vbookModel->study(input, repeat);
+        if (ret == 0) {
             on_vbnextItemTlBtn_clicked();
+        } else if (ret == -1){
+            QPoint pos = ui->vbInput->mapToGlobal(QPoint());
+            pos.setX(pos.x() + 20);
+            pos.setY(pos.y() - ui->vbInput->height() - 20);
+            showToolTip(tr("error"), pos, 1000);
         }
     }
 }
@@ -890,6 +901,26 @@ void MainWindow::onTrayMenuClose()
 void MainWindow::onTrayMenuActivated()
 {
     onSysTrayActivated( QSystemTrayIcon::Trigger);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if (e != NULL) {
+        if (ui->vbInput->hasFocus()) {
+            switch (e->key()) {
+            case Qt::Key_Up:
+                on_vbpreItemTlBtn_clicked();
+                break;
+            case Qt::Key_Down:
+                on_vbnextItemTlBtn_clicked();
+                break;
+            /*case Qt::Key_PageUp:
+                break;
+            case Qt::Key_PageDown:
+                break;*/
+            }
+        }
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)

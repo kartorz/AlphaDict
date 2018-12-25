@@ -3,7 +3,11 @@
 
 #define LIST_SIZE_MAX 1000
 
-VBookModel::VBookModel(const string& vbookpath):m_currentRow(0),m_mode(StudyMode),m_score(0)
+VBookModel::VBookModel(const string& vbookpath):
+    m_currentRow(0),
+    m_mode(StudyMode),
+    m_score(0),
+    m_studyCount(0)
 {
     m_vocabularyBook = new VocabularyBook(vbookpath);
 }
@@ -125,6 +129,7 @@ void VBookModel::setMode(enum VBookMode mode)
     if (mode == ExamMode) {
         m_examResult.assign(m_vocabularyBook->size(), false);
     } else {
+        m_studyCount = 0;
         m_examResult.clear();
     }
 
@@ -133,6 +138,7 @@ void VBookModel::setMode(enum VBookMode mode)
 
 QModelIndex VBookModel::moveUp()
 {
+    m_studyCount = 0;
     if (m_currentRow > 0) {
         --m_currentRow;
     }
@@ -141,6 +147,7 @@ QModelIndex VBookModel::moveUp()
 
 QModelIndex VBookModel::moveDown()
 {
+    m_studyCount = 0;
     if (m_currentRow < m_vocabularyBook->size()-1) {
         ++m_currentRow;
     }
@@ -149,6 +156,7 @@ QModelIndex VBookModel::moveDown()
 
 QModelIndex VBookModel::moveToFirst()
 {
+    m_studyCount = 0;
     m_currentRow = 0;
     return index(0, 0);
 }
@@ -176,12 +184,17 @@ bool VBookModel::preExamExpl(QString& text)
     return false;
 }*/
 
-bool VBookModel::study(const QString& input)
+int VBookModel::study(const QString& input, int repeat)
 {
     string result = m_vocabularyBook->getWord(m_currentRow);
-    if (result.compare(input.toUtf8().data()) == 0)
-        return true;
-    return false;
+    if (input.compare(QString::fromUtf8(result.c_str()), Qt::CaseInsensitive) == 0) {
+        if (++m_studyCount  == repeat) {
+            m_studyCount = 0;
+            return 0;
+        }
+        return 1;
+    }
+    return -1;
 }
 
 bool VBookModel::exam(const QString& input, QString& score)
