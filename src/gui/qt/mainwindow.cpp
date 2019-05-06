@@ -84,17 +84,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->removeTab(1);
     m_initHelpPage = false;
 
-    m_systray = new QSystemTrayIcon(this);
-    QIcon icon;
-    icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
-    m_systray->setIcon(icon);
-    connect(m_systray,
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        m_systray = new QSystemTrayIcon(this);
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/res/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        m_systray->setIcon(icon);
+        connect(m_systray,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,
             SLOT(onSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
-    QMenu* trayMenu = creatTrayContextMenu();
-    m_systray->setContextMenu(trayMenu);
+        QMenu* trayMenu = creatTrayContextMenu();
+        m_systray->setContextMenu(trayMenu);
+        if (m_config->m_setting.bsystemTray)
+            m_systray->show();
+    }
 
     qApp->installEventFilter(this);
     m_capWordDialog = new CapWordDialog(this, m_config->m_cws.autoCloseEn);
@@ -133,11 +137,11 @@ QMenu* MainWindow::creatTrayContextMenu()
     connect(m_trayCwsSelectionAct, SIGNAL(triggered(bool)), this, SLOT(onTrayCwsSelection(bool)));
     trayMenu->addAction(m_trayCwsSelectionAct);
 #ifdef _WINDOWS
-    m_trayCwsMouseAct = new QAction(tr("Capture Word by Mouse Over"), this);
+    /*m_trayCwsMouseAct = new QAction(tr("Capture Word by Mouse Over"), this);
     m_trayCwsMouseAct->setCheckable(true);
     m_trayCwsMouseAct->setChecked(m_config->m_cws.bmouse);
     connect(m_trayCwsMouseAct, SIGNAL(triggered(bool)), this, SLOT(onTrayCwsMouse(bool)));
-    trayMenu->addAction(m_trayCwsMouseAct);
+    trayMenu->addAction(m_trayCwsMouseAct);*/
 #endif
     m_trayCwsClipboardAct = new QAction(tr("Capture Word by Clipboard"), this);
     m_trayCwsClipboardAct->setCheckable(true);
@@ -846,6 +850,11 @@ void MainWindow::on_fontsizeComboBox_activated(int index)
 void MainWindow::on_systemTrayCheckBox_clicked(bool checked)
 {
     m_config->writeSystemTray(checked);
+
+    if (m_config->m_setting.bsystemTray)
+        m_systray->show();
+    else
+        m_systray->hide();
 }
 
 void MainWindow::on_fontComboBox_activated(const QString &arg1)
@@ -863,7 +872,6 @@ void MainWindow::on_resetSettingToolButton_clicked()
 void MainWindow::onSysTrayActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::Trigger) {
-        m_systray->hide();
         activateWindow();
         showNormal();
     }
@@ -895,6 +903,7 @@ void MainWindow::onTrayCwsMouse(bool checked)
 
 void MainWindow::onTrayMenuClose()
 {
+    m_systray->hide();
     close();
 }
 
@@ -926,16 +935,10 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 void MainWindow::closeEvent(QCloseEvent * event)
 {
 	//m_setting.setValue("geometry", saveGeometry());
-    if (!m_systray->isVisible()) {
-        if (m_config->m_setting.bsystemTray) {
-            m_systray->show();
-            this->hide();
-            event->ignore();
-        } else {
-            event->accept();
-        }
+    if (m_systray->isVisible()) {
+        this->hide();
+        event->ignore();
     } else {
-        m_systray->hide();
         event->accept();
     }
 }
@@ -1065,7 +1068,7 @@ bool MainWindow::eventFilter( QObject * watched, QEvent * event )
             //X11Util::forwardHotKey(m_config->m_cws.shortcutKey);
             return true;
         }
-    }else if (event->type() == QEvent::WindowStateChange) {
+    }/*else if (event->type() == QEvent::WindowStateChange) {
         if (windowState() == Qt::WindowNoState) {
             static bool windowActive = false;
             if (!windowActive) {
@@ -1074,7 +1077,7 @@ bool MainWindow::eventFilter( QObject * watched, QEvent * event )
                 m_systray->hide();
             }
         }
-    }
+    }*/
     return false;
 }
 
