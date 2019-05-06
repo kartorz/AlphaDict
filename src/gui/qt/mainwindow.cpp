@@ -313,7 +313,8 @@ void MainWindow::onUpdateExplText(void *v)
 
 void MainWindow::onUpdateCapWordExplText(void *v)
 {
-    if (v == NULL)
+    if (v == NULL ||
+        (ui->inputComboBox->hasFocus() && ui->tabWidget->currentIndex() == 0 ))
         return;
 
     DictItemList* itemList = (DictItemList*) v;
