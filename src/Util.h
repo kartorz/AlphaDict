@@ -42,6 +42,8 @@ public:
     static int    stringCommonLen(const string& str1, const string& str2, int start = 0);
     // Replace /old/ with /new/ of the /ori/ up to /count/ /old/ occurs. 
     //static string replaceString(string& ori, string old, string new, int count);
+
+    static unsigned curpid();
 };
 
 namespace util {

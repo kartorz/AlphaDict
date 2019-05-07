@@ -25,7 +25,7 @@ gui/qt/qrc_mainwindow.cpp:  gui/qt/mainwindow.qrc \
 	$(RCC) --no-compress -name mainwindow  gui/qt/mainwindow.qrc -o  gui/qt/qrc_mainwindow.cpp
 
 uitr:
-	$(QTTOOL_DIR)/lupdate -no-recursive  -verbose gui/qt -ts gui/qt/uitr_cn.ts
+	$(QTTOOL_DIR)/lupdate -no-recursive  -verbose main.cpp gui/qt   -ts gui/qt/uitr_cn.ts
 	$(QTTOOL_DIR)/linguist gui/qt/uitr_cn.ts
 	$(QTTOOL_DIR)/lrelease gui/qt/uitr_cn.ts  -qm  gui/qt/uitr_cn.qm
 

@@ -15,7 +15,37 @@
 
 static void on_exit()
 {
+    //printf("on_exit\n");
     g_application.stop();
+}
+
+inline void showInitErrDialog(int ret)
+{
+        QMessageBox msgBox;
+        QString errmsg = QString("\n\
+system init failure, error code:(%1)    \n\n\
+read README-win32.txt for more information \n").arg(ret);
+
+        msgBox.setText(errmsg);
+        msgBox.exec();
+}
+
+inline int checkExistAppProc()
+{
+    if (Application::existProcess()) {
+        QString msg = QString(QObject::tr("\n\
+This application has alreay been running,  \n\n\
+Do you want run a another process.\n\n"));
+
+        if (QMessageBox::question(NULL, QObject::tr("warning"), msg,
+                                  QMessageBox::No | QMessageBox::Yes,
+                                  QMessageBox::No) == QMessageBox::No) {
+            //exit(-1), //will cause segmant fault.
+            return -1;
+        }
+    }
+    Application::writePidFile();
+    return 0;
 }
 
 #ifdef WIN32
@@ -75,15 +105,12 @@ int main(int argc, char* argv[])
     //a.setStyle(QStyleFactory::create("windowsvista"));
 
     if (ret != 0 /*application initialization*/) {
-        QMessageBox msgBox;
-        QString errmsg = QString("\n\
-system init failure, error code:(%1)    \n\n\
-read README-win32.txt for more information \n").arg(ret);
-
-	msgBox.setText(errmsg);
-	msgBox.exec();
+        showInitErrDialog(ret);
         return ret;
     }
+
+    if (checkExistAppProc() != 0)
+        return -2;
 
     MainWindow w;
     w.move((a.desktop()->width() - w.width()) / 2, (a.desktop()->height() - w.height()) / 2);

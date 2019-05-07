@@ -1,5 +1,6 @@
 # ifdef WIN32
 #include <windows.h>
+#include "win32/posixtoiso.h"
 # endif
 
 #include <stdlib.h>
@@ -9,8 +10,8 @@
 #include "DictManager.h"
 #include "TaskManager.h"
 #include "SysMessager.h"
-#include "Util.h"
 #include "alphadict.h"
+#include <unistd.h>
 
 Application g_application;
 
@@ -48,6 +49,7 @@ Application::~Application()
        all the tasks should be stopped. */
     delete m_uiMessageQ;
     delete m_sysMessageQ;
+    //printf("~Application");
     g_sysLog.d("~Application\n");
 }
 
@@ -75,12 +77,54 @@ int Application::initialization()
     return ret;
 }
 
+bool Application::existProcess()
+{
+    string path = pidPath();
+    FILE* fpid = fopen(path.c_str(), "r");
+    if (fpid != NULL) {
+        char buf[8] = {'\0'};
+        fread(buf, 1, 7, fpid);
+        int pid = Util::stringToInt(buf);
+        //printf("existProcess, pidbuf:%s, pid:%d\n", buf, pid);
+        if (pid > 100) {
+            fclose(fpid);
+            return true;
+        }
+    }
+    return false;
+}
+
+void Application::writePidFile()
+{
+    string path = pidPath();
+    FILE* fpid = fopen(path.c_str(), "w");
+    if (fpid != NULL) {
+        string strpid = Util::intToString(Util::curpid());
+        //printf("writePidFile, strpid:%s\n", strpid.c_str());
+        fwrite(strpid.c_str(), 1, strpid.size(), fpid);
+        fclose(fpid);
+    }
+}
+
+void Application::delPidFile()
+{
+    //printf("delPidFile");
+    string path = pidPath();
+    FILE* fpid = fopen(path.c_str(), "w");
+    if (fpid != NULL) {
+        fclose(fpid);
+        unlink(path.c_str());
+    }
+}
+
 void Application::stop()
 {
     /* Some tasks may send message, invoke g_application, So,
        The first thing to do is stopping all the tasks */
     TaskManager::getInstance()->stop();
     m_sysMessager->stop();
+    //Can't put ~Application(), when exit by 'checkExistAppProc' will enter ~Application();
+    delPidFile();
 }
 
 void Application::onTaskDone()

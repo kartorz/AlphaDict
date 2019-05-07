@@ -22,6 +22,7 @@ using namespace boost::filesystem;
 #include "Configure.h"
 #ifdef WIN32
 #include "win32/WIN32Util.h"
+#include "win32/posixtoiso.h"
 #endif
 
 
@@ -288,7 +289,15 @@ int Util::stringToInt(string strInt)
 {
     //strtol
     //atoi
-    return boost::lexical_cast<int>(strInt);
+    int ret = 0;
+    if(strInt.size() > 0) {
+        try {
+            ret = boost::lexical_cast<int>(strInt);
+        } catch (...) {
+            ret = 0;
+        }
+    }
+    return ret;
 }
 
 string Util::intToString(int i)
@@ -359,6 +368,12 @@ int Util::stringCommonLen(const string& str1, const string& str2, int start)
 {
 
 }*/
+
+unsigned Util::curpid()
+{
+    //return GetCurrentProcessId();
+    return ::getpid();
+}
 
 namespace util {
 

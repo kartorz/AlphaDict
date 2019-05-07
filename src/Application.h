@@ -5,6 +5,7 @@
 #include "TaskManager.h"
 #include "SysMessager.h"
 #include "Configure.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -41,6 +42,9 @@ public:
     void stop();
     bool isInit() {return m_init;}
 
+    static void writePidFile();
+    static bool existProcess();
+
     /* TaskCallBack*/
     virtual void onTaskDone();
     MessageQueue* sysMessageQ() { return m_sysMessageQ; }
@@ -50,6 +54,14 @@ public:
 private:
     int initialization();
     void slowJob(void);
+    static void delPidFile();
+
+    static inline string pidPath() {
+        string path;
+        Util::tempDir(path);
+        path += "/alphadict.pid";
+        return path;
+    }
 
     bool m_init;
     MessageQueue* m_uiMessageQ;
