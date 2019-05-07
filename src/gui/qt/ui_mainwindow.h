@@ -109,14 +109,14 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(732, 548);
+        MainWindow->resize(782, 548);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setMinimumSize(QSize(708, 524));
-        MainWindow->setMaximumSize(QSize(732, 548));
+        MainWindow->setMaximumSize(QSize(782, 548));
         MainWindow->setSizeIncrement(QSize(0, 0));
         MainWindow->setFocusPolicy(Qt::NoFocus);
         QIcon icon;
@@ -146,7 +146,7 @@ public:
         centralWidget->setFocusPolicy(Qt::NoFocus);
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 732, 462));
+        tabWidget->setGeometry(QRect(0, 0, 782, 462));
         QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Maximum);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -167,23 +167,23 @@ public:
         dictTab->setObjectName(QStringLiteral("dictTab"));
         indexListView = new QListView(dictTab);
         indexListView->setObjectName(QStringLiteral("indexListView"));
-        indexListView->setGeometry(QRect(-1, 0, 160, 340));
+        indexListView->setGeometry(QRect(-1, 0, 213, 340));
         indexListView->setAcceptDrops(false);
         indexListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         indexListView->setProperty("showDropIndicator", QVariant(false));
         srcLanComboBox = new QComboBox(dictTab);
         srcLanComboBox->setObjectName(QStringLiteral("srcLanComboBox"));
-        srcLanComboBox->setGeometry(QRect(169, 14, 113, 32));
+        srcLanComboBox->setGeometry(QRect(236, 14, 113, 32));
         detLanComboBox = new QComboBox(dictTab);
         detLanComboBox->setObjectName(QStringLiteral("detLanComboBox"));
-        detLanComboBox->setGeometry(QRect(330, 14, 112, 32));
+        detLanComboBox->setGeometry(QRect(397, 14, 112, 32));
         label = new QLabel(dictTab);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(289, 21, 32, 18));
+        label->setGeometry(QRect(356, 21, 32, 18));
         label->setPixmap(QPixmap(QString::fromUtf8(":/res/to_right_arrow.png")));
         dictTextEdit = new QTextEdit(dictTab);
         dictTextEdit->setObjectName(QStringLiteral("dictTextEdit"));
-        dictTextEdit->setGeometry(QRect(170, 69, 540, 271));
+        dictTextEdit->setGeometry(QRect(229, 70, 540, 271));
         dictTextEdit->setAcceptDrops(false);
         dictTextEdit->setReadOnly(true);
         pgupToolButton2 = new QToolButton(dictTab);
@@ -224,7 +224,7 @@ public:
         indexLineEdit->setGeometry(QRect(10, 349, 141, 27));
         saveButton = new QToolButton(dictTab);
         saveButton->setObjectName(QStringLiteral("saveButton"));
-        saveButton->setGeometry(QRect(572, 356, 48, 48));
+        saveButton->setGeometry(QRect(705, 350, 48, 48));
         QIcon icon8;
         icon8.addFile(QStringLiteral(":/res/favorite.png"), QSize(), QIcon::Normal, QIcon::Off);
         saveButton->setIcon(icon8);
@@ -232,7 +232,7 @@ public:
         saveButton->setAutoRaise(true);
         netdictButton = new QToolButton(dictTab);
         netdictButton->setObjectName(QStringLiteral("netdictButton"));
-        netdictButton->setGeometry(QRect(641, 356, 48, 48));
+        netdictButton->setGeometry(QRect(630, 350, 48, 48));
         QIcon icon9;
         icon9.addFile(QStringLiteral(":/res/web.png"), QSize(), QIcon::Normal, QIcon::Off);
         netdictButton->setIcon(icon9);
@@ -240,7 +240,7 @@ public:
         netdictButton->setAutoRaise(true);
         queryButton = new QToolButton(dictTab);
         queryButton->setObjectName(QStringLiteral("queryButton"));
-        queryButton->setGeometry(QRect(662, 6, 48, 48));
+        queryButton->setGeometry(QRect(729, 6, 48, 48));
         QIcon icon10;
         icon10.addFile(QStringLiteral(":/res/search.png"), QSize(), QIcon::Normal, QIcon::Off);
         queryButton->setIcon(icon10);
@@ -248,7 +248,7 @@ public:
         queryButton->setAutoRaise(true);
         inputComboBox = new QComboBox(dictTab);
         inputComboBox->setObjectName(QStringLiteral("inputComboBox"));
-        inputComboBox->setGeometry(QRect(457, 14, 200, 32));
+        inputComboBox->setGeometry(QRect(524, 14, 200, 32));
         inputComboBox->setEditable(true);
         tabWidget->addTab(dictTab, QString());
         vocabularyTab = new QWidget();
@@ -527,7 +527,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
         settingTabWidget->setCurrentIndex(0);
 
 
