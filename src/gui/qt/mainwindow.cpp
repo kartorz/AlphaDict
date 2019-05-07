@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_cwdEnableTemp(true),
     m_bHideVBookExpl(false),
+    m_nonRepeatSelEn(false),
 	m_setting(APP_ORGANIZATION, APP_NAME)
 {
     ui->setupUi(this);
@@ -753,10 +754,10 @@ void MainWindow::onClipboardSelectionChanged()
 
     if (m_config->m_cws.bselection && m_cwdEnableTemp && m_config->m_cws.benable) {
         const QClipboard *clipboard = QApplication::clipboard();
-        
+
         QString input = clipboard->text(QClipboard::Selection).trimmed();
         if (input != "") {
-            if (input != lastInput) {
+            if (!m_nonRepeatSelEn || input != lastInput) {
                 lastInput = input;
                 std::string u8input = std::string(input.toUtf8().data());
                 if (Util::isValidInput(u8input)) {
@@ -1170,4 +1171,9 @@ void MainWindow::onAppExit()
     //m_capWordDialog->close();
 
 //    QCoreApplication::quit();
+}
+
+void MainWindow::on_nonRepeatSelectionCheckBox_clicked(bool checked)
+{
+    m_nonRepeatSelEn = checked;
 }

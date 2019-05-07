@@ -111,3 +111,13 @@ The following setting should restart application to make it valid.
   . Font Size
   . Restore to Default Setting
 
+* FAQ
+=====
+How to close sub window, eg: 'Setting', 'Help'?
+-----------------------------------------------
+Activated the window again on tool bar.
+
+
+How to prevent a repeate selection on emacs?
+--------------------------------------------
+Turn on 'Non-repeat selection' at 'Setting page'

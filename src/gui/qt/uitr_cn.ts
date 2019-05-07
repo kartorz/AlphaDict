@@ -344,7 +344,7 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     </message>
     <message>
         <source>Capture Word by Mouse Over</source>
-        <translation>鼠标悬停取词</translation>
+        <translation type="vanished">鼠标悬停取词</translation>
     </message>
     <message>
         <source>Capture Word by Clipboard</source>
@@ -549,7 +549,7 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     </message>
     <message>
         <source>4</source>
-        <translation type="unfinished">4</translation>
+        <translation type="obsolete">4</translation>
     </message>
     <message>
         <source>5</source>
@@ -577,7 +577,21 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many times for studying a word&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">单词学习次数</translation>
+        <translation>单词学习次数</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;emacs&lt;/span&gt;, left button click will do the selection again,&lt;span style=&quot; color:#ff0000;&quot;&gt; temporarily turn on &lt;/span&gt; this switch  can prevent this situation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">在emacs上双击选择文本后，单击鼠标会导致一次重复的
+选择取词。临时打开 &apos;不重复选择&apos;开关可以防止这种情况</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;Emacs,&lt;/span&gt; left click will do the selection again,&lt;span style=&quot; color:#0000ff;&quot;/&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;turn on&lt;/span&gt; this switch can prevent this situation。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">在emacs上双击选择文本后，单击鼠标会导致一次重复的
+选择取词。临时打开 &apos;不重复选择&apos;开关可以防止这种情况</translation>
+    </message>
+    <message>
+        <source>Non-repeat selection</source>
+        <translation>不重复选择</translation>
     </message>
 </context>
 </TS>

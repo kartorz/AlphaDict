@@ -59,8 +59,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>782</width>
-      <height>462</height>
+      <width>787</width>
+      <height>450</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -88,7 +88,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <property name="iconSize">
      <size>
@@ -793,8 +793,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>732</width>
-        <height>436</height>
+        <width>777</width>
+        <height>410</height>
        </rect>
       </property>
       <property name="focusPolicy">
@@ -836,12 +836,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>355</width>
-          <height>430</height>
+          <width>380</width>
+          <height>406</height>
          </rect>
         </property>
         <property name="toolTip">
-         <string/>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;emacs&lt;/span&gt;, left button click will do the selection again,&lt;span style=&quot; color:#ff0000;&quot;&gt; temporarily turn on &lt;/span&gt; this switch  can prevent this situation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">#groupBox_3 { 
@@ -856,9 +856,9 @@
          <property name="geometry">
           <rect>
            <x>25</x>
-           <y>66</y>
-           <width>109</width>
-           <height>17</height>
+           <y>60</y>
+           <width>118</width>
+           <height>26</height>
           </rect>
          </property>
          <property name="text">
@@ -868,7 +868,7 @@
         <widget class="QComboBox" name="uilanComboBox">
          <property name="geometry">
           <rect>
-           <x>139</x>
+           <x>149</x>
            <y>60</y>
            <width>210</width>
            <height>27</height>
@@ -891,7 +891,7 @@
         <widget class="QLabel" name="fontSizeLabel">
          <property name="geometry">
           <rect>
-           <x>27</x>
+           <x>25</x>
            <y>161</y>
            <width>102</width>
            <height>17</height>
@@ -904,7 +904,7 @@
         <widget class="QComboBox" name="fontsizeComboBox">
          <property name="geometry">
           <rect>
-           <x>137</x>
+           <x>147</x>
            <y>156</y>
            <width>211</width>
            <height>27</height>
@@ -945,8 +945,8 @@
         <widget class="QCheckBox" name="systemTrayCheckBox">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>207</y>
+           <x>25</x>
+           <y>290</y>
            <width>157</width>
            <height>25</height>
           </rect>
@@ -967,7 +967,7 @@
          </property>
          <property name="geometry">
           <rect>
-           <x>136</x>
+           <x>146</x>
            <y>107</y>
            <width>209</width>
            <height>27</height>
@@ -996,6 +996,28 @@
           <string>Restore to Default Setting</string>
          </property>
         </widget>
+        <widget class="QCheckBox" name="nonRepeatSelectionCheckBox">
+         <property name="geometry">
+          <rect>
+           <x>25</x>
+           <y>210</y>
+           <width>222</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;Emacs,&lt;/span&gt; left click will do the selection again,&lt;span style=&quot; color:#0000ff;&quot;/&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;turn on&lt;/span&gt; this switch can prevent this situation。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Non-repeat selection</string>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
+         </property>
+        </widget>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_2">
@@ -1014,9 +1036,9 @@
         </property>
         <property name="geometry">
          <rect>
-          <x>290</x>
+          <x>309</x>
           <y>10</y>
-          <width>395</width>
+          <width>424</width>
           <height>371</height>
          </rect>
         </property>
@@ -1073,7 +1095,7 @@
            <rect>
             <x>8</x>
             <y>38</y>
-            <width>82</width>
+            <width>91</width>
             <height>22</height>
            </rect>
           </property>
@@ -1125,7 +1147,7 @@
          <widget class="QCheckBox" name="cwsClipboardCheckBox">
           <property name="geometry">
            <rect>
-            <x>201</x>
+            <x>218</x>
             <y>38</y>
             <width>129</width>
             <height>22</height>
@@ -1144,9 +1166,9 @@
           </property>
           <property name="geometry">
            <rect>
-            <x>276</x>
+            <x>335</x>
             <y>38</y>
-            <width>108</width>
+            <width>63</width>
             <height>20</height>
            </rect>
           </property>
@@ -1196,7 +1218,7 @@
         <widget class="QLabel" name="label_2">
          <property name="geometry">
           <rect>
-           <x>371</x>
+           <x>382</x>
            <y>110</y>
            <width>16</width>
            <height>17</height>
@@ -1209,7 +1231,7 @@
         <widget class="QComboBox" name="cwsShortcutkeyComboBox">
          <property name="geometry">
           <rect>
-           <x>271</x>
+           <x>282</x>
            <y>105</y>
            <width>85</width>
            <height>27</height>
@@ -1357,8 +1379,8 @@
           <rect>
            <x>22</x>
            <y>108</y>
-           <width>128</width>
-           <height>20</height>
+           <width>131</width>
+           <height>27</height>
           </rect>
          </property>
          <property name="toolTip">
@@ -1377,7 +1399,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QLabel" name="cwsShortcutkeylabel_2">
          <property name="geometry">
           <rect>
-           <x>147</x>
+           <x>158</x>
            <y>108</y>
            <width>121</width>
            <height>20</height>
@@ -1403,7 +1425,7 @@ p, li { white-space: pre-wrap; }
           <x>20</x>
           <y>10</y>
           <width>261</width>
-          <height>300</height>
+          <height>349</height>
          </rect>
         </property>
         <property name="toolTip">
@@ -1426,7 +1448,7 @@ p, li { white-space: pre-wrap; }
         <property name="geometry">
          <rect>
           <x>185</x>
-          <y>329</y>
+          <y>370</y>
           <width>59</width>
           <height>30</height>
          </rect>
@@ -1455,7 +1477,7 @@ p, li { white-space: pre-wrap; }
         <property name="geometry">
          <rect>
           <x>49</x>
-          <y>329</y>
+          <y>370</y>
           <width>59</width>
           <height>30</height>
          </rect>

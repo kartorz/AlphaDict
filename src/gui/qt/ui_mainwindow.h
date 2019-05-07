@@ -82,6 +82,7 @@ public:
     QCheckBox *systemTrayCheckBox;
     QFontComboBox *fontComboBox;
     QToolButton *resetSettingToolButton;
+    QCheckBox *nonRepeatSelectionCheckBox;
     QWidget *tab_2;
     QGroupBox *cwsGroupBox;
     QGroupBox *cwsGroupBox1;
@@ -115,7 +116,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
-        MainWindow->setMinimumSize(QSize(708, 524));
+        MainWindow->setMinimumSize(QSize(782, 548));
         MainWindow->setMaximumSize(QSize(782, 548));
         MainWindow->setSizeIncrement(QSize(0, 0));
         MainWindow->setFocusPolicy(Qt::NoFocus);
@@ -146,7 +147,7 @@ public:
         centralWidget->setFocusPolicy(Qt::NoFocus);
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 782, 462));
+        tabWidget->setGeometry(QRect(0, 0, 787, 450));
         QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Maximum);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -345,7 +346,7 @@ public:
         settingTab->setEnabled(true);
         settingTabWidget = new QTabWidget(settingTab);
         settingTabWidget->setObjectName(QStringLiteral("settingTabWidget"));
-        settingTabWidget->setGeometry(QRect(0, 0, 732, 436));
+        settingTabWidget->setGeometry(QRect(0, 0, 777, 410));
         settingTabWidget->setFocusPolicy(Qt::NoFocus);
         settingTabWidget->setStyleSheet(QLatin1String("#setting_Tab { \n"
 "     border: 0px solid gray; \n"
@@ -363,39 +364,44 @@ public:
 " } "));
         groupBox_3 = new QGroupBox(tab);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(0, 0, 355, 430));
+        groupBox_3->setGeometry(QRect(0, 0, 380, 406));
         groupBox_3->setStyleSheet(QLatin1String("#groupBox_3 { \n"
 "     border: 0px solid gray; \n"
 "     border-radius: 0px; \n"
 " } "));
         uilanLabel = new QLabel(groupBox_3);
         uilanLabel->setObjectName(QStringLiteral("uilanLabel"));
-        uilanLabel->setGeometry(QRect(25, 66, 109, 17));
+        uilanLabel->setGeometry(QRect(25, 60, 118, 26));
         uilanComboBox = new QComboBox(groupBox_3);
         uilanComboBox->setObjectName(QStringLiteral("uilanComboBox"));
-        uilanComboBox->setGeometry(QRect(139, 60, 210, 27));
+        uilanComboBox->setGeometry(QRect(149, 60, 210, 27));
         fontSizeLabel = new QLabel(groupBox_3);
         fontSizeLabel->setObjectName(QStringLiteral("fontSizeLabel"));
-        fontSizeLabel->setGeometry(QRect(27, 161, 102, 17));
+        fontSizeLabel->setGeometry(QRect(25, 161, 102, 17));
         fontsizeComboBox = new QComboBox(groupBox_3);
         fontsizeComboBox->setObjectName(QStringLiteral("fontsizeComboBox"));
-        fontsizeComboBox->setGeometry(QRect(137, 156, 211, 27));
+        fontsizeComboBox->setGeometry(QRect(147, 156, 211, 27));
         fontLabel = new QLabel(groupBox_3);
         fontLabel->setObjectName(QStringLiteral("fontLabel"));
         fontLabel->setGeometry(QRect(25, 113, 87, 17));
         systemTrayCheckBox = new QCheckBox(groupBox_3);
         systemTrayCheckBox->setObjectName(QStringLiteral("systemTrayCheckBox"));
-        systemTrayCheckBox->setGeometry(QRect(20, 207, 157, 25));
+        systemTrayCheckBox->setGeometry(QRect(25, 290, 157, 25));
         systemTrayCheckBox->setLayoutDirection(Qt::LeftToRight);
         systemTrayCheckBox->setTristate(false);
         fontComboBox = new QFontComboBox(groupBox_3);
         fontComboBox->setObjectName(QStringLiteral("fontComboBox"));
         fontComboBox->setEnabled(true);
-        fontComboBox->setGeometry(QRect(136, 107, 209, 27));
+        fontComboBox->setGeometry(QRect(146, 107, 209, 27));
         fontComboBox->setEditable(false);
         resetSettingToolButton = new QToolButton(groupBox_3);
         resetSettingToolButton->setObjectName(QStringLiteral("resetSettingToolButton"));
         resetSettingToolButton->setGeometry(QRect(10, 340, 318, 31));
+        nonRepeatSelectionCheckBox = new QCheckBox(groupBox_3);
+        nonRepeatSelectionCheckBox->setObjectName(QStringLiteral("nonRepeatSelectionCheckBox"));
+        nonRepeatSelectionCheckBox->setGeometry(QRect(25, 210, 222, 25));
+        nonRepeatSelectionCheckBox->setLayoutDirection(Qt::LeftToRight);
+        nonRepeatSelectionCheckBox->setTristate(false);
         settingTabWidget->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
@@ -406,7 +412,7 @@ public:
         cwsGroupBox = new QGroupBox(tab_2);
         cwsGroupBox->setObjectName(QStringLiteral("cwsGroupBox"));
         cwsGroupBox->setEnabled(true);
-        cwsGroupBox->setGeometry(QRect(290, 10, 395, 371));
+        cwsGroupBox->setGeometry(QRect(309, 10, 424, 371));
         cwsGroupBox->setAutoFillBackground(false);
         cwsGroupBox->setStyleSheet(QLatin1String("#cwsGroupBox { \n"
 "     border: 1px solid gray; \n"
@@ -426,7 +432,7 @@ public:
         cwsGroupBox1->setCheckable(false);
         cwsEnableCheckBox = new QCheckBox(cwsGroupBox1);
         cwsEnableCheckBox->setObjectName(QStringLiteral("cwsEnableCheckBox"));
-        cwsEnableCheckBox->setGeometry(QRect(8, 38, 82, 22));
+        cwsEnableCheckBox->setGeometry(QRect(8, 38, 91, 22));
         cwsGroupBox2 = new QGroupBox(cwsGroupBox);
         cwsGroupBox2->setObjectName(QStringLiteral("cwsGroupBox2"));
         cwsGroupBox2->setGeometry(QRect(10, 160, 385, 71));
@@ -440,11 +446,11 @@ public:
         cwsSelectionCheckBox->setGeometry(QRect(9, 38, 177, 22));
         cwsClipboardCheckBox = new QCheckBox(cwsGroupBox2);
         cwsClipboardCheckBox->setObjectName(QStringLiteral("cwsClipboardCheckBox"));
-        cwsClipboardCheckBox->setGeometry(QRect(201, 38, 129, 22));
+        cwsClipboardCheckBox->setGeometry(QRect(218, 38, 129, 22));
         cwsMouseCheckBox = new QCheckBox(cwsGroupBox2);
         cwsMouseCheckBox->setObjectName(QStringLiteral("cwsMouseCheckBox"));
         cwsMouseCheckBox->setEnabled(true);
-        cwsMouseCheckBox->setGeometry(QRect(276, 38, 108, 20));
+        cwsMouseCheckBox->setGeometry(QRect(335, 38, 63, 20));
         cwsMouseCheckBox->setCheckable(true);
         cwsGroupBox3 = new QGroupBox(cwsGroupBox);
         cwsGroupBox3->setObjectName(QStringLiteral("cwsGroupBox3"));
@@ -458,27 +464,27 @@ public:
         cwsAutoCloseEnCheckBox->setGeometry(QRect(9, 38, 133, 21));
         label_2 = new QLabel(cwsGroupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(371, 110, 16, 17));
+        label_2->setGeometry(QRect(382, 110, 16, 17));
         cwsShortcutkeyComboBox = new QComboBox(cwsGroupBox);
         cwsShortcutkeyComboBox->setObjectName(QStringLiteral("cwsShortcutkeyComboBox"));
-        cwsShortcutkeyComboBox->setGeometry(QRect(271, 105, 85, 27));
+        cwsShortcutkeyComboBox->setGeometry(QRect(282, 105, 85, 27));
         cwsShortcutkeyComboBox->setEditable(false);
         cwsShortcutkeylabel = new QLabel(cwsGroupBox);
         cwsShortcutkeylabel->setObjectName(QStringLiteral("cwsShortcutkeylabel"));
-        cwsShortcutkeylabel->setGeometry(QRect(22, 108, 128, 20));
+        cwsShortcutkeylabel->setGeometry(QRect(22, 108, 131, 27));
         cwsShortcutkeylabel_2 = new QLabel(cwsGroupBox);
         cwsShortcutkeylabel_2->setObjectName(QStringLiteral("cwsShortcutkeylabel_2"));
-        cwsShortcutkeylabel_2->setGeometry(QRect(147, 108, 121, 20));
+        cwsShortcutkeylabel_2->setGeometry(QRect(158, 108, 121, 20));
         dictListWidget = new QListWidget(tab_2);
         dictListWidget->setObjectName(QStringLiteral("dictListWidget"));
-        dictListWidget->setGeometry(QRect(20, 10, 261, 300));
+        dictListWidget->setGeometry(QRect(20, 10, 261, 349));
         dictListWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
         dictListWidget->setProperty("showDropIndicator", QVariant(false));
         dictListWidget->setDragEnabled(false);
         dictListWidget->setDragDropMode(QAbstractItemView::NoDragDrop);
         dictDownToolButton = new QToolButton(tab_2);
         dictDownToolButton->setObjectName(QStringLiteral("dictDownToolButton"));
-        dictDownToolButton->setGeometry(QRect(185, 329, 59, 30));
+        dictDownToolButton->setGeometry(QRect(185, 370, 59, 30));
         dictDownToolButton->setFocusPolicy(Qt::ClickFocus);
         QIcon icon15;
         icon15.addFile(QStringLiteral(":/res/down.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -487,7 +493,7 @@ public:
         dictDownToolButton->setAutoRaise(false);
         dictUpToolButton = new QToolButton(tab_2);
         dictUpToolButton->setObjectName(QStringLiteral("dictUpToolButton"));
-        dictUpToolButton->setGeometry(QRect(49, 329, 59, 30));
+        dictUpToolButton->setGeometry(QRect(49, 370, 59, 30));
         dictUpToolButton->setFocusPolicy(Qt::ClickFocus);
         QIcon icon16;
         icon16.addFile(QStringLiteral(":/res/up.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -527,7 +533,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
         settingTabWidget->setCurrentIndex(0);
 
 
@@ -620,7 +626,7 @@ public:
         vbcmbRepeatCount->setCurrentText(QApplication::translate("MainWindow", "3", "0"));
         tabWidget->setTabText(tabWidget->indexOf(vocabularyTab), QApplication::translate("MainWindow", "VocabularyBook", 0));
 #ifndef QT_NO_TOOLTIP
-        groupBox_3->setToolTip(QString());
+        groupBox_3->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>After double click selection on <span style=\" color:#0000ff;\">emacs</span>, left button click will do the selection again,<span style=\" color:#ff0000;\"> temporarily turn on </span> this switch  can prevent this situation.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Option", 0));
         uilanLabel->setText(QApplication::translate("MainWindow", "UI Language", 0));
@@ -651,6 +657,10 @@ public:
         resetSettingToolButton->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
         resetSettingToolButton->setText(QApplication::translate("MainWindow", "Restore to Default Setting", 0));
+#ifndef QT_NO_TOOLTIP
+        nonRepeatSelectionCheckBox->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>After double click selection on <span style=\" color:#0000ff;\">Emacs,</span> left click will do the selection again,<span style=\" color:#0000ff;\"/><span style=\" color:#ff0000;\">turn on</span> this switch can prevent this situation\343\200\202</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        nonRepeatSelectionCheckBox->setText(QApplication::translate("MainWindow", "Non-repeat selection", 0));
         settingTabWidget->setTabText(settingTabWidget->indexOf(tab), QApplication::translate("MainWindow", "General", 0));
         cwsGroupBox->setTitle(QApplication::translate("MainWindow", "Capture Word Setting", 0));
 #ifndef QT_NO_TOOLTIP

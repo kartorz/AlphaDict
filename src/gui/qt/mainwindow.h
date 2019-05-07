@@ -139,6 +139,8 @@ private slots:
     void onTrayMenuClose();
     void onTrayMenuActivated();
 
+    void on_nonRepeatSelectionCheckBox_clicked(bool checked);
+
 protected :
     //bool winEvent( MSG * message, long * result);
     bool nativeEvent(const QByteArray & eventType, void * message, long * result);
@@ -178,6 +180,7 @@ private:
     bool m_cwdEnableTemp;
 
 	QString m_preInput;
+    bool m_nonRepeatSelEn;
 };
 
 #endif // MAINWINDOW_H
