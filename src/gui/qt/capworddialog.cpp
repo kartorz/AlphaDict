@@ -18,7 +18,7 @@ CapWordDialog::CapWordDialog(MainWindow *owner, bool autoclose, int inv):
 {
     ui->setupUi(this);
 #ifdef WIN32
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Popup)
+	setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
 #else
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup | Qt::Dialog);
 #endif

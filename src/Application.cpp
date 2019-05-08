@@ -3,6 +3,10 @@
 #include "win32/posixtoiso.h"
 # endif
 
+# ifdef _LINUX
+#include <unistd.h>
+#endif
+
 #include <stdlib.h>
 
 #include "Application.h"
@@ -11,7 +15,7 @@
 #include "TaskManager.h"
 #include "SysMessager.h"
 #include "alphadict.h"
-#include <unistd.h>
+
 
 Application g_application;
 
