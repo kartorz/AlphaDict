@@ -98,7 +98,7 @@ void TaskManager::stop()
     if (m_bRunning) {
         m_bRunning = false;
         m_queueCond.unblockAll();
-        m_taskCond.unblockAll(m_threadid.size()-1/*execute threads*/);
+        m_taskCond.unblockAll();
         waitForThrdExit();
         g_sysLog.d("TaskManager::stop\n");
     }
@@ -136,8 +136,9 @@ void TaskManager::waitForThrdExit()
 #ifdef WIN32
     int count = m_thrdhandle.size();
     for (int i=0; i<count; i++) {
-        WaitForSingleObject(m_thrdhandle[i], INFINITE);
+        WaitForSingleObject(m_thrdhandle[i], INFINITE/*1000*/);
         CloseHandle(m_thrdhandle[i]);
+        m_taskCond.setEvent();
     }
 #else
     LOOP (m_threadid.size()) {

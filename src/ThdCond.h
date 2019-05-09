@@ -36,10 +36,10 @@ public:
      */
 
     int consume(void *v, int timeout=-1/*ms*/);
-    void produce(void *v, bool broadcast=false, int blockthrds=1);
+    void produce(void *v, bool broadcast=false);
     int waitEvent(int timeout=-1/*ms*/);
-    void setEvent(bool broadcast=false, int blockthrds=1);
-    void unblockAll(int blocthrds=1);   /* unblock all blocked threads. */
+    void setEvent(bool broadcast=false);
+    void unblockAll();
 
 protected:
 	virtual void onConsume(void *v) {}

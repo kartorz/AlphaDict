@@ -19,15 +19,6 @@
 #include "ThdCond.h"
 #include "Util.h"
 
-#ifdef WIN32
-#define SET_EVENT_BROADCAST(n) \
-do {\
-for (int i=0; i< n; i++) \
-    SetEvent(m_cv); \
-}while(0)
-
-#endif
-
 ThdCond::ThdCond()
  :m_unblock(false)
 {
@@ -106,7 +97,7 @@ int ThdCond::consume(void *v, int timeout)
     return 0;
 }
 
-void ThdCond::produce(void *v, bool broadcast,  int blockthrds)
+void ThdCond::produce(void *v, bool broadcast)
 {
     onProduce(v);
 #ifdef _LINUX
@@ -121,7 +112,7 @@ void ThdCond::produce(void *v, bool broadcast,  int blockthrds)
     #endif
     } else {
     #ifdef WIN32
-        SET_EVENT_BROADCAST(blockthrds);
+        SetEvent(m_cv);
     #else
         pthread_cond_broadcast(&m_cv);
     #endif
@@ -146,6 +137,8 @@ int ThdCond::waitEvent(int timeout/*ms*/)
     } else {
     #ifdef WIN32
             DWORD result = WaitForSingleObject(m_cv, timeout);
+            if (m_unblock)
+                return -2;
             if (result == WAIT_TIMEOUT) {
                 return -1;
 	    }
@@ -182,7 +175,7 @@ int ThdCond::waitEvent(int timeout/*ms*/)
     return 0;
 }
 
-void ThdCond::setEvent(bool broadcast, int blockthrds)
+void ThdCond::setEvent(bool broadcast)
 {
 #ifdef _LINUX
     pthread_mutex_lock(&m_mutex);
@@ -196,7 +189,7 @@ void ThdCond::setEvent(bool broadcast, int blockthrds)
     #endif
     } else {
     #ifdef WIN32
-        SET_EVENT_BROADCAST(blockthrds);
+        SetEvent(m_cv);
     #else
         pthread_cond_broadcast(&m_cv);
     #endif
@@ -207,12 +200,12 @@ void ThdCond::setEvent(bool broadcast, int blockthrds)
 #endif
 }
 
-void ThdCond::unblockAll(int blockthrds)
+void ThdCond::unblockAll()
 {
     //pthread_mutex_lock(&m_mutex);
     m_unblock = true;
 #ifdef WIN32
-    SET_EVENT_BROADCAST(blockthrds);
+    SetEvent(m_cv);
 #else
     pthread_cond_broadcast(&m_cv);
 #endif
