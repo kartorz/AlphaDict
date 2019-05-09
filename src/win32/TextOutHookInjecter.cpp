@@ -5,7 +5,7 @@
 #define CAPMODE_MOUSE_OVER       0x01
 #define CAPMODE_MOUSE_SELECTION  0x02
 
-#define TEXTOUT_HOOK
+//#define TEXTOUT_HOOK
 
 #pragma data_seg(".HKT")
 HHOOK g_hMouseHook = NULL;
@@ -192,14 +192,14 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
                     g_selectionStatus = 3;
                     g_bSelectionText = TRUE;
                     g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
-					g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, (TIMERPROC)TimerFunc);
+                    g_timerID = SetTimer(NULL, g_timerID, 5, (TIMERPROC)TimerFunc);
                     g_timerValid = true;
                 }
             }
         }else if (wParam == WM_LBUTTONDBLCLK || wParam == WM_NCLBUTTONDBLCLK) {
 			g_bSelectionText = TRUE;
 			g_pMouse = ((PMOUSEHOOKSTRUCT)lParam)->pt;
-			g_timerID = SetTimer(NULL, g_timerID, MOUSEOVER_INTERVAL, (TIMERPROC)TimerFunc);
+            g_timerID = SetTimer(NULL, g_timerID, 5, (TIMERPROC)TimerFunc);
 			g_timerValid = true;
 		}
         ReleaseMutex(g_hSyncMutex);
@@ -212,7 +212,9 @@ extern "C" __declspec(dllexport) void InjectTextOutDriver(HWND hServer)
 {
     if (!g_hMouseHook) {
         g_hHookServer = hServer;
+        g_hMouseHook = SetWindowsHookEx(WH_MOUSE, MouseHookProc, g_hModule, 0);
 
+    #ifdef TEXTOUT_HOOK
         GetModuleFileName(0, g_szDllPath, sizeof(g_szDllPath) - sizeof(TCHAR));
         bool find = false;
         int i = lstrlen(g_szDllPath);
@@ -229,9 +231,8 @@ extern "C" __declspec(dllexport) void InjectTextOutDriver(HWND hServer)
             //StringCchCopy( s, sizeof(TEXT("/TextOutHook.dll")), TEXT("/TextOutHook.dll"));
             if (MAX_PATH - lstrlen(g_szDllPath) >= sizeof(TEXT("/TextOutHook.dll")) + sizeof(TCHAR))
                 lstrcpy(s, TEXT("\\TextOutHook.dll"));  // remove file name.
-
-            g_hMouseHook = SetWindowsHookEx(WH_MOUSE, MouseHookProc, g_hModule, 0);
         }
+    #endif
     }
 }
 
