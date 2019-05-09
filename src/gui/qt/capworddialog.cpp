@@ -35,7 +35,6 @@ CapWordDialog::~CapWordDialog()
 {
     m_timer->stop();
     close();
-    g_sysLog.d("~CapWordDialog\n");
     delete ui;
 }
 

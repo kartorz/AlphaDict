@@ -54,7 +54,6 @@ Application::~Application()
     delete m_uiMessageQ;
     delete m_sysMessageQ;
     //printf("~Application");
-    g_sysLog.d("~Application\n");
 }
 
 int Application::start()

@@ -59,9 +59,7 @@ TaskManager::TaskManager():m_curTask(NULL)
 
 TaskManager::~TaskManager()
 {
-    g_sysLog(LOG_INFO, "TaskManager::~TaskManager\n");
     stop();
-
     std::list<Task*>::const_iterator iter = m_taskQueue.begin();
     for ( ; iter != m_taskQueue.end(); ++iter) {
         delete *iter;
@@ -100,7 +98,6 @@ void TaskManager::stop()
         m_queueCond.unblockAll();
         m_taskCond.unblockAll();
         waitForThrdExit();
-        g_sysLog.d("TaskManager::stop\n");
     }
 }
 

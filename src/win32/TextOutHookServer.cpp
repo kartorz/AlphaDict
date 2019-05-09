@@ -97,7 +97,6 @@ void TextOutHookServer::unloadHookLib()
         FreeLibrary(m_hDriverInjecter);
         m_loadLib = false;
         m_hDriverInjecter = NULL;
-        g_sysLog.d("TextOutHookServer::unloadHookLib\n");
     }
 }
 

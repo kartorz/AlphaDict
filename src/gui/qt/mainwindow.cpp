@@ -119,7 +119,6 @@ MainWindow::~MainWindow()
     delete m_messager;
     delete ui;
     delete m_capWordDialog;
-    g_sysLog.d("~MainWindow\n");
 }
 
 QMenu* MainWindow::creatTrayContextMenu()
