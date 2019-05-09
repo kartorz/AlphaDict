@@ -177,11 +177,11 @@ Section "AlphaDict" SecAlphaDict
   File "${_root}\Release\system\*.*"  
 
   SetOutPath "$INSTDIR\system\dicts"
-  File "${_root}\Release\system\dicts\cedict_1_0_ts_mdbg.aldict"
-  File "${_root}\Release\system\dicts\langdao-ec-gb.aldict"
+  ;File "${_root}\Release\system\dicts\cedict_1_0_ts_mdbg.aldict"
+  ;File "${_root}\Release\system\dicts\langdao-ec-gb.aldict"
 
   SetOutPath "$INSTDIR\system\xmls"
-  File "${_root}\Release\system\xmls\cedict_1_0_ts_mdbg.xml"
+  ;File "${_root}\Release\system\xmls\cedict_1_0_ts_mdbg.xml"
 
   SetOutPath "$INSTDIR\tools"
   File "${_root}\Release\tools\*.*"

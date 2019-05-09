@@ -13,7 +13,7 @@
 
 Read "doc/README.en" get more information.
  
-Author's email: joni.kartorz.lee@gmail.com.
+Author's email: joni_lee@outlook.com.
 You can contact me for anything about this software.
 
 Thanks!
@@ -32,7 +32,7 @@ Thanks!
    
 你可以从 "doc/README.cn" 得到更多信息。
 
-作者的email: joni.kartorz.lee@gmail.com
+作者的email: joni_lee@outlook.com
 有关软件的任何事情，都可以同作者联系。
 
 谢谢！
