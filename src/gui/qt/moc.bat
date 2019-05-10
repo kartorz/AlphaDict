@@ -1,4 +1,4 @@
-set PATH=%PATH%;C:\Qt\5.6.3\msvc2015\bin
+set PATH=%PATH%;C:\Qt\5.9.8\msvc2015\bin
 
 moc.exe  mainwindow.h       -o    moc_mainwindow.cpp
 

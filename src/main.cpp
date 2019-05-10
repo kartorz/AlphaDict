@@ -102,8 +102,12 @@ int main(int argc, char* argv[])
         translator.load(QString::fromLocal8Bit(trfile.c_str()));
         a.installTranslator(&translator);
     }
+
+#ifdef WIN32
+    a.setStyle(QStyleFactory::create("windowsvista"));
+#else
     a.setStyle(QStyleFactory::create("Fusion"));
-    //a.setStyle(QStyleFactory::create("windowsvista"));
+#endif
 
     if (ret != 0 /*application initialization*/) {
         showInitErrDialog(ret);

@@ -6,7 +6,7 @@ TITLE AlphaDict for Windows Build Script
 rem -------------------------------------------------------------
 
 :NSIS_EXE
-  SET ALPHADICT_REV=1.4
+  SET ALPHADICT_REV=1.4.1
   SET ALPHADICT_SETUPFILE="install_alphadict_win32_Rev%ALPHADICT_REV%.exe"
 
   ECHO Creating installer %ALPHADICT_SETUPFILE% ...

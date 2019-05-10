@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'capworddialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.9.8
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -62,7 +62,7 @@ public:
 
     void retranslateUi(QDialog *CapWordDialog)
     {
-        CapWordDialog->setWindowTitle(QApplication::translate("CapWordDialog", "Capture Word", 0));
+        CapWordDialog->setWindowTitle(QApplication::translate("CapWordDialog", "Capture Word", Q_NULLPTR));
         addToVbToolButton->setText(QString());
     } // retranslateUi
 
