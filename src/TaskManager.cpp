@@ -323,4 +323,3 @@ void* execute(void *owner)
     g_sysLog.d("{execute} thread exit\n");
     return NULL;
 }
-

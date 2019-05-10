@@ -237,7 +237,7 @@ int Configure::load(const string& xmlpath)
         m_setting.uilanID = UILAN_NONE;
         m_setting.fontsize = 10;
         m_setting.font = "";
-        m_setting.bsystemTray = false;
+        m_setting.bsystemTray = true;
 
         XMLElement* e = m_doc.NewElement(XML_TAG_SETTING);
         e->SetAttribute("uilan", m_setting.uilanID);
