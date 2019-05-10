@@ -29,7 +29,6 @@ void SysMessager::onStartup()
 
 void SysMessager::onExit()
 {
-    g_sysLog(LOG_DEBUG, "SysMessager: onExit()\n");
 }
 
 void SysMessager::doWork()

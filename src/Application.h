@@ -44,6 +44,7 @@ public:
 
     static void writePidFile();
     static bool existProcess();
+    static void delPidFile();
 
     /* TaskCallBack*/
     virtual void onTaskDone();
@@ -54,7 +55,6 @@ public:
 private:
     int initialization();
     void slowJob(void);
-    static void delPidFile();
 
     static inline string pidPath() {
         string path;

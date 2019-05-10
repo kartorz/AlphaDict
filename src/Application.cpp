@@ -45,6 +45,7 @@ Application::~Application()
     delete m_sysMessager;
 
     // Any thread invoking TaskManager should already stop. (SysMessager)
+    // Have to do 'Application::stop()' before, or 'WaitForSingleObject' will be blocked.
     delete TaskManager::getInstance();
 
     delete m_configure;
@@ -109,6 +110,8 @@ void Application::writePidFile()
     }
 }
 
+// Can't put stop or ~Application(), when exit by 'checkExistAppProc'
+// will enter this functions;
 void Application::delPidFile()
 {
     //printf("delPidFile");
@@ -126,8 +129,6 @@ void Application::stop()
        The first thing to do is stopping all the tasks */
     TaskManager::getInstance()->stop();
     m_sysMessager->stop();
-    //Can't put ~Application(), when exit by 'checkExistAppProc' will enter ~Application();
-    delPidFile();
 }
 
 void Application::onTaskDone()

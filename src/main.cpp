@@ -17,6 +17,7 @@ static void on_exit()
 {
     //printf("on_exit\n");
     g_application.stop();
+    Application::delPidFile();
 }
 
 inline void showInitErrDialog(int ret)
@@ -106,11 +107,14 @@ int main(int argc, char* argv[])
 
     if (ret != 0 /*application initialization*/) {
         showInitErrDialog(ret);
+        g_application.stop();
         return ret;
     }
 
-    if (checkExistAppProc() != 0)
+	if (checkExistAppProc() != 0) {
+        g_application.stop();
         return -2;
+	}
 
     MainWindow w;
     w.move((a.desktop()->width() - w.width()) / 2, (a.desktop()->height() - w.height()) / 2);
