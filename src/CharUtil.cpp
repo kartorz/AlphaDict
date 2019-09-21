@@ -29,14 +29,14 @@ int CharUtil::ucs4CharToUTF16Byte(u32 uchr, u16* ub)
 
 int ucs4CharToUTF8Byte(u32 uchr, char* ub)  
 {
-    const char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};  
+    const unsigned char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
     const u32  codeup[] = {  
-        0x80,           // U+00000000 бл U+0000007F  
-        0x800,          // U+00000080 бл U+000007FF  
-        0x10000,        // U+00000800 бл U+0000FFFF  
-        0x200000,       // U+00010000 бл U+001FFFFF  
-        0x4000000,      // U+00200000 бл U+03FFFFFF  
-        0x80000000      // U+04000000 бл U+7FFFFFFF  
+        0x80,           // U+00000000 ~ U+0000007F
+        0x800,          // U+00000080 ~ U+000007FF
+        0x10000,        // U+00000800 ~ U+0000FFFF
+        0x200000,       // U+00010000 ~ U+001FFFFF
+        0x4000000,      // U+00200000 ~ U+03FFFFFF
+        0x80000000      // U+04000000 ~ U+7FFFFFFF
     };
 
     int i, len;  
