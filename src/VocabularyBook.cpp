@@ -72,7 +72,7 @@ bool VocabularyBook::loadXml(const string& bookfile)
     }
 
     XMLElement* rootElement = doc.FirstChildElement();
-    if (rootElement == false) {
+    if (rootElement == NULL) {
         g_sysLog(LOG_ERROR, "can't get root element of vocabulary book xml file\n");
         return false;      
     }
