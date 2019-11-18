@@ -497,7 +497,7 @@ if test -z "$CFLAGS" ; then
     CFLAGS="-g -O0 $CFLAGS"
     def_debug='#define AL_DEBUG 1'
   else
-    CFLAGS="-O0 $CFLAGS"
+    CFLAGS="-O2 $CFLAGS"
     def_debug='#undef AL_DEBUG'
     _install_strip=
   fi
