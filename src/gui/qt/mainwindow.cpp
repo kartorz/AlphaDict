@@ -232,9 +232,11 @@ void MainWindow::on_indexListView_clicked(const QModelIndex &index)
 	    g_application.sysMessageQ()->push(MSG_DICT_INDEX_QUERY, index.row(), (void *)(m_dictIndexModel->item(index.row())));
 		ui->dictTextEdit->document()->clear();
 		QString text = QString::fromUtf8(item->index.c_str());
+		ui->inputComboBox->blockSignals(true);
 		ui->inputComboBox->setCurrentText(text);
 		if (ui->inputComboBox->findText(text) == -1)
 			ui->inputComboBox->addItem(text);
+		ui->inputComboBox->blockSignals(false);
     }
 }
 
