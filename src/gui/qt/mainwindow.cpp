@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(listViewEnterAccel, SIGNAL(activated()), this, SLOT(enterTreeItem()));
     QObject::connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(onClipboardDataChanged()));
     QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(onClipboardSelectionChanged()));
-    QObject::connect(ui->inputComboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(onInputLineEditEditingFinished()));
+	QObject::connect(ui->inputComboBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(onInputLineEditReturnPressed()));
 
     m_config = g_application.m_configure;
     
@@ -199,29 +199,34 @@ void MainWindow::on_detLanComboBox_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_inputComboBox_currentIndexChanged(const QString &arg1)
 {
-	if (!arg1.isEmpty())
-		lookup(arg1);
+	//qDebug() << "inputComboBox_currentIndexChanged,arg1 " << arg1;
+	if (!arg1.isEmpty()) {
+		if (m_curInput != arg1) {
+			lookup(arg1);
+			m_curInput = arg1;
+		}
+	}
 }
 
-void MainWindow::onInputLineEditEditingFinished()
+void MainWindow::onInputLineEditReturnPressed()
 {
 	QString input = ui->inputComboBox->currentText().trimmed();
+	//qDebug()<<"onInputLineEditReturnPressed, currentText:" << input;
     if (!input.isEmpty()) {
-		if (m_preInput == input)
-		{
-			m_preInput = "";
-			ui->inputComboBox->clearEditText();
-		} else {
-			m_preInput = input;
+		if (m_curInput != input) {
+			lookup(input);
+			m_curInput = input;
 		}
-    }
+	}
+	ui->inputComboBox->clearEditText();
 }
 
 void MainWindow::on_queryButton_clicked()
 {
     QString input = ui->inputComboBox->currentText().trimmed();
-    if (!input.isEmpty()) {
+    if (!input.isEmpty() && m_curInput != input) {
         lookup(input);
+		m_curInput = input;
     }
 }
 
@@ -236,6 +241,7 @@ void MainWindow::on_indexListView_clicked(const QModelIndex &index)
 		ui->inputComboBox->setCurrentText(text);
 		if (ui->inputComboBox->findText(text) == -1)
 			ui->inputComboBox->addItem(text);
+		m_curInput = text;
 		ui->inputComboBox->blockSignals(false);
     }
 }

@@ -49,7 +49,7 @@ private slots:
 
 	void on_inputComboBox_currentIndexChanged(const QString &arg1);
 
-    void onInputLineEditEditingFinished();
+	void onInputLineEditReturnPressed();
 
     void on_queryButton_clicked();
 
@@ -179,7 +179,7 @@ private:
 
     bool m_cwdEnableTemp;
 
-	QString m_preInput;
+	QString m_curInput;
     bool m_nonRepeatSelEn;
 };
 
