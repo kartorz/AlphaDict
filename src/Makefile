@@ -49,9 +49,7 @@ EXTRALIBS_ALPHADICT += $(EXTRALIBS)
 
 INSTALL_TARGETS-yes = install-system install-AlphaDict install-AldConvert
 
-DIRS = . convert lib \
-         dict dict/aldict \
-         gui  gui/qt 
+DIRS = . convert dict/aldict gui/qt db
 
 ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
@@ -108,10 +106,9 @@ uninstall:
 	rm -f $(DATADIR)/tools -r
 
 clean:
-#	@find . -name "*.[oadi]" | xargs -I{} rm {}
+	@find lib -name "*.[oadi]" | xargs -I{} rm {}
 	@find gui/qt -name "moc_*" | xargs -I{} rm {}
 	@find gui/qt -name "qrc_*" | xargs -I{} rm {}
-
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
 	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict AldConvert)
 

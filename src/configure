@@ -540,6 +540,21 @@ cxx_check $ld_tmp  &&
 echores "$_boost"
 test "$_boost" = no && die "Please check and install libboost above ver 1.5"
 
+echocheck "xlib"
+_xlib=no
+ld_tmp="-lX11"
+cat > $TMPC  <<EOF
+#include <X11/Xlib.h>
+int main(void) {
+XOpenDisplay("");
+return 0;
+}
+EOF
+cc_check $ld_tmp  &&
+  extra_ldflags="$extra_ldflags  -lX11" _xlib=yes
+echores "$_xlib"
+test "$_xlib" = no && die "Please check and install xlib (libx11-dev)"
+
 echocheck "sqlite3"
 _sqlite3=no
 ld_tmp="-lsqlite3"
@@ -555,86 +570,37 @@ cxx_check $ld_tmp  &&
 echores "$_sqlite3"
 test "$_sqlite3" = no && die "Please check and install sqlite3"
 
-echocheck "QT5 header"
-  _qt5_headers="no"
-  inc_tmp=""
-  ld_tmp=""
-  res_comment="check if the qt5 dev(el) packages are installed"
+if test "$_qt5" = "auto" ; then
+  modules="Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras"
+  echocheck "QT5 libraries: $modules"
 
-  if header_check  QtWidgets/QMainWindow ; then
-    res_comment=""
-    _qt5_headers="yes"
-  else
-    for I in $(echo $extra_cflags | sed s/-I//g) /usr/include  /usr/include/x86_64-linux-gnu \
-      /usr/include/i386-linux-gnu /usr/local/include; do
-      if test -f "$I/qt5/QtWidgets/QMainWindow" ; then
-        inc_tmp="-I$I/qt5"
-        res_comment=""
-        _qt5_headers="yes"
-        break
-      fi
-    done
-  fi
-echores "$_qt5_headers"
+  inc_tmp=`pkg-config --cflags $modules`
+  test "$?" != 0 && die "pkg-config can't get includes, Please check and install $modules"
 
-echocheck "QT5 libraries"
-  if test "$_qt5" = "auto" ; then
-    _qt5="no";
-    if test "$_qt5_headers" = "yes" ; then
-      for I in "" /usr/lib/x86_64-linux-gnu   /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
-        if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
-          def_qt5='#define CONFIG_QT5 1'
-          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
-          libs_alphadict="$libs_alphadict $ld_tmp"
-          extra_cflags="$inc_tmp $extra_cflags"
-          _qt5="yes"
-        fi
+  # Drop duplicate include dir -- xx/qt5
+  inc_tmp=`echo $inc_tmp | sed -r 's/-I\/usr\/include\/x86_64-linux-gnu\/qt5 //g'`
 
-        if test -f "$I/libQt5X11Extras.so" -o -L "$I/libQt5X11Extras.so" ; then
-          ld_tmp="-L$I -lQt5X11Extras  -lX11"
-          def_qt5extras='#define CONFIG_QT5EXTRAS 1'
-          libs_alphadict="$libs_alphadict $ld_tmp"
-          _qt5extras="yes"
-        fi
+  ld_tmp=`pkg-config --libs $modules`
+  test "$?" != 0 && die "pkg-config can't get libs, Please check and install $modules"
+  echo "yes"
 
-        if test $_qt5 = "yes" -a $_qt5extras = "yes" ; then
-          break
-        fi
-      done
-    fi
-  fi
-echores "$_qt5"
+  _qt5=yes
+  def_qt5='#define CONFIG_QT5 1'
+  def_qt5extras='#define CONFIG_QT5EXTRAS 1'
 
-if test $_qt5extras = "no" ; then
-  echo  "WARNING: libQt5X11Extras.so has not be installed, the shortcut Key for Capture word Dialog will be disable."
-  echo ""
-fi
+  libs_alphadict="$libs_alphadict $ld_tmp"
+  extra_cflags="$inc_tmp $extra_cflags"
 
-echocheck "QT tools"
-if test $_qttooldir = "auto" ; then
-  if test $_qt5 = "yes" ; then
-    for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
-      if test -f "$I/qt5/bin/moc" ; then
-        _qttooldir=$I/qt5/bin
-        break 
-      fi
-      if test -f "$I/qt5/bin/moc" ; then
-        _qttooldir=$I/qt4/bin
-        break
-      fi
-    done
+  ver=`pkg-config  --modversion Qt5Core`
+  bin=`pkg-config --variable=host_bins Qt5Core`
+  libdir=`pkg-config --variable=libdir Qt5Core`
+  includedir=`pkg-config  --variable=includedir Qt5Core`
 
-    #if test -z "$_moc" ; then    
-    #  ver_tmp=$(moc -v 2>&1 | tail -n 1 | cut -d ' ' -f 6)
-    #  if test $ver_tmp != "" ; then
-    #    _moc=moc
-    #    _uic=uic
-    #    _rcc=rcc
-    #  fi
-    #fi
-  fi
-  echores "$_qttooldir"
-fi
+  _qtmoc="$bin/moc"
+  _qtuic="$bin/uic"
+  _qtrcc="$bin/rcc"
+  _qt_libdir=$libdir/qt5
+fi # test "$_qt5" = "auto"
 
 #############################################################################
 echo "Creating config.mak"
@@ -673,10 +639,10 @@ EXTRALIBS_ALPHADICT  = $libs_alphadict
 DEBUG=$_debug
 QT5=$_qt5
 
-MOC="$_qttooldir/moc"
-UIC="$_qttooldir/uic"
-RCC="$_qttooldir/rcc"
-QTTOOL_DIR=$_qttooldir
+MOC="$_qtmoc"
+UIC="$_qtuic"
+RCC="$_qtrcc"
+QTTOOL_DIR=$bin
 EOF
 
 
