@@ -13,7 +13,8 @@
 #include <list>
 #include <iterator>
 
-#ifdef _LINUX
+
+#if defined(_LINUX) && BOOST_VERSION  < 105000
 template<class ForwardIt>
 ForwardIt next(ForwardIt it, typename std::iterator_traits<ForwardIt>::difference_type n = 1)
 {
@@ -62,11 +63,11 @@ public:
 	treeNodePtr child(const int pos) const
 	{
 		typename std::list<treeNodePtr>::const_iterator iter;
-    #ifdef WIN32
-        iter = std::next(_children.begin(), pos);
-    #else
+	#if defined WIN32 || BOOST_VERSION  >= 105000
+		iter = std::next(_children.begin(), pos);
+	#else
 		iter = next(_children.begin(), pos);
-    #endif
+	#endif
 		return *iter;
 	}
 	
@@ -79,11 +80,11 @@ public:
 			_children.push_front(pTree);
 		else {
 			typename std::list<treeNodePtr>::iterator iter;
-#ifdef WIN32
+		#if defined WIN32 || (BOOST_VERSION % 100) >= 50
 			iter = std::next(_children.begin(), pos);
-#else
-            iter = next(_children.begin(), pos);
-#endif
+		#else
+			iter = next(_children.begin(), pos);
+		#endif
 			_children.insert(iter, pTree);
 		}
 		pTree->_parent = this;
