@@ -356,8 +356,8 @@ void MainWindow::onUpdateCapWordExplText(void *v)
 
 void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
 {
+    /* The sender hands over a heap copy and this slot owns it (pArg1[@3]). */
     vector<string> *pVec = (vector<string>*) v;
-    vector<string>::iterator iter;
 
     ui->detLanComboBox->blockSignals(true);
     ui->srcLanComboBox->blockSignals(true);
@@ -368,10 +368,13 @@ void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *
     ui->detLanComboBox->addItem("any");
     ui->srcLanComboBox->addItem("any");
 
-    for (iter = (*pVec).begin(); iter != (*pVec).end(); iter++) {
-        QString item((*iter).c_str());
-        ui->srcLanComboBox->addItem(item);
-        ui->detLanComboBox->addItem(item);        
+    if (pVec != NULL) {
+        for (size_t i = 0; i < pVec->size(); i++) {
+            QString item((*pVec)[i].c_str());
+            ui->srcLanComboBox->addItem(item);
+            ui->detLanComboBox->addItem(item);
+        }
+        delete pVec;
     }
 
     int i = ui->srcLanComboBox->findText(src);

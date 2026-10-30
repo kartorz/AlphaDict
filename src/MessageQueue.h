@@ -22,7 +22,7 @@ enum {
     MSG_DICT_INDEX_QUERY,
     MSG_SET_DICTITEMS, /* (-1[@1], pArg1[@3]):  */
     MSG_SET_CAPWORD_DICTITEM, /* (-1[@1], pArg1[@3]):  */
-    MSG_SET_LANLIST,   /* (strArg1, strArg1, pArg1[@2])  */
+    MSG_SET_LANLIST,   /* (strArg1, strArg2, pArg1[@3])  */
     MSG_SET_SRCLAN,    /* (strArg1) */
     MSG_SET_DETLAN,    /* (strArg1) */
     MSG_SET_DICTEN,    /* (iArg1, iArg2) */

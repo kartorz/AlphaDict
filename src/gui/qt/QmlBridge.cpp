@@ -124,6 +124,7 @@ void QmlBridge::onUpdateCapWordExplText(void *v)
 
 void QmlBridge::onSetLanComboBox(const QString &src, const QString &det, void *v)
 {
+    /* The sender hands over a heap copy and this slot owns it (pArg1[@3]). */
     vector<string> *pVec = (vector<string> *)v;
 
     m_srcLans.clear();
@@ -137,6 +138,7 @@ void QmlBridge::onSetLanComboBox(const QString &src, const QString &det, void *v
             m_srcLans << item;
             m_detLans << item;
         }
+        delete pVec;
     }
 
     m_srcLan = src;

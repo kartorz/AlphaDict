@@ -106,7 +106,10 @@ int Configure::initialization()
     msg.id = MSG_SET_LANLIST;
     msg.strArg1 = m_srcLan;
     msg.strArg2 = m_detLan;
-    msg.pArg1 = &m_languages;
+    /* The UI thread reads this asynchronously, so hand over an independent
+     * copy instead of pointing it at m_languages. The receiver owns it
+     * (see the [@3] note in MessageQueue.h) and releases it after copying. */
+    msg.pArg1 = new vector<string>(m_languages);
     g_application.uiMessageQ()->push(msg); // Cause loading dict.
     return ret;
 }
