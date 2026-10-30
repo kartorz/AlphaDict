@@ -32,13 +32,38 @@ Installing the Required Packages
 ================================
 
 AlphaDict depends:
-  1) QT5(gui): "http://qt-project.org/downloads" 
-  2) boost: "http://www.boost.org/"
-  3) sqlite: "https://www.sqlite.org"
+  1) Qt5 >= 5.9: "https://www.qt.io/"
+     The GUI needs Qt5Core/Qt5Gui/Qt5Widgets; the newer QML interface also needs
+     Qt5Qml/Qt5Quick/Qt5QuickWidgets. When those modules are missing the build
+     falls back to the QtWidgets interface.
+  2) boost (system, filesystem): "https://www.boost.org/"
+  3) sqlite3: "https://www.sqlite.org" -- optional. Without a system sqlite3 the
+     bundled amalgamation in src/lib/sqlite3 is used, so no -dev package is needed.
+  4) pkg-config: configure locates Qt and sqlite3 through it instead of
+     hard-coding include and library paths, so multiarch layouts (Debian/Ubuntu
+     x86_64-linux-gnu) and custom prefixes work unchanged.
+  5) X11 (libX11): needed by the screen word capture. libqt5x11extras5 is no
+     longer required.
 
-ubuntu14.04: 
-    sudo apt-get install libboost-dev libboost-filesystem-dev  qtbase5-dev
-        libqt5x11extras5-dev libsqlite3-dev
+Debian / Ubuntu:
+    sudo apt-get install build-essential pkg-config \
+        qtbase5-dev qtdeclarative5-dev \
+        libboost-dev libboost-filesystem-dev libx11-dev
+    # optional, to use the system sqlite3 instead of the bundled one:
+    #   sudo apt-get install libsqlite3-dev
+    # to regenerate the translations (make uitr):
+    #   sudo apt-get install qttools5-dev-tools
+
+Fedora / RHEL:
+    sudo dnf install gcc-c++ make pkgconf-pkg-config \
+        qt5-qtbase-devel qt5-qtdeclarative-devel \
+        boost-devel libX11-devel
+
+Note: this code base is Qt5 only. When a Qt6 development package is the only one
+installed, configure stops with an explicit error, because the QtWidgets code in
+src/gui/qt still uses classes that Qt6 moved or removed (QShortcut/QAction to
+QtGui, QRegExp/QTextCodec to Core5Compat, QDesktopWidget is gone); that port is
+not done yet.
 
 
 How to Compile
@@ -46,14 +71,23 @@ How to Compile
 
 linux,unix
 ----------
+configure and the Makefile live in src/:
+
+$ cd src
 $ ./configure  
 $ ./configure --help
   can give you some useful information, if you get trouble and want to set some 
   custom configurations to fix it.
 
 $ make 
+  builds both binaries: AlphaDict (GUI) and AldConvert (dictionary converter),
+  and uses AldConvert to turn system/dicts/en-ch.xml into the sample dictionary
+  en-ch.aldict. A fresh clone has no dictionary at all, so this gives the GUI
+  60 words to show on first start. Rebuild just the dictionary with: make dict
 
 $ make install
+  --prefix defaults to /usr/local; the install rules do not sudo for you.
+  The sample dictionary is installed too; replace it with your own .aldict.
 
 $ AlphaDict
   Now, You can enjoy 'AlphaDict'. 
@@ -61,7 +95,26 @@ $ AlphaDict
 $ make uninstall
 
 $ make uitr
-  make muti-language.
+  make muti-language.  Needs lupdate/lrelease (Debian: qttools5-dev-tools); the
+  path comes from the Qt bin directory reported by pkg-config, and can be
+  overridden with --with-qttool.
+
+Useful configure options:
+  --prefix=DIR        installation prefix                   [default /usr/local]
+  --enable-qml        build the QML interface               [autodetect]
+  --disable-qml       build the legacy QtWidgets interface only
+  --disable-gui       skip the GUI, build the command line tools only
+                      (alias --disable-qt5; --enable-gui is an alias of --enable-qt5)
+  --enable-debug      debug build                           [off]
+  --enable-qt6        rejected: this code base is Qt5 only (see above)
+  --with-qttool=PATH  directory holding moc/uic/rcc         [autodetect]
+  --extra-cflags/--extra-ldflags/--extra-libs   extra compiler/linker flags
+
+Qt is detected with pkg-config only: Qt5Core, Qt5Gui and Qt5Widgets must all be
+present, and the version must be at least 5.9. When Qt is missing or too old the
+script stops and says why instead of falling back to a guessed path. With the QML
+interface enabled, config.mak holds GUI=yes QML=yes, i.e. CONFIG_QT5 and
+CONFIG_QML in config.h.
 
 windows
 -------
@@ -70,6 +123,9 @@ windows
 . Install boost_1_55, compile it follow the instructions.
 . Open the solution file: VS2010/AlphaDict/AlphaDict.sln.
 . Build
+
+  The VS project files predate the QML interface and only build the QtWidgets
+  UI; the configure + make build under linux is the maintained one.
 
 
 How to Make Dictionaries
@@ -80,13 +136,13 @@ for more detail, encourage you to make your own dictionary.
 
 Usually, you only need to know the 'front-end_format.xml',There are two steps to make a dictioanry.
 1) Create a xx.xml accoring to front-end_format.xml format.
-2) Use AlConvert(.exe) to convert xx.xml to xx.aldict.
-   $ AlConvert -o xx xx.xml
-   AlConvert shall create a dictionary: xx.aldict.
+2) Use AldConvert(.exe) to convert xx.xml to xx.aldict.
+   $ AldConvert -o xx xx.xml
+   AldConvert shall create a dictionary: xx.aldict.
    
-AlConvert supports multi-xml files. You can split a large xml into a few files,
+AldConvert supports multi-xml files. You can split a large xml into a few files,
 or merge a few xml files into a dict.
-  $ AlConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
+  $ AldConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
 
 doc/alphadict_en-ch.xml is a example, You can refrence them to build your dictionary.
 
@@ -119,7 +175,7 @@ stardict
 1) put all the dictionary files to a directory, like foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
 2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ AlConvert -o foo_xx   foo_xx.xml
+3) $ AldConvert -o foo_xx   foo_xx.xml
      you will get foo_xx.aldict
 
 You can downlaod the dictionaries of stardict from here:
@@ -130,7 +186,7 @@ cedict
 Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
 
 $ python cedict_to_aldictxml.py -i foo.txt
-$ AlConvert -o foo  foo.xml
+$ AldConvert -o foo  foo.xml
     you will get foo.aldict
 
 You can download the cedict dicionary from here:
@@ -145,7 +201,7 @@ Select "File format: UTF-8 plain text", then "Download dictionary".
 Here is a example for coverting.
 
 $ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ AlConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
+$ AldConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
 
 
 IDP
@@ -157,7 +213,7 @@ Lookup "Dictionary Files"
 Here is a example for coverting.
 
 $ ./idp_to_aldictxml.py  -i French.txt
-$ AlConvert -o idp_french   French.xml
+$ AldConvert -o idp_french   French.xml
  
 
 How to Report Bugs, Contribute or Contact

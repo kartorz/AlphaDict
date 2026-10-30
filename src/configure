@@ -243,8 +243,28 @@ Installation directories:
 
 Optional features:
   --enable-little-endian force byte order to big-endian  [autodetect]
-  --enable-qt5           force using QT5 for the GUI     [autodetect]
+  --enable-qt5           force using QT5 for the GUI        [default]
+  --enable-qt6           rejected: this code base is Qt5 only, see below
+  --disable-qt5          build the command line tools only (alias: --disable-gui)
+  --enable-gui           alias of --enable-qt5
+  --disable-gui          alias of --disable-qt5
+  --enable-qml           build the QML user interface     [autodetect]
+  --disable-qml          build the legacy QtWidgets UI only
   --enable-debug         compile a debugging application [disable]
+
+Qt is located with pkg-config only: no include or library path is hard-coded,
+so multiarch layouts and custom prefixes work unchanged. The script requires
+Qt5Core, Qt5Gui and Qt5Widgets to be complete, and Qt 5.9 or newer.
+
+Qt6 is detected only to produce a precise error message. The QtWidgets code in
+src/gui/qt/ still uses classes that Qt6 moved or removed (QShortcut and
+QAction now live in QtGui, QRegExp and QTextCodec in the Core5Compat module,
+QDesktopWidget is gone), so the port is not done yet and --enable-qt6 fails
+early instead of breaking the build later.
+
+--enable-qml additionally requires the Qt5Qml, Qt5Quick and Qt5QuickWidgets
+modules; without them the script falls back to the QtWidgets interface and
+--enable-qml turns that fallback into an error.
 
 Miscellaneous options:
   --with-install=PATH    path to a custom install program [install]
@@ -265,8 +285,9 @@ exit 0
 
 _prefix=/usr/local
 _qttooldir=auto
-_qt5=auto
-_qt5extras="no"
+_qtgui=auto
+_qtmajor=auto
+_qml=auto
 _little_endian=auto
 _debug=no
 _cc=cc
@@ -315,8 +336,13 @@ for ac_option do
     ;;
   --enable-little-endian)  _little_endian=yes ;;
   --disable-little-endian) _little_endian=no  ;;
-  --enable-qt5)         _qt5=yes        ;;
-  --disable-qt5)        _qt5=no         ;;
+  --enable-gui)         _qtgui=yes  _qtmajor=5 ;;  # alias of --enable-qt5
+  --disable-gui)        _qtgui=no         ;;  # alias of --disable-qt5
+  --enable-qt5)         _qtgui=yes  _qtmajor=5 ;;
+  --disable-qt5)        _qtgui=no         ;;
+  --enable-qt6)         _qtgui=yes  _qtmajor=6 ;;
+  --enable-qml)         _qml=yes        ;;
+  --disable-qml)        _qml=no         ;;
   --enable-debug)      _debug=yes     ;;
       
   *)
@@ -329,6 +355,13 @@ done
 
 test -z "$_bindir"  && _bindir="$_prefix/bin"
 test -z "$_datadir" && _datadir="$_prefix/share/alphadict"
+
+# Absolute path of the source tree's data directory. The binary prefers the
+# installed DATADIR at run time and falls back to this one when the install
+# prefix has not been populated yet (i.e. running straight from the build
+# tree), which keeps help pages and dictionary files usable during development.
+_srcdir=$(cd "$(dirname "$0")" && pwd)
+_srcdatadir="$_srcdir/system"
 
 for tmpdir in "$TMPDIR" "$TEMPDIR" "/tmp" ; do
   test "$tmpdir" && break
@@ -557,6 +590,8 @@ test "$_xlib" = no && die "Please check and install xlib (libx11-dev)"
 
 echocheck "sqlite3"
 _sqlite3=no
+_sqlite3_bundled=no
+sqlite_inc=""
 ld_tmp="-lsqlite3"
 cat > $TMPCPP <<EOF
 #include <sqlite3.h>
@@ -565,42 +600,190 @@ sqlite3_sourceid();
 return 0;
 }
 EOF
-cxx_check $ld_tmp  &&
-  extra_ldflags="$extra_ldflags -lsqlite3" _sqlite3=yes
+# Prefer the system library, asking pkg-config for its flags so that a
+# sqlite3 installed under a non-default prefix keeps working.
+if pkg-config --exists sqlite3 2>/dev/null ; then
+  sqlite_inc="`pkg-config --cflags sqlite3`"
+  ld_tmp="`pkg-config --libs sqlite3`"
+  extra_cflags="$sqlite_inc $extra_cflags"
+fi
+if cxx_check $ld_tmp ; then
+  extra_ldflags="$extra_ldflags $ld_tmp"
+  _sqlite3=yes
+else
+  # No usable system sqlite3: the bundled amalgamation needs no external
+  # package, which keeps the tree buildable on a bare machine.
+  if test -f lib/sqlite3/sqlite3.c && test -f lib/sqlite3/sqlite3.h ; then
+    _sqlite3=yes
+    _sqlite3_bundled=yes
+    sqlite_inc='-I$(TOPDIR)/lib/sqlite3'
+  fi
+fi
 echores "$_sqlite3"
 test "$_sqlite3" = no && die "Please check and install sqlite3"
 
-if test "$_qt5" = "auto" ; then
-  modules="Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras"
-  echocheck "QT5 libraries: $modules"
+# QML is a front end for the GUI; asking for it without a GUI would leave
+# QML=yes in config.mak with no program to build.  Normalise before the Qt
+# block so both spellings of the request behave the same way.
+test "$_qtgui" = no && _qml=no
 
-  inc_tmp=`pkg-config --cflags $modules`
-  test "$?" != 0 && die "pkg-config can't get includes, Please check and install $modules"
+if test "$_qtgui" != "no" ; then
+  # ---- Qt detection: pkg-config only --------------------------------------
+  # No include or library path is ever hard-coded below. Everything is taken
+  # from the *.pc files, which keeps this correct for every distribution, for
+  # multiarch layouts (/usr/include/<triplet>/qt5) and for Qt trees installed
+  # under a custom prefix.
+  echocheck "pkg-config"
+  if ! command -v pkg-config >/dev/null 2>&1 ; then
+    die "pkg-config is required to detect Qt, please install pkg-config"
+  fi
+  echores "`pkg-config --version`"
 
-  # Drop duplicate include dir -- xx/qt5
-  inc_tmp=`echo $inc_tmp | sed -r 's/-I\/usr\/include\/x86_64-linux-gnu\/qt5 //g'`
+  # Modules needed for a Widgets build of a given Qt major version.
+  qt_modules() {
+    case "$1" in
+      5) echo "Qt5Core Qt5Gui Qt5Widgets" ;;
+      6) echo "Qt6Core Qt6Gui Qt6Widgets" ;;
+    esac
+  }
 
-  ld_tmp=`pkg-config --libs $modules`
-  test "$?" != 0 && die "pkg-config can't get libs, Please check and install $modules"
-  echo "yes"
+  # Modules needed for the QML interface of a given Qt major version.
+  qt_qml_modules() {
+    case "$1" in
+      5) echo "Qt5Qml Qt5Quick Qt5QuickWidgets" ;;
+    esac
+  }
 
-  _qt5=yes
-  def_qt5='#define CONFIG_QT5 1'
-  def_qt5extras='#define CONFIG_QT5EXTRAS 1'
+  # Succeeds when every module of that series is present; the version of the
+  # series is left in $qt_probe_ver.
+  qt_probe() {
+    qt_probe_ver=""
+    _probe_mods="`qt_modules $1`"
+    test -n "$_probe_mods" || return 1
+    pkg-config --exists $_probe_mods 2>/dev/null || return 1
+    qt_probe_ver="`pkg-config --modversion Qt$1Core`" || return 1
+    test -n "$qt_probe_ver" || return 1
+    return 0
+  }
 
-  libs_alphadict="$libs_alphadict $ld_tmp"
+  # The Qt6 message is shared by the explicit and the autodetect path so the
+  # user gets the same actionable text either way.
+  qt6_unsupported() {
+    die "Qt6 is installed but this code base is Qt5 only.
+src/gui/qt/ uses QShortcut and QAction (moved to QtGui in Qt6), QRegExp and
+QTextCodec (moved to the Core5Compat module) and QDesktopWidget (removed), so
+it does not compile against Qt6 yet.
+Install the Qt5 development packages (Qt5Core Qt5Gui Qt5Widgets), or pass
+--disable-gui to build the command line tools without a GUI."
+  }
+
+  # Pick the series. --enable-qt5 forces Qt5; with no option, Qt5 is the only
+  # candidate and Qt6 is probed solely to explain why it is not usable.
+  if test "$_qtmajor" = auto ; then
+    echocheck "Qt5 Widgets (pkg-config)"
+    if qt_probe 5 ; then
+      _qtmajor=5
+      _qtver="$qt_probe_ver"
+      echores "$_qtver"
+    else
+      echores "no"
+      qt_probe 6 && qt6_unsupported
+      die "No usable Qt installation found, pkg-config modules missing: `qt_modules 5`. Please install the Qt5 development packages."
+    fi
+  else
+    echocheck "Qt$_qtmajor Widgets (pkg-config)"
+    if qt_probe "$_qtmajor" ; then
+      echores "$qt_probe_ver"
+      test "$_qtmajor" = 6 && qt6_unsupported
+      _qtver="$qt_probe_ver"
+    else
+      die "Qt$_qtmajor development files not found, pkg-config modules: `qt_modules $_qtmajor`"
+    fi
+  fi
+
+  # Refuse a Qt that is too old for the code base.
+  case "$_qtmajor" in
+    5) _qtmin=5.9 ;;
+    6) _qtmin=6.2 ;;
+  esac
+  # Version compare without GNU sort -V: POSIX awk only, so the check keeps
+  # working on BSD userlands where `sort -V` does not exist.
+  ver_ge() { # ver_ge HAVE WANT -> true when HAVE >= WANT
+    awk -v have="$1" -v want="$2" 'BEGIN {
+      n = split(have, h, "."); m = split(want, w, ".");
+      k = (n > m ? n : m);
+      for (i = 1; i <= k; i++) {
+        a = (i <= n ? h[i] + 0 : 0); b = (i <= m ? w[i] + 0 : 0);
+        if (a > b) exit 0;
+        if (a < b) exit 1;
+      }
+      exit 0;
+    }'
+  }
+  if ! ver_ge "$_qtver" "$_qtmin" ; then
+    die "Qt $_qtver is too old, Qt $_qtmin or newer is required"
+  fi
+
+  qtmods="`qt_modules $_qtmajor`"
+  qtcore="Qt$_qtmajor"Core
+
+  inc_tmp="`pkg-config --cflags $qtmods`" ||
+    die "pkg-config can't get Qt includes, please check and install $qtmods"
+  ld_tmp="`pkg-config --libs $qtmods`" ||
+    die "pkg-config can't get Qt libs, please check and install $qtmods"
   extra_cflags="$inc_tmp $extra_cflags"
+  libs_alphadict="$libs_alphadict $ld_tmp"
 
-  ver=`pkg-config  --modversion Qt5Core`
-  bin=`pkg-config --variable=host_bins Qt5Core`
-  libdir=`pkg-config --variable=libdir Qt5Core`
-  includedir=`pkg-config  --variable=includedir Qt5Core`
+  # moc/uic/rcc are advertised by the Core .pc file as host_bins (Qt5 and
+  # Qt6) or libexecdir; --with-qttool=DIR overrides both.
+  _qttools="`pkg-config --variable=host_bins $qtcore`"
+  test -z "$_qttools" && _qttools="`pkg-config --variable=libexecdir $qtcore`"
+  test "$_qttooldir" != auto && _qttools="$_qttooldir"
+  _qtmoc="$_qttools/moc"
+  _qtuic="$_qttools/uic"
+  _qtrcc="$_qttools/rcc"
+  # Some distributions ship versioned tool names, accept those as well and
+  # finally fall back to whatever $PATH provides.
+  if test ! -x "$_qtmoc" && test -x "$_qttools/moc-qt$_qtmajor" ; then
+    _qtmoc="$_qttools/moc-qt$_qtmajor"
+  fi
+  if test ! -x "$_qtuic" && test -x "$_qttools/uic-qt$_qtmajor" ; then
+    _qtuic="$_qttools/uic-qt$_qtmajor"
+  fi
+  if test ! -x "$_qtrcc" && test -x "$_qttools/rcc-qt$_qtmajor" ; then
+    _qtrcc="$_qttools/rcc-qt$_qtmajor"
+  fi
+  test -x "$_qtmoc" || _qtmoc="`command -v moc 2>/dev/null`"
+  test -x "$_qtuic" || _qtuic="`command -v uic 2>/dev/null`"
+  test -x "$_qtrcc" || _qtrcc="`command -v rcc 2>/dev/null`"
+  test -x "$_qtmoc" || die "Qt meta object compiler (moc) not found, please install the Qt development tools"
 
-  _qtmoc="$bin/moc"
-  _qtuic="$bin/uic"
-  _qtrcc="$bin/rcc"
-  _qt_libdir=$libdir/qt5
-fi # test "$_qt5" = "auto"
+  _qtgui=yes
+
+  # ---- QML interface ------------------------------------------------------
+  _qml_req=$_qml
+  _qml=no
+  if test "$_qml_req" != no ; then
+    qmlmods="`qt_qml_modules $_qtmajor`"
+    echocheck "Qt QML: $qmlmods"
+    if pkg-config --exists $qmlmods 2>/dev/null ; then
+      _qml=yes
+      extra_cflags="`pkg-config --cflags $qmlmods` $extra_cflags"
+      libs_alphadict="$libs_alphadict `pkg-config --libs $qmlmods`"
+      echores "yes"
+    else
+      echores "no"
+      test "$_qml_req" = yes && die "QML interface requested but $qmlmods is missing"
+    fi
+  fi
+
+  # ---- definitions --------------------------------------------------------
+  def_qt='#define CONFIG_QT5 1'
+  def_qml=
+  test "$_qml" = yes && def_qml='#define CONFIG_QML 1'
+  def_x11hotkey=
+  test "$_xlib" = yes && def_x11hotkey='#define CONFIG_X11HOTKEY 1'
+fi # test "$_qtgui" != "no"
 
 #############################################################################
 echo "Creating config.mak"
@@ -629,7 +812,7 @@ INSTALLSTRIP = $_install_strip
 TOPDIR  := \$(abspath .)
 
 CFLAGS   = $WARNFLAGS $WARN_CFLAGS $CFLAGS $extra_cflags
-CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/dict  -I\$(TOPDIR)/lib -I\$(TOPDIR)/gui/qt
+CFLAGS += $sqlite_inc -I\$(TOPDIR) -I\$(TOPDIR)/dict  -I\$(TOPDIR)/lib -I\$(TOPDIR)/gui/qt
 CXXFLAGS = $WARNFLAGS $CXXFLAGS $extra_cxxflags
 CC_DEPFLAGS = $DEPFLAGS
 
@@ -637,12 +820,16 @@ EXTRALIBS          = $extra_ldflags $ld_static $timer_libs $extra_libs
 EXTRALIBS_ALPHADICT  = $libs_alphadict
 
 DEBUG=$_debug
-QT5=$_qt5
+GUI=$_qtgui
+QTVER=$_qtmajor
+QML=$_qml
+SQLITE_BUNDLED=$_sqlite3_bundled
 
+# Qt tools, resolved by pkg-config (host_bins) or --with-qttool.
 MOC="$_qtmoc"
 UIC="$_qtuic"
 RCC="$_qtrcc"
-QTTOOL_DIR=$bin
+QTTOOL_DIR=$_qttools
 EOF
 
 
@@ -664,9 +851,16 @@ cat > $TMPH << EOF
 #define BINDIR   "$_bindir"
 #define DATADIR  "$_datadir"
 
+/* In-tree data directory, used as a run-time fallback while DATADIR does not
+** exist yet (running from the build tree). */
+#define SRCDATADIR "$_srcdatadir"
+
+/* Qt version selected by configure */
+$def_qt
+$def_qml
+$def_x11hotkey
+
 $def_debug
-$def_qt5
-$def_qt5extras
 $def_littleendian
 
 #endif /* ALPHADICT_CONFIG_H */

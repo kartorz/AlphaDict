@@ -103,7 +103,6 @@ bool SqliteDB::rowExist(const string tblname, string keyName[], string keyVal[],
 
 bool SqliteDB::createTable(const string tblname, const string colname[], const string coltype[], const int length)
 {
-    char *zErrMsg = 0;
     // CREATE TABLE tb_name(col1 TEXT PRIMARY KEY, col2 TEXT)
     string sqlcmd = "CREATE TABLE " + tblname;
 
@@ -121,7 +120,6 @@ bool SqliteDB::createTable(const string tblname, const string colname[], const s
 bool SqliteDB::insertTable(const string tblname, const string colname[], const string colval[], const int length)
 {
     // INSERT INTO  table (col1, col2) VALUES('val1', 'val2')
-    char *zErrMsg = 0;
     string sqlcmd = "INSERT INTO " + tblname;
 
     sqlcmd += "(";

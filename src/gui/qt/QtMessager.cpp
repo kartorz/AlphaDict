@@ -3,8 +3,8 @@
 #include "Application.h"
 #include "Log.h"
 
-QtMessager::QtMessager(MainWindow* owner,  DictIndexModel* inxModel, MessageQueue* q)
-:m_reqAbort(false)
+QtMessager::QtMessager(QObject* owner,  DictIndexModel* inxModel, MessageQueue* q)
+:m_thread(NULL), m_reqAbort(false)
 {
     m_owner = owner;
     m_indexListModel = inxModel;
@@ -13,13 +13,22 @@ QtMessager::QtMessager(MainWindow* owner,  DictIndexModel* inxModel, MessageQueu
 
 QtMessager::~QtMessager()
 {
-    if (!m_reqAbort) {
-        abort();
-    }
+    /* Unconditional, because 'm_reqAbort' only proves that doWork() left its
+     * own loop: QThread::run() is the default exec(), so the thread is still
+     * spinning until quit() and wait() have been called. abort() checks
+     * isRunning() itself, so this is a no-op once the thread has stopped. */
+    abort();
+    delete m_thread;
+    m_thread = NULL;
 }
 
 void QtMessager::start()
 {
+    /* Idempotent: a second start() would leak the first QThread and re-target
+     * this object's thread affinity. */
+    if (m_thread != NULL)
+        return;
+
     m_thread = new QThread();
     connect(m_thread, SIGNAL(started()), this, SLOT(doWork()));
     connect(m_thread, SIGNAL(finished()), this,SLOT(onExit()));
@@ -43,7 +52,7 @@ void QtMessager::doWork()
             }
 
             case MSG_SET_DICTITEMS:{
-                QMetaObject::invokeMethod((QObject *)m_owner,
+                QMetaObject::invokeMethod(m_owner,
                                               "onUpdateExplText",
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));
@@ -51,7 +60,7 @@ void QtMessager::doWork()
             }
                 
             case MSG_SET_CAPWORD_DICTITEM: {
-                QMetaObject::invokeMethod((QObject *)(m_owner),
+                QMetaObject::invokeMethod(m_owner,
                                               "onUpdateCapWordExplText",
                                               Qt::QueuedConnection,
                                               Q_ARG(void*, msg.pArg1));
@@ -59,7 +68,7 @@ void QtMessager::doWork()
             }
 
             case MSG_SET_LANLIST: {
-                QMetaObject::invokeMethod((QObject *)m_owner,
+                QMetaObject::invokeMethod(m_owner,
                                               "onSetLanComboBox",
                                               Qt::QueuedConnection,
                                               Q_ARG(QString, QString(msg.strArg1.c_str())),

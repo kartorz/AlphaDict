@@ -141,6 +141,8 @@ private slots:
 
     void on_nonRepeatSelectionCheckBox_clicked(bool checked);
 
+    void onCapWordAddToVBook(const QString &word);
+
 protected :
     //bool winEvent( MSG * message, long * result);
     bool nativeEvent(const QByteArray & eventType, void * message, long * result);

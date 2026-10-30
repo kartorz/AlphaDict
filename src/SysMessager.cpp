@@ -62,7 +62,9 @@ void SysMessager::processMessage()
         }
 
         case MSG_DICT_INDEX_QUERY: {
-            DictManager::getReference().onClick(msg.iArg1, (iIndexItem*)msg.pArg1);
+            iIndexItem* item = (iIndexItem*)msg.pArg1;
+            DictManager::getReference().onClick(msg.iArg1, item);
+            delete item;   /* the producer hands over ownership */
             break;
         }
 

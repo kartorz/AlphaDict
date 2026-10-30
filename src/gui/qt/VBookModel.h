@@ -28,6 +28,7 @@ public:
     QModelIndex remove(const int row);
     void clear();
     QString expl(const int row) const;
+    QString word(const int row) const;
     void setCurrentRow(int row) {m_currentRow = row;}
     int getCurrentRow() {return m_currentRow;}
     bool isLastRow() {return m_currentRow == m_vocabularyBook->size()-1;}

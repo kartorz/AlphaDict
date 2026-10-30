@@ -174,6 +174,9 @@ char* CharUtil::mbsrtoutf8s(const char *mbs)
         return u8s;
     }
     return NULL;
+#else
+    (void)mbs;
+    return NULL;
 #endif
 }
 
@@ -188,6 +191,9 @@ wchar_t* CharUtil::utf8srtowcs(const char *u8s)
         return ws;
     else
         return NULL;
+#else
+    (void)u8s;
+    return NULL;
 #endif
 }
 /* This piece of code comes from an example of mbrtowc function of GNU libc. */
@@ -202,6 +208,7 @@ wchar_t CharUtil::mbrtowc(char** mb)
 		*mb += nbytes;
 		return wctmp[0];
 	}
+    return 0;
 }
 
 int CharUtil::wcrtomb(char* s, wchar_t *wc)

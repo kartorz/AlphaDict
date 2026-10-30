@@ -12,6 +12,7 @@
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/version.hpp>
 #include <boost/algorithm/string.hpp>
 
 using namespace boost::filesystem;
@@ -125,7 +126,13 @@ bool Util::createDir(const string& path)
 bool Util::copyFile(const string& from, const string& to)
 {
     try {
+        /* boost 1.74 replaced the single-valued copy_option enum with the
+         * copy_options bitmask; keep the old spelling for older releases. */
+#if BOOST_VERSION >= 107400
+        copy_file(from, to, copy_options::overwrite_existing);
+#else
         copy_file(from, to, copy_option::overwrite_if_exists);
+#endif
     } catch (const filesystem_error& ex) {
          printf("%s", ex.what());   
          return false;
@@ -139,7 +146,7 @@ void Util::copyDir(const string& from, const string& to)
     struct dirent *ep;
     DIR *dp = opendir(from.c_str());
     if (dp != NULL) {
-        while (ep = readdir(dp)) {
+        while ((ep = readdir(dp)) != NULL) {
             if (ep->d_name[0] == '.')
                 continue;
             string f = string(ep->d_name);
@@ -398,12 +405,18 @@ void* ReadFile::operator()(FILE *f, size_t length)
 
     if (ptr != NULL)
         free(ptr);
-    if (length == -1) {
+    if (length == (size_t)-1) {
         fseek(f, 0, SEEK_END);
         length = ftello(f);
         fseek(f, 0, SEEK_SET); 
     }
-    ptr = malloc(length);
+    /* Allocate one byte more than the payload so the buffer is always NUL
+     * terminated. Callers read whole files and hand the raw pointer to
+     * C-string APIs such as QString::fromUtf8(); without the terminator
+     * strlen() runs past the end of the allocation. */
+    ptr = malloc(length + 1);
+    if (ptr == NULL)
+        return NULL;
     size_t rdbytes = 0;
     size_t rsize;
     do {
@@ -411,6 +424,7 @@ void* ReadFile::operator()(FILE *f, size_t length)
 	rsize = fread(ptr, 1, bytes, f);
         rdbytes += rsize;
     }while(rsize > 0 && rdbytes < length);
+    ((char *)ptr)[rdbytes] = '\0';
     return ptr;	
 }
 

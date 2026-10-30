@@ -48,7 +48,8 @@ QVariant VBookModel::data(const QModelIndex &index, int role) const
         switch (index.column()) {
             case 0:
                 //printf("%s\n", item.word.c_str());
-                if (m_mode == StudyMode || m_examResult[index.row()]) {
+                if (m_mode == StudyMode
+                    || (index.row() < (int)m_examResult.size() && m_examResult[index.row()])) {
                     return QString::fromUtf8(item.word.c_str());
                 }
 
@@ -92,6 +93,8 @@ bool VBookModel::add(const QString& word)
     if (m_vocabularyBook->size() < LIST_SIZE_MAX) {
         beginResetModel();
         bool ret = m_vocabularyBook->add(std::string(word.toUtf8().data()));
+        if (ret && m_mode == ExamMode)
+            m_examResult.push_back(false);
         endResetModel();
         return ret;
     } else {
@@ -103,6 +106,8 @@ QModelIndex VBookModel::remove(const int row)
 {
     beginResetModel();
     m_vocabularyBook->remove(row);
+    if (m_mode == ExamMode && row >= 0 && row < (int)m_examResult.size())
+        m_examResult.erase(m_examResult.begin() + row);
     endResetModel();
     int cur = row > m_vocabularyBook->size() -1 ? m_vocabularyBook->size() -1 : row;
     QModelIndex result = QAbstractItemModel::createIndex(cur, 0);
@@ -113,12 +118,26 @@ void VBookModel::clear()
 {
     beginResetModel();
     m_vocabularyBook->clear();
+    m_examResult.clear();
     endResetModel();
 }
 
 QString VBookModel::expl(const int row) const
 {
     return QString::fromUtf8(m_vocabularyBook->getExpl(row).c_str());
+}
+
+/*
+ * The word of a row, regardless of the current mode. data() hides the word in
+ * exam mode until the row has been answered, so views that need to show the
+ * real word (the training area, the bridge) must come through here.
+ */
+QString VBookModel::word(const int row) const
+{
+    if (row < 0 || row >= m_vocabularyBook->size())
+        return QString();
+
+    return QString::fromUtf8(m_vocabularyBook->getWord(row).c_str());
 }
 
 void VBookModel::setMode(enum VBookMode mode)
@@ -200,6 +219,9 @@ int VBookModel::study(const QString& input, int repeat)
 bool VBookModel::exam(const QString& input, QString& score)
 {
     if (m_mode == ExamMode) {        
+        if (m_currentRow < 0 || m_currentRow >= (int)m_examResult.size())
+            return false;
+
         VBookItem item = m_vocabularyBook->getItem(m_currentRow);
         string word = item.word;
         if (word.compare(input.toUtf8().data()) == 0) {

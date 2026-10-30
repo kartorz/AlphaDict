@@ -19,6 +19,16 @@ public:
         if (opaque)
 		    free(opaque);
 	}
+
+    /* Detached copy for handing across threads: 'opaque' stays owned by the
+     * source item, so a clone never double-frees it. */
+    iIndexItem* clone() const
+    {
+        iIndexItem* c = new iIndexItem();
+        c->index = index;
+        c->addr  = addr;
+        return c;
+    }
 	string index; /* utf-8 bytes */
     address_t addr;
 	void *opaque;
@@ -48,6 +58,11 @@ typedef vector<iDictItem> DictItemList;
 
 class iDict {
 public:
+    /* Deleted through an iDict* everywhere (DictManager keeps owning raw
+     * pointers), so this has to be virtual or the derived destructors would
+     * never run and each closed dictionary would leak. */
+    virtual ~iDict() {}
+
     /* Load a dictionary */
     virtual bool load(const string& dictname) = 0;
 

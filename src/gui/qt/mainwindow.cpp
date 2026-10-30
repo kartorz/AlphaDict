@@ -102,7 +102,9 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     qApp->installEventFilter(this);
-    m_capWordDialog = new CapWordDialog(this, m_config->m_cws.autoCloseEn);
+    m_capWordDialog = new CapWordDialog(m_config->m_cws.autoCloseEn);
+    QObject::connect(m_capWordDialog, SIGNAL(addToVBook(const QString &)),
+                     this, SLOT(onCapWordAddToVBook(const QString &)));
 
 #if 0
     QShortcut *shortcut = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")),  this, 0, 0, Qt::ApplicationShortcut);
@@ -116,9 +118,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    /* Order matters: the worker thread posts queued calls into
+     * m_dictIndexModel, so it must be joined before the model dies; the views
+     * reference both models, so they go first as well. */
     delete m_messager;
+    m_messager = NULL;
     delete ui;
+    ui = NULL;
+    delete m_dictIndexModel;
+    m_dictIndexModel = NULL;
+    delete m_vbookModel;
+    m_vbookModel = NULL;
     delete m_capWordDialog;
+    m_capWordDialog = NULL;
 }
 
 QMenu* MainWindow::creatTrayContextMenu()
@@ -232,11 +244,11 @@ void MainWindow::on_queryButton_clicked()
 
 void MainWindow::on_indexListView_clicked(const QModelIndex &index)
 {
-    iIndexItem* item = m_dictIndexModel->item(index.row());
+    iIndexItem* item = m_dictIndexModel->itemClone(index.row());
     if (item != NULL) {
-	    g_application.sysMessageQ()->push(MSG_DICT_INDEX_QUERY, index.row(), (void *)(m_dictIndexModel->item(index.row())));
-		ui->dictTextEdit->document()->clear();
 		QString text = QString::fromUtf8(item->index.c_str());
+	    g_application.sysMessageQ()->push(MSG_DICT_INDEX_QUERY, index.row(), (void *)item);
+		ui->dictTextEdit->document()->clear();
 		ui->inputComboBox->blockSignals(true);
 		ui->inputComboBox->setCurrentText(text);
 		if (ui->inputComboBox->findText(text) == -1)
@@ -321,20 +333,24 @@ void MainWindow::onUpdateExplText(void *v)
 
 void MainWindow::onUpdateCapWordExplText(void *v)
 {
-    if (v == NULL ||
-        (ui->inputComboBox->hasFocus() && ui->tabWidget->currentIndex() == 0 ))
+    DictItemList* itemList = (DictItemList*) v;
+    if (itemList == NULL)
         return;
 
-    DictItemList* itemList = (DictItemList*) v;
+    /* The message carries a heap copy and this slot owns it, so every path
+     * that does not hand it to the dialog has to release it. */
+    if (ui->inputComboBox->hasFocus() && ui->tabWidget->currentIndex() == 0) {
+        delete itemList;
+        return;
+    }
+
     if (itemList->size() > 0) {
         //QPoint pos = QCursor::pos();
         m_capWordDialog->moveToCursor();
-        m_capWordDialog->setDictItemList(itemList);
-
-        m_capWordDialog->show();
-        m_capWordDialog->activateWindow();
-        m_capWordDialog->raise();
-        //::SetCapture() /* win32 -- it seems not work */
+        m_capWordDialog->setDictItemList(itemList);   // takes the ownership
+        m_capWordDialog->showAtCursor();
+    } else {
+        delete itemList;
     }
 }
 
@@ -1183,4 +1199,13 @@ void MainWindow::onAppExit()
 void MainWindow::on_nonRepeatSelectionCheckBox_clicked(bool checked)
 {
     m_nonRepeatSelEn = checked;
+}
+
+void MainWindow::onCapWordAddToVBook(const QString &word)
+{
+    if (word != "" && m_vbookModel->add(word)) {
+        showToolTip(tr("Add to vocabulary book,success"));
+    } else {
+        showToolTip(tr("Add to vocabulary book,failure"));
+    }
 }

@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Small English-Chinese sample dictionary.
+
+  It exists so that a fresh checkout has something to look up: without a
+  dictionary in <datadir>/dicts/ the application shows an empty index and the
+  explanation pane can never be exercised. The entries are common words with
+  short hand written glosses, not a copy of any published dictionary, so the
+  file can be distributed with the source.
+
+  Convert it with `make dict` (or `./AldConvert -o out en-ch.xml`) and install
+  it with `make install`. Replace it with a real dictionary at any time: the
+  program scans every file in <datadir>/dicts/.
+-->
+<alphadict>
+  <header>
+    <version>1</version>
+    <srclan>english</srclan>
+    <detlan>chinese</detlan>
+    <charset>utf-8</charset>
+    <entries>60</entries>
+    <publisher>AlphaDict</publisher>
+    <publishdate>2026-10-30</publishdate>
+    <dictversion>1</dictversion>
+    <dictname>en-ch sample</dictname>
+  </header>
+
+  <words>
+    <id_1 word="abandon">
+      <phonetic>
+        <美>[əˈbændən]</美>
+        <英>[əˈbændən]</英>
+      </phonetic>
+      <explanation>
+v. 放弃；抛弃；离弃
+n. 放纵；无拘无束
+      </explanation>
+    </id_1>
+
+    <id_2 word="ability">
+      <phonetic>
+        <美>[əˈbɪləti]</美>
+        <英>[əˈbɪləti]</英>
+      </phonetic>
+      <explanation>
+n. 能力；才能；本领
+      </explanation>
+    </id_2>
+
+    <id_3 word="absorb">
+      <phonetic>
+        <美>[əbˈzɔːrb]</美>
+        <英>[əbˈzɔːb]</英>
+      </phonetic>
+      <explanation>
+v. 吸收；吸引；理解；使专心
+      </explanation>
+    </id_3>
+
+    <id_4 word="accept">
+      <phonetic>
+        <美>[əkˈsept]</美>
+        <英>[əkˈsept]</英>
+      </phonetic>
+      <explanation>
+v. 接受；同意；承认；承担
+      </explanation>
+    </id_4>
+
+    <id_5 word="access">
+      <phonetic>
+        <美>[ˈækses]</美>
+        <英>[ˈækses]</英>
+      </phonetic>
+      <explanation>
+n. 通道；接近；使用权
+v. 访问；存取
+      </explanation>
+    </id_5>
+
+    <id_6 word="account">
+      <phonetic>
+        <美>[əˈkaʊnt]</美>
+        <英>[əˈkaʊnt]</英>
+      </phonetic>
+      <explanation>
+n. 账户；报告；解释；描述
+v. 说明；解释；占（比例）
+      </explanation>
+    </id_6>
+
+    <id_7 word="achieve">
+      <phonetic>
+        <美>[əˈtʃiːv]</美>
+        <英>[əˈtʃiːv]</英>
+      </phonetic>
+      <explanation>
+v. 完成；达到；实现
+      </explanation>
+    </id_7>
+
+    <id_8 word="across">
+      <phonetic>
+        <美>[əˈkrɔːs]</美>
+        <英>[əˈkrɒs]</英>
+      </phonetic>
+      <explanation>
+prep. 横过；穿过；在…对面
+adv. 从一边到另一边
+      </explanation>
+    </id_8>
+
+    <id_9 word="active">
+      <phonetic>
+        <美>[ˈæktɪv]</美>
+        <英>[ˈæktɪv]</英>
+      </phonetic>
+      <explanation>
+a. 积极的；活跃的；起作用的
+      </explanation>
+    </id_9>
+
+    <id_10 word="adapt">
+      <phonetic>
+        <美>[əˈdæpt]</美>
+        <英>[əˈdæpt]</英>
+      </phonetic>
+      <explanation>
+v. 适应；改编；使适合
+      </explanation>
+    </id_10>
+
+    <id_11 word="advance">
+      <phonetic>
+        <美>[ədˈvæns]</美>
+        <英>[ədˈvɑːns]</英>
+      </phonetic>
+      <explanation>
+v. 前进；推进；提高；预付
+n. 进步；前进
+      </explanation>
+    </id_11>
+
+    <id_12 word="advice">
+      <phonetic>
+        <美>[ədˈvaɪs]</美>
+        <英>[ədˈvaɪs]</英>
+      </phonetic>
+      <explanation>
+n. 建议；劝告；意见
+      </explanation>
+    </id_12>
+
+    <id_13 word="agree">
+      <phonetic>
+        <美>[əˈɡriː]</美>
+        <英>[əˈɡriː]</英>
+      </phonetic>
+      <explanation>
+v. 同意；赞成；一致；约定
+      </explanation>
+    </id_13>
+
+    <id_14 word="allow">
+      <phonetic>
+        <美>[əˈlaʊ]</美>
+        <英>[əˈlaʊ]</英>
+      </phonetic>
+      <explanation>
+v. 允许；给予；承认
+      </explanation>
+    </id_14>
+
+    <id_15 word="answer">
+      <phonetic>
+        <美>[ˈænsər]</美>
+        <英>[ˈɑːnsə]</英>
+      </phonetic>
+      <explanation>
+n. 回答；答案；答复
+v. 回答；答复；满足
+      </explanation>
+    </id_15>
+
+    <id_16 word="apple">
+      <phonetic>
+        <美>[ˈæpl]</美>
+        <英>[ˈæpl]</英>
+      </phonetic>
+      <explanation>
+n. 苹果；苹果树
+      </explanation>
+    </id_16>
+
+    <id_17 word="arrive">
+      <phonetic>
+        <美>[əˈraɪv]</美>
+        <英>[əˈraɪv]</英>
+      </phonetic>
+      <explanation>
+v. 到达；抵达；达成
+      </explanation>
+    </id_17>
+
+    <id_18 word="beauty">
+      <phonetic>
+        <美>[ˈbjuːti]</美>
+        <英>[ˈbjuːti]</英>
+      </phonetic>
+      <explanation>
+n. 美；美丽；美人
+      </explanation>
+    </id_18>
+
+    <id_19 word="believe">
+      <phonetic>
+        <美>[bɪˈliːv]</美>
+        <英>[bɪˈliːv]</英>
+      </phonetic>
+      <explanation>
+v. 相信；认为；信任
+      </explanation>
+    </id_19>
+
+    <id_20 word="book">
+      <phonetic>
+        <美>[bʊk]</美>
+        <英>[bʊk]</英>
+      </phonetic>
+      <explanation>
+n. 书；书籍；账簿
+v. 预订；登记
+      </explanation>
+    </id_20>
+
+    <id_21 word="borrow">
+      <phonetic>
+        <美>[ˈbɑːroʊ]</美>
+        <英>[ˈbɒrəʊ]</英>
+      </phonetic>
+      <explanation>
+v. 借入；借用；借鉴
+      </explanation>
+    </id_21>
+
+    <id_22 word="bridge">
+      <phonetic>
+        <美>[brɪdʒ]</美>
+        <英>[brɪdʒ]</英>
+      </phonetic>
+      <explanation>
+n. 桥；桥梁；纽带
+v. 架桥；弥合
+      </explanation>
+    </id_22>
+
+    <id_23 word="build">
+      <phonetic>
+        <美>[bɪld]</美>
+        <英>[bɪld]</英>
+      </phonetic>
+      <explanation>
+v. 建造；建立；增强
+n. 体格；构造
+      </explanation>
+    </id_23>
+
+    <id_24 word="capture">
+      <phonetic>
+        <美>[ˈkæptʃər]</美>
+        <英>[ˈkæptʃə]</英>
+      </phonetic>
+      <explanation>
+v. 捕获；夺取；吸引；记录
+n. 捕获；战利品
+      </explanation>
+    </id_24>
+
+    <id_25 word="careful">
+      <phonetic>
+        <美>[ˈkerfl]</美>
+        <英>[ˈkeəfl]</英>
+      </phonetic>
+      <explanation>
+a. 小心的；仔细的；谨慎的
+      </explanation>
+    </id_25>
+
+    <id_26 word="center">
+      <phonetic>
+        <美>[ˈsentər]</美>
+        <英>[ˈsentə]</英>
+      </phonetic>
+      <explanation>
+n. 中心；中央；核心
+v. 集中；居中
+      </explanation>
+    </id_26>
+
+    <id_27 word="change">
+      <phonetic>
+        <美>[tʃeɪndʒ]</美>
+        <英>[tʃeɪndʒ]</英>
+      </phonetic>
+      <explanation>
+v. 改变；更换；兑换
+n. 变化；零钱
+      </explanation>
+    </id_27>
+
+    <id_28 word="choose">
+      <phonetic>
+        <美>[tʃuːz]</美>
+        <英>[tʃuːz]</英>
+      </phonetic>
+      <explanation>
+v. 选择；挑选；决定
+      </explanation>
+    </id_28>
+
+    <id_29 word="clear">
+      <phonetic>
+        <美>[klɪr]</美>
+        <英>[klɪə]</英>
+      </phonetic>
+      <explanation>
+a. 清楚的；晴朗的；透明的
+v. 清除；清理；通过
+      </explanation>
+    </id_29>
+
+    <id_30 word="collect">
+      <phonetic>
+        <美>[kəˈlekt]</美>
+        <英>[kəˈlekt]</英>
+      </phonetic>
+      <explanation>
+v. 收集；收藏；聚集；领取
+      </explanation>
+    </id_30>
+
+    <id_31 word="common">
+      <phonetic>
+        <美>[ˈkɑːmən]</美>
+        <英>[ˈkɒmən]</英>
+      </phonetic>
+      <explanation>
+a. 共同的；普通的；常见的
+      </explanation>
+    </id_31>
+
+    <id_32 word="computer">
+      <phonetic>
+        <美>[kəmˈpjuːtər]</美>
+        <英>[kəmˈpjuːtə]</英>
+      </phonetic>
+      <explanation>
+n. 计算机；电脑
+      </explanation>
+    </id_32>
+
+    <id_33 word="connect">
+      <phonetic>
+        <美>[kəˈnekt]</美>
+        <英>[kəˈnekt]</英>
+      </phonetic>
+      <explanation>
+v. 连接；联系；接通
+      </explanation>
+    </id_33>
+
+    <id_34 word="consider">
+      <phonetic>
+        <美>[kənˈsɪdər]</美>
+        <英>[kənˈsɪdə]</英>
+      </phonetic>
+      <explanation>
+v. 考虑；认为；体谅
+      </explanation>
+    </id_34>
+
+    <id_35 word="continue">
+      <phonetic>
+        <美>[kənˈtɪnjuː]</美>
+        <英>[kənˈtɪnjuː]</英>
+      </phonetic>
+      <explanation>
+v. 继续；持续；延伸
+      </explanation>
+    </id_35>
+
+    <id_36 word="create">
+      <phonetic>
+        <美>[kriˈeɪt]</美>
+        <英>[kriˈeɪt]</英>
+      </phonetic>
+      <explanation>
+v. 创造；创作；引起
+      </explanation>
+    </id_36>
+
+    <id_37 word="decide">
+      <phonetic>
+        <美>[dɪˈsaɪd]</美>
+        <英>[dɪˈsaɪd]</英>
+      </phonetic>
+      <explanation>
+v. 决定；判定；解决
+      </explanation>
+    </id_37>
+
+    <id_38 word="describe">
+      <phonetic>
+        <美>[dɪˈskraɪb]</美>
+        <英>[dɪˈskraɪb]</英>
+      </phonetic>
+      <explanation>
+v. 描述；形容；记述
+      </explanation>
+    </id_38>
+
+    <id_39 word="develop">
+      <phonetic>
+        <美>[dɪˈveləp]</美>
+        <英>[dɪˈveləp]</英>
+      </phonetic>
+      <explanation>
+v. 发展；开发；培养；显影
+      </explanation>
+    </id_39>
+
+    <id_40 word="different">
+      <phonetic>
+        <美>[ˈdɪfrənt]</美>
+        <英>[ˈdɪfrənt]</英>
+      </phonetic>
+      <explanation>
+a. 不同的；各种的；与众不同的
+      </explanation>
+    </id_40>
+
+    <id_41 word="dictionary">
+      <phonetic>
+        <美>[ˈdɪkʃəneri]</美>
+        <英>[ˈdɪkʃənri]</英>
+      </phonetic>
+      <explanation>
+n. 词典；字典
+      </explanation>
+    </id_41>
+
+    <id_42 word="difficult">
+      <phonetic>
+        <美>[ˈdɪfɪkəlt]</美>
+        <英>[ˈdɪfɪkəlt]</英>
+      </phonetic>
+      <explanation>
+a. 困难的；艰难的；难对付的
+      </explanation>
+    </id_42>
+
+    <id_43 word="discover">
+      <phonetic>
+        <美>[dɪˈskʌvər]</美>
+        <英>[dɪˈskʌvə]</英>
+      </phonetic>
+      <explanation>
+v. 发现；发觉；查明
+      </explanation>
+    </id_43>
+
+    <id_44 word="dream">
+      <phonetic>
+        <美>[driːm]</美>
+        <英>[driːm]</英>
+      </phonetic>
+      <explanation>
+n. 梦；梦想；理想
+v. 做梦；梦想
+      </explanation>
+    </id_44>
+
+    <id_45 word="early">
+      <phonetic>
+        <美>[ˈɜːrli]</美>
+        <英>[ˈɜːli]</英>
+      </phonetic>
+      <explanation>
+a. 早的；早期的；提前的
+adv. 早；在初期
+      </explanation>
+    </id_45>
+
+    <id_46 word="effort">
+      <phonetic>
+        <美>[ˈefərt]</美>
+        <英>[ˈefət]</英>
+      </phonetic>
+      <explanation>
+n. 努力；尝试；成就
+      </explanation>
+    </id_46>
+
+    <id_47 word="energy">
+      <phonetic>
+        <美>[ˈenərdʒi]</美>
+        <英>[ˈenədʒi]</英>
+      </phonetic>
+      <explanation>
+n. 能量；精力；能源
+      </explanation>
+    </id_47>
+
+    <id_48 word="enough">
+      <phonetic>
+        <美>[ɪˈnʌf]</美>
+        <英>[ɪˈnʌf]</英>
+      </phonetic>
+      <explanation>
+a. 足够的；充足的
+adv. 足够地；相当
+      </explanation>
+    </id_48>
+
+    <id_49 word="example">
+      <phonetic>
+        <美>[ɪɡˈzæmpl]</美>
+        <英>[ɪɡˈzɑːmpl]</英>
+      </phonetic>
+      <explanation>
+n. 例子；榜样；范例
+      </explanation>
+    </id_49>
+
+    <id_50 word="explain">
+      <phonetic>
+        <美>[ɪkˈspleɪn]</美>
+        <英>[ɪkˈspleɪn]</英>
+      </phonetic>
+      <explanation>
+v. 解释；说明；阐明
+      </explanation>
+    </id_50>
+
+    <id_51 word="family">
+      <phonetic>
+        <美>[ˈfæməli]</美>
+        <英>[ˈfæməli]</英>
+      </phonetic>
+      <explanation>
+n. 家庭；家族；家人
+      </explanation>
+    </id_51>
+
+    <id_52 word="friend">
+      <phonetic>
+        <美>[frend]</美>
+        <英>[frend]</英>
+      </phonetic>
+      <explanation>
+n. 朋友；友人；支持者
+      </explanation>
+    </id_52>
+
+    <id_53 word="future">
+      <phonetic>
+        <美>[ˈfjuːtʃər]</美>
+        <英>[ˈfjuːtʃə]</英>
+      </phonetic>
+      <explanation>
+n. 未来；前途；期货
+a. 未来的；将来的
+      </explanation>
+    </id_53>
+
+    <id_54 word="garden">
+      <phonetic>
+        <美>[ˈɡɑːrdn]</美>
+        <英>[ˈɡɑːdn]</英>
+      </phonetic>
+      <explanation>
+n. 花园；菜园；果园
+      </explanation>
+    </id_54>
+
+    <id_55 word="history">
+      <phonetic>
+        <美>[ˈhɪstri]</美>
+        <英>[ˈhɪstri]</英>
+      </phonetic>
+      <explanation>
+n. 历史；历史学；经历
+      </explanation>
+    </id_55>
+
+    <id_56 word="knowledge">
+      <phonetic>
+        <美>[ˈnɑːlɪdʒ]</美>
+        <英>[ˈnɒlɪdʒ]</英>
+      </phonetic>
+      <explanation>
+n. 知识；学问；了解
+      </explanation>
+    </id_56>
+
+    <id_57 word="language">
+      <phonetic>
+        <美>[ˈlæŋɡwɪdʒ]</美>
+        <英>[ˈlæŋɡwɪdʒ]</英>
+      </phonetic>
+      <explanation>
+n. 语言；语言文字；术语
+      </explanation>
+    </id_57>
+
+    <id_58 word="memory">
+      <phonetic>
+        <美>[ˈmeməri]</美>
+        <英>[ˈmeməri]</英>
+      </phonetic>
+      <explanation>
+n. 记忆；记忆力；回忆；内存
+      </explanation>
+    </id_58>
+
+    <id_59 word="question">
+      <phonetic>
+        <美>[ˈkwestʃən]</美>
+        <英>[ˈkwestʃən]</英>
+      </phonetic>
+      <explanation>
+n. 问题；疑问；试题
+v. 询问；怀疑
+      </explanation>
+    </id_59>
+
+    <id_60 word="window">
+      <phonetic>
+        <美>[ˈwɪndoʊ]</美>
+        <英>[ˈwɪndəʊ]</英>
+      </phonetic>
+      <explanation>
+n. 窗；窗口；窗户
+      </explanation>
+    </id_60>
+  </words>
+</alphadict>

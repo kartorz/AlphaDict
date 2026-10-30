@@ -4,17 +4,14 @@
 #include "capworddialog.h"
 #include "ui_capworddialog.h"
 #include "VBookModel.h"
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "Log.h"
 
 // QDialog(owner) causes closing mainwindow when app resides at system tray. 
-CapWordDialog::CapWordDialog(MainWindow *owner, bool autoclose, int inv):
-    QDialog(NULL),
+CapWordDialog::CapWordDialog(bool autoclose, int inv, QWidget *parent):
+    QDialog(parent),
     ui(new Ui::CapWordDialog),
     m_bAutoClose(autoclose),
-    m_autoCloseInterval(inv),
-    m_owner(owner)
+    m_autoCloseInterval(inv)
 {
     ui->setupUi(this);
 #ifdef WIN32
@@ -36,6 +33,14 @@ CapWordDialog::~CapWordDialog()
     m_timer->stop();
     close();
     delete ui;
+}
+
+void CapWordDialog::showAtCursor()
+{
+    moveToCursor();
+    show();
+    activateWindow();
+    raise();
 }
 
 void CapWordDialog::moveToCursor()
@@ -142,9 +147,6 @@ void CapWordDialog::on_textEdit_customContextMenuRequested(const QPoint &pos)
 
 void CapWordDialog::on_addToVbToolButton_clicked()
 {
-    if (m_capword != ""  && m_owner->m_vbookModel->add(m_capword)) {
-        m_owner->showToolTip(tr("Add to vocabulary book,success"));
-    } else {
-        m_owner->showToolTip(tr("Add to vocabulary book,failure"));
-    }
+    if (m_capword != "")
+        emit addToVBook(m_capword);
 }

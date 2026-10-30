@@ -1,4 +1,32 @@
 
+AlphaDict 1.5 (unreleased):
+        -- configure is rewritten around pkg-config: Qt is located with
+           pkg-config only, no include or library path is hard-coded, Qt 5.9 or
+           newer is required, and Qt6 is detected up front and rejected with an
+           explanation instead of failing deep inside the build.
+        -- The GUI sources are ported to Qt5: translation strings regenerated
+           (lupdate/lrelease), Qt5 signal/slot syntax, QRegExp/QTextCodec and
+           QDesktopWidget usage replaced.
+        -- New QML user interface (CONFIG_QML): rounded cards, themed sidebar,
+           custom scroll bars, light and dark colour schemes. Build it with
+           --enable-qml; --disable-qml keeps the legacy QtWidgets interface.
+        -- Screen word capture uses plain Xlib instead of Qt5X11Extras.
+        -- Dictionary directory scanning accepts *.aldict only (case
+           insensitive), so stray xml files and editor backups no longer show
+           up as dictionaries.
+        -- The built-in help (help.cn/help.en) is HTML now: headings, lists and
+           clickable links rendered with the theme font and accent colour.
+        -- A 60-word sample dictionary (system/dicts/en-ch.xml) is built by
+           'make' through AldConvert and installed with 'make install', so a
+           fresh checkout shows a populated index instead of an empty window.
+        -- Memory handling fixes throughout the dictionary and GUI layers:
+           leaked index items in the prefix-search and sizing paths, a leaked
+           worker QThread in QtMessager, a stale file handle in the
+           AldictDocument constructor, a double free of the cached index
+           'opaque' pointer, and an off-by-one overread in ReadFile.
+        -- Vocabulary book exam mode keeps its answer flags in sync with the
+           word list, so adding or removing a row no longer shifts the results.
+
 AlphaDict 1.2:
         -- Support Screen Translation (take a word from screen and translate).
         -- System Tray.

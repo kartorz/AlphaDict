@@ -17,6 +17,9 @@
 #endif
 #endif
 #include <assert.h>
+#ifdef _LINUX
+#include <sched.h>      /* sched_yield() */
+#endif
 
 #include "TaskManager.h"
 #include "MutexLock.h"
@@ -33,11 +36,13 @@ void* execute(void *owner);
 #endif
 
 Task::Task(int inv, bool rept, TaskCallBack* callback, std::string identifier)
-:m_interval(inv), m_repeat(rept), m_callback(callback),
- m_identify(identifier), m_abort(false)
+:m_callback(callback), m_interval(inv), m_repeat(rept),
+ m_abort(false), m_identify(identifier)
 {
     if (m_callback == NULL) {
-        m_callback = new TaskCallBack(); // A dummy callback, So we don't need check this pointer if is NULL.
+        /* Use the in-object placeholder instead of a heap copy, so that
+         * ~Task() needs no matching delete and nothing leaks. */
+        m_callback = &m_defaultCallback;
     }
     m_callback->onTaskInit();
 }
@@ -214,7 +219,7 @@ void* schedule(void *owner)
 			//printf("{schedule} m_curTask != NULL\n");
 			Util::sleep(40);
 		#ifdef _LINUX
-			pthread_yield();
+			sched_yield();
 		#endif
 			continue;
 		}
@@ -263,7 +268,7 @@ void* schedule(void *owner)
 		}
 		//printf("{schedule} wakeup exection thread\n");
 	#ifdef _LINUX
-		pthread_yield();
+		sched_yield();
 	#endif
 		/* Dump */
 		#if 0

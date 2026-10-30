@@ -8,7 +8,6 @@
 #define CWD_X_OFFSET  8
 #define CWD_Y_OFFSET  16
 
-class MainWindow;
 class QTimer;
 
 namespace Ui {
@@ -20,7 +19,7 @@ class CapWordDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CapWordDialog(MainWindow *owner, bool autoclose=true, int inv=1000*3.5);
+    explicit CapWordDialog(bool autoclose=true, int inv=1000*3.5, QWidget *parent=0);
     virtual ~CapWordDialog();
 
     //void setDictItemList(DictItemList *v);
@@ -29,6 +28,10 @@ public:
     void setAutoCloseInterval(int inv) {m_autoCloseInterval = inv;}
 
     void setDictItemList(DictItemList *v);
+    void showAtCursor();
+
+signals:
+    void addToVBook(const QString &word);
 
 protected:
     bool event(QEvent * event);
@@ -42,7 +45,6 @@ private slots:
     void on_addToVbToolButton_clicked();
 
 private:
-    MainWindow *m_owner;
     QString m_capword;
     bool m_bAutoClose;
     int  m_autoCloseInterval;

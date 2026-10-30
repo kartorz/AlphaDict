@@ -14,6 +14,13 @@ Aldict::Aldict(const string& dictpath):m_bLoad(false)
 	m_doc.loadDict(dictpath);
 }
 
+Aldict::~Aldict()
+{
+	/* Deliberately empty: m_doc (which owns the file handle, the block cache
+	 * and the index tree), m_dictCache, m_indexCache and the mutex are all
+	 * value members, so their own destructors do the work. */
+}
+
 bool Aldict::load(const string& dictpath)
 {
     m_bLoad = m_doc.loadDict(dictpath);
@@ -55,6 +62,10 @@ bool Aldict::lookup(const string& word, DictItemList& itemList)
         }else {
             if (candidate.size() > 0) {
                 iDictItem item = onClick(-1, candidate[0]);
+                /* onClick() found a dataitem, so it reports a hit; this branch
+                 * is a miss that merely offers candidates, which is what the
+                 * caller's `false` return and the GUI rely on. */
+                item.bfind = false;
                 item.word = candidate[0]->index;
                 item.dictname = (char *) m_doc.m_header.d_identi;
                 item.expl += "\n\n=================\n";
@@ -124,6 +135,10 @@ int Aldict::indexListSize()
         IndexList indexList;
         int ret = m_doc.getIndexList(indexList, 0x7FFFFFFF, 0x7FFFFFFF);
 	    entries = 0x7FFFFFFF + ret;
+        /* the sizing query only needs the count, so release what it built */
+        for (IndexList::size_type i = 0; i < indexList.size(); i++)
+            delete indexList[i];
+        indexList.clear();
     }
     return entries;
 }
@@ -205,6 +220,9 @@ void Aldict::addToIndexCache(const string key, const iIndexItem& item)
                 m_indexCache.erase(m_indexCache.begin());
             }
             m_indexCache[key] = item;
+            /* 'opaque' is borrowed from the item in m_doc.m_indexList, which
+             * frees it in ~AldictDocument. Two owners would free it twice. */
+            m_indexCache[key].opaque = NULL;
         }
     } // else if : There may be duplicate indexs, should lookup again. 
 }
@@ -212,16 +230,20 @@ void Aldict::addToIndexCache(const string key, const iIndexItem& item)
 void Aldict::dataItemTodictItem(const struct aldict_dataitem& d, iDictItem& i)
 {
     i.dictname = (char *)m_doc.m_header.d_identi;
-    i.word = string((const char*)d.ptr_word, (int)d.len_word);
+    if (d.ptr_word && d.len_word > 0)
+        i.word = string((const char*)d.ptr_word, (int)d.len_word);
     free(d.ptr_word);
 
-    if (d.len_phon > 0) {
+    if (d.ptr_phon && d.len_phon > 0)
         i.phonetic = string((const char*)d.ptr_phon, (int)d.len_phon);
-        free(d.ptr_phon);
-    }
-    if (d.len_expl > 0) {
-        i.expl = string((const char*)d.ptr_expl, (int)d.len_expl);
-        free(d.ptr_expl);
-    }
+    free(d.ptr_phon);
 
+    if (d.ptr_expl && d.len_expl > 0)
+        i.expl = string((const char*)d.ptr_expl, (int)d.len_expl);
+    free(d.ptr_expl);
+
+    /* A dataitem has been located in the dictionary by the caller, so this is a
+     * hit. Callers that reach here through lookup()'s candidate fallback mark
+     * the miss themselves. */
+    i.bfind = true;
 }

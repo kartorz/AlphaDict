@@ -162,7 +162,6 @@ static void make_dict(const vector<string>& xmlfiles, const string& dictpath)
 	vector<string> splitVec;
 	string strTemp;
 	const char *pstrTemp;
-	unsigned int u32Temp;
 	const XMLElement* tempElement = NULL;
 	try {
 		header.magic[0] = 0x77;
@@ -251,7 +250,8 @@ static void make_dict(const vector<string>& xmlfiles, const string& dictpath)
 		    pstrTemp = "any";
 		}
 		strncpy((char *)(header.det_lan), pstrTemp, 14);
-	} catch (exception e) {
+	} catch (const exception &e) {
+	    (void)e;
 	    /* It's annoy to check every header tag if has a text node,so xml should be responsible for that .*/
 		AL_ASSERT(false, "Prase xml failure, please check header tag, every tag of 'header' should have a text node.");
 	}
@@ -366,7 +366,8 @@ static void add_to_dictfile(const string& strWord, const XMLElement* wordElement
 		    strPhonetic += phoneticNameElement->GetText();
 		    strPhonetic += "\n";
 		    phoneticNameElement = phoneticNameElement->NextSiblingElement();
-        } catch (exception e) {
+        } catch (const exception &e) {
+            (void)e;
             printf("parse <phonetic/> failure\n");
         }
 	}
@@ -382,7 +383,8 @@ static void add_to_dictfile(const string& strWord, const XMLElement* wordElement
 	    	wordElementHd.FirstChildElement("explanation").ToElement();
         if (explnElement->FirstChild())
             strExpln += explnElement->FirstChild()->Value();
-    } catch (exception e) {
+    } catch (const exception &e) {
+        (void)e;
         printf("parse <explanation/> failure\n");
     }
 
@@ -558,7 +560,7 @@ static bool is_in_stringindex(ktree::tree_node<aldict_charindex>::treeNodePtr pa
 			      int words, int depth)
 {
     if (depth == 0 && parent->children().size() == 0)
-        return false;
+		return false;
 	if (parent->children().size() > STRINX_WORDS_MAX)
 		return false;
 	// firgure-3, if there is one more children, this node should be char index.

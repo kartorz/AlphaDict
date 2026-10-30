@@ -22,7 +22,15 @@
 #define INDEXARRY_LEN_MAX  256
 
 
-AldictDocument::AldictDocument():m_indexTree(NULL)
+AldictDocument::AldictDocument()
+	: m_indexTree(NULL)
+	, m_chrIndexLoc(0)
+	, m_strIndexLoc(0)
+	, m_dataLoc(0)
+	, m_dictFile(NULL)
+	, m_indexStart(0)
+	, m_indexEnd(0)
+	, m_indexNumber(0)
 {
 }
 
@@ -295,7 +303,7 @@ void AldictDocument::lookupCandidate(tree_node<aldict_charindex>::treeNodePtr pa
 {
 	if (parent != NULL) {
 		u4char_t index[INDEXARRY_LEN_MAX];
-		memset(index, L'\0', INDEXARRY_LEN_MAX);
+		memset(index, 0, sizeof(index));
 		struct IndexStat stat;
 		stat.start = 0;
 		stat.end = 5;
@@ -350,7 +358,7 @@ int AldictDocument::getIndexList(IndexList& indexList, int start, int end, const
 		return 0;
 
 	u4char_t index[INDEXARRY_LEN_MAX];
-	memset(index, L'\0', INDEXARRY_LEN_MAX);
+	memset(index, 0, sizeof(index));
 	int index_star = 0;
 	struct IndexStat stat;
 	stat.start = start;
@@ -369,13 +377,20 @@ int AldictDocument::getIndexList(IndexList& indexList, int start, int end, const
 			struct aldict_charindex chrInx = root->children().size() == 0 ? root->value() : root->child(0)->value();
 			IndexList strIndexList;
 			loadIndex(prefix, chrInx, &stat, strIndexList);
-			for (int i = 0; i < strIndexList.size(); i++) {
-				string index = strIndexList[i]->index;
+			for (size_t i = 0; i < strIndexList.size(); i++) {
+				iIndexItem* candidate = strIndexList[i];
+				const string& index = candidate->index;
 				if (index.length() >= key.length() && index.substr(0, key.length()) == key) {
 					num++;
-					indexList.push_back(strIndexList[i]);
+					/* ownership moves to the caller */
+					indexList.push_back(candidate);
+				} else {
+					/* candidate that does not match the prefix would otherwise
+					 * be dropped without its owner ever seeing it */
+					delete candidate;
 				}
 			}
+			strIndexList.clear();
 			return num;
 		}
 
@@ -384,6 +399,10 @@ int AldictDocument::getIndexList(IndexList& indexList, int start, int end, const
 		size_t u4len;
 		u4char_t* u4str = CharUtil::utf8StrToUcs4Str(pkey, &u4len);
 		if (u4len > 0) {
+			/* utf8StrToUcs4Str() neither NUL-terminates nor bounds the length,
+			 * so clamp it into the stack buffer (index is zeroed above). */
+			if (u4len >= INDEXARRY_LEN_MAX)
+				u4len = INDEXARRY_LEN_MAX - 1;
 			memcpy(index, u4str, sizeof(u4char_t)*u4len);
 			index_star = u4len;
 		}
@@ -432,7 +451,6 @@ bool AldictDocument::loadIndex(u4char_t *str, int inx, struct IndexStat *stat,
 
 	struct aldict_charindex chrInx = parent->value();
 	address_t loc = ald_read_u32(chrInx.location);
-	int length = ald_read_u16(chrInx.len_content);
 	if ((loc & F_LOCSTRINX) == 0) {
 		if (stat->number >= stat->start) {
 			if (stat->number < stat->end) {

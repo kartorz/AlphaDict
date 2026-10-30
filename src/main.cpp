@@ -6,11 +6,18 @@
 #if CONFIG_QT5
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
+#include <QtCore/QStringList>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+#include <QtGui/QScreen>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QDesktopWidget>
+#if CONFIG_QML
+#include "gui/qt/QmlMainWindow.h"
+#else
 #include "gui/qt/mainwindow.h"
+#endif
 #endif
 
 static void on_exit()
@@ -20,6 +27,7 @@ static void on_exit()
     Application::delPidFile();
 }
 
+#if CONFIG_QT5
 inline void showInitErrDialog(int ret)
 {
         QMessageBox msgBox;
@@ -48,6 +56,7 @@ Do you want run a another process.\n\n"));
     Application::writePidFile();
     return 0;
 }
+#endif /* CONFIG_QT5 */
 
 #ifdef WIN32
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
@@ -97,9 +106,18 @@ int main(int argc, char* argv[])
     }
 
     if (g_application.m_configure->m_setting.uilanID == UILAN_CN) {
-        string trfile = g_application.m_configure->m_dataDir + "/uitr_cn";
-        //translator.load(QString::fromUtf8(trfile.c_str()));
-        translator.load(QString::fromLocal8Bit(trfile.c_str()));
+        // The catalogue is installed next to the data files, but while the
+        // program runs straight from the source tree it only exists in
+        // gui/qt/.  Try every plausible location instead of a single one.
+        QStringList trFiles;
+        trFiles << QString::fromLocal8Bit(
+            (g_application.m_configure->m_dataDir + "/uitr_cn").c_str());
+        trFiles << QCoreApplication::applicationDirPath() + "/gui/qt/uitr_cn";
+        trFiles << QDir::currentPath() + "/gui/qt/uitr_cn";
+        for (int i = 0; i < trFiles.size(); i++) {
+            if (translator.load(trFiles.at(i)))
+                break;
+        }
         a.installTranslator(&translator);
     }
 
@@ -120,8 +138,16 @@ int main(int argc, char* argv[])
         return -2;
 	}
 
+#if CONFIG_QML
+    QmlMainWindow w;
+#else
     MainWindow w;
-    w.move((a.desktop()->width() - w.width()) / 2, (a.desktop()->height() - w.height()) / 2);
+#endif
+    /* Center on the available area of the primary screen (QDesktopWidget is
+     * deprecated since Qt 5.11). */
+    const QRect avail = QGuiApplication::primaryScreen()->availableGeometry();
+    w.move(avail.x() + (avail.width() - w.width()) / 2,
+           avail.y() + (avail.height() - w.height()) / 2);
     //w.raise();
     //w.activateWindow();
     w.show();
@@ -130,4 +156,6 @@ int main(int argc, char* argv[])
     QObject::connect(&a, SIGNAL(aboutToQuit()), &w, SLOT(onAppExit()));
     return a.exec();
 #endif
+
+    return ret;
 }

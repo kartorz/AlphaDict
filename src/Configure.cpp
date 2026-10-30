@@ -4,6 +4,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <cctype>
 #include <sstream>
 # ifdef _LINUX
 #include <dirent.h>
@@ -57,6 +58,12 @@ int Configure::initialization()
     m_dataDir +=  "/system";
 #else
     m_dataDir = DATADIR;
+#ifdef SRCDATADIR
+    /* Running straight from the build tree: the install prefix has not been
+    ** populated yet, so fall back to the in-tree data directory. */
+    if (!Util::isDirExist(m_dataDir) && Util::isDirExist(SRCDATADIR))
+        m_dataDir = SRCDATADIR;
+#endif
 #endif
     g_sysLog(LOG_INFO, "system dir :(%s)\n", m_dataDir.c_str());
     if (!Util::isDirExist(m_homeDir)) {
@@ -259,12 +266,35 @@ void Configure::scanDictDir(vector<string>& dictFiles)
     scanDictDir(m_dataDir+"/dicts", dictFiles);
 }
 
+/* AldConvert writes plain .aldict files.  The dictionary directory usually
+ * also holds their xml sources (and maybe a backup or a sub directory), none
+ * of which can be opened as a dictionary. */
+static bool isDictFileName(const string& name)
+{
+    static const char kExt[] = ".aldict";
+    const size_t extLen = sizeof(kExt) - 1;
+
+    if (name.size() <= extLen)
+        return false;
+
+    for (size_t i = 0; i < extLen; i++) {
+        if (toupper((unsigned char)name[name.size() - extLen + i]) !=
+            toupper((unsigned char)kExt[i]))
+            return false;
+    }
+
+    return true;
+}
+
 void Configure::scanDictDir(const string& path, vector<string>& dictFiles)
 {
 #ifdef WIN32
     boost::filesystem::path p(path);
     try {
         for (directory_iterator iter(p); iter != directory_iterator(); iter++) {
+            if (!isDictFileName(iter->path().filename().string()))
+                continue;
+
             string mbpath = iter->path().string();
             const char* nm = mbpath.c_str();
             char *nm2 = CharUtil::mbsrtoutf8s(nm);
@@ -285,8 +315,10 @@ void Configure::scanDictDir(const string& path, vector<string>& dictFiles)
     DIR *dp = opendir(path.c_str());
     //printf("dict dir path:(%s)\n", path.c_str());
     if (dp != NULL) {
-        while (ep = readdir(dp)) {
+        while ((ep = readdir(dp)) != NULL) {
             if (ep->d_name[0] == '.')
+                continue;
+            if (!isDictFileName(ep->d_name))
                 continue;
             string f = path + "/" + string(ep->d_name);
             //printf("dirctory:(%s)\n", f.c_str());
@@ -308,7 +340,9 @@ void Configure::loadLanguage()
 
     util::ReadFile read;
     char buf[1024];
-    int size = read(f, (void *)buf, 1024);
+    /* keep one byte free for the terminator: a full 1024-byte read would
+     * otherwise write buf[sizeof(buf)], one byte past the array. */
+    int size = (int)read(f, (void *)buf, sizeof(buf) - 1);
     buf[size] = '\0';
     string strTemp(buf);
     vector<string> splitVec;

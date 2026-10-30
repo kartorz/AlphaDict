@@ -1,6 +1,9 @@
 # ifdef WIN32
 #include <Windows.h>
 # endif
+#ifdef _LINUX
+#include <sched.h>      /* sched_yield() */
+#endif
 
 #include "DictManager.h"
 #include "Application.h"
@@ -91,6 +94,7 @@ void DictManager::initialization()
                 nodeVec[i].open = dict->identifier();
                 dict->getLanguage(nodeVec[i].srclan, nodeVec[i].detlan);
 				dict->summary(nodeVec[i].summary);
+                delete dict;
             }
             config->writeDictItem(i);
         }
@@ -120,7 +124,7 @@ bool DictManager::loadDict(bool more)
             do {
                 Util::sleep(20);
             #ifdef _LINUX
-                pthread_yield();
+                sched_yield();
             #endif
             }while(m_dictOpen[i].task != NULL);
         }
@@ -348,7 +352,6 @@ bool DictManager::lookupIgnoreEnglishGrammar(iDict* dict, string input, DictItem
 
     items.clear();
     if (input.length() > 4) {
-        bool bCheck = false;
         string subfix = input.substr(input.length()-3, 3);
         if (subfix.at(0) == '\'') {
             //"\'re", "\'ll", "\'ve"
@@ -411,8 +414,6 @@ void DictManager::onClick(int row, iIndexItem* item)
 {
     DictItemList* arg1 = new DictItemList();
     arg1->push_back(m_dictOpen[0].dict->onClick(row, item));
-    int did = m_dictOpen[0].dictId;
-    //(*arg1)[0].dictFileName = g_application.m_configure->m_dictNodes[did].name;
     g_application.uiMessageQ()->push(MSG_SET_DICTITEMS, -1, (void *)arg1);
 }
 

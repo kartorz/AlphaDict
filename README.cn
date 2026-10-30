@@ -29,13 +29,35 @@ Alpha词典在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布
 ==============
 
 "Alpha词典"依赖如下开发包:
-  1) QT5(gui): "http://qt-project.org/downloads" 
-  2) boost: "http://www.boost.org/"
-  3) sqlite: "https://www.sqlite.org"
+  1) Qt5 >= 5.9: "https://www.qt.io/"
+     图形界面需要 Qt5Core/Qt5Gui/Qt5Widgets；新的 QML 界面另外需要
+     Qt5Qml/Qt5Quick/Qt5QuickWidgets。缺少 QML 模块时会自动退回 QtWidgets 界面。
+  2) boost (system, filesystem): "https://www.boost.org/"
+  3) sqlite3: "https://www.sqlite.org" —— 可选，系统没有时使用仓库内置的
+     amalgamation (src/lib/sqlite3)，不需要另外安装开发包。
+  4) pkg-config: configure 用它定位 Qt 和 sqlite3，不再硬编码头文件与库路径，
+     所以 multiarch 布局 (Debian/Ubuntu 的 x86_64-linux-gnu) 与自定义安装前缀
+     都能直接工作。
+  5) X11 (libX11): 屏幕取词需要。不再依赖 libqt5x11extras5。
 
-ubuntu14.04: 
-    sudo apt-get install libboost-dev libboost-filesystem-dev qtbase5-dev
-        libqt5x11extras5-dev libsqlite3-dev
+Debian / Ubuntu:
+    sudo apt-get install build-essential pkg-config \
+        qtbase5-dev qtdeclarative5-dev \
+        libboost-dev libboost-filesystem-dev libx11-dev
+    # 可选，想用系统 sqlite3 而不使用内置版本时:
+    #   sudo apt-get install libsqlite3-dev
+    # 需要重新生成翻译 (make uitr) 时:
+    #   sudo apt-get install qttools5-dev-tools
+
+Fedora / RHEL:
+    sudo dnf install gcc-c++ make pkgconf-pkg-config \
+        qt5-qtbase-devel qt5-qtdeclarative-devel \
+        boost-devel libX11-devel
+
+注意: 本项目只支持 Qt5。检测到 Qt6 时 configure 会明确报错退出，因为
+src/gui/qt 下的 QtWidgets 代码还在使用 Qt6 已经移动或移除的类
+(QShortcut/QAction 移到 QtGui，QRegExp/QTextCodec 移到 Core5Compat，
+QDesktopWidget 已删除)，移植工作尚未完成。
 
 
 如何编译
@@ -43,14 +65,23 @@ ubuntu14.04:
 
 linux,unix
 ----------
-$ ./configure  
+configure 和 Makefile 都在 src/ 目录下:
+
+$ cd src
+$ ./configure
 $ ./configure --help
   can give you some useful information, if you get trouble and want to set some 
   custom configurations to fix it.
 
-$ make 
+$ make
+  生成两个程序: AlphaDict (图形界面) 和 AldConvert (词典转换工具)，并且用
+  AldConvert 把 system/dicts/en-ch.xml 转成示例词典 en-ch.aldict。刚克隆下来
+  的仓库一个词典都没有，有了这一步，界面第一次启动就能显示 60 个词的索引。
+  只需要重新生成词典时: $ make dict
 
 $ make install
+  --prefix 默认是 /usr/local；安装脚本不会 sudo，需要写系统目录时自己提权。
+  安装时会一并装上示例词典，可以用自己的 .aldict 替换它。
 
 $ AlphaDict
   Now, You can enjoy 'AlphaDict'. 
@@ -58,7 +89,24 @@ $ AlphaDict
 $ make uninstall
 
 $ make uitr
-  make muti-language.
+  make muti-language.  需要 lupdate/lrelease (Debian: qttools5-dev-tools)；
+  路径取自 pkg-config 报告的 Qt bin 目录，也可以用 --with-qttool 指定。
+
+configure 的常用选项:
+  --prefix=DIR        安装前缀                         [默认 /usr/local]
+  --enable-qml        构建 QML 界面                     [自动检测]
+  --disable-qml       只构建旧的 QtWidgets 界面
+  --disable-gui       不构建图形界面，只留命令行工具
+                      (别名 --disable-qt5；--enable-gui 是 --enable-qt5 的别名)
+  --enable-debug      调试构建                          [关闭]
+  --enable-qt6        被拒绝：当前代码只支持 Qt5 (见上)
+  --with-qttool=PATH  指定 moc/uic/rcc 所在目录            [自动检测]
+  --extra-cflags/--extra-ldflags/--extra-libs   追加编译/链接参数
+
+Qt 完全通过 pkg-config 检测：需要 Qt5Core、Qt5Gui、Qt5Widgets 齐全，且版本
+不低于 5.9。找不到或者版本太低时 configure 会直接停下并说明原因，不会退回到
+某个猜测的路径。打开 QML 界面后 config.mak 里会是 GUI=yes QML=yes，对应
+config.h 的 CONFIG_QT5 与 CONFIG_QML。
 
 windows
 -------
@@ -68,6 +116,9 @@ windows
 . Open the solution file: VS2010/AlphaDict/AlphaDict.sln.
 . Build
 
+  VS 工程文件停留在 Qt5.3/QtWidgets 时代，没有包含 QML 界面；在 linux 下用
+  configure + make 构建的版本才是当前维护的版本。
+
 
 如何制作词典
 ==========
@@ -76,12 +127,12 @@ windows
 
 通常情况下，你只需要了解 'front-end_format.xml', 能制作词典只需要2个步骤.
 1) 根据 front-end_format.xml的格式, 创建一个 xx.xml 文件.
-2) 使用 AlConvert(.exe) 转换 xx.xml， 生成 xx.aldict 文件。
-   $ AlConvert -o xx xx.xml
+2) 使用 AldConvert(.exe) 转换 xx.xml， 生成 xx.aldict 文件。
+   $ AldConvert -o xx xx.xml
    将生成词典文件: xx.aldict.
    
-AlConvert 支持多xml文件.你可以把一个大的xml，分割成多个小的xml文件，或者把几个xml文件，合并生成一个词典文件。
-  $ AlConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
+AldConvert 支持多xml文件.你可以把一个大的xml，分割成多个小的xml文件，或者把几个xml文件，合并生成一个词典文件。
+  $ AldConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
 
 doc/alphadict_en-ch.xml 是一个例子, 你可以参考它来制作自己的词典.
 
@@ -109,7 +160,7 @@ $ python xx_toaldictxml.py
 1) 把所有的词典文件放到一个目录下, 如 foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
 2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ AlConvert -o foo_xx   foo_xx.xml
+3) $ AldConvert -o foo_xx   foo_xx.xml
      生成词典文件 foo_xx.aldict 
 
 你能从下面链接，下载星际译王的词典:
@@ -120,7 +171,7 @@ cedict
 当前只支持文本格式，请下载 text 文件, 而不是 'xml' 文件.
 
 $ python cedict_to_aldictxml.py -i foo.txt
-$ AlConvert -o foo  foo.xml
+$ AldConvert -o foo  foo.xml
   生成词典文件 foo_xx.aldict
 
 你能从下面链接，下载 cedict 的词典:
@@ -135,7 +186,7 @@ dicts.info
 下面是一个转换词典的例子.
 
 $ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ AlConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
+$ AldConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
 
 
 IDP
@@ -147,7 +198,7 @@ IDP
 下面是一个转换词典的例子.
 
 $ ./idp_to_aldictxml.py  -i French.txt
-$ AlConvert -o idp_french   French.xml
+$ AldConvert -o idp_french   French.xml
  
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系

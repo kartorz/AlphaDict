@@ -25,6 +25,7 @@
 class TaskCallBack
 {
 public:
+    virtual ~TaskCallBack() {}
     virtual void onTaskInit() {};
     virtual void onTaskUnInit() {};
     virtual void onTaskDone() {};
@@ -54,6 +55,11 @@ protected:
 	bool m_repeat;
     bool m_abort;
     std::string m_identify;
+
+private:
+    /* Placeholder callback, used when the owner passes NULL. A value member on
+     * purpose: the heap copy allocated here used to leak one object per Task. */
+    TaskCallBack m_defaultCallback;
 };
 
 class TaskManager {

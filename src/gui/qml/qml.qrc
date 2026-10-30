@@ -1,0 +1,20 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/qml">
+        <file>qmldir</file>
+        <file>Main.qml</file>
+        <file>Theme.qml</file>
+        <file>Card.qml</file>
+        <file>FlatButton.qml</file>
+        <file>ThemedField.qml</file>
+        <file>StyledComboBox.qml</file>
+        <file>ThemedSwitch.qml</file>
+        <file>ThemedScrollBar.qml</file>
+        <file>SettingRow.qml</file>
+        <file>SideBar.qml</file>
+        <file>DictionaryPage.qml</file>
+        <file>VBookPage.qml</file>
+        <file>SettingsPage.qml</file>
+        <file>HelpPage.qml</file>
+    </qresource>
+</RCC>
