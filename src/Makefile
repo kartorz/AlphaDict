@@ -143,7 +143,10 @@ install-system: install-dirs
 	install -m 0666 "system/language.txt"          "$(DATADIR)/language.txt"
 	install -m 0666  system/help.*                 "$(DATADIR)/"
 	@if [ "$(GUI)" = yes ]; then \
-	    install -m 0666 "gui/qt/uitr_cn.qm"        "$(DATADIR)/uitr_cn.qm"; \
+	    if [ -f "gui/qt/uitr_cn.qm" ]; then \
+	        install -m 0666 "gui/qt/uitr_cn.qm"    "$(DATADIR)/uitr_cn.qm"; \
+	    else \
+	        echo "note: gui/qt/uitr_cn.qm not built, run 'make uitr' to ship translations"; fi; \
 	    install -m 0666 "gui/qt/res/appicon.png"   "$(DATADIR)/AlphaDict.png"; fi
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
@@ -166,6 +169,8 @@ clean:
 	@find lib -name "*.[oadi]" | xargs -I{} rm {}
 	@find gui/qt -name "moc_*" | xargs -I{} rm {}
 	@find gui/qt -name "qrc_*" | xargs -I{} rm {}
+	@find gui/qt -name "ui_*.h" | xargs -I{} rm {}
+	-rm -f gui/qt/uitr_cn.qm
 	@find gui/qml -name "qrc_*" | xargs -I{} rm {}
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
 	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict AldConvert)

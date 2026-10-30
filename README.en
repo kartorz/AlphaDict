@@ -118,14 +118,12 @@ CONFIG_QML in config.h.
 
 windows
 -------
-# VS2010 #
-. Install qt-opensource-windows-x86-msvc2010_opengl-5.3.0.exe
-. Install boost_1_55, compile it follow the instructions.
-. Open the solution file: VS2010/AlphaDict/AlphaDict.sln.
-. Build
-
-  The VS project files predate the QML interface and only build the QtWidgets
-  UI; the configure + make build under linux is the maintained one.
+The Visual Studio project files are no longer shipped: they were frozen at
+Qt5.3/QtWidgets, referenced generated headers that no longer exist and could
+not build the current sources. The windows sources under src/ (src/win32 holds
+the platform glue) are still there; build them with a Qt5 MSVC or MinGW kit and
+your own project file, or use the maintained configure + make build on
+linux/unix.
 
 
 How to Make Dictionaries

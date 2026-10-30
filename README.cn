@@ -110,14 +110,10 @@ config.h 的 CONFIG_QT5 与 CONFIG_QML。
 
 windows
 -------
-# VS2010 #
-. Install qt-opensource-windows-x86-msvc2010_opengl-5.3.0.exe
-. Install boost_1_55, compile it follow the instructions.
-. Open the solution file: VS2010/AlphaDict/AlphaDict.sln.
-. Build
-
-  VS 工程文件停留在 Qt5.3/QtWidgets 时代，没有包含 QML 界面；在 linux 下用
-  configure + make 构建的版本才是当前维护的版本。
+仓库不再附带 Visual Studio 工程文件：它们停留在 Qt5.3/QtWidgets 时代，还引用了
+已经不存在的生成头文件，无法构建当前源码。Windows 平台相关源码仍保留在 src/
+（其中 src/win32 是平台适配层），可以用 Qt5 的 MSVC 或 MinGW 套件配自己的工程
+文件构建；当前维护的构建方式仍是 linux/unix 下的 configure + make。
 
 
 如何制作词典

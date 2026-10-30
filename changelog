@@ -26,6 +26,10 @@ AlphaDict 1.5 (unreleased):
            'opaque' pointer, and an off-by-one overread in ReadFile.
         -- Vocabulary book exam mode keeps its answer flags in sync with the
            word list, so adding or removing a row no longer shifts the results.
+        -- Build output is no longer kept in the tree: the VS2013/VS2015
+           directories (stale Qt5.3 project files, checked-in Release binaries
+           and DLLs, IDE user state) are removed, and generated uic/moc/rcc
+           output and *.qm files are ignored. configure + make rebuilds them.
 
 AlphaDict 1.2:
         -- Support Screen Translation (take a word from screen and translate).
