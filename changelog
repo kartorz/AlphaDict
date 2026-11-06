@@ -16,9 +16,11 @@ AlphaDict 1.5 (unreleased):
            up as dictionaries.
         -- The built-in help (help.cn/help.en) is HTML now: headings, lists and
            clickable links rendered with the theme font and accent colour.
-        -- A 60-word sample dictionary (system/dicts/en-ch.xml) is built by
-           'make' through AldConvert and installed with 'make install', so a
-           fresh checkout shows a populated index instead of an empty window.
+        -- Dictionaries are installed as data: every *.aldict in system/dicts/
+           is copied to <datadir>/dicts by 'make install', AldConvert is also
+           installed next to the program data, and 'make clean' no longer
+           touches the dictionary directory. No sample dictionary is generated
+           at build time any more.
         -- Memory handling fixes throughout the dictionary and GUI layers:
            leaked index items in the prefix-search and sizing paths, a leaked
            worker QThread in QtMessager, a stale file handle in the
@@ -30,6 +32,12 @@ AlphaDict 1.5 (unreleased):
            directories (stale Qt5.3 project files, checked-in Release binaries
            and DLLs, IDE user state) are removed, and generated uic/moc/rcc
            output and *.qm files are ignored. configure + make rebuilds them.
+        -- The runtime data directory moved out of the sources: src/system is
+           now the top-level system/ (dictionaries stay in system/dicts), and
+           the unused design drawings (doc/*.dia) and GIMP sources (resource/)
+           have been dropped. A Debian packaging directory (debian/) ships the
+           programs, a desktop entry and the dictionaries; README.en is reduced
+           to the project URL.
 
 AlphaDict 1.2:
         -- Support Screen Translation (take a word from screen and translate).

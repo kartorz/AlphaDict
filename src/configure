@@ -361,7 +361,7 @@ test -z "$_datadir" && _datadir="$_prefix/share/alphadict"
 # prefix has not been populated yet (i.e. running straight from the build
 # tree), which keeps help pages and dictionary files usable during development.
 _srcdir=$(cd "$(dirname "$0")" && pwd)
-_srcdatadir="$_srcdir/system"
+_srcdatadir=$(cd "$_srcdir/../system" && pwd)
 
 for tmpdir in "$TMPDIR" "$TEMPDIR" "/tmp" ; do
   test "$tmpdir" && break

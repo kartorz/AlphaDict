@@ -1,0 +1,37 @@
+#!/usr/bin/make -f
+
+# AlphaDict is configured by a hand written configure script and built by a
+# plain Makefile in src/.  Install paths are baked into the binary through
+# config.h, so the package has to be configured with the Debian layout.
+export LC_ALL = C
+export DH_VERBOSE = 1
+
+# Qt is built with -reduce-relocations, so everything must be compiled as
+# position independent code.  dpkg-buildflags adds -fPIE, which would win
+# over the configure script's -fPIC because it comes later on the command
+# line; appending -fPIC through --extra-cflags puts it last again.
+CONFIGURE_ARGS = --prefix=/usr --datadir=/usr/share/alphadict --extra-cflags=-fPIC
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	cd src && ./configure $(CONFIGURE_ARGS)
+
+override_dh_auto_build:
+	cd src && $(MAKE)
+	# Only compile the existing translation: running lupdate would rewrite
+	# the tracked .ts file as a side effect of the package build.
+	cd src && lrelease gui/qt/uitr_cn.ts -qm gui/qt/uitr_cn.qm
+
+override_dh_auto_install:
+	cd src && $(MAKE) install DESTDIR=$(CURDIR)/debian/alphadict
+	# dh_install treats its destination as a directory, which would produce
+	# /usr/share/pixmaps/alphadict.png/appicon.png; install the icon by hand
+	# so it lands on the name the desktop file refers to.
+	install -Dm644 src/gui/qt/res/appicon.png \
+		$(CURDIR)/debian/alphadict/usr/share/pixmaps/alphadict.png
+
+override_dh_auto_clean:
+	if [ -f src/config.mak ]; then cd src && $(MAKE) distclean; fi
+	dh_auto_clean

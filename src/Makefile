@@ -84,7 +84,7 @@ ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
 ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 
-a11: AldConvert $(PROGS_GUI_$(GUI)) dict
+a11: AldConvert $(PROGS_GUI_$(GUI))
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $^
@@ -95,20 +95,13 @@ AlphaDict: $(QT_H_$(GUI)) $(OBJS_ALPHADICT)
 AldConvert: $(OBJS_ALCONVERT)
 	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@
 
-# ---- sample dictionary ---------------------------------------------------
-# A fresh checkout has no dictionary, so the GUI would always show an empty
-# index. Build the small sample that ships in system/dicts/ with AldConvert;
-# install-system puts it next to the program data. A real dictionary can
-# replace it at any time: the program scans every file in <datadir>/dicts/.
-DICT_SRC  = system/dicts/en-ch.xml
-DICT_OUT  = system/dicts/en-ch.aldict
-DICT_BASE = system/dicts/en-ch
-
-dict: $(DICT_OUT)
-
-$(DICT_OUT): $(DICT_SRC) AldConvert
-	@mkdir -p `dirname $(DICT_OUT)`
-	./AldConvert -o $(DICT_BASE) $(DICT_SRC)
+# ---- dictionaries --------------------------------------------------------
+# Dictionaries are data, not build products.  Every *.aldict dropped into
+# ../system/dicts/ is installed to <datadir>/dicts/ by 'make install', and
+# AldConvert is copied next to the program data as well.  The directory also
+# holds the user's own dictionaries, so it is never touched by 'make clean'.
+dict:
+	@echo "note: dictionaries are data in ../system/dicts/*.aldict; nothing to build"
 
 #%.d : %.cpp
 #	$(CC) -MM $< -o $@
@@ -138,10 +131,10 @@ install-dirs:
 install-%: % install-dirs
 	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
 
-install-system: install-dirs
-	install -m 0666 "system/configure.xml.in"      "$(DATADIR)/configure.xml.in"
-	install -m 0666 "system/language.txt"          "$(DATADIR)/language.txt"
-	install -m 0666  system/help.*                 "$(DATADIR)/"
+install-system: install-dirs AldConvert
+	install -m 0666 "../system/configure.xml.in"   "$(DATADIR)/configure.xml.in"
+	install -m 0666 "../system/language.txt"       "$(DATADIR)/language.txt"
+	install -m 0666  ../system/help.*              "$(DATADIR)/"
 	@if [ "$(GUI)" = yes ]; then \
 	    if [ -f "gui/qt/uitr_cn.qm" ]; then \
 	        install -m 0666 "gui/qt/uitr_cn.qm"    "$(DATADIR)/uitr_cn.qm"; \
@@ -151,8 +144,10 @@ install-system: install-dirs
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
 	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"
-	@if [ -f "$(DICT_OUT)" ]; then \
-	    install -m 0666 "$(DICT_OUT)" "$(DATADIR)/dicts/en-ch.aldict"; fi
+	@for f in ../system/dicts/*.aldict; do \
+	    [ -e "$$f" ] || continue; \
+	    install -m 0666 "$$f" "$(DATADIR)/dicts/$$(basename $$f)"; done
+	install -m 0755 AldConvert "$(DATADIR)/AldConvert"
 
 	$(INSTALL) -d  $(DATADIR)/tools
 	@for FILE in `ls tools`; do \
@@ -162,7 +157,7 @@ uninstall:
 	rm -f $(BINDIR)/AlphaDict $(BINDIR)/AldConvert
 	rm -f $(DATADIR)/configure.xml.in $(DATADIR)/language.txt
 	rm -f $(DATADIR)/help.* $(DATADIR)/uitr_cn.qm $(DATADIR)/AlphaDict.png
-	rm -f $(DATADIR)/dicts/en-ch.aldict
+	rm -f $(DATADIR)/dicts/*.aldict $(DATADIR)/AldConvert
 	rm -rf $(DATADIR)/tools $(DATADIR)/doc
 
 clean:
@@ -174,7 +169,6 @@ clean:
 	@find gui/qml -name "qrc_*" | xargs -I{} rm {}
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
 	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict AldConvert)
-	-rm -f system/dicts/*.aldict
 
 distclean: clean
 	-@rm -rf config.*  gui/build-qt-Desktop-Debug  gui/build-qt-Desktop-Release

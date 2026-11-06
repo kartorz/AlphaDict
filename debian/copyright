@@ -1,0 +1,65 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: AlphaDict
+Upstream-Contact: joni lee (li liqiong) <joni_lee@outlook.com>
+Source: https://github.com/kartorz/AlphaDict
+
+Files: *
+Copyright: 2004-2026 AlphaDict project
+           2010-2014 Li Liqiong (joni lee) <joni_lee@outlook.com>
+License: GPL-3+
+ This program is free software: you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the Free
+ Software Foundation, either version 3 of the License, or (at your option)
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ for more details.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 3 can be found in /usr/share/common-licenses/GPL-3.
+
+Files: src/lib/sqlite3/*
+Copyright: none
+License: public-domain
+ SQLite is in the public domain.  The authors disclaim all copyright
+ interest in the SQLite source code; see the "blessing" at the end of
+ src/lib/sqlite3/sqlite3.h.
+
+Files: src/lib/tinyxml2/*
+Copyright: 2000-2015 Lee Thomason
+License: Zlib
+ This software is provided 'as-is', without any express or implied
+ warranty.  In no event will the authors be held liable for any damages
+ arising from the use of this software.
+ .
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it
+ freely, subject to the following restrictions:
+ .
+ 1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software.  If you use this software
+    in a product, an acknowledgment in the product documentation would be
+    appreciated but is not required.
+ 2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+ 3. This notice may not be removed or altered from any source distribution.
+
+Files: src/win32/pgetopt.*
+Copyright: 1990-2008 IBM Corporation
+           2008 PlexFX
+License: IBM-disclaimer
+ This module contains code made available by IBM Corporation on an AS IS
+ basis.  Any one receiving the module is considered to be licensed under IBM
+ copyrights to use the IBM-provided source code in any way he or she deems
+ fit, including copying it, compiling it, modifying it, and redistributing
+ it, with or without modifications.  No license under any IBM patents or
+ patent applications is to be implied from this copyright license.
+ .
+ A user of the module should understand that IBM cannot provide technical
+ support for the module and will not be responsible for any consequences of
+ use of the program.
+ .
+ Any notices, including this one, are not to be removed from the module
+ without the prior written consent of IBM.

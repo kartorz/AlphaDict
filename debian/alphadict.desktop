@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=AlphaDict
+GenericName=Dictionary
+GenericName[zh_CN]=词典
+Comment=Lightweight dictionary for the open .aldict format
+Comment[zh_CN]=支持开放 .aldict 格式的轻量级词典
+Exec=AlphaDict
+Icon=alphadict
+Terminal=false
+Categories=Education;
+Keywords=dictionary;translate;english;chinese;
+Keywords[zh_CN]=词典;翻译;英语;中文;
+StartupNotify=true

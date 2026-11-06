@@ -1,0 +1,46 @@
+.TH ALPHADICT 1 "2026-11-06" "AlphaDict 1.4.1" "User Commands"
+.SH NAME
+AlphaDict \- lightweight dictionary for the open .aldict format
+.SH SYNOPSIS
+.B AlphaDict
+.SH DESCRIPTION
+.B AlphaDict
+is a lightweight dictionary application that reads dictionaries in the open
+.B .aldict
+format.  It searches the dictionaries installed under
+.I /usr/share/alphadict/dicts
+and offers lookups from a headword index, a vocabulary book and, under X11,
+on-screen word capture.
+.PP
+The program takes no command line options.  It is configured from its own
+settings window; the settings are stored per user and the default
+configuration is copied there on first start.
+.SH FILES
+.TP
+.I ~/.AlphaDict/configure.xml
+Per-user settings, created from
+.I /usr/share/alphadict/configure.xml.in
+on first start.
+.TP
+.I ~/.AlphaDict/
+Also holds the vocabulary book.
+.TP
+.I /usr/share/alphadict/dicts/
+Every
+.I *.aldict
+file in this directory is loaded as a dictionary.  A small English-Chinese
+sample dictionary is installed here.
+.TP
+.I /usr/share/alphadict/doc/
+Dictionary format documentation.
+.TP
+.I /usr/share/alphadict/tools/
+Python scripts that convert third-party dictionaries (Cedict, StarDict,
+dicts.info, IDP) to the AlphaDict XML front-end format.
+.SH SEE ALSO
+.BR AldConvert (1)
+.PP
+The format of the XML front-end files is described in
+.I /usr/share/doc/alphadict/front-end_format.xml
+and the dictionary format itself in
+.I /usr/share/doc/alphadict/dictionary_inner.pdf

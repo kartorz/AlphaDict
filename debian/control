@@ -1,0 +1,34 @@
+Source: alphadict
+Section: utils
+Priority: optional
+Maintainer: joni lee <joni_lee@outlook.com>
+Build-Depends: debhelper-compat (= 13),
+               pkg-config,
+               qtbase5-dev (>= 5.9),
+               qtdeclarative5-dev,
+               qttools5-dev-tools,
+               libboost-dev,
+               libboost-system-dev,
+               libboost-filesystem-dev,
+               libx11-dev
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/kartorz/AlphaDict
+
+Package: alphadict
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         qml-module-qtquick2,
+         qml-module-qtquick-controls2,
+         qml-module-qtquick-layouts
+Description: lightweight dictionary for the open .aldict format
+ AlphaDict is a lightweight dictionary application that reads dictionaries
+ in the open .aldict format.  It offers full-text lookup, a headword index,
+ a vocabulary book and on-screen word capture under X11.
+ .
+ The package also ships AldConvert, a command line tool that turns XML files
+ in the AlphaDict front-end format into .aldict dictionaries, together with
+ Python helper scripts for importing Cedict, StarDict, dicts.info and IDP
+ dictionaries, a small English-Chinese sample dictionary and the dictionary
+ format documentation.
