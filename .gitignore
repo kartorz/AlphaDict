@@ -1,4 +1,7 @@
 *.aldict
+# Dictionaries are data that ships with the program (see system/dicts), so the
+# files kept there are tracked; generated dictionaries elsewhere are not.
+!system/dicts/*.aldict
 *.pyc
 *.rar
 *.gz

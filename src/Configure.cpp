@@ -166,6 +166,9 @@ int Configure::load(const string& xmlpath)
             dictElement = dictElement->NextSiblingElement();
             continue;
         }
+        /* configure.xml may name the file by bare file name; the dictionary
+         * layer opens the path as it is, so store the path the scan found. */
+        dict.path = dictFiles[pos];
         dictFiles[pos] = "";
 
         dict.en = dictElement->BoolAttribute("en");
@@ -627,13 +630,28 @@ void Configure::reset()
     m_doc.RootElement()->SetAttribute("reset", true);
 }
 
+/* A dictionary entry in configure.xml may name its file either by absolute
+ * path (what the program writes back after a scan) or by bare file name (what
+ * system/configure.xml.in ships, since the data directory is only known at
+ * configure time).  Match the full path first and fall back to the base name
+ * so the packaged defaults keep their name, language and summary after the
+ * program has been installed somewhere else. */
 int Configure::findDict(const string& path, const vector<string>& dictFiles)
 {
-    for (int i=0; i<dictFiles.size(); i++) {
-        //string filename = boost::filsystem::path(dictFiles[i]).filename();
-        if (dictFiles[i] != "" && dictFiles[i] == path) {
-            return i;
-        }
+    if (path.empty())
+        return -1;
+
+    const string base = boost::filesystem::path(path).filename().string();
+    int byBaseName = -1;
+
+    for (size_t i=0; i<dictFiles.size(); i++) {
+        if (dictFiles[i] == "")
+            continue;
+        if (dictFiles[i] == path)
+            return (int)i;
+        if (byBaseName == -1 &&
+            boost::filesystem::path(dictFiles[i]).filename().string() == base)
+            byBaseName = (int)i;
     }
-    return -1;
+    return byBaseName;
 }

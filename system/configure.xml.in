@@ -2,25 +2,45 @@
 <configure version="1">
   <!--
       Default dictionary directory are:
-          Linux/Unix: "/user/local/share/AlphaDict/dicts/"
+          Linux/Unix: "/usr/local/share/alphadict/dicts/"
           Windows: "installing dir/dicts"
+      Every *.aldict file in that directory is scanned on start up.
   -->
   <dir></dir>
   <srclan>english</srclan>
   <detlan>chinese</detlan>
   <dict>
     <!--
-      <d open="" en=""/>
+      <d open="" en="true">
+        <path/>
         <name/>
         <srclan/>
         <detlan/>
         <summary/>
       </d>
- 
-      @open : which inner class of AlphaDict open this dict. 
-              'none' means it's not supported.
+
+      @open : which inner class of AlphaDict open this dict.
+              'none' means it's not supported, an empty value lets the
+              program detect the format itself.
       @en: {true, false}
-      @name : dictionary's name.
+      @path : the dictionary file.  Either an absolute path, or just the file
+              name inside the dictionary directory, which keeps this template
+              valid no matter where the program is installed.
+      @name : dictionary's name, shown in the dictionary list.
     -->
+    <d open="aldict" en="true">
+      <path>langdao-ec-gb.aldict</path>
+      <name>朗道英汉词典</name>
+      <srclan>english</srclan>
+      <detlan>chinese</detlan>
+      <summary>上海朗道电脑科技发展有限公司，朗道英汉字典 5.0</summary>
+    </d>
+    <d open="aldict" en="true">
+      <path>langdao-ce-gb-v2.6.aldict</path>
+      <name>朗道英汉词典 v2.6</name>
+      <srclan>english</srclan>
+      <detlan>chinese</detlan>
+      <summary>上海朗道电脑科技发展有限公司，朗道英汉字典 5.0，v2.6 数据</summary>
+    </d>
   </dict>
 </configure>
