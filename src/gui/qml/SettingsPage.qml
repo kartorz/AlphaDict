@@ -18,14 +18,18 @@ Item {
         anchors.fill: parent
         anchors.margins: Theme.pad
         contentWidth: width
-        contentHeight: column.implicitHeight
+        contentHeight: column.height
         clip: true
         boundsBehavior: Flickable.StopAtBounds
         ScrollBar.vertical: ThemedScrollBar { }
 
         ColumnLayout {
             id: column
-            width: flick.width
+            /* The column owns its height and the viewport only scrolls it;
+             * binding this back to the Flickable's contentHeight loops. */
+            height: implicitHeight
+            /* Leave the scroll bar its eight pixels. */
+            width: flick.width - 12
             spacing: Theme.gutter
 
             /* ---------------- interface ---------------- */
@@ -203,34 +207,30 @@ Item {
                     Layout.fillWidth: true
                     spacing: 8
 
-                    ListView {
-                        id: dictList
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: Math.min(420, Math.max(60,
-                            bridge.dictCount * (Math.max(48, Theme.baseSize + 32) + 4)))
-                        clip: true
-                        spacing: 4
+                    /* A Repeater, not a nested list: a handful of rows simply
+                     * grow with the font and the page scrolls. */
+                    Repeater {
                         model: bridge.dictModel
-                        boundsBehavior: Flickable.StopAtBounds
-                        ScrollBar.vertical: ThemedScrollBar { }
 
                         delegate: Rectangle {
-                            width: dictList.width
-                            height: Math.max(48, Theme.baseSize + 32)
+                            Layout.fillWidth: true
+                            /* Keep the padding, never let the text fill the row. */
+                            implicitHeight: Math.max(56, rowBox.implicitHeight + Theme.pad * 2)
                             radius: Theme.radiusSmall
                             color: Theme.surfaceAlt
                             border.width: 1
                             border.color: Theme.border
 
                             RowLayout {
+                                id: rowBox
                                 anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 8
+                                anchors.leftMargin: Theme.pad + 2
+                                anchors.rightMargin: Theme.pad
                                 spacing: 10
 
                                 ColumnLayout {
                                     Layout.fillWidth: true
-                                    spacing: 1
+                                    spacing: 2
                                     Text {
                                         text: model.name
                                         color: Theme.text
@@ -241,8 +241,8 @@ Item {
                                         Layout.fillWidth: true
                                     }
                                     Text {
-                                        /* metadata is one "key: value" per
-                                         * line; flatten it into a middot run. */
+                                        /* One "key: value" per line; flatten it
+                                         * into a middot run. */
                                         text: String(model.summary)
                                               .split(/[\r\n]+/)
                                               .map(function (part) { return part.trim(); })
@@ -277,24 +277,26 @@ Item {
                                 }
                             }
                         }
+                    }
 
-                        Text {
-                            anchors.centerIn: parent
-                            width: parent.width - 24
-                            horizontalAlignment: Text.AlignHCenter
-                            wrapMode: Text.WordWrap
-                            visible: bridge.dictCount === 0
-                            text: qsTr("No dictionary found. Put dictionary files into:\n%1").arg(bridge.dataDir)
-                            color: Theme.textMut
-                            font.pixelSize: Theme.baseSize - 1
-                            font.family: Theme.fontFamily
-                        }
+                    Text {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.WordWrap
+                        visible: bridge.dictCount === 0
+                        text: qsTr("No dictionary found. Put dictionary files into:\n%1").arg(bridge.dataDir)
+                        color: Theme.textMut
+                        font.pixelSize: Theme.baseSize - 1
+                        font.family: Theme.fontFamily
                     }
                 }
             }
 
             RowLayout {
                 Layout.fillWidth: true
+                /* Keep the button clear of the scroll bar. */
+                Layout.rightMargin: 4
                 Item { Layout.fillWidth: true }
                 FlatButton {
                     text: qsTr("Restore defaults")
