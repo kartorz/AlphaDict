@@ -25,6 +25,8 @@ public:
     virtual ~CapWordDialog();
 
     void moveToCursor();
+    /*! 配色跟随主界面（Theme.qml）的 dark / light 主题。 */
+    void setDarkTheme(bool dark);
     void setAutoClose(bool autoclose) {m_bAutoClose = autoclose;}
     void setAutoCloseInterval(int inv) {m_autoCloseInterval = inv;}
 
@@ -44,9 +46,11 @@ private slots:
 private:
     int  uiFontSize() const;
     void buildUi();
+    void applyTheme();
     void fitToContent();
 
     QString m_capword;
+    bool m_dark;
     bool m_bAutoClose;
     int  m_autoCloseInterval;
     QTimer *m_timer;

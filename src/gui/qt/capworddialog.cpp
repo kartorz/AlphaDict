@@ -20,13 +20,29 @@
 
 namespace {
 
-/* Palette shared with src/gui/qml/Theme.qml (the QML theme is dark only). */
-const char kSurface[] = "#171a22";
-const char kBorder[]  = "#2c3241";
-const char kText[]    = "#e7eaf1";
-const char kTextDim[] = "#98a1b3";
-const char kTextMut[] = "#6b7385";
-const char kAccent[]  = "#4f8cff";
+/* 与 src/gui/qml/Theme.qml 保持一致；QML 切换主题时调用 setDarkTheme()。 */
+struct Palette {
+    const char *surface;
+    const char *surfaceHi;
+    const char *border;
+    const char *text;
+    const char *textDim;
+    const char *textMut;
+    const char *accent;
+    const char *selection;
+    const char *scroll;
+    const char *scrollHi;
+};
+
+const Palette kDark = {
+    "#171a22", "#262b37", "#2c3241", "#e7eaf1", "#98a1b3",
+    "#6b7385", "#4f8cff", "#2b3a5c", "#39414f", "#4a5468"
+};
+
+const Palette kLight = {
+    "#ffffff", "#e2e7f1", "#dbe1ec", "#161a22", "#5b6474",
+    "#8b93a3", "#4f8cff", "#d6e4ff", "#c6d0e0", "#aab6ca"
+};
 
 /* Transparent margin kept for the hand-drawn drop shadow. */
 const int kShadow = 12;
@@ -42,6 +58,7 @@ QString fromUtf8(const std::string &s)
 // QDialog(owner) causes closing mainwindow when app resides at system tray.
 CapWordDialog::CapWordDialog(bool autoclose, int inv, QWidget *parent):
     QDialog(parent),
+    m_dark(true),
     m_bAutoClose(autoclose),
     m_autoCloseInterval(inv),
     m_wordLabel(NULL),
@@ -99,11 +116,9 @@ void CapWordDialog::buildUi()
 
     m_wordLabel = new QLabel(content);
     m_wordLabel->setTextFormat(Qt::PlainText);
-    m_wordLabel->setStyleSheet(QString("color:%1;").arg(kText));
 
     m_phoneticLabel = new QLabel(content);
     m_phoneticLabel->setTextFormat(Qt::PlainText);
-    m_phoneticLabel->setStyleSheet(QString("color:%1;").arg(kTextDim));
 
     m_star = new QToolButton(content);
     m_star->setText(QString::fromUtf8("\xe2\x98\x85"));   /* ★ */
@@ -111,11 +126,6 @@ void CapWordDialog::buildUi()
     m_star->setCursor(Qt::PointingHandCursor);
     m_star->setAutoRaise(true);
     m_star->setFocusPolicy(Qt::NoFocus);
-    m_star->setStyleSheet(QString(
-        "QToolButton{border:none;background:transparent;color:%1;"
-        "border-radius:8px;}"
-        "QToolButton:hover{background:#262b37;color:%2;}")
-        .arg(kTextDim, kAccent));
     connect(m_star, SIGNAL(clicked()), this, SLOT(on_addToVbToolButton_clicked()));
 
     head->addWidget(m_wordLabel);
@@ -128,26 +138,10 @@ void CapWordDialog::buildUi()
     m_body->setFrameShape(QFrame::NoFrame);
     m_body->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_body->viewport()->setAutoFillBackground(false);
-    m_body->setStyleSheet(QString(
-        "QTextEdit{background:transparent;border:none;padding:0px;color:%1;}"
-        "QScrollBar:vertical{background:transparent;width:8px;margin:0px;}"
-        "QScrollBar::handle:vertical{background:#39414f;border-radius:4px;"
-        "min-height:28px;}"
-        "QScrollBar::handle:vertical:hover{background:#4a5468;}"
-        "QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{height:0px;}"
-        "QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{"
-        "background:transparent;}")
-        .arg(kText));
-    QPalette pal = m_body->palette();
-    pal.setColor(QPalette::Text, QColor(kText));
-    pal.setColor(QPalette::Highlight, QColor("#2b3a5c"));
-    pal.setColor(QPalette::HighlightedText, QColor(kText));
-    m_body->setPalette(pal);
 
     m_dictLabel = new QLabel(content);
     m_dictLabel->setTextFormat(Qt::PlainText);
     m_dictLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    m_dictLabel->setStyleSheet(QString("color:%1;").arg(kTextMut));
 
     box->addLayout(head);
     box->addWidget(m_body, 1);
@@ -155,7 +149,50 @@ void CapWordDialog::buildUi()
 
     outer->addWidget(content);
 
+    applyTheme();
     fitToContent();
+}
+
+void CapWordDialog::setDarkTheme(bool dark)
+{
+    if (m_dark == dark)
+        return;
+    m_dark = dark;
+    applyTheme();
+}
+
+void CapWordDialog::applyTheme()
+{
+    const Palette &c = m_dark ? kDark : kLight;
+
+    m_wordLabel->setStyleSheet(QString("color:%1;").arg(c.text));
+    m_phoneticLabel->setStyleSheet(QString("color:%1;").arg(c.textDim));
+    m_dictLabel->setStyleSheet(QString("color:%1;").arg(c.textMut));
+
+    m_star->setStyleSheet(QString(
+        "QToolButton{border:none;background:transparent;color:%1;"
+        "border-radius:8px;}"
+        "QToolButton:hover{background:%2;color:%3;}")
+        .arg(c.textDim, c.surfaceHi, c.accent));
+
+    m_body->setStyleSheet(QString(
+        "QTextEdit{background:transparent;border:none;padding:0px;color:%1;}"
+        "QScrollBar:vertical{background:transparent;width:8px;margin:0px;}"
+        "QScrollBar::handle:vertical{background:%2;border-radius:4px;"
+        "min-height:28px;}"
+        "QScrollBar::handle:vertical:hover{background:%3;}"
+        "QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{height:0px;}"
+        "QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{"
+        "background:transparent;}")
+        .arg(c.text, c.scroll, c.scrollHi));
+
+    QPalette pal = m_body->palette();
+    pal.setColor(QPalette::Text, QColor(c.text));
+    pal.setColor(QPalette::Highlight, QColor(c.selection));
+    pal.setColor(QPalette::HighlightedText, QColor(c.text));
+    m_body->setPalette(pal);
+
+    update();
 }
 
 void CapWordDialog::fitToContent()
@@ -311,8 +348,9 @@ void CapWordDialog::paintEvent(QPaintEvent *event)
         p.drawRoundedRect(card.adjusted(-i, -i, i, i), kRadius + i, kRadius + i);
     }
 
-    p.setBrush(QColor(kSurface));
-    p.setPen(QPen(QColor(kBorder), 1));
+    const Palette &c = m_dark ? kDark : kLight;
+    p.setBrush(QColor(c.surface));
+    p.setPen(QPen(QColor(c.border), 1));
     p.drawRoundedRect(card.adjusted(0.5, 0.5, -0.5, -0.5), kRadius, kRadius);
 }
 

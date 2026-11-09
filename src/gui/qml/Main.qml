@@ -20,8 +20,14 @@ Rectangle {
     Component.onCompleted: {
         Theme.baseSize = bridge.fontSize;
         Theme.fontFamily = bridge.fontFamily;
+        bridge.darkTheme = Theme.dark;
         searchField.forceActiveFocus();
         bridge.refreshHelpText();
+    }
+
+    Connections {
+        target: Theme
+        function onDarkChanged() { bridge.darkTheme = Theme.dark }
     }
 
     Connections {
@@ -118,6 +124,18 @@ Rectangle {
 
             Item { Layout.fillWidth: true }
 
+            FlatButton {
+                id: starButton
+                Layout.alignment: Qt.AlignVCenter
+                glyph: "★"
+                enabled: bridge.query !== ""
+                controlHeight: Math.max(32, Theme.controlHeight + 4)
+                horizontalPadding: 10
+                onClicked: bridge.addToVBook(bridge.query)
+                ToolTip.visible: hovered
+                ToolTip.delay: 600
+                ToolTip.text: qsTr("Add to vocabulary book")
+            }
             FlatButton {
                 id: minButton
                 Layout.alignment: Qt.AlignVCenter

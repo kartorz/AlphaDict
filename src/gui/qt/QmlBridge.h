@@ -83,6 +83,8 @@ class QmlBridge : public QObject
 
     /* settings page */
     Q_PROPERTY(bool systemTray   READ systemTray   WRITE setSystemTray   NOTIFY systemTrayChanged)
+    /*! 取词窗（CapWordDialog）跟主界面共用主题，QML 侧把 Theme.dark 同步过来。 */
+    Q_PROPERTY(bool darkTheme    READ darkTheme    WRITE setDarkTheme    NOTIFY darkThemeChanged)
     Q_PROPERTY(bool cwsEnabled   READ cwsEnabled   WRITE setCwsEnabled   NOTIFY cwsChanged)
     Q_PROPERTY(bool cwsClipboard READ cwsClipboard WRITE setCwsClipboard NOTIFY cwsChanged)
     Q_PROPERTY(bool cwsSelection READ cwsSelection WRITE setCwsSelection NOTIFY cwsChanged)
@@ -129,6 +131,7 @@ public:
     bool    hasDict() const;
 
     bool systemTray() const;
+    bool darkTheme() const { return m_darkTheme; }
     bool cwsEnabled() const;
     bool cwsClipboard() const;
     bool cwsSelection() const;
@@ -170,6 +173,7 @@ signals:
     void fontFamilyChanged();
     void dictStateChanged();
     void systemTrayChanged();
+    void darkThemeChanged();
     void cwsChanged();
     void uiLanChanged();
 
@@ -225,6 +229,7 @@ public:
     void setFontFamily(const QString &family);
     void setVBookMode(int mode);
     void setSystemTray(bool en);
+    void setDarkTheme(bool dark);
     void setCwsEnabled(bool en);
     void setCwsClipboard(bool en);
     void setCwsSelection(bool en);
@@ -256,6 +261,7 @@ private:
     QString      m_defaultFontFamily;
 
     DictItemList *m_capItems;
+    bool m_darkTheme;
 
     void refreshVBook();
 };

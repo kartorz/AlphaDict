@@ -53,7 +53,8 @@ QmlBridge::QmlBridge(QObject *parent)
       m_indexModel(NULL),
       m_dictModel(NULL),
       m_vbookModel(NULL),
-      m_capItems(NULL)
+      m_capItems(NULL),
+      m_darkTheme(true)
 {
     m_config = g_application.m_configure;
     m_defaultFontFamily = QGuiApplication::font().family();
@@ -541,6 +542,14 @@ void QmlBridge::setSystemTray(bool en)
     m_config->writeSystemTray(en);
     emit systemTrayChanged();
     emit requestSystemTray(en);
+}
+
+void QmlBridge::setDarkTheme(bool dark)
+{
+    if (m_darkTheme == dark)
+        return;
+    m_darkTheme = dark;
+    emit darkThemeChanged();
 }
 
 void QmlBridge::setCwsEnabled(bool en)

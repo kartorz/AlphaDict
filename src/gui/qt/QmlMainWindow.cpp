@@ -289,6 +289,7 @@ void QmlMainWindow::onCapWordShown()
     }
 
     m_capWordDialog->setAutoClose(m_config->m_cws.autoCloseEn);
+    m_capWordDialog->setDarkTheme(m_bridge->darkTheme());
     m_capWordDialog->setDictItemList(items);   // takes the ownership
     m_capWordDialog->showAtCursor();
 }
