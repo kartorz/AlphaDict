@@ -114,9 +114,6 @@ Item {
         }
 
         /* ------------------------- explanation ------------------------- */
-        /* Result cards without a header: a lookup usually returns one or two
-         * dictionaries, so the headword plus result count only duplicated the
-         * entry itself. */
         Card {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -190,9 +187,6 @@ Item {
                                     onLinkActivated: Qt.openUrlExternally(link)
                                 }
 
-                                /* Dictionary name belongs to the entry, so it sits
-                                 * at its own bottom-right line instead of competing
-                                 * with the headword for space. */
                                 Text {
                                     Layout.alignment: Qt.AlignRight
                                     Layout.maximumWidth: entryColumn.width

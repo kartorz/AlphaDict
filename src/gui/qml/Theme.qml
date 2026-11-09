@@ -53,9 +53,8 @@ QtObject {
     readonly property int smallSize: Math.max(11, baseSize - 2)
     readonly property int tinySize:  Math.max(10, baseSize - 4)
 
-    /* Text should fill ~90% of a control. QML draws a pixelSize font in about
-     * 1.3x its size, so size chrome from that line box instead of the font
-     * size plus a fixed pad -- text reads big while the control stays small. */
+    /* Text ~90% of the control: QML's line box is ~1.3x pixelSize, so size
+     * chrome from textLine, not from font size + fixed padding. */
     readonly property real textFill: 0.9
     readonly property int textLine: Math.ceil(baseSize * 1.3)
     readonly property int tinyLine: Math.ceil(tinySize * 1.3)

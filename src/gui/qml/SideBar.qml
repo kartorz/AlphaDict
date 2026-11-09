@@ -13,9 +13,7 @@ Rectangle {
     implicitWidth: tile + 16
     color: Theme.surface
 
-    /* Square navigation tiles.  The tile edge is derived from the two text
-     * lines so the labels fill it; the rail narrows instead of the buttons
-     * growing, which leaves more room for content. */
+    /* Square tiles: edge fits two text lines. */
     readonly property int tile: Math.max(60, Theme.textLine * 2 + 16)
 
     readonly property var navItems: [
@@ -25,9 +23,7 @@ Rectangle {
         { glyph: "?",  label: qsTr("Help") }
     ]
 
-    /* Hidden probe: measures the longest caption so the rail decides once for
-     * all tiles.  English labels are wider than a tile, so the whole rail
-     * falls back to icon-only with a hover hint instead of eliding text. */
+    /* Hidden probe; the longest label decides icon-only mode. */
     Text {
         id: labelProbe
         visible: false

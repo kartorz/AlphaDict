@@ -50,9 +50,8 @@ Rectangle {
             color: Theme.border
         }
 
-        /* Frameless window: the bar itself drags.  This layer sits *below*
-         * the controls so buttons and fields win the press; only the empty
-         * stretches of the bar reach it. */
+        /* Drag layer *below* the controls: buttons/fields win the press,
+         * only empty bar areas drag the window. */
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton
