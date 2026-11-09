@@ -114,11 +114,12 @@ Item {
         }
 
         /* ------------------------- explanation ------------------------- */
+        /* Result cards without a header: a lookup usually returns one or two
+         * dictionaries, so the headword plus result count only duplicated the
+         * entry itself. */
         Card {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            title: bridge.query !== "" ? bridge.query : qsTr("Explanation")
-            subtitle: qsTr("%1 results").arg(bridge.expl.length)
 
             Flickable {
                 id: explFlick
