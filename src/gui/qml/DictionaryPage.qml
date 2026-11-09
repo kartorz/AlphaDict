@@ -174,14 +174,6 @@ Item {
                                         font.pixelSize: Theme.baseSize - 1
                                         font.family: Theme.fontFamily
                                     }
-                                    Item { Layout.fillWidth: true }
-                                    FlatButton {
-                                        glyph: "★"
-                                        horizontalPadding: 9
-                                        controlHeight: Theme.controlHeight
-                                        enabled: modelData.found
-                                        onClicked: bridge.addToVBook(modelData.word)
-                                    }
                                 }
 
                                 Text {
