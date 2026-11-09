@@ -200,6 +200,10 @@ public:
     /*! Same as addToVBook() but tells the caller whether the word was
      *  really added (false when it is empty or already known). */
     bool addToVBookChecked(const QString &word);
+    /*! True when the word is already in the vocabulary book. */
+    Q_INVOKABLE bool inVBook(const QString &word) const;
+    /*! Add the word, or drop it when it is already there. */
+    Q_INVOKABLE void toggleVBook(const QString &word);
     Q_INVOKABLE void removeVBookRow(int row);
     Q_INVOKABLE void clearVBook();
     Q_INVOKABLE void selectVBookRow(int row);

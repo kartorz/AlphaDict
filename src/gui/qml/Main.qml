@@ -126,15 +126,24 @@ Rectangle {
 
             FlatButton {
                 id: starButton
+                /* Acts on what the user typed: the button must work before
+                 * Enter is pressed, so it does not use bridge.query. */
+                readonly property string word: searchField.text.trim()
+                readonly property bool marked: {
+                    var list = bridge.vbook;   // dependency: refresh on book change
+                    return bridge.inVBook(word);
+                }
                 Layout.alignment: Qt.AlignVCenter
-                glyph: "★"
-                enabled: bridge.query !== ""
+                glyph: marked ? "★" : "☆"
+                primary: marked
+                enabled: word !== ""
                 controlHeight: Math.max(32, Theme.controlHeight + 4)
                 horizontalPadding: 10
-                onClicked: bridge.addToVBook(bridge.query)
+                onClicked: bridge.toggleVBook(word)
                 ToolTip.visible: hovered
                 ToolTip.delay: 600
-                ToolTip.text: qsTr("Add to vocabulary book")
+                ToolTip.text: marked ? qsTr("Remove from vocabulary book")
+                                     : qsTr("Add to vocabulary book")
             }
             FlatButton {
                 id: minButton

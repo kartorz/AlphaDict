@@ -318,6 +318,39 @@ bool QmlBridge::addToVBookChecked(const QString &word)
     return added;
 }
 
+bool QmlBridge::inVBook(const QString &word) const
+{
+    const QString w = word.trimmed();
+    if (w.isEmpty())
+        return false;
+
+    for (int i = 0; i < m_vbook.size(); i++) {
+        if (m_vbook.at(i).toMap().value("word").toString() == w)
+            return true;
+    }
+    return false;
+}
+
+void QmlBridge::toggleVBook(const QString &word)
+{
+    const QString w = word.trimmed();
+    if (w.isEmpty())
+        return;
+
+    if (!inVBook(w)) {
+        addToVBook(w);
+        return;
+    }
+
+    for (int i = 0; i < m_vbook.size(); i++) {
+        if (m_vbook.at(i).toMap().value("word").toString() == w) {
+            removeVBookRow(i);
+            setStatus(tr("Removed from the vocabulary book"));
+            return;
+        }
+    }
+}
+
 void QmlBridge::removeVBookRow(int row)
 {
     if (row < 0 || row >= m_vbookModel->rowCount())
