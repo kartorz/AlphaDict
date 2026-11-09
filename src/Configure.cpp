@@ -287,7 +287,7 @@ void Configure::scanDictDir(vector<string>& dictFiles)
     scanDictDir(m_dataDir+"/dicts", dictFiles);
 }
 
-/* aldict writes plain .aldict files.  The directory may also hold xml sources
+/* aldctl writes plain .aldict files.  The directory may also hold xml sources
  * or backups, which must not be opened as dictionaries. */
 static bool isDictFileName(const string& name)
 {

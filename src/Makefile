@@ -60,15 +60,15 @@ OBJS_TINYXML := $(SRCS_TINYXML:%.cpp=%.o)
 
 OBJS_ALPHADICT := $(SRCS_ALPHADICT:%.cpp=%.o)
 OBJS_ALPHADICT += $(SRCS_SQLITE_$(SQLITE_BUNDLED):%.c=%.o)
-OBJS_ALDICT := $(SRCS_ALDICT:%.cpp=%.o)
+OBJS_ALDCTL := $(SRCS_ALDCTL:%.cpp=%.o)
 OBJS_ALPHADICT += lib/tinyxml2/libtinyxml2.a
-OBJS_ALDICT += lib/tinyxml2/libtinyxml2.a \
+OBJS_ALDCTL += lib/tinyxml2/libtinyxml2.a \
                 Util.o CharUtil.o Log.o SpinLock.o MutexLock.o \
                 dict/aldict/AldictDocument.o
 
 DEPS := $(SRCS_ALPHADICT:%.cpp=%.d)
 DEPS += $(SRCS_SQLITE_$(SQLITE_BUNDLED):%.c=%.d)
-DEPS += $(SRCS_ALDICT:%.cpp=%.d)
+DEPS += $(SRCS_ALDCTL:%.cpp=%.d)
 
 EXTRALIBS_ALPHADICT += $(EXTRALIBS)
 
@@ -77,7 +77,7 @@ EXTRALIBS_ALPHADICT += $(EXTRALIBS)
 PROGS_GUI_yes = AlphaDict
 INSTALL_GUI_yes = install-AlphaDict
 
-INSTALL_TARGETS-yes = install-system install-aldict $(INSTALL_GUI_$(GUI))
+INSTALL_TARGETS-yes = install-system install-aldctl $(INSTALL_GUI_$(GUI))
 
 DIRS = . convert dict/aldict gui/qt gui/qml db
 
@@ -85,7 +85,7 @@ ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
 ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 
-a11: aldict $(PROGS_GUI_$(GUI))
+a11: aldctl $(PROGS_GUI_$(GUI))
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $^
@@ -93,13 +93,13 @@ lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 AlphaDict: $(QT_H_$(GUI)) $(OBJS_ALPHADICT)
 	$(CC)  $(OBJS_ALPHADICT) $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
 
-aldict: $(OBJS_ALDICT)
+aldctl: $(OBJS_ALDCTL)
 	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@
 
 # ---- dictionaries --------------------------------------------------------
 # Dictionaries are data, not build products.  Every *.aldict dropped into
 # ../system/dicts/ is installed to <datadir>/dicts/ by 'make install', and
-# aldict is copied next to the program data as well.  The directory also
+# aldctl is copied next to the program data as well.  The directory also
 # holds the user's own dictionaries, so it is never touched by 'make clean'.
 dict:
 	@echo "note: dictionaries are data in ../system/dicts/*.aldict; nothing to build"
@@ -138,7 +138,7 @@ install-dirs:
 install-%: % install-dirs
 	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
 
-install-system: install-dirs aldict
+install-system: install-dirs aldctl
 	install -m 0666 "../system/configure.xml.in"   "$(DATADIR)/configure.xml.in"
 	install -m 0666 "../system/language.txt"       "$(DATADIR)/language.txt"
 	install -m 0666  ../system/help.*              "$(DATADIR)/"
@@ -155,17 +155,17 @@ install-system: install-dirs aldict
 	@for f in ../system/dicts/*.aldict; do \
 	    [ -e "$$f" ] || continue; \
 	    install -m 0666 "$$f" "$(DATADIR)/dicts/$$(basename $$f)"; done
-	install -m 0755 aldict "$(DATADIR)/aldict"
+	install -m 0755 aldctl "$(DATADIR)/aldctl"
 
 	$(INSTALL) -d  $(DATADIR)/tools
 	@for FILE in `ls tools`; do \
 	    install -m 0755 "tools/$$FILE" "$(DATADIR)/tools/$$FILE"; done
 
 uninstall:
-	rm -f $(BINDIR)/AlphaDict $(BINDIR)/aldict
+	rm -f $(BINDIR)/AlphaDict $(BINDIR)/aldctl
 	rm -f $(DATADIR)/configure.xml.in $(DATADIR)/language.txt
 	rm -f $(DATADIR)/help.* $(DATADIR)/uitr_cn.qm $(DATADIR)/AlphaDict.png
-	rm -f $(DATADIR)/dicts/*.aldict $(DATADIR)/aldict
+	rm -f $(DATADIR)/dicts/*.aldict $(DATADIR)/aldctl
 	rm -rf $(DATADIR)/tools $(DATADIR)/doc
 
 clean:
@@ -176,7 +176,7 @@ clean:
 	-rm -f gui/qt/uitr_cn.qm
 	@find gui/qml -name "qrc_*" | xargs -I{} rm {}
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
-	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict aldict)
+	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict aldctl)
 
 distclean: clean
 	-@rm -rf config.*  gui/build-qt-Desktop-Debug  gui/build-qt-Desktop-Release

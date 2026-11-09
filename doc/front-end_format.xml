@@ -4,7 +4,7 @@
 
 The front-end format of alphadict bases on xml, You can use any text edit to 
 create or modify the xml, then convert to Dictionary's internal format by 
-command tool "aldict".
+command tool "aldctl".
 
 More detail about Dictionary's internal format see "dictionary_inner.pdf"
 -->

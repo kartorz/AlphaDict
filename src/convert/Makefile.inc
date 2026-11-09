@@ -1,1 +1,1 @@
-SRCS_ALDICT += convert/aldict.cpp
+SRCS_ALDCTL += convert/aldctl.cpp

@@ -1,27 +1,27 @@
-.TH ALDICT 1 "2026-11-09" "AlphaDict 1.4.1" "User Commands"
+.TH ALDCTL 1 "2026-11-09" "AlphaDict 1.4.1" "User Commands"
 .SH NAME
-aldict \- build, export and inspect AlphaDict dictionaries
+aldctl \- build, export and inspect AlphaDict dictionaries
 .SH SYNOPSIS
-.B aldict
+.B aldctl
 .B build
 .RB [ \-o
-.IR out.aldict ]
+.IR out.aldctl ]
 .I file.txt
 .RI [ file.txt ...]
 .br
-.B aldict
+.B aldctl
 .B export
 .RB [ \-o
 .IR out.txt ]
-.I dict.aldict
+.I dict.aldctl
 .br
-.B aldict
+.B aldctl
 .B info
-.I dict.aldict
+.I dict.aldctl
 .SH DESCRIPTION
-.B aldict
+.B aldctl
 converts between the plain text front-end format and the binary
-.B .aldict
+.B .aldctl
 format used by AlphaDict.  Text files are easy to edit, so a dictionary can be
 maintained in a text editor and rebuilt with one command.
 .PP
@@ -49,7 +49,7 @@ Print the header and entry count of a dictionary.
 Output path.  For
 .B build
 the default is the base name of the first input with
-.IR .aldict ;
+.IR .aldctl ;
 for
 .B export
 it is the dictionary name with
@@ -64,21 +64,21 @@ Print the version and exit.
 Build a dictionary from a text file:
 .PP
 .RS 4
-aldict build \-o mydict.aldict words.txt
+aldctl build \-o mydict.aldctl words.txt
 .RE
 .PP
 Merge several parts into one dictionary:
 .PP
 .RS 4
-aldict build \-o mydict.aldict part1.txt part2.txt part3.txt
+aldctl build \-o mydict.aldctl part1.txt part2.txt part3.txt
 .RE
 .PP
 Export a dictionary for editing, then rebuild it:
 .PP
 .RS 4
-aldict export \-o words.txt mydict.aldict
+aldctl export \-o words.txt mydict.aldctl
 .br
-aldict build \-o mydict.aldict words.txt
+aldctl build \-o mydict.aldctl words.txt
 .RE
 .SH LIMITS
 Words may be at most 255 bytes, phonetics 255 bytes and explanations 65535

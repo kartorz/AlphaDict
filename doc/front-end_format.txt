@@ -1,15 +1,15 @@
 AlphaDict 前端格式（纯文本）
 ============================
 
-本文档描述 aldict 工具读写的纯文本格式。用它可以直接编辑、增删词典内容，
+本文档描述 aldctl 工具读写的纯文本格式。用它可以直接编辑、增删词典内容，
 再转换成 AlphaDict 的二进制词典（.aldict）；反过来，任何 .aldict 也能导出成
 这种文本。文本文件统一使用 UTF-8 编码。
 
 转换命令：
 
-    aldict build  [-o out.aldict] file.txt [more.txt ...]
-    aldict export [-o out.txt]    dict.aldict
-    aldict info                   dict.aldict
+    aldctl build  [-o out.aldict] file.txt [more.txt ...]
+    aldctl export [-o out.txt]    dict.aldict
+    aldctl info                   dict.aldict
 
 不给 -o 时，build 输出 <第一个输入文件的基本名>.aldict，export 输出
 <词典名>.txt。build 可以一次读入多个文本文件并合并成一本词典；XML 前端格式
@@ -106,12 +106,12 @@ charset 字段可以写 utf-8，目前只支持 UTF-8，写了也不影响结果
 
 转成词典：
 
-    aldict build -o demo.aldict demo.txt
-    aldict info demo.aldict
+    aldctl build -o demo.aldict demo.txt
+    aldctl info demo.aldict
 
 导出后再修改：
 
-    aldict export -o demo.txt demo.aldict
+    aldctl export -o demo.txt demo.aldict
 
 
 五、限制与注意事项

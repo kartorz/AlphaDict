@@ -1,7 +1,7 @@
 alphadict (1.4.1) unstable; urgency=medium
 
   * Initial Debian packaging.
-  * Install the AlphaDict GUI, the aldict dictionary converter (also
+  * Install the AlphaDict GUI, the aldctl dictionary converter (also
     copied next to the program data), the dictionaries from system/dicts,
     the dictionary tools and the format documentation.
   * Ship a desktop entry and the application icon.

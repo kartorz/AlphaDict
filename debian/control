@@ -27,7 +27,7 @@ Description: lightweight dictionary for the open .aldict format
  in the open .aldict format.  It offers full-text lookup, a headword index,
  a vocabulary book and on-screen word capture under X11.
  .
- The package also ships aldict, a command line tool that turns plain-text or
+ The package also ships aldctl, a command line tool that turns plain-text or
  XML files in the AlphaDict front-end format into .aldict dictionaries (and
  back), together with
  Python helper scripts for importing Cedict, StarDict, dicts.info and IDP

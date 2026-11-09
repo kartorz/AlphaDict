@@ -78,9 +78,9 @@ $ ./configure --help
   custom configurations to fix it.
 
 $ make 
-  builds both binaries: AlphaDict (GUI) and aldict (dictionary converter).
+  builds both binaries: AlphaDict (GUI) and aldctl (dictionary converter).
   Dictionaries are data under system/dicts/ and are installed together with the
-  program; use aldict to make your own, see "How to Make Dictionaries" below.
+  program; use aldctl to make your own, see "How to Make Dictionaries" below.
 
 $ make install
   --prefix defaults to /usr/local; the install rules do not sudo for you.
@@ -132,18 +132,18 @@ front-end_format.txt, front-end_format.xml)" for more detail, and make your own.
 There are two front-ends: plain text (recommended) and the old xml. Text is the
 easier one, and a dictionary takes two steps:
 1) Write a xx.txt following doc/front-end_format.txt.
-2) $ aldict build -o xx.aldict xx.txt
+2) $ aldctl build -o xx.aldict xx.txt
    aldict creates the dictionary xx.aldict (without -o it uses the input name).
 
 Any dictionary can be exported, edited and rebuilt:
-  $ aldict export -o xx.txt xx.aldict
-  $ aldict build  -o xx.aldict xx.txt
+  $ aldctl export -o xx.txt xx.aldict
+  $ aldctl build  -o xx.aldict xx.txt
 
-  $ aldict info xx.aldict
+  $ aldctl info xx.aldict
    shows the name, languages, version and entry count.
 
 Several text files can be merged into one dictionary (build also reads xml):
-  $ aldict build -o xx.aldict part1.txt part2.txt part3.txt
+  $ aldctl build -o xx.aldict part1.txt part2.txt part3.txt
 
 doc/alphadict_en-ch.xml is an xml example of the old front-end.
 
@@ -176,7 +176,7 @@ stardict
 1) put all the dictionary files to a directory, like foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
 2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ aldict build -o foo_xx.aldict   foo_xx.xml
+3) $ aldctl build -o foo_xx.aldict   foo_xx.xml
      you will get foo_xx.aldict
 
 You can downlaod the dictionaries of stardict from here:
@@ -187,7 +187,7 @@ cedict
 Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
 
 $ python cedict_to_aldictxml.py -i foo.txt -o foo_xx.xml
-$ aldict build -o foo_xx.aldict  foo_xx.xml
+$ aldctl build -o foo_xx.aldict  foo_xx.xml
     you will get foo_xx.aldict
 
 You can download the cedict dicionary from here:
@@ -202,7 +202,7 @@ Select "File format: UTF-8 plain text", then "Download dictionary".
 Here is a example for coverting.
 
 $ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ aldict build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
+$ aldctl build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
 
 
 IDP
@@ -214,7 +214,7 @@ Lookup "Dictionary Files"
 Here is a example for coverting.
 
 $ ./idp_to_aldictxml.py  -i French.txt
-$ aldict build -o idp_french.aldict   French.xml
+$ aldctl build -o idp_french.aldict   French.xml
  
 
 How to Report Bugs, Contribute or Contact

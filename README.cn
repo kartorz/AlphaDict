@@ -72,8 +72,8 @@ $ ./configure --help
   custom configurations to fix it.
 
 $ make
-  生成两个程序: AlphaDict (图形界面) 和 aldict (词典转换工具)。词典是数据，
-  放在 system/dicts/ 下，安装时随程序一起装好；用 aldict 可以自己做词典，
+  生成两个程序: AlphaDict (图形界面) 和 aldctl (词典转换工具)。词典是数据，
+  放在 system/dicts/ 下，安装时随程序一起装好；用 aldctl 可以自己做词典，
   做法见下面“如何制作词典”
 
 $ make install
@@ -121,18 +121,18 @@ windows
 前端格式有两种：纯文本（推荐）和 xml（旧格式）。文本用编辑器直接写就行，
 两个步骤就能做出词典:
 1) 按 doc/front-end_format.txt 的格式，写一个 xx.txt。
-2) $ aldict build -o xx.aldict xx.txt
+2) $ aldctl build -o xx.aldict xx.txt
    生成词典文件: xx.aldict。不给 -o 时输出 xx.aldict（取输入文件的基本名）。
 
 反过来，任何词典都能导出成文本，改完再编回去:
-  $ aldict export -o xx.txt xx.aldict
-  $ aldict build  -o xx.aldict xx.txt
+  $ aldctl export -o xx.txt xx.aldict
+  $ aldctl build  -o xx.aldict xx.txt
 
-  $ aldict info xx.aldict
+  $ aldctl info xx.aldict
    查看词典名、语言、版本和条目数。
 
 多个文本文件可以合并成一本词典（xml 文件同样可以喂给 build）:
-  $ aldict build -o xx.aldict part1.txt part2.txt part3.txt
+  $ aldctl build -o xx.aldict part1.txt part2.txt part3.txt
 
 doc/alphadict_en-ch.xml 是一个 xml 的例子, 你可以参考它来制作自己的词典。
 
@@ -160,7 +160,7 @@ $ python xx_toaldictxml.py
 1) 把所有的词典文件放到一个目录下, 如 foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
 2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ aldict build -o foo_xx.aldict   foo_xx.xml
+3) $ aldctl build -o foo_xx.aldict   foo_xx.xml
      生成词典文件 foo_xx.aldict 
 
 你能从下面链接，下载星际译王的词典:
@@ -171,7 +171,7 @@ cedict
 当前只支持文本格式，请下载 text 文件, 而不是 'xml' 文件.
 
 $ python cedict_to_aldictxml.py -i foo.txt -o foo_xx.xml
-$ aldict build -o foo_xx.aldict  foo_xx.xml
+$ aldctl build -o foo_xx.aldict  foo_xx.xml
   生成词典文件 foo_xx.aldict
 
 你能从下面链接，下载 cedict 的词典:
@@ -186,7 +186,7 @@ dicts.info
 下面是一个转换词典的例子.
 
 $ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ aldict build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
+$ aldctl build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
 
 
 IDP
@@ -198,7 +198,7 @@ IDP
 下面是一个转换词典的例子.
 
 $ ./idp_to_aldictxml.py  -i French.txt
-$ aldict build -o idp_french.aldict   French.xml
+$ aldctl build -o idp_french.aldict   French.xml
  
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系

@@ -1,5 +1,5 @@
 /*
- * aldict - build AlphaDict dictionaries from plain text, export them back.
+ * aldctl - build AlphaDict dictionaries from plain text, export them back.
  *
  *   aldict build  [-o out.aldict] file.txt [more.txt ...]
  *   aldict export [-o out.txt]    dict.aldict
@@ -100,7 +100,7 @@ static off_t check_block_bound(off_t pos, int nbytes);
 
 static void usage()
 {
-	printf("Usage: aldict COMMAND [options]\n"
+	printf("Usage: aldctl COMMAND [options]\n"
 	       "\n"
 	       "  build  [-o out.aldict] file.txt [more.txt ...]\n"
 	       "         make a dictionary from text files (XML is also accepted)\n"
@@ -840,7 +840,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 	if (cmd == "-v" || cmd == "--version" || cmd == "version") {
-		printf("aldict %s\n", VERSION);
+		printf("aldctl %s\n", VERSION);
 		return 0;
 	}
 

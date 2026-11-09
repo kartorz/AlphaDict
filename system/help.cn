@@ -18,7 +18,7 @@
 
 <p>Alpha词典有自己的词典格式，包含后端数据格式（<tt>doc/dictionary_inner.pdf</tt>）和前端文件格式（<tt>doc/front-end_format.txt</tt>，旧的 xml 格式见 <tt>front-end_format.xml</tt>）。</p>
 
-<p>通常情况下，用户只需要编辑前端的文本文件，然后用 <tt>aldict build -o xx.aldict xx.txt</tt> 转换成词典格式；反过来也可以用 <tt>aldict export</tt> 把词典导出成文本再改。更多的信息，请参考 "README" 文档或者 "维基"。</p>
+<p>通常情况下，用户只需要编辑前端的文本文件，然后用 <tt>aldctl build -o xx.aldict xx.txt</tt> 转换成词典格式；反过来也可以用 <tt>aldctl export</tt> 把词典导出成文本再改。更多的信息，请参考 "README" 文档或者 "维基"。</p>
 
 <h3>词典选择</h3>
 

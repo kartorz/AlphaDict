@@ -3,7 +3,7 @@
 *.i
 *.d
 *.aldict
-aldict
+aldctl
 AlphaDict
 config.h
 config.log
