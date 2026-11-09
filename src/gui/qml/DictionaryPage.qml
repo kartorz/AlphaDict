@@ -175,24 +175,8 @@ Item {
                                         font.family: Theme.fontFamily
                                     }
                                     Item { Layout.fillWidth: true }
-                                    Rectangle {
-                                        visible: modelData.dictname !== ""
-                                        implicitWidth: dictTag.implicitWidth + 14
-                                        implicitHeight: Math.max(20, Theme.tinySize + 10)
-                                        radius: 10
-                                        color: Theme.selection
-                                        Text {
-                                            id: dictTag
-                                            anchors.centerIn: parent
-                                            text: modelData.dictname
-                                            color: Theme.accent
-                                            font.pixelSize: Theme.tinySize
-                                            font.family: Theme.fontFamily
-                                        }
-                                    }
                                     FlatButton {
                                         glyph: "★"
-                                        text: qsTr("Vocabulary")
                                         horizontalPadding: 9
                                         controlHeight: Theme.controlHeight
                                         enabled: modelData.found
@@ -211,6 +195,20 @@ Item {
                                     font.family: Theme.fontFamily
                                     wrapMode: Text.WordWrap
                                     onLinkActivated: Qt.openUrlExternally(link)
+                                }
+
+                                /* Dictionary name belongs to the entry, so it sits
+                                 * at its own bottom-right line instead of competing
+                                 * with the headword for space. */
+                                Text {
+                                    Layout.alignment: Qt.AlignRight
+                                    Layout.maximumWidth: entryColumn.width
+                                    visible: modelData.dictname !== ""
+                                    text: modelData.dictname
+                                    color: Theme.textMut
+                                    font.pixelSize: Theme.tinySize
+                                    font.family: Theme.fontFamily
+                                    elide: Text.ElideRight
                                 }
                             }
                         }
