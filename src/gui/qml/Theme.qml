@@ -38,8 +38,8 @@ QtObject {
     /* geometry */
     property int radius:      12
     property int radiusSmall: 8
-    property int pad:         16
-    property int gutter:      14
+    property int pad:         12
+    property int gutter:      10
 
     /* motion */
     property int fast: 120

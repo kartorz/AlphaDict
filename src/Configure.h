@@ -33,7 +33,7 @@ enum CwsShortcutKey {
 enum {
     UI_FONT_SIZE_MIN     = 12,
     UI_FONT_SIZE_MAX     = 40,
-    UI_FONT_SIZE_DEFAULT = 16,
+    UI_FONT_SIZE_DEFAULT = 20,
 };
 
 struct Setting {

@@ -50,11 +50,20 @@ Rectangle {
             color: Theme.border
         }
 
+        /* Frameless window: the bar itself drags.  This layer sits *below*
+         * the controls so buttons and fields win the press; only the empty
+         * stretches of the bar reach it. */
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton
+            onPressed: bridge.beginWindowMove()
+        }
+
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
-            spacing: 10
+            anchors.leftMargin: 12
+            anchors.rightMargin: 12
+            spacing: 8
 
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
@@ -75,7 +84,7 @@ Rectangle {
             ThemedField {
                 id: searchField
                 Layout.fillWidth: true
-                Layout.maximumWidth: 560
+                Layout.maximumWidth: Math.max(900, Theme.baseSize * 40)
                 Layout.alignment: Qt.AlignVCenter
                 fieldHeight: Math.max(36, Theme.baseSize + 22)
                 placeholderText: qsTr("Type a word and press Enter")
@@ -83,8 +92,9 @@ Rectangle {
             }
 
             StyledComboBox {
+                id: srcCombo
                 Layout.alignment: Qt.AlignVCenter
-                controlWidth: 120
+                controlWidth: Math.max(120, Theme.baseSize * 7)
                 model: bridge.srcLans
                 currentIndex: Math.max(0, bridge.srcLans.indexOf(bridge.srcLan))
                 onActivated: bridge.srcLan = bridge.srcLans[index]
@@ -99,8 +109,9 @@ Rectangle {
             }
 
             StyledComboBox {
+                id: detCombo
                 Layout.alignment: Qt.AlignVCenter
-                controlWidth: 120
+                controlWidth: Math.max(120, Theme.baseSize * 7)
                 model: bridge.detLans
                 currentIndex: Math.max(0, bridge.detLans.indexOf(bridge.detLan))
                 onActivated: bridge.detLan = bridge.detLans[index]
@@ -109,12 +120,14 @@ Rectangle {
             Item { Layout.fillWidth: true }
 
             FlatButton {
+                id: minButton
                 Layout.alignment: Qt.AlignVCenter
                 glyph: "🗕"
                 horizontalPadding: 10
                 onClicked: bridge.minimizeToTray()
             }
             FlatButton {
+                id: closeButton
                 Layout.alignment: Qt.AlignVCenter
                 glyph: "✕"
                 danger: true
@@ -221,5 +234,53 @@ Rectangle {
                 font.family: Theme.fontFamily
             }
         }
+    }
+
+    /* --------------------------- resize border --------------------------- */
+    /* A frameless window loses the WM grip; these strips hand the resize
+     * back.  Edges are Qt::LeftEdge=1, TopEdge=2, RightEdge=4, BottomEdge=8. */
+    MouseArea {
+        width: 6; anchors.left: parent.left; anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeHorCursor
+        onPressed: bridge.beginWindowResize(1)
+    }
+    MouseArea {
+        width: 6; anchors.right: parent.right; anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeHorCursor
+        onPressed: bridge.beginWindowResize(4)
+    }
+    MouseArea {
+        height: 6; anchors.top: parent.top; anchors.left: parent.left
+        anchors.right: parent.right
+        cursorShape: Qt.SizeVerCursor
+        onPressed: bridge.beginWindowResize(2)
+    }
+    MouseArea {
+        height: 6; anchors.bottom: parent.bottom; anchors.left: parent.left
+        anchors.right: parent.right
+        cursorShape: Qt.SizeVerCursor
+        onPressed: bridge.beginWindowResize(8)
+    }
+    MouseArea {
+        width: 12; height: 12; anchors.left: parent.left; anchors.top: parent.top
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: bridge.beginWindowResize(3)
+    }
+    MouseArea {
+        width: 12; height: 12; anchors.right: parent.right; anchors.top: parent.top
+        cursorShape: Qt.SizeBDiagCursor
+        onPressed: bridge.beginWindowResize(6)
+    }
+    MouseArea {
+        width: 12; height: 12; anchors.left: parent.left; anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeBDiagCursor
+        onPressed: bridge.beginWindowResize(9)
+    }
+    MouseArea {
+        width: 12; height: 12; anchors.right: parent.right; anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: bridge.beginWindowResize(12)
     }
 }

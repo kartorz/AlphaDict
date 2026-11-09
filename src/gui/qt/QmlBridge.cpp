@@ -653,9 +653,14 @@ void QmlBridge::setDictEnabled(int row, bool en)
     m_dictModel->setEnabled(row, en);
 }
 
-void QmlBridge::moveWindowBy(int dx, int dy)
+void QmlBridge::beginWindowMove()
 {
-    emit requestMove(dx, dy);
+    emit requestBeginWindowMove();
+}
+
+void QmlBridge::beginWindowResize(int edges)
+{
+    emit requestBeginWindowResize(edges);
 }
 
 void QmlBridge::minimizeToTray()

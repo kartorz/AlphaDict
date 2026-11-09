@@ -35,7 +35,7 @@ Rectangle {
         id: layout
         anchors.fill: parent
         anchors.margins: card.contentMargins
-        spacing: 10
+        spacing: 8
 
         RowLayout {
             id: headerRow

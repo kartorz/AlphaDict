@@ -36,7 +36,7 @@ Item {
                 ColumnLayout {
                     id: interfaceColumn
                     Layout.fillWidth: true
-                    spacing: 12
+                    spacing: 10
 
                     SettingRow {
                         label: qsTr("System tray")
@@ -52,7 +52,7 @@ Item {
                         hint: qsTr("Restart the application to apply the change")
                         StyledComboBox {
                             model: bridge.uiLans
-                            controlWidth: 120
+                            controlWidth: Math.max(120, Theme.baseSize * 7)
                             currentIndex: bridge.uiLanID
                             onActivated: bridge.setUiLanID(index)
                         }
@@ -69,7 +69,7 @@ Item {
                                 to: bridge.maxFontSize
                                 stepSize: 1
                                 value: bridge.fontSize
-                                implicitWidth: 170
+                                implicitWidth: Math.max(170, Theme.baseSize * 9)
                                 onMoved: bridge.fontSize = Math.round(value)
                                 background: Rectangle {
                                     x: fontSlider.leftPadding
@@ -111,7 +111,7 @@ Item {
                         hint: qsTr("Leave empty to use the system default font")
                         ThemedField {
                             id: fontField
-                            implicitWidth: 200
+                            implicitWidth: Math.max(200, Theme.baseSize * 12)
                             fieldHeight: Math.max(30, Theme.baseSize + 18)
                             text: bridge.fontFamily
                             placeholderText: qsTr("System default")
@@ -129,7 +129,7 @@ Item {
                 ColumnLayout {
                     id: cwsColumn
                     Layout.fillWidth: true
-                    spacing: 12
+                    spacing: 10
 
                     SettingRow {
                         label: qsTr("Enable capture")
@@ -183,7 +183,7 @@ Item {
                             }
                             StyledComboBox {
                                 model: bridge.shortcutKeys
-                                controlWidth: 70
+                                controlWidth: Math.max(70, Theme.baseSize * 4)
                                 currentIndex: bridge.shortcutIndex
                                 onActivated: bridge.shortcutIndex = index
                             }

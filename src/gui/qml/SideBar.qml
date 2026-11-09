@@ -9,7 +9,7 @@ Rectangle {
     property int current: 0
     signal navigate(int index)
 
-    implicitWidth: Math.max(88, Theme.baseSize * 3 + 40)
+    implicitWidth: Math.max(96, Theme.baseSize * 4 + 40)
     color: Theme.surface
 
     Rectangle {
@@ -53,7 +53,7 @@ Rectangle {
 
             delegate: Item {
                 Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: Math.max(68, Theme.baseSize * 2 + 36)
+                Layout.preferredWidth: Math.max(72, Theme.baseSize * 4 + 16)
                 /* Must fit the glyph line plus the label line, so grow with both. */
                 Layout.preferredHeight: Math.max(58, Theme.baseSize * 2 + 14)
 
@@ -90,10 +90,13 @@ Rectangle {
                     }
                     Text {
                         Layout.alignment: Qt.AlignHCenter
+                        Layout.maximumWidth: Math.max(60, Theme.baseSize * 4 + 8)
                         text: modelData.label
                         font.pixelSize: Theme.tinySize
                         font.family: Theme.fontFamily
                         color: index === bar.current ? Theme.accent : Theme.textMut
+                        elide: Text.ElideRight
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
 

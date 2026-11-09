@@ -174,7 +174,8 @@ signals:
     void uiLanChanged();
 
     /* window requests */
-    void requestMove(int dx, int dy);
+    void requestBeginWindowMove();
+    void requestBeginWindowResize(int edges);
     void requestMinimizeToTray();
     /*! same path as the window manager's close button */
     void requestCloseWindow();
@@ -204,7 +205,11 @@ public:
     Q_INVOKABLE void moveDictRow(int row, int offset);
     Q_INVOKABLE void setDictEnabled(int row, bool en);
 
-    Q_INVOKABLE void moveWindowBy(int dx, int dy);
+    /*! A frameless window has no title bar.  startSystemMove() is unreliable
+     *  inside QQuickWidget, so the window follows the cursor from the event
+     *  filter instead (see QmlMainWindow::eventFilter). */
+    Q_INVOKABLE void beginWindowMove();
+    Q_INVOKABLE void beginWindowResize(int edges);
     Q_INVOKABLE void minimizeToTray();
     Q_INVOKABLE void closeWindow();
     Q_INVOKABLE void quit();

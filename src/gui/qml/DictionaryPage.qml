@@ -19,7 +19,7 @@ Item {
 
         /* ------------------------- index ------------------------- */
         Card {
-            Layout.preferredWidth: 230
+            Layout.preferredWidth: Math.max(230, Theme.baseSize * 13)
             Layout.fillHeight: true
             title: qsTr("Index")
             subtitle: qsTr("%1 items").arg(bridge.indexCount)

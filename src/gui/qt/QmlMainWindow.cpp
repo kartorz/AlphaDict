@@ -77,14 +77,18 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
     m_cwdEnableTemp(true),
     m_nonRepeatSelEn(false),
     m_quitRequested(false),
+    m_dragActive(false),
+    m_dragEdges(0),
     onSysExit(NULL)
 {
     m_config = g_application.m_configure;
 
     setWindowTitle(QString::fromUtf8("AlphaDict"));
     setWindowIcon(QIcon(QStringLiteral(":/res/appicon.png")));
-    resize(1080, 720);
-    setMinimumSize(760, 520);
+    /* The QML top bar draws every button, so no system decorations at all. */
+    setWindowFlags(Qt::FramelessWindowHint);
+    resize(1280, 840);
+    setMinimumSize(900, 600);
 
     m_bridge = new QmlBridge(this);
 
@@ -127,8 +131,10 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
     QObject::connect(QApplication::clipboard(), SIGNAL(selectionChanged()),
                      this, SLOT(onClipboardSelectionChanged()));
 
-    QObject::connect(m_bridge, SIGNAL(requestMove(int, int)),
-                     this, SLOT(onRequestMove(int, int)));
+    QObject::connect(m_bridge, SIGNAL(requestBeginWindowMove()),
+                     this, SLOT(onBeginWindowMove()));
+    QObject::connect(m_bridge, SIGNAL(requestBeginWindowResize(int)),
+                     this, SLOT(onBeginWindowResize(int)));
     QObject::connect(m_bridge, SIGNAL(requestMinimizeToTray()),
                      this, SLOT(onRequestMinimizeToTray()));
     QObject::connect(m_bridge, SIGNAL(requestCloseWindow()),
@@ -299,9 +305,24 @@ void QmlMainWindow::onCapWordAddToVBook(const QString &word)
  * window behaviour
  *-------------------------------------------------------------------------*/
 
-void QmlMainWindow::onRequestMove(int dx, int dy)
+/*! Frameless windows have no title bar and startSystemMove() is unreliable
+ *  for a window hosted in QQuickWidget.  QML reports the press, then every
+ *  mouse move seen by the event filter drives the window; the relative QML
+ *  coordinates stop changing while the window follows the cursor, so the
+ *  filter (not QML) is what keeps the drag alive. */
+void QmlMainWindow::onBeginWindowMove()
 {
-    move(pos() + QPoint(dx, dy));
+    m_dragOffset = QCursor::pos() - pos();
+    m_dragEdges = 0;
+    m_dragActive = true;
+}
+
+void QmlMainWindow::onBeginWindowResize(int edges)
+{
+    m_dragEdges = edges;
+    m_dragStartCursor = QCursor::pos();
+    m_dragStartGeometry = geometry();
+    m_dragActive = true;
 }
 
 void QmlMainWindow::onRequestMinimizeToTray()
@@ -415,6 +436,33 @@ void QmlMainWindow::onTrayMenuClose()
 bool QmlMainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     (void)watched;
+
+    if (m_dragActive) {
+        if (event->type() == QEvent::MouseMove) {
+            const QPoint g = QCursor::pos();
+            if (m_dragEdges == 0) {
+                move(g - m_dragOffset);
+            } else {
+                const QPoint d = g - m_dragStartCursor;
+                QRect r = m_dragStartGeometry;
+                if (m_dragEdges & 1)        /* left */
+                    r.setLeft(qMin(r.left() + d.x(), r.right() - minimumWidth() + 1));
+                else if (m_dragEdges & 4)   /* right */
+                    r.setRight(qMax(r.right() + d.x(), r.left() + minimumWidth() - 1));
+                if (m_dragEdges & 2)        /* top */
+                    r.setTop(qMin(r.top() + d.y(), r.bottom() - minimumHeight() + 1));
+                else if (m_dragEdges & 8)   /* bottom */
+                    r.setBottom(qMax(r.bottom() + d.y(), r.top() + minimumHeight() - 1));
+                setGeometry(r);
+            }
+            return false;
+        }
+        if (event->type() == QEvent::MouseButtonRelease) {
+            m_dragActive = false;
+            return false;
+        }
+    }
+
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *keyevent = static_cast<QKeyEvent *>(event);
         if (keyevent->key() == m_config->m_cws.shortcutKey + 'A' &&

@@ -26,7 +26,7 @@ Item {
 
         /* ------------------------- word list ------------------------- */
         Card {
-            Layout.preferredWidth: 300
+            Layout.preferredWidth: Math.max(300, Theme.baseSize * 16)
             Layout.fillHeight: true
             title: qsTr("Vocabulary")
             subtitle: qsTr("%1 words").arg(bridge.vbook.length)
@@ -274,7 +274,7 @@ Item {
                         font.family: Theme.fontFamily
                     }
                     StyledComboBox {
-                        controlWidth: 80
+                        controlWidth: Math.max(80, Theme.baseSize * 4)
                         controlHeight: Math.max(30, Theme.baseSize + 18)
                         model: [1, 2, 3, 5]
                         currentIndex: 0

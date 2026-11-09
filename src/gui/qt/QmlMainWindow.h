@@ -64,7 +64,8 @@ private slots:
     void onTrayMenuActivated();
     void onTrayMenuClose();
 
-    void onRequestMove(int dx, int dy);
+    void onBeginWindowMove();
+    void onBeginWindowResize(int edges);
     void onRequestMinimizeToTray();
     void onRequestQuit();
     void onRequestSystemTray(bool en);
@@ -103,6 +104,11 @@ private:
     bool m_nonRepeatSelEn;
     /*! user really wants to quit; closeEvent must not hide to the tray. */
     bool m_quitRequested;
+    bool   m_dragActive;
+    QPoint m_dragOffset;
+    QPoint m_dragStartCursor;
+    QRect  m_dragStartGeometry;
+    int    m_dragEdges;   /*!< 0 = move, else Qt::Edges bits while resizing */
     void (*onSysExit)();
 };
 
