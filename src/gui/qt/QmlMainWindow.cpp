@@ -87,8 +87,8 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
     setWindowIcon(QIcon(QStringLiteral(":/res/appicon.png")));
     /* The QML top bar draws every button, so no system decorations at all. */
     setWindowFlags(Qt::FramelessWindowHint);
-    resize(1280, 840);
-    setMinimumSize(900, 600);
+    resize(1120, 740);
+    setMinimumSize(880, 580);
 
     m_bridge = new QmlBridge(this);
 

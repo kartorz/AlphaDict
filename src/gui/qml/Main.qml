@@ -67,8 +67,8 @@ Rectangle {
 
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
-                Layout.preferredWidth: Math.max(32, Theme.textLine + 12)
-                Layout.preferredHeight: Math.max(32, Theme.textLine + 12)
+                Layout.preferredWidth: Math.max(28, Theme.textLine + 4)
+                Layout.preferredHeight: Math.max(28, Theme.textLine + 4)
                 radius: 10
                 gradient: Theme.accentGradient
                 Text {
@@ -86,7 +86,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Math.max(900, Theme.baseSize * 40)
                 Layout.alignment: Qt.AlignVCenter
-                fieldHeight: Math.max(34, Theme.controlHeight + 5)
+                fieldHeight: Math.max(30, Theme.controlHeight + 3)
                 placeholderText: qsTr("Type a word and press Enter")
                 onAccepted: bridge.search(text)
             }
