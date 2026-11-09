@@ -84,20 +84,42 @@ void DictManager::initialization()
 {
     Configure *config = g_application.m_configure;
 
-    // Check new dictionary
+    /* Check every dictionary, not only the new ones: configure.xml used to
+     * be trusted blindy, so a wrong srclan/detlan there was never corrected.
+     * The dictionary header is the real source of truth for its languages. */
     vector<struct DictNode>& nodeVec = config->m_dictNodes;
-    for (int i=0; i<nodeVec.size(); i++) {
-        if (nodeVec[i].open == "") {
+    for (int i=0; i<(int)nodeVec.size(); i++) {
+        bool isNew = (nodeVec[i].open == "");
+        bool changed = isNew;
+        if (isNew)
             nodeVec[i].open = "none";
-            iDict *dict;
-            if ((dict = createHandleByDict(nodeVec[i].path)) != NULL) {
+
+        iDict *dict = createHandleByDict(nodeVec[i].path);
+        if (dict != NULL) {
+            if (isNew) {
                 nodeVec[i].open = dict->identifier();
-                dict->getLanguage(nodeVec[i].srclan, nodeVec[i].detlan);
-				dict->summary(nodeVec[i].summary);
-                delete dict;
+                dict->summary(nodeVec[i].summary);
             }
-            config->writeDictItem(i);
+
+            string src, det;
+            dict->getLanguage(src, det);
+            if (!src.empty() && src != "any" && src != nodeVec[i].srclan) {
+                g_sysLog(LOG_INFO, "fix dict srclan: %s %s -> %s\n",
+                         nodeVec[i].path.c_str(), nodeVec[i].srclan.c_str(), src.c_str());
+                nodeVec[i].srclan = src;
+                changed = true;
+            }
+            if (!det.empty() && det != "any" && det != nodeVec[i].detlan) {
+                g_sysLog(LOG_INFO, "fix dict detlan: %s %s -> %s\n",
+                         nodeVec[i].path.c_str(), nodeVec[i].detlan.c_str(), det.c_str());
+                nodeVec[i].detlan = det;
+                changed = true;
+            }
+            delete dict;
         }
+
+        if (changed)
+            config->writeDictItem(i);
     }
     TaskManager::getInstance()->addTask(new LoadDictTask(), 0);
 }
