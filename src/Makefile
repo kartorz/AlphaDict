@@ -62,9 +62,10 @@ OBJS_ALPHADICT := $(SRCS_ALPHADICT:%.cpp=%.o)
 OBJS_ALPHADICT += $(SRCS_SQLITE_$(SQLITE_BUNDLED):%.c=%.o)
 OBJS_ALDCTL := $(SRCS_ALDCTL:%.cpp=%.o)
 OBJS_ALPHADICT += lib/tinyxml2/libtinyxml2.a
-OBJS_ALDCTL += lib/tinyxml2/libtinyxml2.a \
-                Util.o CharUtil.o Log.o SpinLock.o MutexLock.o \
-                dict/aldict/AldictDocument.o
+# Static libraries must follow the objects that use them, or the linker
+# drops them and reports undefined symbols from Util.o.
+OBJS_ALDCTL += Util.o CharUtil.o Log.o SpinLock.o MutexLock.o \
+                dict/aldict/AldictDocument.o lib/tinyxml2/libtinyxml2.a
 
 DEPS := $(SRCS_ALPHADICT:%.cpp=%.d)
 DEPS += $(SRCS_SQLITE_$(SQLITE_BUNDLED):%.c=%.d)
@@ -133,7 +134,7 @@ lib/sqlite3/sqlite3.o : lib/sqlite3/sqlite3.c
 install: $(INSTALL_TARGETS-yes)
 
 install-dirs:
-	$(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/dicts $(DATADIR)/xmls $(DATADIR)/doc
+	$(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/dicts $(DATADIR)/doc
 
 install-%: % install-dirs
 	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
@@ -149,17 +150,16 @@ install-system: install-dirs aldctl
 	        echo "note: gui/qt/uitr_cn.qm not built, run 'make uitr' to ship translations"; fi; \
 	    install -m 0666 "gui/qt/res/appicon.png"   "$(DATADIR)/AlphaDict.png"; fi
 	install -m 0666 "../doc/dictionary_inner.pdf"  "$(DATADIR)/doc/dictionary_inner.pdf"
-	install -m 0666 "../doc/front-end_format.xml"  "$(DATADIR)/doc/front-end_format.xml"
 	install -m 0666 "../doc/front-end_format.txt"  "$(DATADIR)/doc/front-end_format.txt"
-	install -m 0666 "../doc/alphadict_en-ch.xml"   "$(DATADIR)/doc/alphadict_en-ch.xml"
+	install -m 0666 "../doc/make_dictionary.txt"  "$(DATADIR)/doc/make_dictionary.txt"
 	@for f in ../system/dicts/*.aldict; do \
 	    [ -e "$$f" ] || continue; \
 	    install -m 0666 "$$f" "$(DATADIR)/dicts/$$(basename $$f)"; done
 	install -m 0755 aldctl "$(DATADIR)/aldctl"
 
 	$(INSTALL) -d  $(DATADIR)/tools
-	@for FILE in `ls tools`; do \
-	    install -m 0755 "tools/$$FILE" "$(DATADIR)/tools/$$FILE"; done
+	@for FILE in tools/*.py; do \
+	    install -m 0755 "$$FILE" "$(DATADIR)/tools/$$(basename $$FILE)"; done
 
 uninstall:
 	rm -f $(BINDIR)/AlphaDict $(BINDIR)/aldctl

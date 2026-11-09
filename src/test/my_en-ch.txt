@@ -1,0 +1,35 @@
+[header]
+name = test dictionary
+publisher = AlphaDict
+date = 2014-05-18
+dictversion = 1.0
+srclang = english
+dstlang = chinese
+
+[entry]
+word = baa
+phonetic = [ba:]
+explanation:
+n. 羊叫声
+vi. 羊叫
+
+[entry]
+word = baas
+phonetic = [ba:s]
+explanation:
+n. 先生, 老板
+
+[entry]
+word = babble
+phonetic = ['bæbl]
+explanation:
+vi. 牙牙学语, 喋喋不休
+vt. 唠叨, 吐露
+n. 儿语, 胡言乱语, 嘈杂声
+【计】 串音
+
+[entry]
+word = babe
+phonetic = [beib]
+explanation:
+n. 小孩, 天真幼稚的人

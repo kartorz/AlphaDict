@@ -126,14 +126,15 @@ linux/unix.
 How to Make Dictionaries
 ========================
 
-AlphaDict has an open dictionary format, see "doc/(dictionary_inner.pdf,
-front-end_format.txt, front-end_format.xml)" for more detail, and make your own.
+AlphaDict has an open dictionary format: the plain text front-end is described
+in "doc/front-end_format.txt", the binary inner format in
+"doc/dictionary_inner.pdf". See "doc/make_dictionary.txt" for a step-by-step
+guide to making your own dictionary.
 
-There are two front-ends: plain text (recommended) and the old xml. Text is the
-easier one, and a dictionary takes two steps:
+A dictionary takes two steps:
 1) Write a xx.txt following doc/front-end_format.txt.
 2) $ aldctl build -o xx.aldict xx.txt
-   aldict creates the dictionary xx.aldict (without -o it uses the input name).
+   aldctl creates the dictionary xx.aldict (without -o it uses the input name).
 
 Any dictionary can be exported, edited and rebuilt:
   $ aldctl export -o xx.txt xx.aldict
@@ -142,10 +143,11 @@ Any dictionary can be exported, edited and rebuilt:
   $ aldctl info xx.aldict
    shows the name, languages, version and entry count.
 
-Several text files can be merged into one dictionary (build also reads xml):
+Several text files can be merged into one dictionary:
   $ aldctl build -o xx.aldict part1.txt part2.txt part3.txt
 
-doc/alphadict_en-ch.xml is an xml example of the old front-end.
+The old xml front-end was removed in 1.5: xml files are no longer accepted by
+build. Export them to text first.
 
 
 Where to Put Dictionaries
@@ -159,7 +161,7 @@ How to Use the Third-Party Dictionaries
 =======================================
 
 AlphaDict don't support some dict formats directly but provides some tools to convert 
-these third-party dictionaries to AlphaDict's front-end xml. 
+these third-party dictionaries to AlphaDict's text front-end. 
 
 It's a little annoy, does it? Anyway,These tools are all python scripts, pretty simple,
 They are easy to use or modify, they are at 
@@ -168,15 +170,15 @@ They are easy to use or modify, they are at
 I will make some dictionaries previously, but the best way is to convert by yourself, 
 because these dictionaries will update from time to time.
 
-$ python xx_toaldictxml.py
+$ python xx_to_aldtxt.py
   will show usage.
 
 stardict
 --------
 1) put all the dictionary files to a directory, like foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
-2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ aldctl build -o foo_xx.aldict   foo_xx.xml
+2) $ python stardict_to_aldtxt.py -i foo/foo_xx  -o  foo_xx.txt
+3) $ aldctl build -o foo_xx.aldict   foo_xx.txt
      you will get foo_xx.aldict
 
 You can downlaod the dictionaries of stardict from here:
@@ -184,10 +186,10 @@ You can downlaod the dictionaries of stardict from here:
 
 cedict
 ------
-Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
+Currently, only support 'text' format, please download 'text' instead of 'xml' format.
 
-$ python cedict_to_aldictxml.py -i foo.txt -o foo_xx.xml
-$ aldctl build -o foo_xx.aldict  foo_xx.xml
+$ python cedict_to_aldtxt.py -i foo.txt -o foo_xx.txt
+$ aldctl build -o foo_xx.aldict  foo_xx.txt
     you will get foo_xx.aldict
 
 You can download the cedict dicionary from here:
@@ -201,8 +203,8 @@ Select "File format: UTF-8 plain text", then "Download dictionary".
 
 Here is a example for coverting.
 
-$ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ aldctl build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
+$ ./dictsinfo_to_aldtxt.py  -i english-chinese-xx.txt
+$ aldctl build -o dictsinfo_english-chinese.aldict   english-chinese-xx.txt
 
 
 IDP
@@ -213,8 +215,8 @@ Lookup "Dictionary Files"
 
 Here is a example for coverting.
 
-$ ./idp_to_aldictxml.py  -i French.txt
-$ aldctl build -o idp_french.aldict   French.xml
+$ ./idp_to_aldtxt.py  -i French.txt
+$ aldctl build -o idp_french.aldict   French.txt
  
 
 How to Report Bugs, Contribute or Contact

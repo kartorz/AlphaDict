@@ -1,13 +1,11 @@
 /*
  * aldctl - build AlphaDict dictionaries from plain text, export them back.
  *
- *   aldict build  [-o out.aldict] file.txt [more.txt ...]
- *   aldict export [-o out.txt]    dict.aldict
- *   aldict info                   dict.aldict
+ *   aldctl build  [-o out.aldict] file.txt [more.txt ...]
+ *   aldctl export [-o out.txt]    dict.aldict
+ *   aldctl info                   dict.aldict
  *
- * The text format is described in doc/front-end_format.txt.  The older XML
- * front-end is still accepted by "build" so the scripts in src/tools/ keep
- * working.
+ * The text format is described in doc/front-end_format.txt.
  *
  * See doc/dictionary_inner.pdf for the binary format.
  */
@@ -37,13 +35,11 @@
 #include "alphadict.h"
 #include "aldict/aldict_inner.h"
 #include "dict/aldict/AldictDocument.h"
-#include "tinyxml2/tinyxml2.h"
 #include "Util.h"
 #include "CharUtil.h"
 #include "Log.h"
 
 using namespace std;
-using namespace tinyxml2;
 
 #define VERSION     "2.0"
 
@@ -59,8 +55,6 @@ using namespace tinyxml2;
 #define WORD_LEN_MAX  255
 #define PHON_LEN_MAX  255
 #define EXPL_LEN_MAX  65535
-
-#define WORD_ATTR  "word"
 
 
 struct Header {
@@ -103,7 +97,7 @@ static void usage()
 	printf("Usage: aldctl COMMAND [options]\n"
 	       "\n"
 	       "  build  [-o out.aldict] file.txt [more.txt ...]\n"
-	       "         make a dictionary from text files (XML is also accepted)\n"
+	       "         make a dictionary from text files\n"
 	       "  export [-o out.txt]    dict.aldict\n"
 	       "         dump a dictionary as editable text\n"
 	       "  info                   dict.aldict\n"
@@ -343,118 +337,6 @@ static bool parse_txt(const string& path, Dictionary& dict)
 	return true;
 }
 
-static void xml_header_field(Header& header, const string& key, const string& value)
-{
-	if (key == "name" || key == "dictname")
-		header.name = value;
-	else if (key == "publisher")
-		header.publisher = value;
-	else if (key == "date" || key == "publishdate")
-		header.date = value;
-	else if (key == "version" || key == "format")
-		header.format = value;
-	else if (key == "dictversion")
-		header.version = value;
-	else if (key == "srclang" || key == "srclan")
-		header.srclang = value;
-	else if (key == "dstlang" || key == "detlan")
-		header.dstlang = value;
-}
-
-/* Read the old XML front-end (doc/front-end_format.xml). */
-static bool parse_xml(const string& path, Dictionary& dict)
-{
-	XMLDocument doc;
-	int err = doc.LoadFile(path.c_str());
-	if (err != XML_NO_ERROR) {
-		fprintf(stderr, "error: cannot parse %s (code %d)\n", path.c_str(), err);
-		return false;
-	}
-
-	XMLElement* root = doc.RootElement();
-	if (root == NULL) {
-		fprintf(stderr, "error: %s is empty\n", path.c_str());
-		return false;
-	}
-
-	XMLElement* headerElement = root->FirstChildElement("header");
-	for (XMLElement* e = headerElement ? headerElement->FirstChildElement() : NULL;
-	     e != NULL; e = e->NextSiblingElement()) {
-		const char* key = e->Value();
-		const char* text = e->GetText();
-		if (key && text)
-			xml_header_field(dict.header, tolower(key), trim(text));
-	}
-
-	XMLElement* wordsElement = root->FirstChildElement("words");
-	if (wordsElement == NULL) {
-		fprintf(stderr, "error: no <words> in %s\n", path.c_str());
-		return false;
-	}
-
-	for (XMLElement* w = wordsElement->FirstChildElement(); w != NULL;
-	     w = w->NextSiblingElement()) {
-		Entry entry;
-		const char* word = w->Attribute(WORD_ATTR);
-		if (word)
-			entry.word = word;
-		if (entry.word.empty()) {
-			fprintf(stderr, "warning: skipping element without '%s' in %s\n",
-				WORD_ATTR, path.c_str());
-			continue;
-		}
-
-		for (XMLElement* p = w->FirstChildElement("phonetic"); p != NULL;
-		     p = p->NextSiblingElement("phonetic")) {
-			XMLElement* n = p->FirstChildElement();
-			if (n == NULL) {
-				if (p->GetText())
-					entry.phonetic.push_back(p->GetText());
-				continue;
-			}
-			for (; n != NULL; n = n->NextSiblingElement()) {
-				string line = n->Value() ? n->Value() : "";
-				if (n->GetText())
-					line += n->GetText();
-				entry.phonetic.push_back(line);
-			}
-		}
-
-		for (XMLElement* ex = w->FirstChildElement("explanation"); ex != NULL;
-		     ex = ex->NextSiblingElement("explanation")) {
-			/* Take every text node, not just the first one: a rich text
-			 * explanation is often split into several of them. */
-			string text;
-			for (XMLNode* n = ex->FirstChild(); n != NULL; n = n->NextSibling()) {
-				if (n->ToText())
-					text += n->Value();
-				else if (n->ToElement() && n->ToElement()->GetText())
-					text += n->ToElement()->GetText();
-			}
-			if (text.empty() && ex->GetText())
-				text = ex->GetText();
-			if (!text.empty()) {
-				if (!entry.expl.empty())
-					entry.expl += '\n';
-				entry.expl += text;
-			}
-		}
-
-		for (XMLElement* al = w->FirstChildElement("alias"); al != NULL;
-		     al = al->NextSiblingElement("alias")) {
-			for (XMLElement* as = al->FirstChildElement(); as != NULL;
-			     as = as->NextSiblingElement()) {
-				const char* text = as->GetText();
-				if (text && *text)
-					entry.alias.push_back(text);
-			}
-		}
-
-		dict.entries.push_back(entry);
-	}
-	return true;
-}
-
 static void copy_field(u8* dst, size_t size, const string& src)
 {
 	size_t n = src.size();
@@ -647,10 +529,12 @@ static bool load_dictionary(Dictionary& dict, const vector<string>& inputs)
 {
 	for (size_t i = 0; i < inputs.size(); i++) {
 		Dictionary part;
-		bool ok = ends_with(tolower(inputs[i]), ".xml")
-			  ? parse_xml(inputs[i], part)
-			  : parse_txt(inputs[i], part);
-		if (!ok)
+		if (ends_with(tolower(inputs[i]), ".xml")) {
+			fprintf(stderr, "error: %s: the XML front-end was removed, "
+				"export it to txt first\n", inputs[i].c_str());
+			return false;
+		}
+		if (!parse_txt(inputs[i], part))
 			return false;
 		if (part.entries.empty())
 			fprintf(stderr, "warning: no entries in %s\n", inputs[i].c_str());
@@ -1004,7 +888,7 @@ ADD:
 				/* Two different words can collapse into one index (e.g.
 				 * "apple" and "apple " after trimming); keep both by
 				 * inserting a dummy node in front of the existing one. */
-				printf("WARRNING: append a duplicate index--last u32('%lc')\n", chr);
+				printf("WARNING: append a duplicate index--last u32('%lc')\n", chr);
 				duplicate_index_flag = true;
 				ald_write_u32(charInx.wchr, 0);
 				(*parent)[pos]->insert(charInx, 0);

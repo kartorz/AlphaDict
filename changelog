@@ -10,6 +10,15 @@ AlphaDict 1.5 (unreleased):
         -- New QML user interface (CONFIG_QML): rounded cards, themed sidebar,
            custom scroll bars, light and dark colour schemes. Build it with
            --enable-qml; --disable-qml keeps the legacy QtWidgets interface.
+        -- The QML window has no system title bar: minimise, close and drag
+           are drawn by the application. The default font size is 20 and the
+           sidebar buttons are square, so the text fills most of the button.
+        -- AlphaDict now runs as a single instance. Starting it again while a
+           copy is running raises the existing window instead of asking to
+           start another process.
+        -- Closing the window hides it to the system tray when "system tray"
+           is enabled in the settings (the default); the tray icon brings the
+           window back. Disable the option to close the program on close.
         -- Screen word capture uses plain Xlib instead of Qt5X11Extras.
         -- Dictionary directory scanning accepts *.aldict only (case
            insensitive), so stray xml files and editor backups no longer show
@@ -17,10 +26,14 @@ AlphaDict 1.5 (unreleased):
         -- The built-in help (help.cn/help.en) is HTML now: headings, lists and
            clickable links rendered with the theme font and accent colour.
         -- Dictionaries are installed as data: every *.aldict in system/dicts/
-           is copied to <datadir>/dicts by 'make install', AldConvert is also
+           is copied to <datadir>/dicts by 'make install', aldctl is also
            installed next to the program data, and 'make clean' no longer
            touches the dictionary directory. No sample dictionary is generated
            at build time any more.
+        -- The dictionary front-end is plain text only: the XML reader and the
+           old *_to_aldictxml.py tools were removed. 'aldctl build' turns text
+           into a .aldict, 'aldctl export' writes any dictionary back to text
+           for editing; doc/make_dictionary.txt explains the workflow.
         -- Memory handling fixes throughout the dictionary and GUI layers:
            leaked index items in the prefix-search and sizing paths, a leaked
            worker QThread in QtMessager, a stale file handle in the

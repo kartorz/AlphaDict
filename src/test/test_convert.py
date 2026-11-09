@@ -1,9 +1,29 @@
-### Build a dictionary from xml ###
+### Build a dictionary from the text front-end and export it back ###
 
-import subprocess
+import os, subprocess, sys, tempfile
 
-subprocess.call("../aldict build -o alphadict_en-ch.aldict alphadict_en-ch.xml my_en-ch.xml",  shell=True)
+here = os.path.dirname(os.path.abspath(__file__))
+aldctl = os.path.join(here, "..", "aldctl")
+src = os.path.join(here, "my_en-ch.txt")
 
-#subprocess.call("../aldict build -o cedict_ch-en.aldict cedict_ch-en.xml", shell=True)
 
-#subprocess.call(["python", "dump_aldict.py", "cedict_ch-en.aldict"])
+def run(*args):
+    if subprocess.call([aldctl] + list(args)) != 0:
+        sys.exit("failed: " + " ".join(args))
+
+
+with tempfile.TemporaryDirectory() as tmp:
+    dic = os.path.join(tmp, "my_en-ch.aldict")
+    back = os.path.join(tmp, "back.txt")
+    run("build", "-o", dic, src)
+    run("info", dic)
+    run("export", "-o", back, dic)
+
+    # every entry must survive the round trip
+    def entries(path):
+        with open(path, encoding="utf-8") as f:
+            return sum(1 for line in f if line.strip() == "[entry]")
+
+    if entries(src) != entries(back):
+        sys.exit("entry count changed: %d -> %d" % (entries(src), entries(back)))
+    print("ok, %d entries round-tripped" % entries(src))

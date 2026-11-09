@@ -1,11 +1,11 @@
-.TH ALDCTL 1 "2026-11-09" "AlphaDict 1.4.1" "User Commands"
+.TH ALDCTL 1 "2026-11-09" "AlphaDict 1.5" "User Commands"
 .SH NAME
 aldctl \- build, export and inspect AlphaDict dictionaries
 .SH SYNOPSIS
 .B aldctl
 .B build
 .RB [ \-o
-.IR out.aldctl ]
+.IR out.aldict ]
 .I file.txt
 .RI [ file.txt ...]
 .br
@@ -13,30 +13,30 @@ aldctl \- build, export and inspect AlphaDict dictionaries
 .B export
 .RB [ \-o
 .IR out.txt ]
-.I dict.aldctl
+.I dict.aldict
 .br
 .B aldctl
 .B info
-.I dict.aldctl
+.I dict.aldict
 .SH DESCRIPTION
 .B aldctl
 converts between the plain text front-end format and the binary
-.B .aldctl
+.B .aldict
 format used by AlphaDict.  Text files are easy to edit, so a dictionary can be
 maintained in a text editor and rebuilt with one command.
 .PP
 Several text files can be given to
 .B build
-and are merged into a single dictionary.  The older XML front-end is accepted
-as well.
+and are merged into a single dictionary; the header of the first file wins.
 .PP
 The text format is described in
-.IR /usr/share/alphadict/doc/front-end_format.txt " and in"
-.IR front-end_format.xml .
+.IR /usr/share/alphadict/doc/front-end_format.txt .
+A step-by-step guide to making dictionaries is in
+.IR /usr/share/alphadict/doc/make_dictionary.txt .
 .SH COMMANDS
 .TP
 .B build
-Read the given text (or XML) files and write a dictionary.
+Read the given text files and write a dictionary.
 .TP
 .B export
 Write a dictionary back to the text format, entries in alphabetical order.
@@ -49,7 +49,7 @@ Print the header and entry count of a dictionary.
 Output path.  For
 .B build
 the default is the base name of the first input with
-.IR .aldctl ;
+.IR .aldict ;
 for
 .B export
 it is the dictionary name with
@@ -64,25 +64,29 @@ Print the version and exit.
 Build a dictionary from a text file:
 .PP
 .RS 4
-aldctl build \-o mydict.aldctl words.txt
+aldctl build \-o mydict.aldict words.txt
 .RE
 .PP
 Merge several parts into one dictionary:
 .PP
 .RS 4
-aldctl build \-o mydict.aldctl part1.txt part2.txt part3.txt
+aldctl build \-o mydict.aldict part1.txt part2.txt part3.txt
 .RE
 .PP
 Export a dictionary for editing, then rebuild it:
 .PP
 .RS 4
-aldctl export \-o words.txt mydict.aldctl
+aldctl export \-o words.txt mydict.aldict
 .br
-aldctl build \-o mydict.aldctl words.txt
+aldctl build \-o mydict.aldict words.txt
 .RE
 .SH LIMITS
 Words may be at most 255 bytes, phonetics 255 bytes and explanations 65535
 bytes in UTF-8.  Longer words are refused; longer phonetics and explanations
 are truncated at a character boundary with a warning.
+.SH FILES
+.I /usr/share/alphadict/doc/front-end_format.txt
+.br
+.I /usr/share/alphadict/doc/make_dictionary.txt
 .SH SEE ALSO
 .BR AlphaDict (1)

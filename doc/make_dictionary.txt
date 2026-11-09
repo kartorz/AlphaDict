@@ -1,0 +1,172 @@
+制作 AlphaDict 词典
+====================
+
+AlphaDict 的词典是二进制文件（后缀 .aldict）。日常不需要直接碰二进制：
+用 aldctl 在“纯文本”和“.aldict”之间来回转换，用任何文本编辑器维护内容即可。
+
+整个流程只有三步：
+
+    写文本/改文本  ->  aldctl build  ->  .aldict
+    .aldict        ->  aldctl export ->  文本（改完再 build）
+
+文本格式的完整说明见 doc/front-end_format.txt，本文只讲怎么用。
+
+
+一、准备
+--------
+
+aldctl 随 AlphaDict 一起安装，也可以在源码目录里直接用：
+
+    aldctl -h          # 查看用法
+    aldctl -v          # 查看版本
+
+在源码目录中运行时是 ./aldctl，下文的 aldctl 请按实际路径替换。
+所有文本文件都必须是 UTF-8 编码。
+
+
+二、从零做一本词典
+------------------
+
+1) 新建一个文本文件，例如 mydict.txt：
+
+    [header]
+    name = 我的英语词典
+    publisher = 我自己
+    date = 2026-11-09
+    dictversion = 1.0
+    srclang = english
+    dstlang = chinese
+
+    [entry]
+    word = apple
+    phonetic = ˈæpl
+    explanation:
+    苹果
+
+    [entry]
+    word = run
+    explanation = 跑，奔跑
+
+header 只有一段，必须写在最前面；之后每个 [entry] 是一个词条，word 必填。
+
+2) 转换：
+
+    aldctl build -o mydict.aldict mydict.txt
+
+    read 2 entries
+    write mydict.aldict, entries(2), char index(3), costs(0)s
+
+3) 检查：
+
+    aldctl info mydict.aldict
+
+4) 装进 AlphaDict：把 .aldict 放到词典目录，在“设置 -> 词典”里添加。
+   系统词典目录一般是 ~/.AlphaDict/dicts，也可以直接指定文件的完整路径。
+
+文本可以拆成多个文件分别维护（比如按字母分 a.txt、b.txt），
+一次转换时按顺序合并：
+
+    aldctl build -o mydict.aldict a.txt b.txt c.txt
+
+词典名和语言以第一个文件的 header 为准。
+
+
+三、修改已有词典（导出 -> 编辑 -> 重建）
+----------------------------------------
+
+1) 导出成文本：
+
+    aldctl export -o mydict.txt mydict.aldict
+
+    不写 -o 时输出到 <词典名>.txt。条目按字母序排列，重复导出结果完全
+    相同，方便用 git 管理。导出的 header 里会多一行 entries = N，这只是
+    统计信息，build 时会忽略。
+
+2) 用编辑器打开 mydict.txt 修改。常见操作：
+
+  - 加词：复制一个 [entry] 块，改 word 和释义。
+  - 删词：整块删掉，从 [entry] 到下一个 [entry] 之前（或文件结束）。
+  - 改词：直接改 word、phonetic、explanation 的值。
+  - 加别名：加一行 alias = 别名，查别名也能命中同一词条。
+  - 加音标：加一行 phonetic = ...，需要多个音标就写多行。
+
+  释义块 explanation: 后面到下一个 [entry] 之前的所有行都属于这个
+  词条，原样保留，可以换行、缩进、写 = 和 #。要结束它只需写下一个
+  [entry]。
+
+3) 重建：
+
+    aldctl build -o mydict.aldict mydict.txt
+
+4) 校验（推荐每次都做）：
+
+    aldctl export -o check.txt mydict.aldict
+    diff mydict.txt check.txt
+
+  正常的差异只有这几处：开头 export 补的注释两行、header 里补的
+  version = 1 和 entries = N，以及单行写法 explanation = xxx 被规范成
+  explanation: 块。除了这些，条目内容和顺序应当完全一致——有别的差异
+  就说明转换中丢了或改了东西。
+
+注意：build 是整体重建，不是增量更新。改完文本必须重新 build，
+AlphaDict 里的词典才会更新（重新打开词典或重启程序后生效）。
+
+
+四、抓错误
+----------
+
+build/export 会把问题写到标准错误，退出码非 0 表示失败。
+下面几类错误最常见：
+
+  - input is not valid UTF-8
+    文本不是 UTF-8。用编辑器另存为 UTF-8，或 iconv -f GBK -t UTF-8 转码。
+
+  - word is too long (max 255 bytes)
+    词头超过 255 字节（UTF-8 编码后，一个汉字通常 3 字节）。
+
+  - explanation is too long, truncated
+    释义超过 65535 字节，被截断。拆成两条词条，或精简释义。
+
+  - [entry] without word
+    有 [entry] 但没写 word，该词条被跳过。
+
+  - unknown key "xxx"
+    字段名拼错。键不区分大小写，但必须拼写正确；不认识的键会告警并忽略。
+
+  - no entries
+    文件里没有任何有效词条，不会生成 .aldict。
+
+建议流程：先小样本试 build，确认无误后再处理整本大词典；
+失败时旧文件不会被覆盖成残缺版本。
+
+
+五、从现有词典格式转换
+----------------------
+
+源码的 src/tools 下有把常见开放词典转成上述文本的脚本（Python 3），
+转换后用 aldctl build 生成 .aldict：
+
+  - stardict_to_aldtxt.py   StarDict 词典（.ifo/.idx/.dict 三件套）
+  - cedict_to_aldtxt.py     CC-CEDICT
+  - idp_to_aldtxt.py        IDP 双语词表
+  - dictsinfo_to_aldtxt.py  dicts.info 双语词表
+
+用法举例：
+
+    python3 src/tools/stardict_to_aldtxt.py -i ~/dicts/langdao-ec-gb -o langdao.txt
+    aldctl build -o langdao-ec-gb.aldict langdao.txt
+    aldctl info langdao-ec-gb.aldict
+
+各脚本用 -h 或直接运行查看参数；转换结果是普通文本，可以继续用编辑器
+增删改，再重新 build。
+
+
+六、示例：给词典加一条词
+------------------------
+
+    aldctl export -o mydict.txt mydict.aldict
+    printf '\n[entry]\nword = alpha\nphonetic = ˈælfə\nexplanation:\n希腊字母表的第一个字母\n' >> mydict.txt
+    aldctl build -o mydict.aldict mydict.txt
+    aldctl info mydict.aldict
+
+build 成功即可在 AlphaDict 里查到 alpha。

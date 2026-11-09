@@ -12,8 +12,9 @@ AlphaDict 前端格式（纯文本）
     aldctl info                   dict.aldict
 
 不给 -o 时，build 输出 <第一个输入文件的基本名>.aldict，export 输出
-<词典名>.txt。build 可以一次读入多个文本文件并合并成一本词典；XML 前端格式
-（见 front-end_format.xml）仍然可以喂给 build，方便沿用旧的 tools/*.py 脚本。
+<词典名>.txt。build 可以一次读入多个文本文件并合并成一本词典。
+旧的 XML 前端已经移除，XML 文件不能再喂给 build；先用 aldctl export 或
+src/tools 下的脚本把内容转成文本。
 
 
 一、文件结构
