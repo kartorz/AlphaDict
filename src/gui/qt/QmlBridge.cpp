@@ -391,11 +391,13 @@ void QmlBridge::vbookInput(const QString &input, int repeat)
         QString score;
         bool ok = m_vbookModel->exam(trimmed, score);
         setStatus(score);
-        if (ok) {
-            /* the answered row now shows its word instead of the placeholder */
-            refreshVBook();
-            emit vbookChanged();
-        }
+
+        /* 复杂度已变，刷新列表；答错停在当前词，让用户重试 */
+        refreshVBook();
+        emit vbookChanged();
+        if (!ok)
+            return;
+
         if (m_vbookModel->isLastRow())
             selectVBookRow(m_vbookModel->moveToFirst().row());
         else

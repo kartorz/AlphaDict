@@ -9,13 +9,33 @@ Item {
     id: page
 
     property int repeatCount: 1
+    /* 0 无判定, 1 拼写正确, -1 拼写错误; 用于输入框边框和提示行 */
+    property int verdict: 0
+
+    /* 切到这一页时直接聚焦拼写框 */
+    onVisibleChanged: if (visible) inputField.forceActiveFocus()
+
+    Timer {
+        id: verdictTimer
+        interval: 1600
+        onTriggered: page.verdict = 0
+    }
 
     function submit() {
-        var text = inputField.text;
-        if (text.trim().length === 0)
+        var text = inputField.text.trim();
+        if (text.length === 0)
             return;
+
+        var target = bridge.vBookWord;
+        page.verdict = (target !== "" && text.toLowerCase() === target.toLowerCase()) ? 1 : -1;
+        verdictTimer.restart();
+
         bridge.vbookInput(text, page.repeatCount);
-        inputField.text = "";
+
+        if (page.verdict === 1)
+            inputField.text = "";
+        else
+            inputField.selectAll();
         inputField.forceActiveFocus();
     }
 
@@ -195,11 +215,12 @@ Item {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                spacing: 10
+                spacing: 8
 
+                /* 目标词：学习模式显示单词，测试模式只显示点数，不能泄题 */
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.max(78, Theme.baseSize * 2 + 48)
+                    Layout.preferredHeight: Math.max(64, Theme.baseSize * 2 + 28)
                     radius: Theme.radiusSmall
                     color: Theme.surfaceAlt
                     border.width: 1
@@ -207,14 +228,13 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 4
+                        anchors.margins: 8
+                        spacing: 2
+
                         Text {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                             elide: Text.ElideRight
-                            /* Review mode must not leak the answer, the word is
-                             * replaced by one dot per letter. */
                             text: {
                                 if (bridge.vBookWord === "")
                                     return "—";
@@ -226,17 +246,18 @@ Item {
                                 return mask;
                             }
                             color: Theme.text
-                            font.pixelSize: Theme.baseSize + 8
+                            font.pixelSize: Theme.baseSize + 10
                             font.family: Theme.fontFamily
                             font.bold: true
                         }
+
                         Text {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
-                            wrapMode: Text.WordWrap
+                            elide: Text.ElideRight
                             text: bridge.vBookMode === 0
-                                  ? qsTr("Read the word and its explanation, then type it")
-                                  : qsTr("Spell the word from its explanation, then press Enter")
+                                  ? qsTr("Type the word to practise its spelling")
+                                  : qsTr("Type the word that matches the explanation")
                             color: Theme.textMut
                             font.pixelSize: Theme.smallSize
                             font.family: Theme.fontFamily
@@ -244,20 +265,39 @@ Item {
                     }
                 }
 
+                /* 大号拼写框：反复输入，回车即判定 */
+                ThemedField {
+                    id: inputField
+                    Layout.fillWidth: true
+                    fieldHeight: Math.round(Theme.controlHeight * 1.9)
+                    font.pixelSize: Theme.baseSize + 8
+                    horizontalAlignment: TextInput.AlignHCenter
+                    verdict: page.verdict
+                    placeholderText: qsTr("Spell the word here, then press Enter")
+                    onAccepted: page.submit()
+                }
+
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 8
 
-                    ThemedField {
-                        id: inputField
+                    Text {
                         Layout.fillWidth: true
-                        placeholderText: qsTr("Type the word and press Enter")
-                        onAccepted: page.submit()
+                        elide: Text.ElideRight
+                        text: page.verdict === 1 ? qsTr("✔ Correct")
+                            : page.verdict === -1 ? qsTr("✘ Try again")
+                            : qsTr("Press Enter to check your spelling")
+                        color: page.verdict === 1 ? Theme.success
+                             : page.verdict === -1 ? Theme.danger
+                             : Theme.textMut
+                        font.pixelSize: Theme.smallSize
+                        font.family: Theme.fontFamily
                     }
 
                     FlatButton {
                         text: qsTr("Submit")
                         primary: true
+                        controlHeight: Theme.controlHeight
                         onClicked: page.submit()
                     }
                 }
