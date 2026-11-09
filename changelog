@@ -26,10 +26,14 @@ AlphaDict 1.5 (unreleased):
         -- The built-in help (help.cn/help.en) is HTML now: headings, lists and
            clickable links rendered with the theme font and accent colour.
         -- Dictionaries are installed as data: every *.aldict in system/dicts/
-           is copied to <datadir>/dicts by 'make install', aldctl is also
-           installed next to the program data, and 'make clean' no longer
-           touches the dictionary directory. No sample dictionary is generated
-           at build time any more.
+           is copied to <datadir>/dicts by 'make install', and 'make clean' no
+           longer touches the dictionary directory. No sample dictionary is
+           generated at build time any more.
+        -- aldctl is built into src/tools and installed to both <bindir> and
+           <datadir>/tools, so that directory works on its own.
+        -- The four *_to_aldtxt.py converters and lib_aldict.py are merged into
+           tools/aldconv.py: one script, format auto-detection (-f to force),
+           and StarDict 64-bit offsets supported.
         -- The dictionary front-end is plain text only: the XML reader and the
            old *_to_aldictxml.py tools were removed. 'aldctl build' turns text
            into a .aldict, 'aldctl export' writes any dictionary back to text

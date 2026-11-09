@@ -3,7 +3,7 @@
 import os, subprocess, sys, tempfile
 
 here = os.path.dirname(os.path.abspath(__file__))
-aldctl = os.path.join(here, "..", "aldctl")
+aldctl = os.path.join(here, "..", "tools", "aldctl")
 src = os.path.join(here, "my_en-ch.txt")
 
 

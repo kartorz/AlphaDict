@@ -94,8 +94,10 @@ lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 AlphaDict: $(QT_H_$(GUI)) $(OBJS_ALPHADICT)
 	$(CC)  $(OBJS_ALPHADICT) $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
 
+# The command line tool and the conversion scripts share tools/.  It is also
+# installed to <datadir>/tools so that the scripts can find it there.
 aldctl: $(OBJS_ALDCTL)
-	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@
+	$(CC) $^ $(EXTRALIBS) -lstdc++ -o tools/aldctl
 
 # ---- dictionaries --------------------------------------------------------
 # Dictionaries are data, not build products.  Every *.aldict dropped into
@@ -134,12 +136,21 @@ lib/sqlite3/sqlite3.o : lib/sqlite3/sqlite3.c
 install: $(INSTALL_TARGETS-yes)
 
 install-dirs:
-	$(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/dicts $(DATADIR)/doc
+	$(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/dicts $(DATADIR)/doc $(DATADIR)/tools
 
 install-%: % install-dirs
 	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
 
-install-system: install-dirs aldctl
+install-aldctl: aldctl install-dirs
+	$(INSTALL) -m 755 $(INSTALLSTRIP) tools/aldctl $(BINDIR)
+
+# Copying the tool next to the scripts keeps <datadir>/tools usable on its own.
+install-tools: aldctl install-dirs
+	$(INSTALL) -m 755 $(INSTALLSTRIP) tools/aldctl "$(DATADIR)/tools/aldctl"
+	@for FILE in tools/*.py; do \
+	    install -m 0755 "$$FILE" "$(DATADIR)/tools/$$(basename $$FILE)"; done
+
+install-system: install-dirs install-tools
 	install -m 0666 "../system/configure.xml.in"   "$(DATADIR)/configure.xml.in"
 	install -m 0666 "../system/language.txt"       "$(DATADIR)/language.txt"
 	install -m 0666  ../system/help.*              "$(DATADIR)/"
@@ -155,11 +166,6 @@ install-system: install-dirs aldctl
 	@for f in ../system/dicts/*.aldict; do \
 	    [ -e "$$f" ] || continue; \
 	    install -m 0666 "$$f" "$(DATADIR)/dicts/$$(basename $$f)"; done
-	install -m 0755 aldctl "$(DATADIR)/aldctl"
-
-	$(INSTALL) -d  $(DATADIR)/tools
-	@for FILE in tools/*.py; do \
-	    install -m 0755 "$$FILE" "$(DATADIR)/tools/$$(basename $$FILE)"; done
 
 uninstall:
 	rm -f $(BINDIR)/AlphaDict $(BINDIR)/aldctl
@@ -177,6 +183,7 @@ clean:
 	@find gui/qml -name "qrc_*" | xargs -I{} rm {}
 	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
 	-rm -f $(call ADD_ALL_EXESUFS, AlphaDict aldctl)
+	-rm -f tools/aldctl
 
 distclean: clean
 	-@rm -rf config.*  gui/build-qt-Desktop-Debug  gui/build-qt-Desktop-Release

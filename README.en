@@ -160,24 +160,24 @@ For linux, unix:  /usr/local/share/alphadict/dicts
 How to Use the Third-Party Dictionaries
 =======================================
 
-AlphaDict don't support some dict formats directly but provides some tools to convert 
-these third-party dictionaries to AlphaDict's text front-end. 
+AlphaDict don't support some dict formats directly but provides some tools to convert
+these third-party dictionaries to AlphaDict's text front-end.
 
-It's a little annoy, does it? Anyway,These tools are all python scripts, pretty simple,
-They are easy to use or modify, they are at 
+These tools are python scripts, pretty simple, easy to use or modify, they are at
     /usr/local/share/alphadict/tools  -- linux, unix
     'installing direcotry'/tools -- win32.
-I will make some dictionaries previously, but the best way is to convert by yourself, 
+I will make some dictionaries previously, but the best way is to convert by yourself,
 because these dictionaries will update from time to time.
 
-$ python xx_to_aldtxt.py
-  will show usage.
+$ aldconv.py -h
+  will show usage.  The format is guessed from the input file, or pass one of
+  -f stardict, cedict, idp, dictsinfo.
 
 stardict
 --------
 1) put all the dictionary files to a directory, like foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
-2) $ python stardict_to_aldtxt.py -i foo/foo_xx  -o  foo_xx.txt
+2) $ aldconv.py -i foo/foo_xx  -o  foo_xx.txt
 3) $ aldctl build -o foo_xx.aldict   foo_xx.txt
      you will get foo_xx.aldict
 
@@ -188,7 +188,7 @@ cedict
 ------
 Currently, only support 'text' format, please download 'text' instead of 'xml' format.
 
-$ python cedict_to_aldtxt.py -i foo.txt -o foo_xx.txt
+$ aldconv.py -i foo.txt -o foo_xx.txt
 $ aldctl build -o foo_xx.aldict  foo_xx.txt
     you will get foo_xx.aldict
 
@@ -203,7 +203,7 @@ Select "File format: UTF-8 plain text", then "Download dictionary".
 
 Here is a example for coverting.
 
-$ ./dictsinfo_to_aldtxt.py  -i english-chinese-xx.txt
+$ aldconv.py -i english-chinese-xx.txt
 $ aldctl build -o dictsinfo_english-chinese.aldict   english-chinese-xx.txt
 
 
@@ -215,9 +215,9 @@ Lookup "Dictionary Files"
 
 Here is a example for coverting.
 
-$ ./idp_to_aldtxt.py  -i French.txt
+$ aldconv.py -i French.txt
 $ aldctl build -o idp_french.aldict   French.txt
- 
+
 
 How to Report Bugs, Contribute or Contact
 =========================================

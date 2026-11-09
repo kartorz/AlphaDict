@@ -143,22 +143,25 @@ build/export 会把问题写到标准错误，退出码非 0 表示失败。
 五、从现有词典格式转换
 ----------------------
 
-源码的 src/tools 下有把常见开放词典转成上述文本的脚本（Python 3），
-转换后用 aldctl build 生成 .aldict：
+src/tools/aldconv.py 是一个 Python 3 脚本，把常见的开放词典转换成上述
+文本，再用 aldctl build 生成 .aldict。支持的格式：
 
-  - stardict_to_aldtxt.py   StarDict 词典（.ifo/.idx/.dict 三件套）
-  - cedict_to_aldtxt.py     CC-CEDICT
-  - idp_to_aldtxt.py        IDP 双语词表
-  - dictsinfo_to_aldtxt.py  dicts.info 双语词表
+  stardict   StarDict（.ifo/.idx/.dict 三件套，-i 给基名）
+  cedict     CC-CEDICT 文本
+  idp        IDP 双语词表
+  dictsinfo  dicts.info 双语词表
 
-用法举例：
+格式一般从输入文件自动识别，识别不出时用 -f 指定。用法：
 
-    python3 src/tools/stardict_to_aldtxt.py -i ~/dicts/langdao-ec-gb -o langdao.txt
+    aldconv.py -i ~/dicts/langdao-ec-gb -o langdao.txt
+    aldconv.py -f cedict -i cedict.txt -o cedict_aldict.txt
+    aldconv.py -h                 # 全部选项和示例
+
     aldctl build -o langdao-ec-gb.aldict langdao.txt
     aldctl info langdao-ec-gb.aldict
 
-各脚本用 -h 或直接运行查看参数；转换结果是普通文本，可以继续用编辑器
-增删改，再重新 build。
+转换结果是普通文本，可以继续用编辑器增删改，再重新 build。安装后脚本
+和 aldctl 都在 /usr/local/share/alphadict/tools 下，该目录可以单独使用。
 
 
 六、示例：给词典加一条词

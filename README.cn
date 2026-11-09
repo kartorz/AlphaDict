@@ -148,21 +148,22 @@ linux, unix:  /usr/local/share/alphadict/dicts
 如何使用第三方词典
 ===============
 对一些词典格式，"Alpha词典"不提供直接的支持，需要使用工具进行转换, 转换为 "Alpha词典"的文本前端格式。
-可能大家觉得有点麻烦， 这些工具全部是 python 脚本，使用起来非常简单，也便于修改。它们的位置在: 
+这些工具是 python 脚本，使用起来非常简单，也便于修改。它们的位置在:
     /usr/local/share/alphadict/tools  -- linux, unix
-    '安装目录'/sytem/tools -- win32.
+    '安装目录'/system/tools -- win32.
 我会预先制作一下词典, 最好的办法还是自己去转换，因为一些词典会自动更新。
 
-$ python xx_to_aldtxt.py
-  将显示该工具的用法.
+$ aldconv.py -h
+  将显示该工具的用法。脚本会自动识别输入格式，也可以用 -f 指定:
+    stardict, cedict, idp, dictsinfo
 
 星际译王 (stardict)
 ------------------
 1) 把所有的词典文件放到一个目录下, 如 foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
-2) $ python stardict_to_aldtxt.py -i foo/foo_xx  -o  foo_xx.txt
+2) $ aldconv.py -i foo/foo_xx  -o  foo_xx.txt
 3) $ aldctl build -o foo_xx.aldict   foo_xx.txt
-     生成词典文件 foo_xx.aldict 
+     生成词典文件 foo_xx.aldict
 
 你能从下面链接，下载星际译王的词典:
     "http://abloz.com/huzheng/stardict-dic"
@@ -171,7 +172,7 @@ cedict
 ------
 当前只支持文本格式，请下载 text 文件, 而不是 'xml' 文件.
 
-$ python cedict_to_aldtxt.py -i foo.txt -o foo_xx.txt
+$ aldconv.py -i foo.txt -o foo_xx.txt
 $ aldctl build -o foo_xx.aldict  foo_xx.txt
   生成词典文件 foo_xx.aldict
 
@@ -186,7 +187,7 @@ dicts.info
 
 下面是一个转换词典的例子.
 
-$ ./dictsinfo_to_aldtxt.py  -i english-chinese-xx.txt
+$ aldconv.py -i english-chinese-xx.txt
 $ aldctl build -o dictsinfo_english-chinese.aldict   english-chinese-xx.txt
 
 
@@ -198,9 +199,9 @@ IDP
 
 下面是一个转换词典的例子.
 
-$ ./idp_to_aldtxt.py  -i French.txt
+$ aldconv.py -i French.txt
 $ aldctl build -o idp_french.aldict   French.txt
- 
+
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系
 ========================================
