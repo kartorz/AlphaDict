@@ -20,5 +20,4 @@ SRCS_QML_yes = gui/qt/QmlBridge.cpp             \
                   gui/qt/moc_QmlMainWindow.cpp     \
                   gui/qml/qrc_qml.cpp
 
-QT_H_yes =   gui/qt/ui_mainwindow.h  \
-                gui/qt/ui_capworddialog.h
+QT_H_yes =   gui/qt/ui_mainwindow.h

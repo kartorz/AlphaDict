@@ -1,4 +1,218 @@
-AlphaDict
-=========
+﻿What Is AlphaDict
+=================
+version: 1.4.1
+AlphaDict by joni lee (li liqiong) <joni_lee@outlook.com>
+website: prajna.top
 
-https://github.com/kartorz/AlphaDict
+It's a lightwight, open-source dictionary software with a open dict format
+that you can make your own dictionary, being a cross platform software, 
+supproting linux, unix and windows.
+
+Features:
+  . Support lots of third-party dictionary formats: cedict, startdict, dicts.info, IDP,etc.
+  . Capture Word of Screen.
+  . Vocabulary book.
+  . Be easy to make your own dictionary.
+
+You can download software, code, dicts and get information from the below URLs.
+  github     : "https://github.com/kartorz/AlphaDict"         (code repository)
+  wiki       : "https://github.com/kartorz/AlphaDict/wiki"    (wiki home page)
+
+
+License
+=======
+
+AlphaDict distributes under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3).
+See accompanying file gpl-2.0.txt or a copy at  "http://www.gnu.org/copyleft/gpl.html".
+
+
+Installing the Required Packages
+================================
+
+AlphaDict depends:
+  1) Qt5 >= 5.9: "https://www.qt.io/"
+     The GUI needs Qt5Core/Qt5Gui/Qt5Widgets; the newer QML interface also needs
+     Qt5Qml/Qt5Quick/Qt5QuickWidgets. When those modules are missing the build
+     falls back to the QtWidgets interface.
+  2) boost (system, filesystem): "https://www.boost.org/"
+  3) sqlite3: "https://www.sqlite.org" -- optional. Without a system sqlite3 the
+     bundled amalgamation in src/lib/sqlite3 is used, so no -dev package is needed.
+  4) pkg-config: configure locates Qt and sqlite3 through it instead of
+     hard-coding include and library paths, so multiarch layouts (Debian/Ubuntu
+     x86_64-linux-gnu) and custom prefixes work unchanged.
+  5) X11 (libX11): needed by the screen word capture. libqt5x11extras5 is no
+     longer required.
+
+Debian / Ubuntu:
+    sudo apt-get install build-essential pkg-config \
+        qtbase5-dev qtdeclarative5-dev \
+        libboost-dev libboost-filesystem-dev libx11-dev
+    # optional, to use the system sqlite3 instead of the bundled one:
+    #   sudo apt-get install libsqlite3-dev
+    # to regenerate the translations (make uitr):
+    #   sudo apt-get install qttools5-dev-tools
+
+Fedora / RHEL:
+    sudo dnf install gcc-c++ make pkgconf-pkg-config \
+        qt5-qtbase-devel qt5-qtdeclarative-devel \
+        boost-devel libX11-devel
+
+Note: this code base is Qt5 only. When a Qt6 development package is the only one
+installed, configure stops with an explicit error, because the QtWidgets code in
+src/gui/qt still uses classes that Qt6 moved or removed (QShortcut/QAction to
+QtGui, QRegExp/QTextCodec to Core5Compat, QDesktopWidget is gone); that port is
+not done yet.
+
+
+How to Compile
+==============
+
+linux,unix
+----------
+configure and the Makefile live in src/:
+
+$ cd src
+$ ./configure  
+$ ./configure --help
+  can give you some useful information, if you get trouble and want to set some 
+  custom configurations to fix it.
+
+$ make 
+  builds both binaries: AlphaDict (GUI) and AldConvert (dictionary converter),
+  and uses AldConvert to turn system/dicts/en-ch.xml into the sample dictionary
+  en-ch.aldict. A fresh clone has no dictionary at all, so this gives the GUI
+  60 words to show on first start. Rebuild just the dictionary with: make dict
+
+$ make install
+  --prefix defaults to /usr/local; the install rules do not sudo for you.
+  The sample dictionary is installed too; replace it with your own .aldict.
+
+$ AlphaDict
+  Now, You can enjoy 'AlphaDict'. 
+
+$ make uninstall
+
+$ make uitr
+  make muti-language.  Needs lupdate/lrelease (Debian: qttools5-dev-tools); the
+  path comes from the Qt bin directory reported by pkg-config, and can be
+  overridden with --with-qttool.
+
+Useful configure options:
+  --prefix=DIR        installation prefix                   [default /usr/local]
+  --enable-qml        build the QML interface               [autodetect]
+  --disable-qml       build the legacy QtWidgets interface only
+  --disable-gui       skip the GUI, build the command line tools only
+                      (alias --disable-qt5; --enable-gui is an alias of --enable-qt5)
+  --enable-debug      debug build                           [off]
+  --enable-qt6        rejected: this code base is Qt5 only (see above)
+  --with-qttool=PATH  directory holding moc/uic/rcc         [autodetect]
+  --extra-cflags/--extra-ldflags/--extra-libs   extra compiler/linker flags
+
+Qt is detected with pkg-config only: Qt5Core, Qt5Gui and Qt5Widgets must all be
+present, and the version must be at least 5.9. When Qt is missing or too old the
+script stops and says why instead of falling back to a guessed path. With the QML
+interface enabled, config.mak holds GUI=yes QML=yes, i.e. CONFIG_QT5 and
+CONFIG_QML in config.h.
+
+windows
+-------
+The Visual Studio project files are no longer shipped: they were frozen at
+Qt5.3/QtWidgets, referenced generated headers that no longer exist and could
+not build the current sources. The windows sources under src/ (src/win32 holds
+the platform glue) are still there; build them with a Qt5 MSVC or MinGW kit and
+your own project file, or use the maintained configure + make build on
+linux/unix.
+
+
+How to Make Dictionaries
+========================
+
+AlphaDict has a open dictionary format, see "doc/(dictionary_inner.pdf,front-end_format.xml)"
+for more detail, encourage you to make your own dictionary.
+
+Usually, you only need to know the 'front-end_format.xml',There are two steps to make a dictioanry.
+1) Create a xx.xml accoring to front-end_format.xml format.
+2) Use AldConvert(.exe) to convert xx.xml to xx.aldict.
+   $ AldConvert -o xx xx.xml
+   AldConvert shall create a dictionary: xx.aldict.
+   
+AldConvert supports multi-xml files. You can split a large xml into a few files,
+or merge a few xml files into a dict.
+  $ AldConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
+
+doc/alphadict_en-ch.xml is a example, You can refrence them to build your dictionary.
+
+
+Where to Put Dictionaries
+=========================
+
+For windows    :  'installing direcotry'/system/dicts
+For linux, unix:  /usr/local/share/alphadict/dicts
+
+
+How to Use the Third-Party Dictionaries
+=======================================
+
+AlphaDict don't support some dict formats directly but provides some tools to convert 
+these third-party dictionaries to AlphaDict's front-end xml. 
+
+It's a little annoy, does it? Anyway,These tools are all python scripts, pretty simple,
+They are easy to use or modify, they are at 
+    /usr/local/share/alphadict/tools  -- linux, unix
+    'installing direcotry'/tools -- win32.
+I will make some dictionaries previously, but the best way is to convert by yourself, 
+because these dictionaries will update from time to time.
+
+$ python xx_toaldictxml.py
+  will show usage.
+
+stardict
+--------
+1) put all the dictionary files to a directory, like foo.
+   foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
+2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
+3) $ AldConvert -o foo_xx   foo_xx.xml
+     you will get foo_xx.aldict
+
+You can downlaod the dictionaries of stardict from here:
+    "http://abloz.com/huzheng/stardict-dic"
+
+cedict
+------
+Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
+
+$ python cedict_to_aldictxml.py -i foo.txt
+$ AldConvert -o foo  foo.xml
+    you will get foo.aldict
+
+You can download the cedict dicionary from here:
+    "http://www.mdbg.net/chindict/chindict.php?page=cedict"
+
+dicts.info
+----------
+You can download the bilingual dictionaries from here:
+    "http://www.dicts.info/uddl.php"
+Select "File format: UTF-8 plain text", then "Download dictionary".
+
+Here is a example for coverting.
+
+$ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
+$ AldConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
+
+
+IDP
+---
+You can download the dictionary files from here:
+    "http://www.june29.com/IDP/IDPfiles.html"
+Lookup "Dictionary Files"
+
+Here is a example for coverting.
+
+$ ./idp_to_aldictxml.py  -i French.txt
+$ AldConvert -o idp_french   French.xml
+ 
+
+How to Report Bugs, Contribute or Contact
+=========================================
+Here is my email: joni.kartorz.lee@gmail.com.
+You can contact me for anything about this software.
