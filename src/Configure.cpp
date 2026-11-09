@@ -287,9 +287,8 @@ void Configure::scanDictDir(vector<string>& dictFiles)
     scanDictDir(m_dataDir+"/dicts", dictFiles);
 }
 
-/* AldConvert writes plain .aldict files.  The dictionary directory usually
- * also holds their xml sources (and maybe a backup or a sub directory), none
- * of which can be opened as a dictionary. */
+/* aldict writes plain .aldict files.  The directory may also hold xml sources
+ * or backups, which must not be opened as dictionaries. */
 static bool isDictFileName(const string& name)
 {
     static const char kExt[] = ".aldict";

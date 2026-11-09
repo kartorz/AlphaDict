@@ -1,0 +1,128 @@
+AlphaDict 前端格式（纯文本）
+============================
+
+本文档描述 aldict 工具读写的纯文本格式。用它可以直接编辑、增删词典内容，
+再转换成 AlphaDict 的二进制词典（.aldict）；反过来，任何 .aldict 也能导出成
+这种文本。文本文件统一使用 UTF-8 编码。
+
+转换命令：
+
+    aldict build  [-o out.aldict] file.txt [more.txt ...]
+    aldict export [-o out.txt]    dict.aldict
+    aldict info                   dict.aldict
+
+不给 -o 时，build 输出 <第一个输入文件的基本名>.aldict，export 输出
+<词典名>.txt。build 可以一次读入多个文本文件并合并成一本词典；XML 前端格式
+（见 front-end_format.xml）仍然可以喂给 build，方便沿用旧的 tools/*.py 脚本。
+
+
+一、文件结构
+------------
+
+文件由若干“段”组成，段用 [header] 和 [entry] 标记：
+
+    # 以 # 或 ; 开头的行是注释，空行被忽略
+    [header]
+    name = 我的词典
+    ...
+
+    [entry]
+    word = apple
+    ...
+
+    [entry]
+    word = run
+    ...
+
+段内的字段写成 “键 = 值”。键不区分大小写，值首尾的空格会被去掉。
+
+
+二、header 段：词典信息
+------------------------
+
+写在所有条目之前，只允许有一段。字段顺序任意，缺省值见括号。
+
+  name        词典名，显示在程序标题和词典列表里。（空）
+  publisher   出版者/作者信息。（空）
+  date        出版日期，格式 YYYY-MM-DD。（空）
+  version     前端格式版本，一个字符。（1）
+  dictversion 词典数据版本，格式 major.minor，范围 0..255。（0.0）
+  srclang     源语言，比如 english。（any）
+  dstlang     目标语言，比如 chinese。（any）
+  entries     条目数，仅作参考，导出时自动填写，build 时忽略。（-）
+
+语言名建议使用 system/language.txt 里已有的写法，程序据此显示词典类型。
+charset 字段可以写 utf-8，目前只支持 UTF-8，写了也不影响结果。
+
+
+三、entry 段：词条
+------------------
+
+每个词条以 [entry] 开始，必须至少有一个 word 字段。
+
+  word         词头，最长 255 字节（UTF-8 编码后）。（必填）
+  phonetic     音标，一行一条，可以写多次。最长 255 字节。（空）
+  alias        索引别名，一行一条，可以写多次。查这些词也能找到本词条。（空）
+  explanation  释义。两种写法：
+                 1) explanation = 一行文字
+                 2) explanation: 单独一行，其后所有行（直到下一个 [entry]
+                    或文件结束）都属于释义，原样保留，包括缩进、空行、
+                    “=” 和 “#”。最长 65535 字节。
+
+释义块是自由的：不需要缩进，也不需要转义。需要结束释义时，写下一个
+[entry] 即可。词条之间不需要空行。
+
+
+四、示例
+--------
+
+    # 一个最小的词典
+    [header]
+    name = 示例词典
+    publisher = 我自己
+    date = 2026-11-09
+    dictversion = 1.0
+    srclang = english
+    dstlang = chinese
+
+    [entry]
+    word = apple
+    phonetic = ˈæpl
+    alias = apples
+    explanation:
+    苹果
+    n. 苹果；苹果树
+
+    [entry]
+    word = run
+    phonetic = rʌn
+    explanation = 跑，奔跑
+
+    [entry]
+    word = take off
+    explanation:
+    v. 起飞
+       脱下（衣服等）
+
+转成词典：
+
+    aldict build -o demo.aldict demo.txt
+    aldict info demo.aldict
+
+导出后再修改：
+
+    aldict export -o demo.txt demo.aldict
+
+
+五、限制与注意事项
+------------------
+
+1. 词头最长 255 字节，超出会报错并终止转换（不会写出一本残缺的词典）。
+2. 音标最长 255 字节，释义最长 65535 字节，超出会告警并截断，截断只在
+   完整的 UTF-8 字符边界上发生。
+3. build 遇到不认识的段或字段会告警但继续，方便格式演进。
+4. 只有 word 不同、音标或释义相同的词条是合法的，不会去重。
+5. 多个输入文件合并时，词典名、语言等信息取自第一个文件；后续文件里
+   写了不同的 name 会被告警并忽略。
+6. export 按字母序输出，因此对同一本词典反复 export 得到的文本完全相同，
+   适合纳入版本管理。

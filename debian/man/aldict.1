@@ -1,0 +1,88 @@
+.TH ALDICT 1 "2026-11-09" "AlphaDict 1.4.1" "User Commands"
+.SH NAME
+aldict \- build, export and inspect AlphaDict dictionaries
+.SH SYNOPSIS
+.B aldict
+.B build
+.RB [ \-o
+.IR out.aldict ]
+.I file.txt
+.RI [ file.txt ...]
+.br
+.B aldict
+.B export
+.RB [ \-o
+.IR out.txt ]
+.I dict.aldict
+.br
+.B aldict
+.B info
+.I dict.aldict
+.SH DESCRIPTION
+.B aldict
+converts between the plain text front-end format and the binary
+.B .aldict
+format used by AlphaDict.  Text files are easy to edit, so a dictionary can be
+maintained in a text editor and rebuilt with one command.
+.PP
+Several text files can be given to
+.B build
+and are merged into a single dictionary.  The older XML front-end is accepted
+as well.
+.PP
+The text format is described in
+.IR /usr/share/alphadict/doc/front-end_format.txt " and in"
+.IR front-end_format.xml .
+.SH COMMANDS
+.TP
+.B build
+Read the given text (or XML) files and write a dictionary.
+.TP
+.B export
+Write a dictionary back to the text format, entries in alphabetical order.
+.TP
+.B info
+Print the header and entry count of a dictionary.
+.SH OPTIONS
+.TP
+.BI \-o " path"
+Output path.  For
+.B build
+the default is the base name of the first input with
+.IR .aldict ;
+for
+.B export
+it is the dictionary name with
+.IR .txt .
+.TP
+.B \-h
+Print usage information and exit.
+.TP
+.B \-v
+Print the version and exit.
+.SH EXAMPLES
+Build a dictionary from a text file:
+.PP
+.RS 4
+aldict build \-o mydict.aldict words.txt
+.RE
+.PP
+Merge several parts into one dictionary:
+.PP
+.RS 4
+aldict build \-o mydict.aldict part1.txt part2.txt part3.txt
+.RE
+.PP
+Export a dictionary for editing, then rebuild it:
+.PP
+.RS 4
+aldict export \-o words.txt mydict.aldict
+.br
+aldict build \-o mydict.aldict words.txt
+.RE
+.SH LIMITS
+Words may be at most 255 bytes, phonetics 255 bytes and explanations 65535
+bytes in UTF-8.  Longer words are refused; longer phonetics and explanations
+are truncated at a character boundary with a warning.
+.SH SEE ALSO
+.BR AlphaDict (1)

@@ -241,9 +241,8 @@ Item {
                                         Layout.fillWidth: true
                                     }
                                     Text {
-                                        /* AldConvert writes the metadata as one
-                                         * "key: value" per line; flatten it into a
-                                         * single middot separated run. */
+                                        /* metadata is one "key: value" per
+                                         * line; flatten it into a middot run. */
                                         text: String(model.summary)
                                               .split(/[\r\n]+/)
                                               .map(function (part) { return part.trim(); })

@@ -78,10 +78,9 @@ $ ./configure --help
   custom configurations to fix it.
 
 $ make 
-  builds both binaries: AlphaDict (GUI) and AldConvert (dictionary converter),
-  and uses AldConvert to turn system/dicts/en-ch.xml into the sample dictionary
-  en-ch.aldict. A fresh clone has no dictionary at all, so this gives the GUI
-  60 words to show on first start. Rebuild just the dictionary with: make dict
+  builds both binaries: AlphaDict (GUI) and aldict (dictionary converter).
+  Dictionaries are data under system/dicts/ and are installed together with the
+  program; use aldict to make your own, see "How to Make Dictionaries" below.
 
 $ make install
   --prefix defaults to /usr/local; the install rules do not sudo for you.
@@ -127,20 +126,26 @@ linux/unix.
 How to Make Dictionaries
 ========================
 
-AlphaDict has a open dictionary format, see "doc/(dictionary_inner.pdf,front-end_format.xml)"
-for more detail, encourage you to make your own dictionary.
+AlphaDict has an open dictionary format, see "doc/(dictionary_inner.pdf,
+front-end_format.txt, front-end_format.xml)" for more detail, and make your own.
 
-Usually, you only need to know the 'front-end_format.xml',There are two steps to make a dictioanry.
-1) Create a xx.xml accoring to front-end_format.xml format.
-2) Use AldConvert(.exe) to convert xx.xml to xx.aldict.
-   $ AldConvert -o xx xx.xml
-   AldConvert shall create a dictionary: xx.aldict.
-   
-AldConvert supports multi-xml files. You can split a large xml into a few files,
-or merge a few xml files into a dict.
-  $ AldConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
+There are two front-ends: plain text (recommended) and the old xml. Text is the
+easier one, and a dictionary takes two steps:
+1) Write a xx.txt following doc/front-end_format.txt.
+2) $ aldict build -o xx.aldict xx.txt
+   aldict creates the dictionary xx.aldict (without -o it uses the input name).
 
-doc/alphadict_en-ch.xml is a example, You can refrence them to build your dictionary.
+Any dictionary can be exported, edited and rebuilt:
+  $ aldict export -o xx.txt xx.aldict
+  $ aldict build  -o xx.aldict xx.txt
+
+  $ aldict info xx.aldict
+   shows the name, languages, version and entry count.
+
+Several text files can be merged into one dictionary (build also reads xml):
+  $ aldict build -o xx.aldict part1.txt part2.txt part3.txt
+
+doc/alphadict_en-ch.xml is an xml example of the old front-end.
 
 
 Where to Put Dictionaries
@@ -171,7 +176,7 @@ stardict
 1) put all the dictionary files to a directory, like foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
 2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ AldConvert -o foo_xx   foo_xx.xml
+3) $ aldict build -o foo_xx.aldict   foo_xx.xml
      you will get foo_xx.aldict
 
 You can downlaod the dictionaries of stardict from here:
@@ -181,9 +186,9 @@ cedict
 ------
 Currently, only support 'text' format, please download 'text' insteadof 'xml' format.
 
-$ python cedict_to_aldictxml.py -i foo.txt
-$ AldConvert -o foo  foo.xml
-    you will get foo.aldict
+$ python cedict_to_aldictxml.py -i foo.txt -o foo_xx.xml
+$ aldict build -o foo_xx.aldict  foo_xx.xml
+    you will get foo_xx.aldict
 
 You can download the cedict dicionary from here:
     "http://www.mdbg.net/chindict/chindict.php?page=cedict"
@@ -197,7 +202,7 @@ Select "File format: UTF-8 plain text", then "Download dictionary".
 Here is a example for coverting.
 
 $ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ AldConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
+$ aldict build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
 
 
 IDP
@@ -209,7 +214,7 @@ Lookup "Dictionary Files"
 Here is a example for coverting.
 
 $ ./idp_to_aldictxml.py  -i French.txt
-$ AldConvert -o idp_french   French.xml
+$ aldict build -o idp_french.aldict   French.xml
  
 
 How to Report Bugs, Contribute or Contact

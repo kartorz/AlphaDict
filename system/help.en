@@ -17,9 +17,9 @@ AlphaDict by joni lee (li liqiong) &lt;joni_lee@outlook.com&gt;.<br/>
 
 <h3>Dictionary Format</h3>
 
-<p>AlphaDict has a custom dictionary format including a back-end inner format (<tt>doc/dictionary_inner.pdf</tt>) and a front-end xml format (<tt>doc/front-end_format.xml</tt>).</p>
+<p>AlphaDict has a custom dictionary format including a back-end inner format (<tt>doc/dictionary_inner.pdf</tt>) and a front-end format (<tt>doc/front-end_format.txt</tt>, the older xml one is <tt>front-end_format.xml</tt>).</p>
 
-<p>Usually, a user should edit the "front-end" xml, then use <tt>AldConvert(.exe)</tt> to convert it. More detail about dictionaries, see the "README" doc or the "wiki".</p>
+<p>Usually, a user should edit the plain-text front-end, then run <tt>aldict build -o xx.aldict xx.txt</tt>; <tt>aldict export</tt> turns a dictionary back into text. More detail about dictionaries, see the "README" doc or the "wiki".</p>
 
 <h3>Dictionary Selection</h3>
 

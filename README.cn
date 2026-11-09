@@ -72,10 +72,9 @@ $ ./configure --help
   custom configurations to fix it.
 
 $ make
-  生成两个程序: AlphaDict (图形界面) 和 AldConvert (词典转换工具)，并且用
-  AldConvert 把 system/dicts/en-ch.xml 转成示例词典 en-ch.aldict。刚克隆下来
-  的仓库一个词典都没有，有了这一步，界面第一次启动就能显示 60 个词的索引。
-  只需要重新生成词典时: $ make dict
+  生成两个程序: AlphaDict (图形界面) 和 aldict (词典转换工具)。词典是数据，
+  放在 system/dicts/ 下，安装时随程序一起装好；用 aldict 可以自己做词典，
+  做法见下面“如何制作词典”
 
 $ make install
   --prefix 默认是 /usr/local；安装脚本不会 sudo，需要写系统目录时自己提权。
@@ -116,19 +115,26 @@ windows
 
 如何制作词典
 ==========
-"Alpha词典"有一个开发的词典格式, "doc/(dictionary_inner.pdf,front-end_format.xml)" 是词典格式文档。
+"Alpha词典"有一个开放的词典格式, "doc/(dictionary_inner.pdf, front-end_format.txt, front-end_format.xml)" 是词典格式文档。
 鼓励用户制作自己的词典.
 
-通常情况下，你只需要了解 'front-end_format.xml', 能制作词典只需要2个步骤.
-1) 根据 front-end_format.xml的格式, 创建一个 xx.xml 文件.
-2) 使用 AldConvert(.exe) 转换 xx.xml， 生成 xx.aldict 文件。
-   $ AldConvert -o xx xx.xml
-   将生成词典文件: xx.aldict.
-   
-AldConvert 支持多xml文件.你可以把一个大的xml，分割成多个小的xml文件，或者把几个xml文件，合并生成一个词典文件。
-  $ AldConvert -o xx xx.xml  xx_2.xml  xx_3.xml 
+前端格式有两种：纯文本（推荐）和 xml（旧格式）。文本用编辑器直接写就行，
+两个步骤就能做出词典:
+1) 按 doc/front-end_format.txt 的格式，写一个 xx.txt。
+2) $ aldict build -o xx.aldict xx.txt
+   生成词典文件: xx.aldict。不给 -o 时输出 xx.aldict（取输入文件的基本名）。
 
-doc/alphadict_en-ch.xml 是一个例子, 你可以参考它来制作自己的词典.
+反过来，任何词典都能导出成文本，改完再编回去:
+  $ aldict export -o xx.txt xx.aldict
+  $ aldict build  -o xx.aldict xx.txt
+
+  $ aldict info xx.aldict
+   查看词典名、语言、版本和条目数。
+
+多个文本文件可以合并成一本词典（xml 文件同样可以喂给 build）:
+  $ aldict build -o xx.aldict part1.txt part2.txt part3.txt
+
+doc/alphadict_en-ch.xml 是一个 xml 的例子, 你可以参考它来制作自己的词典。
 
 
 词典路径
@@ -140,7 +146,7 @@ linux, unix:  /usr/local/share/alphadict/dicts
 
 如何使用第三方词典
 ===============
-对一些词典格式，"Alpha词典"不提供直接的支持，需要使用工具进行转换, 转换为 "Alpha词典"的前端xml格式。
+对一些词典格式，"Alpha词典"不提供直接的支持，需要使用工具进行转换, 转换为 "Alpha词典"的前端格式（xml 或 txt）。
 可能大家觉得有点麻烦， 这些工具全部是 python 脚本，使用起来非常简单，也便于修改。它们的位置在: 
     /usr/local/share/alphadict/tools  -- linux, unix
     '安装目录'/sytem/tools -- win32.
@@ -154,7 +160,7 @@ $ python xx_toaldictxml.py
 1) 把所有的词典文件放到一个目录下, 如 foo.
    foo/ [foo_xx.idx, foo_xx.ifo, foo_xx.dict]
 2) $ python stardict_to_aldictxml.py -i foo/foo_xx  -o  foo_xx.xml
-3) $ AldConvert -o foo_xx   foo_xx.xml
+3) $ aldict build -o foo_xx.aldict   foo_xx.xml
      生成词典文件 foo_xx.aldict 
 
 你能从下面链接，下载星际译王的词典:
@@ -164,8 +170,8 @@ cedict
 ------
 当前只支持文本格式，请下载 text 文件, 而不是 'xml' 文件.
 
-$ python cedict_to_aldictxml.py -i foo.txt
-$ AldConvert -o foo  foo.xml
+$ python cedict_to_aldictxml.py -i foo.txt -o foo_xx.xml
+$ aldict build -o foo_xx.aldict  foo_xx.xml
   生成词典文件 foo_xx.aldict
 
 你能从下面链接，下载 cedict 的词典:
@@ -180,7 +186,7 @@ dicts.info
 下面是一个转换词典的例子.
 
 $ ./dictsinfo_to_aldictxml.py  -i english-chinese-xx.txt
-$ AldConvert -o dictsinfo_english-chinese   english-chinese-xx.xml
+$ aldict build -o dictsinfo_english-chinese.aldict   english-chinese-xx.xml
 
 
 IDP
@@ -192,7 +198,7 @@ IDP
 下面是一个转换词典的例子.
 
 $ ./idp_to_aldictxml.py  -i French.txt
-$ AldConvert -o idp_french   French.xml
+$ aldict build -o idp_french.aldict   French.xml
  
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系

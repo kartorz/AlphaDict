@@ -1,4 +1,4 @@
-# AldConvert is deliberately shipped twice: as a user command in /usr/bin and
+# aldict is deliberately shipped twice: as a user command in /usr/bin and
 # as a copy inside the program data directory, so that an installed data tree
 # (dicts, tools, documentation) carries its own converter and can be relocated.
-arch-dependent-file-in-usr-share [usr/share/alphadict/AldConvert]
+arch-dependent-file-in-usr-share [usr/share/alphadict/aldict]

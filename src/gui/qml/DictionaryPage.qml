@@ -163,8 +163,8 @@ Item {
                                     }
                                     Text {
                                         visible: modelData.phonetic !== ""
-                                        // AldConvert stores one phonetic per line
-                                        // (British / American); render them inline.
+                                        // one phonetic per line (British /
+                                        // American); render them inline.
                                         text: "/" + String(modelData.phonetic)
                                                   .replace(/[\r\n]+/g, "    ")
                                                   .trim() + "/"
