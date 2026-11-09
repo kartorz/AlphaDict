@@ -45,7 +45,7 @@ Item {
                         checkable: true
                         checked: bridge.vBookMode === 0
                         horizontalPadding: 10
-                        controlHeight: 28
+                        controlHeight: Math.max(28, Theme.baseSize + 16)
                         onClicked: bridge.vBookMode = 0
                     }
                     FlatButton {
@@ -53,7 +53,7 @@ Item {
                         checkable: true
                         checked: bridge.vBookMode === 1
                         horizontalPadding: 10
-                        controlHeight: 28
+                        controlHeight: Math.max(28, Theme.baseSize + 16)
                         onClicked: bridge.vBookMode = 1
                     }
 
@@ -62,7 +62,7 @@ Item {
                     FlatButton {
                         glyph: "✕"
                         danger: true
-                        controlHeight: 28
+                        controlHeight: Math.max(28, Theme.baseSize + 16)
                         horizontalPadding: 8
                         enabled: bridge.vbook.length > 0
                         onClicked: bridge.clearVBook()
@@ -83,7 +83,7 @@ Item {
 
                     delegate: Rectangle {
                         width: wordList.width
-                        height: 46
+                        height: Math.max(46, Theme.baseSize + 30)
                         radius: Theme.radiusSmall
                         color: index === bridge.vBookRow
                                ? Theme.selection
@@ -109,13 +109,15 @@ Item {
                                 text: modelData.word
                                 color: Theme.text
                                 font.pixelSize: Theme.baseSize
+                                font.family: Theme.fontFamily
                                 elide: Text.ElideRight
                             }
                             Text {
                                 width: parent.width
                                 text: modelData.complexity + "  " + modelData.date
                                 color: Theme.textMut
-                                font.pixelSize: Theme.baseSize - 3
+                                font.pixelSize: Theme.tinySize
+                                font.family: Theme.fontFamily
                                 elide: Text.ElideRight
                             }
                         }
@@ -126,7 +128,8 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "✕"
                             color: Theme.textMut
-                            font.pixelSize: 13
+                            font.pixelSize: Theme.smallSize
+                            font.family: Theme.fontFamily
                             opacity: removeArea.containsMouse ? 1.0 : 0.0
                             MouseArea {
                                 id: removeArea
@@ -148,6 +151,7 @@ Item {
                         text: qsTr("The vocabulary book is empty.\nAdd words from an explanation card.")
                         color: Theme.textMut
                         font.pixelSize: Theme.baseSize - 1
+                        font.family: Theme.fontFamily
                     }
                 }
 
@@ -158,14 +162,14 @@ Item {
                     FlatButton {
                         glyph: "↑"
                         horizontalPadding: 10
-                        controlHeight: 30
+                        controlHeight: Math.max(30, Theme.baseSize + 18)
                         enabled: bridge.vBookRow > 0
                         onClicked: bridge.vbookStep(-1)
                     }
                     FlatButton {
                         glyph: "↓"
                         horizontalPadding: 10
-                        controlHeight: 30
+                        controlHeight: Math.max(30, Theme.baseSize + 18)
                         enabled: bridge.vBookRow >= 0 && bridge.vBookRow < bridge.vbook.length - 1
                         onClicked: bridge.vbookStep(1)
                     }
@@ -175,7 +179,8 @@ Item {
                               ? "—"
                               : (bridge.vBookRow + 1) + " / " + bridge.vbook.length
                         color: Theme.textDim
-                        font.pixelSize: Theme.baseSize - 2
+                        font.pixelSize: Theme.smallSize
+                        font.family: Theme.fontFamily
                     }
                 }
             }
@@ -194,7 +199,7 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 78
+                    Layout.preferredHeight: Math.max(78, Theme.baseSize * 2 + 48)
                     radius: Theme.radiusSmall
                     color: Theme.surfaceAlt
                     border.width: 1
@@ -222,6 +227,7 @@ Item {
                             }
                             color: Theme.text
                             font.pixelSize: Theme.baseSize + 8
+                            font.family: Theme.fontFamily
                             font.bold: true
                         }
                         Text {
@@ -232,7 +238,8 @@ Item {
                                   ? qsTr("Read the word and its explanation, then type it")
                                   : qsTr("Spell the word from its explanation, then press Enter")
                             color: Theme.textMut
-                            font.pixelSize: Theme.baseSize - 2
+                            font.pixelSize: Theme.smallSize
+                            font.family: Theme.fontFamily
                         }
                     }
                 }
@@ -264,10 +271,11 @@ Item {
                         text: qsTr("Repetitions")
                         color: Theme.textDim
                         font.pixelSize: Theme.baseSize - 1
+                        font.family: Theme.fontFamily
                     }
                     StyledComboBox {
                         controlWidth: 80
-                        controlHeight: 30
+                        controlHeight: Math.max(30, Theme.baseSize + 18)
                         model: [1, 2, 3, 5]
                         currentIndex: 0
                         onActivated: page.repeatCount = [1, 2, 3, 5][index]
@@ -301,6 +309,7 @@ Item {
                             textFormat: text.charAt(0) === "<" ? Text.RichText : Text.PlainText
                             color: Theme.text
                             font.pixelSize: Theme.baseSize
+                            font.family: Theme.fontFamily
                             wrapMode: Text.WordWrap
                             onLinkActivated: Qt.openUrlExternally(link)
                         }
@@ -312,6 +321,7 @@ Item {
                         text: qsTr("Select a word on the left")
                         color: Theme.textMut
                         font.pixelSize: Theme.baseSize - 1
+                        font.family: Theme.fontFamily
                     }
                 }
             }

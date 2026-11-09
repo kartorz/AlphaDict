@@ -6,12 +6,13 @@ import "."
 TextField {
     id: field
 
-    property int fieldHeight: 34
+    property int fieldHeight: Theme.controlHeight
 
     implicitHeight: fieldHeight
     color: Theme.text
     placeholderTextColor: Theme.textMut
     font.pixelSize: Theme.baseSize
+    font.family: Theme.fontFamily
     selectByMouse: true
     leftPadding: 12
     rightPadding: 12

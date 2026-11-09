@@ -13,7 +13,7 @@ Rectangle {
     property bool checkable: false
     property bool checked: false
     property int horizontalPadding: 14
-    property int controlHeight: 34
+    property int controlHeight: Theme.controlHeight
 
     signal clicked()
 
@@ -50,12 +50,14 @@ Rectangle {
             visible: btn.glyph !== ""
             color: btn.fg
             font.pixelSize: Theme.baseSize + 1
+            font.family: Theme.fontFamily
         }
         Text {
             text: btn.text
             visible: btn.text !== ""
             color: btn.fg
             font.pixelSize: Theme.baseSize
+            font.family: Theme.fontFamily
         }
     }
 

@@ -9,7 +9,9 @@
 #include <QtCore/QStringList>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
+#include <QtNetwork/QLocalSocket>
 #include <QtGui/QScreen>
+#include <QtGui/QGuiApplication>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
 #include <QtWidgets/QMessageBox>
@@ -39,22 +41,27 @@ read README-win32.txt for more information \n").arg(ret);
         msgBox.exec();
 }
 
-inline int checkExistAppProc()
+/*! Ask a running copy to show itself; true if one answered.  No dialog. */
+inline bool wakeupExistingInstance()
 {
-    if (Application::existProcess()) {
-        QString msg = QString(QObject::tr("\n\
-This application has alreay been running,  \n\n\
-Do you want run a another process.\n\n"));
+    if (!Application::existProcess())
+        return false;
 
-        if (QMessageBox::question(NULL, QObject::tr("warning"), msg,
-                                  QMessageBox::No | QMessageBox::Yes,
-                                  QMessageBox::No) == QMessageBox::No) {
-            //exit(-1), //will cause segmant fault.
-            return -1;
-        }
+    QLocalSocket socket;
+    socket.connectToServer(
+        QString::fromStdString(Application::instanceServerName()));
+    if (socket.waitForConnected(1500)) {
+        /* The receiver only needs the connection; the line keeps intent in logs. */
+        socket.write("show\n");
+        socket.flush();
+        socket.waitForBytesWritten(1500);
+        socket.disconnectFromServer();
+        g_sysLog.i("{Application} another instance is running, asked it to show its window\n");
+        return true;
     }
-    Application::writePidFile();
-    return 0;
+
+    g_sysLog.w("{Application} stale pid file, starting a new instance\n");
+    return false;
 }
 #endif /* CONFIG_QT5 */
 
@@ -69,7 +76,6 @@ int main(int argc, char* argv[])
 #endif
     int ret = 0;
     Util::getTimeMS(); // start to timing.
-    ret = g_application.start();
 
 #if CONFIG_QT5
 #ifdef WIN32
@@ -77,26 +83,47 @@ int main(int argc, char* argv[])
     char** argv = 0;
 #endif
     QTranslator translator;
+
+    /* Must be set before QApplication is constructed. */
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    /* Keep 125% / 150% instead of rounding to 100% or 200%. */
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(
+        Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
+
     QApplication a(argc, argv);
 
+    /* Single instance, before loading any dictionary: returns in ms. */
+    if (wakeupExistingInstance())
+        return 0;
+#endif
+
+    ret = g_application.start();
+
+#if CONFIG_QT5
+#if CONFIG_QML
+    /* The QML front-end applies the font itself (QmlBridge::applyUiFont). */
+#else
     int fontsize = g_application.m_configure->m_setting.fontsize;
 
+    /* fontsize is logical pixels, QFont wants points: convert on 96 dpi. */
+    QFont font = a.font();
     if (g_application.m_configure->m_setting.font == "") {
     #ifdef _WINDOWS
-        QFont font = QFont(QString("Courier"), fontsize);
-        a.setFont(font);
-    #else
-        QFont font = a.font();
-        if (fontsize != font.pointSize()) {
-            font.setPointSize(fontsize);
-            a.setFont(font);
-        }
+        /* Keep the historical Windows default when no family is set. */
+        font.setFamily(QString("Courier"));
     #endif
     } else {
         string family = g_application.m_configure->m_setting.font;
-        QFont font = QFont(QString::fromUtf8(family.c_str()), fontsize);
-        a.setFont(font);
+        font.setFamily(QString::fromUtf8(family.c_str()));
     }
+    font.setPointSizeF(fontsize * 3.0 / 4.0);
+    a.setFont(font);
+#endif
 
     if (g_application.m_configure->m_setting.uilanID == UILAN_NONE) {
         if (QLocale::system().language() == QLocale::Chinese)
@@ -133,10 +160,8 @@ int main(int argc, char* argv[])
         return ret;
     }
 
-	if (checkExistAppProc() != 0) {
-        g_application.stop();
-        return -2;
-	}
+	/* A copy that failed to initialize never writes this. */
+    Application::writePidFile();
 
 #if CONFIG_QML
     QmlMainWindow w;

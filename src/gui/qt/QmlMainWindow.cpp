@@ -24,6 +24,9 @@
 #include <QtGui/QIcon>
 #include <QtGui/QCursor>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QWindow>
+#include <QtNetwork/QLocalServer>
+#include <QtNetwork/QLocalSocket>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMenu>
@@ -66,12 +69,14 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
     m_messager(NULL),
     m_capWordDialog(NULL),
     m_systray(NULL),
+    m_instanceServer(NULL),
     m_config(NULL),
     m_trayCwsEnableAct(NULL),
     m_trayCwsClipboardAct(NULL),
     m_trayCwsSelectionAct(NULL),
     m_cwdEnableTemp(true),
     m_nonRepeatSelEn(false),
+    m_quitRequested(false),
     onSysExit(NULL)
 {
     m_config = g_application.m_configure;
@@ -126,6 +131,8 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
                      this, SLOT(onRequestMove(int, int)));
     QObject::connect(m_bridge, SIGNAL(requestMinimizeToTray()),
                      this, SLOT(onRequestMinimizeToTray()));
+    QObject::connect(m_bridge, SIGNAL(requestCloseWindow()),
+                     this, SLOT(close()));
     QObject::connect(m_bridge, SIGNAL(requestQuit()),
                      this, SLOT(onRequestQuit()));
     QObject::connect(m_bridge, SIGNAL(requestSystemTray(bool)),
@@ -138,6 +145,21 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
                      this, SLOT(onCapWordShown()));
 
     qApp->installEventFilter(this);
+
+    /* A second launch connects here instead of opening a window. */
+    m_instanceServer = new QLocalServer(this);
+    const QString serverName =
+        QString::fromStdString(Application::instanceServerName());
+    /* A crash may leave the socket file; binding would then fail forever. */
+    QLocalServer::removeServer(serverName);
+    if (m_instanceServer->listen(serverName)) {
+        QObject::connect(m_instanceServer, SIGNAL(newConnection()),
+                         this, SLOT(onInstanceMessage()));
+    } else {
+        g_sysLog.e("{QmlMainWindow} cannot listen on %s: %s\n",
+                   serverName.toUtf8().constData(),
+                   m_instanceServer->errorString().toUtf8().constData());
+    }
 }
 
 QmlMainWindow::~QmlMainWindow()
@@ -194,10 +216,8 @@ void QmlMainWindow::initDelay()
     if (m_config->m_cws.benable)
         registerHotkey(m_config->m_cws.shortcutKey);
 
-    if (m_config->m_setting.font == "") {
-        QString family = font().family();
-        m_config->writeFont(family.toStdString());
-    }
+    /* Empty family = system default; writing it back would freeze the
+     * desktop font. */
 }
 
 /*---------------------------------------------------------------------------
@@ -294,6 +314,7 @@ void QmlMainWindow::onRequestMinimizeToTray()
 
 void QmlMainWindow::onRequestQuit()
 {
+    m_quitRequested = true;
     if (m_systray != NULL)
         m_systray->hide();
     close();
@@ -334,10 +355,36 @@ void QmlMainWindow::onRequestShortcutKey(int oldIndex, int newIndex)
 
 void QmlMainWindow::onSysTrayActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    if (reason == QSystemTrayIcon::Trigger) {
-        showNormal();
-        activateWindow();
+    if (reason == QSystemTrayIcon::Trigger)
+        raiseWindow();
+}
+
+void QmlMainWindow::onInstanceMessage()
+{
+    while (m_instanceServer->hasPendingConnections()) {
+        QLocalSocket *socket = m_instanceServer->nextPendingConnection();
+        if (socket == NULL)
+            break;
+        socket->readAll();
+        socket->disconnectFromServer();
+        socket->deleteLater();
     }
+
+    raiseWindow();
+}
+
+void QmlMainWindow::raiseWindow()
+{
+    if (isMinimized())
+        showNormal();
+    else
+        show();
+    raise();
+    activateWindow();
+
+    /* Some window managers leave it behind other windows: ask explicitly. */
+    if (windowHandle() != NULL)
+        windowHandle()->requestActivate();
 }
 
 void QmlMainWindow::onTrayCwsEnable(bool checked)
@@ -383,7 +430,11 @@ bool QmlMainWindow::eventFilter(QObject *watched, QEvent *event)
 
 void QmlMainWindow::closeEvent(QCloseEvent *event)
 {
-    if (m_config->m_setting.bsystemTray && m_systray != NULL && m_systray->isVisible()) {
+    /* On -> hide and keep running, off -> quit; icon visibility must not matter. */
+    if (!m_quitRequested && m_config->m_setting.bsystemTray && m_systray != NULL) {
+        /* Make sure the icon exists before hiding the window. */
+        if (!m_systray->isVisible())
+            m_systray->show();
         hide();
         event->ignore();
     } else {

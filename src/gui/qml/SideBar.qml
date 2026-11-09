@@ -9,7 +9,7 @@ Rectangle {
     property int current: 0
     signal navigate(int index)
 
-    implicitWidth: 88
+    implicitWidth: Math.max(88, Theme.baseSize * 3 + 40)
     color: Theme.surface
 
     Rectangle {
@@ -27,15 +27,16 @@ Rectangle {
 
         Rectangle {
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 44
-            Layout.preferredHeight: 44
+            Layout.preferredWidth: Math.max(44, Theme.baseSize + 28)
+            Layout.preferredHeight: Math.max(44, Theme.baseSize + 28)
             radius: 14
             gradient: Theme.accentGradient
             Text {
                 anchors.centerIn: parent
                 text: "A"
                 color: "#ffffff"
-                font.pixelSize: 24
+                font.pixelSize: Math.max(24, Theme.baseSize + 8)
+                font.family: Theme.fontFamily
                 font.bold: true
             }
         }
@@ -52,8 +53,9 @@ Rectangle {
 
             delegate: Item {
                 Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: 68
-                Layout.preferredHeight: 58
+                Layout.preferredWidth: Math.max(68, Theme.baseSize * 2 + 36)
+                /* Must fit the glyph line plus the label line, so grow with both. */
+                Layout.preferredHeight: Math.max(58, Theme.baseSize * 2 + 14)
 
                 Rectangle {
                     anchors.fill: parent
@@ -81,14 +83,16 @@ Rectangle {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: modelData.glyph
-                        font.pixelSize: 18
+                        font.pixelSize: Math.max(18, Theme.baseSize + 2)
+                        font.family: Theme.fontFamily
                         font.bold: true
                         color: index === bar.current ? Theme.accent : Theme.text
                     }
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: modelData.label
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.tinySize
+                        font.family: Theme.fontFamily
                         color: index === bar.current ? Theme.accent : Theme.textMut
                     }
                 }
@@ -109,7 +113,7 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: 46
             glyph: Theme.dark ? "☀" : "☾"
-            controlHeight: 40
+            controlHeight: Math.max(40, Theme.baseSize + 26)
             horizontalPadding: 0
             onClicked: Theme.dark = !Theme.dark
         }

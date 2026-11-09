@@ -45,8 +45,18 @@ QtObject {
     property int fast: 120
     property int slow: 220
 
+    /* baseSize is in logical pixels, the unit QML font.pixelSize uses. */
     property string fontFamily: ""
-    property int baseSize: 14
+    property int baseSize: 16
+
+    /* Derived sizes, floored to stay legible at the minimum baseSize. */
+    readonly property int smallSize: Math.max(11, baseSize - 2)
+    readonly property int tinySize:  Math.max(10, baseSize - 4)
+
+    /* Chrome heights follow the text size or a larger font would be clipped. */
+    readonly property int controlHeight: Math.max(34, baseSize + 20)
+    readonly property int toolbarHeight: Math.max(58, baseSize + 44)
+    readonly property int statusHeight:  Math.max(26, baseSize + 12)
 
     property Gradient accentGradient: Gradient {
         GradientStop { position: 0.0; color: theme.accent }

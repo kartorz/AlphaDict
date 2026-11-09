@@ -5,6 +5,8 @@
 
 # ifdef _LINUX
 #include <unistd.h>
+#include <signal.h>
+#include <errno.h>
 #endif
 
 #include <stdlib.h>
@@ -81,17 +83,70 @@ int Application::initialization()
     return ret;
 }
 
+/* $XDG_RUNTIME_DIR is per login session; /tmp only for a bare console. */
+static string instanceDir()
+{
+    const char* xdg = getenv("XDG_RUNTIME_DIR");
+    if (xdg != NULL && xdg[0] == '/') {
+        string dir(xdg);
+        while (dir.size() > 1 && dir[dir.size() - 1] == '/')
+            dir.erase(dir.size() - 1);
+        return dir;
+    }
+
+    string path;
+    Util::tempDir(path);
+    return path;
+}
+
+string Application::pidPath()
+{
+    string path = instanceDir();
+    path += "/alphadict";
+# ifdef _LINUX
+    path += "-";
+    path += Util::intToString((int)getuid());
+# endif
+    path += ".pid";
+    return path;
+}
+
+string Application::instanceServerName()
+{
+# ifdef _LINUX
+    string name = instanceDir();
+    name += "/alphadict-";
+    name += Util::intToString((int)getuid());
+    name += ".sock";
+    return name;
+# else
+    /* Windows uses a named pipe. */
+    return string("AlphaDict");
+# endif
+}
+
 bool Application::existProcess()
 {
     string path = pidPath();
     FILE* fpid = fopen(path.c_str(), "r");
     if (fpid != NULL) {
         char buf[8] = {'\0'};
-        fread(buf, 1, 7, fpid);
+        size_t nread = fread(buf, 1, 7, fpid);
+        fclose(fpid);
+        if (nread == 0)
+            return false;
         int pid = Util::stringToInt(buf);
         //printf("existProcess, pidbuf:%s, pid:%d\n", buf, pid);
         if (pid > 100) {
-            fclose(fpid);
+# ifdef _LINUX
+            /* A stale file left by a crash must not block startup. */
+            if (pid == (int)Util::curpid())
+                return false;
+            if (kill((pid_t)pid, 0) != 0 && errno == ESRCH) {
+                unlink(path.c_str());
+                return false;
+            }
+# endif
             return true;
         }
     }
@@ -110,7 +165,7 @@ void Application::writePidFile()
     }
 }
 
-// Can't put stop or ~Application(), when exit by 'checkExistAppProc'
+// Can't put stop or ~Application(), when exit by 'on_exit'
 // will enter this functions;
 void Application::delPidFile()
 {

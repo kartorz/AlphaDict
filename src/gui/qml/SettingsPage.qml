@@ -7,6 +7,12 @@ import "."
 Item {
     id: page
 
+    /* Dragging breaks the value binding; follow the bridge and Reset. */
+    Connections {
+        target: bridge
+        function onFontSizeChanged() { fontSlider.value = bridge.fontSize }
+    }
+
     Flickable {
         id: flick
         anchors.fill: parent
@@ -54,13 +60,13 @@ Item {
 
                     SettingRow {
                         label: qsTr("Text size")
-                        hint: qsTr("Affects explanations and the vocabulary book")
+                        hint: qsTr("Applies to the whole interface right away")
                         RowLayout {
                             spacing: 8
                             Slider {
                                 id: fontSlider
-                                from: 9
-                                to: 32
+                                from: bridge.minFontSize
+                                to: bridge.maxFontSize
                                 stepSize: 1
                                 value: bridge.fontSize
                                 implicitWidth: 170
@@ -91,10 +97,11 @@ Item {
                                 }
                             }
                             Text {
-                                text: bridge.fontSize + " pt"
+                                text: bridge.fontSize + " px"
                                 color: Theme.textDim
-                                font.pixelSize: Theme.baseSize - 2
-                                Layout.preferredWidth: 46
+                                font.pixelSize: Theme.smallSize
+                                font.family: Theme.fontFamily
+                                Layout.preferredWidth: Math.max(52, Theme.baseSize * 2 + 18)
                             }
                         }
                     }
@@ -105,10 +112,10 @@ Item {
                         ThemedField {
                             id: fontField
                             implicitWidth: 200
-                            fieldHeight: 30
+                            fieldHeight: Math.max(30, Theme.baseSize + 18)
                             text: bridge.fontFamily
                             placeholderText: qsTr("System default")
-                            onAccepted: bridge.fontFamily = text
+                            onEditingFinished: bridge.fontFamily = text
                         }
                     }
                 }
@@ -172,6 +179,7 @@ Item {
                                 text: "Ctrl + Alt +"
                                 color: Theme.textDim
                                 font.pixelSize: Theme.baseSize - 1
+                                font.family: Theme.fontFamily
                             }
                             StyledComboBox {
                                 model: bridge.shortcutKeys
@@ -198,8 +206,8 @@ Item {
                     ListView {
                         id: dictList
                         Layout.fillWidth: true
-                        Layout.preferredHeight: Math.min(360, Math.max(60,
-                            bridge.dictCount * 52))
+                        Layout.preferredHeight: Math.min(420, Math.max(60,
+                            bridge.dictCount * (Math.max(48, Theme.baseSize + 32) + 4)))
                         clip: true
                         spacing: 4
                         model: bridge.dictModel
@@ -208,7 +216,7 @@ Item {
 
                         delegate: Rectangle {
                             width: dictList.width
-                            height: 48
+                            height: Math.max(48, Theme.baseSize + 32)
                             radius: Theme.radiusSmall
                             color: Theme.surfaceAlt
                             border.width: 1
@@ -227,6 +235,7 @@ Item {
                                         text: model.name
                                         color: Theme.text
                                         font.pixelSize: Theme.baseSize
+                                        font.family: Theme.fontFamily
                                         elide: Text.ElideRight
                                         maximumLineCount: 1
                                         Layout.fillWidth: true
@@ -241,7 +250,8 @@ Item {
                                               .filter(function (part) { return part.length > 0; })
                                               .join("  ·  ")
                                         color: Theme.textMut
-                                        font.pixelSize: Theme.baseSize - 2
+                                        font.pixelSize: Theme.smallSize
+                                        font.family: Theme.fontFamily
                                         elide: Text.ElideRight
                                         maximumLineCount: 1
                                         Layout.fillWidth: true
@@ -250,14 +260,14 @@ Item {
 
                                 FlatButton {
                                     glyph: "↑"
-                                    controlHeight: 26
+                                    controlHeight: Math.max(26, Theme.baseSize + 14)
                                     horizontalPadding: 8
                                     enabled: index > 0
                                     onClicked: bridge.moveDictRow(index, -1)
                                 }
                                 FlatButton {
                                     glyph: "↓"
-                                    controlHeight: 26
+                                    controlHeight: Math.max(26, Theme.baseSize + 14)
                                     horizontalPadding: 8
                                     enabled: index < bridge.dictCount - 1
                                     onClicked: bridge.moveDictRow(index, 1)
@@ -278,6 +288,7 @@ Item {
                             text: qsTr("No dictionary found. Put dictionary files into:\n%1").arg(bridge.dataDir)
                             color: Theme.textMut
                             font.pixelSize: Theme.baseSize - 1
+                            font.family: Theme.fontFamily
                         }
                     }
                 }

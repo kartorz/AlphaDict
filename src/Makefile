@@ -106,8 +106,14 @@ dict:
 #%.d : %.cpp
 #	$(CC) -MM $< -o $@
 
+# dpkg-buildflags puts -Werror=implicit-function-declaration in CFLAGS, but it
+# is a C-only diagnostic: GCC 14 warns that the option is invalid for C++ when
+# the same CFLAGS reach cc1plus.  Drop it for C++ sources only; every other
+# flag (include paths, Qt defines, hardening) still applies.
+CXX_ALLFLAGS = $(filter-out -Werror=implicit-function-declaration,$(CFLAGS)) $(CXXFLAGS)
+
 %.o : %.cpp
-	$(CC) $(CFLAGS) $(CXXFLAGS)  -c $< -o $@
+	$(CXX) $(CXX_ALLFLAGS) -c $< -o $@
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@

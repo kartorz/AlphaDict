@@ -29,6 +29,7 @@ class QQuickWidget;
 class QMenu;
 class QAction;
 class QCloseEvent;
+class QLocalServer;
 class QmlBridge;
 class QtMessager;
 class CapWordDialog;
@@ -71,6 +72,8 @@ private slots:
     void onRequestShortcutKey(int oldIndex, int newIndex);
     void onCapWordShown();
     void onCapWordAddToVBook(const QString &word);
+    /* another launch asked this instance to come to the front */
+    void onInstanceMessage();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
@@ -81,12 +84,15 @@ private:
     void unregisterHotkey(int key);
     QMenu* creatTrayContextMenu();
     void showToolTip(const QString &info, int displayTimeMS = 1500);
+    /* back from tray / minimized / behind other windows */
+    void raiseWindow();
 
     QmlBridge*      m_bridge;
     QQuickWidget*   m_quick;
     QtMessager*     m_messager;
     CapWordDialog*  m_capWordDialog;
     QSystemTrayIcon* m_systray;
+    QLocalServer*   m_instanceServer;
     Configure*      m_config;
 
     QAction* m_trayCwsEnableAct;
@@ -95,6 +101,8 @@ private:
 
     bool m_cwdEnableTemp;
     bool m_nonRepeatSelEn;
+    /*! user really wants to quit; closeEvent must not hide to the tray. */
+    bool m_quitRequested;
     void (*onSysExit)();
 };
 

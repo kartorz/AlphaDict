@@ -29,6 +29,13 @@ enum CwsShortcutKey {
     None_Key,
 };
 
+/* Interface font size in logical pixels (QML font.pixelSize). */
+enum {
+    UI_FONT_SIZE_MIN     = 12,
+    UI_FONT_SIZE_MAX     = 40,
+    UI_FONT_SIZE_DEFAULT = 16,
+};
+
 struct Setting {
     int  uilanID;
     int  fontsize;

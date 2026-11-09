@@ -73,6 +73,10 @@ class QmlBridge : public QObject
 
     Q_PROPERTY(int     fontSize   READ fontSize   WRITE setFontSize   NOTIFY fontSizeChanged)
     Q_PROPERTY(QString fontFamily READ fontFamily WRITE setFontFamily NOTIFY fontFamilyChanged)
+    /* slider bounds live in Configure.h */
+    Q_PROPERTY(int minFontSize     READ minFontSize     CONSTANT)
+    Q_PROPERTY(int maxFontSize     READ maxFontSize     CONSTANT)
+    Q_PROPERTY(int defaultFontSize READ defaultFontSize CONSTANT)
     Q_PROPERTY(bool    hasDict    READ hasDict    NOTIFY dictStateChanged)
     /* data directory actually in use, shown by the settings page */
     Q_PROPERTY(QString dataDir    READ dataDir    CONSTANT)
@@ -118,6 +122,9 @@ public:
     QString helpText() const { return m_helpText; }
 
     int     fontSize() const;
+    int     minFontSize() const;
+    int     maxFontSize() const;
+    int     defaultFontSize() const;
     QString fontFamily() const;
     bool    hasDict() const;
 
@@ -169,6 +176,8 @@ signals:
     /* window requests */
     void requestMove(int dx, int dy);
     void requestMinimizeToTray();
+    /*! same path as the window manager's close button */
+    void requestCloseWindow();
     void requestQuit();
     void capWordShown();
     void requestSystemTray(bool en);
@@ -197,6 +206,7 @@ public:
 
     Q_INVOKABLE void moveWindowBy(int dx, int dy);
     Q_INVOKABLE void minimizeToTray();
+    Q_INVOKABLE void closeWindow();
     Q_INVOKABLE void quit();
     Q_INVOKABLE void refreshHelpText();
     Q_INVOKABLE void setStatus(const QString &text);
@@ -217,6 +227,9 @@ public:
     void setShortcutIndex(int index);
 
 private:
+    /*! apply the configured family and size application-wide */
+    void applyUiFont();
+
     Configure *m_config;
     DictIndexModel *m_indexModel;
     DictListModel  *m_dictModel;
@@ -233,6 +246,9 @@ private:
     QString      m_vBookExpl;
     QString      m_statusText;
     QString      m_helpText;
+
+    /*! used when the configured family is empty ("system default") */
+    QString      m_defaultFontFamily;
 
     DictItemList *m_capItems;
 

@@ -19,6 +19,7 @@ Rectangle {
     /* Follow the configured font size for every themed text. */
     Component.onCompleted: {
         Theme.baseSize = bridge.fontSize;
+        Theme.fontFamily = bridge.fontFamily;
         searchField.forceActiveFocus();
         bridge.refreshHelpText();
     }
@@ -26,6 +27,7 @@ Rectangle {
     Connections {
         target: bridge
         function onFontSizeChanged() { Theme.baseSize = bridge.fontSize }
+        function onFontFamilyChanged() { Theme.fontFamily = bridge.fontFamily }
         function onQueryChanged() {
             if (searchField.text !== bridge.query)
                 searchField.text = bridge.query;
@@ -38,7 +40,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 58
+        height: Theme.toolbarHeight
         color: Theme.surface
 
         Rectangle {
@@ -56,15 +58,16 @@ Rectangle {
 
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
-                Layout.preferredWidth: 32
-                Layout.preferredHeight: 32
+                Layout.preferredWidth: Math.max(32, Theme.baseSize + 18)
+                Layout.preferredHeight: Math.max(32, Theme.baseSize + 18)
                 radius: 10
                 gradient: Theme.accentGradient
                 Text {
                     anchors.centerIn: parent
                     text: "A"
                     color: "#ffffff"
-                    font.pixelSize: 19
+                    font.pixelSize: Math.max(19, Theme.baseSize + 3)
+                    font.family: Theme.fontFamily
                     font.bold: true
                 }
             }
@@ -74,7 +77,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 560
                 Layout.alignment: Qt.AlignVCenter
-                fieldHeight: 36
+                fieldHeight: Math.max(36, Theme.baseSize + 22)
                 placeholderText: qsTr("Type a word and press Enter")
                 onAccepted: bridge.search(text)
             }
@@ -92,6 +95,7 @@ Rectangle {
                 text: "→"
                 color: Theme.textMut
                 font.pixelSize: Theme.baseSize
+                font.family: Theme.fontFamily
             }
 
             StyledComboBox {
@@ -115,7 +119,7 @@ Rectangle {
                 glyph: "✕"
                 danger: true
                 horizontalPadding: 10
-                onClicked: bridge.quit()
+                onClicked: bridge.closeWindow()
             }
         }
     }
@@ -176,7 +180,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 28
+        height: Theme.statusHeight
         color: Theme.surface
 
         Rectangle {
@@ -205,14 +209,16 @@ Rectangle {
                       ? bridge.statusText
                       : (bridge.hasDict ? qsTr("Ready") : qsTr("No dictionary available"))
                 color: Theme.textDim
-                font.pixelSize: Theme.baseSize - 3
+                font.pixelSize: Theme.tinySize
+                font.family: Theme.fontFamily
                 elide: Text.ElideRight
             }
 
             Text {
                 text: "AlphaDict · Qt 5 · QML"
                 color: Theme.textMut
-                font.pixelSize: Theme.baseSize - 4
+                font.pixelSize: Theme.tinySize
+                font.family: Theme.fontFamily
             }
         }
     }

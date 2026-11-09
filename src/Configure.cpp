@@ -245,16 +245,31 @@ int Configure::load(const string& xmlpath)
         m_setting.uilanID     = tempElement->IntAttribute("uilan");
         m_setting.fontsize    = tempElement->IntAttribute("fontsize");
         m_setting.font        = util::XMLUtil::Attribute(tempElement, "font", "");
-        m_setting.bsystemTray = tempElement->BoolAttribute("systemtray");
+
+        /* An old configure.xml has no "systemtray": default to on and save it. */
+        if (tempElement->Attribute("systemtray") == NULL) {
+            m_setting.bsystemTray = true;
+            tempElement->SetAttribute("systemtray", m_setting.bsystemTray);
+        } else {
+            m_setting.bsystemTray = tempElement->BoolAttribute("systemtray");
+        }
+
+        /* Lift the old 9..10 sizes that are unreadable on scaled desktops. */
+        if (m_setting.fontsize < UI_FONT_SIZE_MIN) {
+            m_setting.fontsize = UI_FONT_SIZE_DEFAULT;
+            tempElement->SetAttribute("fontsize", m_setting.fontsize);
+        }
     } else {
         m_setting.uilanID = UILAN_NONE;
-        m_setting.fontsize = 10;
+        m_setting.fontsize = UI_FONT_SIZE_DEFAULT;
         m_setting.font = "";
         m_setting.bsystemTray = true;
 
         XMLElement* e = m_doc.NewElement(XML_TAG_SETTING);
         e->SetAttribute("uilan", m_setting.uilanID);
         e->SetAttribute("fontsize", m_setting.fontsize);
+        e->SetAttribute("font", m_setting.font.c_str());
+        e->SetAttribute("systemtray", m_setting.bsystemTray);
 
         rootElement->InsertEndChild(e);
     }

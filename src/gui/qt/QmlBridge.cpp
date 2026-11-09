@@ -19,6 +19,8 @@
 
 #include <QtCore/QVariantMap>
 #include <QtCore/QAbstractItemModel>
+#include <QtGui/QFont>
+#include <QtGui/QGuiApplication>
 
 #include "QmlBridge.h"
 #include "Configure.h"
@@ -54,6 +56,7 @@ QmlBridge::QmlBridge(QObject *parent)
       m_capItems(NULL)
 {
     m_config = g_application.m_configure;
+    m_defaultFontFamily = QGuiApplication::font().family();
 
     m_indexModel = new DictIndexModel();
     m_indexModel->setParent(this);
@@ -77,6 +80,18 @@ QmlBridge::QmlBridge(QObject *parent)
     refreshHelpText();
     refreshVBook();
     selectVBookRow(0);
+    applyUiFont();
+}
+
+void QmlBridge::applyUiFont()
+{
+    QFont font = QGuiApplication::font();
+    const QString family = fontFamily();
+    font.setFamily(family.isEmpty() ? m_defaultFontFamily : family);
+
+    /* fontsize is in logical pixels, QFont wants points: convert on 96 dpi. */
+    font.setPointSizeF(qMax(6.0, m_config->m_setting.fontsize * 3.0 / 4.0));
+    QGuiApplication::setFont(font);
 }
 
 QmlBridge::~QmlBridge()
@@ -393,6 +408,21 @@ int QmlBridge::fontSize() const
     return m_config->m_setting.fontsize;
 }
 
+int QmlBridge::minFontSize() const
+{
+    return UI_FONT_SIZE_MIN;
+}
+
+int QmlBridge::maxFontSize() const
+{
+    return UI_FONT_SIZE_MAX;
+}
+
+int QmlBridge::defaultFontSize() const
+{
+    return UI_FONT_SIZE_DEFAULT;
+}
+
 QString QmlBridge::fontFamily() const
 {
     return QString::fromStdString(m_config->m_setting.font);
@@ -483,21 +513,24 @@ void QmlBridge::setDetLan(const QString &lan)
 
 void QmlBridge::setFontSize(int size)
 {
-    if (size < 9)
-        size = 9;
-    if (size > 32)
-        size = 32;
+    if (size < UI_FONT_SIZE_MIN)
+        size = UI_FONT_SIZE_MIN;
+    if (size > UI_FONT_SIZE_MAX)
+        size = UI_FONT_SIZE_MAX;
     if (m_config->m_setting.fontsize == size)
         return;
     m_config->writeFontSize(size);
+    applyUiFont();
     emit fontSizeChanged();
 }
 
 void QmlBridge::setFontFamily(const QString &family)
 {
-    if (fontFamily() == family)
+    const QString name = family.trimmed();
+    if (fontFamily() == name)
         return;
-    m_config->writeFont(family.toStdString());
+    m_config->writeFont(name.toStdString());
+    applyUiFont();
     emit fontFamilyChanged();
 }
 
@@ -566,7 +599,11 @@ void QmlBridge::setUiLanID(int id)
 void QmlBridge::resetSettings()
 {
     m_config->reset();
+    /* reset() only rewrites the XML on next start; restore the visible font now. */
+    m_config->writeFontSize(UI_FONT_SIZE_DEFAULT);
+    m_config->writeFont("");
     refreshHelpText();
+    applyUiFont();
     emit fontSizeChanged();
     emit fontFamilyChanged();
     emit systemTrayChanged();
@@ -624,6 +661,11 @@ void QmlBridge::moveWindowBy(int dx, int dy)
 void QmlBridge::minimizeToTray()
 {
     emit requestMinimizeToTray();
+}
+
+void QmlBridge::closeWindow()
+{
+    emit requestCloseWindow();
 }
 
 void QmlBridge::quit()

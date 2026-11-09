@@ -46,6 +46,7 @@ Rectangle {
                 id: titleText
                 color: Theme.text
                 font.pixelSize: Theme.baseSize + 1
+                font.family: Theme.fontFamily
                 font.bold: true
                 elide: Text.ElideRight
             }
@@ -54,6 +55,7 @@ Rectangle {
                 text: card.subtitle
                 color: Theme.textMut
                 font.pixelSize: Theme.baseSize - 1
+                font.family: Theme.fontFamily
                 elide: Text.ElideRight
                 /* Bounded by the card, never by headerRow: a layout item whose
                  * constraint reads its own layout's width feeds back into the

@@ -32,7 +32,7 @@ Item {
                 ThemedField {
                     id: prefixField
                     Layout.fillWidth: true
-                    fieldHeight: 30
+                    fieldHeight: Math.max(30, Theme.baseSize + 18)
                     placeholderText: qsTr("Prefix, e.g. ab")
                     onTextChanged: page.loadPrefix(text)
                 }
@@ -49,7 +49,7 @@ Item {
 
                     delegate: Rectangle {
                         width: indexList.width
-                        height: 28
+                        height: Math.max(28, Theme.baseSize + 14)
                         radius: 6
                         color: entry.containsMouse ? Theme.surfaceHi : "transparent"
 
@@ -62,6 +62,7 @@ Item {
                             text: model.display
                             color: entry.containsMouse ? Theme.accent : Theme.text
                             font.pixelSize: Theme.baseSize - 1
+                            font.family: Theme.fontFamily
                             elide: Text.ElideRight
                         }
 
@@ -81,7 +82,8 @@ Item {
                         visible: bridge.indexCount === 0
                         text: qsTr("No index")
                         color: Theme.textMut
-                        font.pixelSize: Theme.baseSize - 2
+                        font.pixelSize: Theme.smallSize
+                        font.family: Theme.fontFamily
                     }
                 }
 
@@ -91,7 +93,7 @@ Item {
                     FlatButton {
                         glyph: "⏮"
                         horizontalPadding: 8
-                        controlHeight: 26
+                        controlHeight: Math.max(26, Theme.baseSize + 14)
                         onClicked: {
                             var row = bridge.pageIndex(-1);
                             if (row >= 0) indexList.positionViewAtIndex(row, ListView.Beginning);
@@ -101,7 +103,7 @@ Item {
                     FlatButton {
                         glyph: "⏭"
                         horizontalPadding: 8
-                        controlHeight: 26
+                        controlHeight: Math.max(26, Theme.baseSize + 14)
                         onClicked: {
                             var row = bridge.pageIndex(1);
                             if (row >= 0) indexList.positionViewAtIndex(row, ListView.Beginning);
@@ -158,6 +160,7 @@ Item {
                                         text: modelData.word
                                         color: Theme.text
                                         font.pixelSize: Theme.baseSize + 3
+                                        font.family: Theme.fontFamily
                                         font.bold: true
                                     }
                                     Text {
@@ -169,12 +172,13 @@ Item {
                                                   .trim() + "/"
                                         color: Theme.textDim
                                         font.pixelSize: Theme.baseSize - 1
+                                        font.family: Theme.fontFamily
                                     }
                                     Item { Layout.fillWidth: true }
                                     Rectangle {
                                         visible: modelData.dictname !== ""
                                         implicitWidth: dictTag.implicitWidth + 14
-                                        implicitHeight: 20
+                                        implicitHeight: Math.max(20, Theme.tinySize + 10)
                                         radius: 10
                                         color: Theme.selection
                                         Text {
@@ -182,14 +186,15 @@ Item {
                                             anchors.centerIn: parent
                                             text: modelData.dictname
                                             color: Theme.accent
-                                            font.pixelSize: Theme.baseSize - 4
+                                            font.pixelSize: Theme.tinySize
+                                            font.family: Theme.fontFamily
                                         }
                                     }
                                     FlatButton {
                                         glyph: "★"
                                         text: qsTr("Vocabulary")
                                         horizontalPadding: 9
-                                        controlHeight: 26
+                                        controlHeight: Math.max(26, Theme.baseSize + 14)
                                         enabled: modelData.found
                                         onClicked: bridge.addToVBook(modelData.word)
                                     }
@@ -203,6 +208,7 @@ Item {
                                     textFormat: text.charAt(0) === "<" ? Text.RichText : Text.PlainText
                                     color: modelData.found ? Theme.text : Theme.textMut
                                     font.pixelSize: Theme.baseSize
+                                    font.family: Theme.fontFamily
                                     wrapMode: Text.WordWrap
                                     onLinkActivated: Qt.openUrlExternally(link)
                                 }
@@ -221,6 +227,7 @@ Item {
                                                 : qsTr("No dictionary available"))
                         color: Theme.textMut
                         font.pixelSize: Theme.baseSize
+                        font.family: Theme.fontFamily
                         topPadding: 40
                     }
 

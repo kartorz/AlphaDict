@@ -22,12 +22,14 @@ RowLayout {
             text: row.label
             color: Theme.text
             font.pixelSize: Theme.baseSize
+            font.family: Theme.fontFamily
         }
         Text {
             visible: row.hint !== ""
             text: row.hint
             color: Theme.textMut
-            font.pixelSize: Theme.baseSize - 2
+            font.pixelSize: Theme.smallSize
+            font.family: Theme.fontFamily
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
         }

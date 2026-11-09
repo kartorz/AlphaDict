@@ -7,12 +7,13 @@ import "."
 ComboBox {
     id: cb
 
-    property int controlHeight: 34
+    property int controlHeight: Theme.controlHeight
     property int controlWidth: 96
 
     implicitHeight: controlHeight
     implicitWidth: controlWidth
     font.pixelSize: Theme.baseSize
+    font.family: Theme.fontFamily
 
     contentItem: Text {
         leftPadding: 12
@@ -29,7 +30,8 @@ ComboBox {
         y: (cb.height - height) / 2
         text: "▾"
         color: Theme.textDim
-        font.pixelSize: 12
+        font.pixelSize: Theme.smallSize
+        font.family: Theme.fontFamily
     }
 
     background: Rectangle {
@@ -43,13 +45,14 @@ ComboBox {
     delegate: ItemDelegate {
         id: entry
         width: cb.width
-        height: 30
+        height: Math.max(30, Theme.baseSize + 16)
         highlighted: cb.highlightedIndex === index
         contentItem: Text {
             leftPadding: 10
             text: modelData === undefined || modelData === null ? "" : ("" + modelData)
             color: Theme.text
             font.pixelSize: Theme.baseSize
+            font.family: Theme.fontFamily
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
         }

@@ -45,6 +45,9 @@ public:
     static void writePidFile();
     static bool existProcess();
     static void delPidFile();
+    /* both scoped to the login session, see instanceDir() */
+    static string pidPath();
+    static string instanceServerName();
 
     /* TaskCallBack*/
     virtual void onTaskDone();
@@ -55,13 +58,6 @@ public:
 private:
     int initialization();
     void slowJob(void);
-
-    static inline string pidPath() {
-        string path;
-        Util::tempDir(path);
-        path += "/alphadict.pid";
-        return path;
-    }
 
     bool m_init;
     MessageQueue* m_uiMessageQ;
