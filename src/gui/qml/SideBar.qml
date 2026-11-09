@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import "."
 
 /*! Left navigation rail. */
@@ -16,6 +17,32 @@ Rectangle {
      * lines so the labels fill it; the rail narrows instead of the buttons
      * growing, which leaves more room for content. */
     readonly property int tile: Math.max(60, Theme.textLine * 2 + 16)
+
+    readonly property var navItems: [
+        { glyph: "Aa", label: qsTr("Lookup") },
+        { glyph: "★",  label: qsTr("Vocabulary") },
+        { glyph: "⚙",  label: qsTr("Settings") },
+        { glyph: "?",  label: qsTr("Help") }
+    ]
+
+    /* Hidden probe: measures the longest caption so the rail decides once for
+     * all tiles.  English labels are wider than a tile, so the whole rail
+     * falls back to icon-only with a hover hint instead of eliding text. */
+    Text {
+        id: labelProbe
+        visible: false
+        font.pixelSize: Theme.baseSize
+        font.family: Theme.fontFamily
+        text: {
+            var longest = "";
+            for (var i = 0; i < navItems.length; i++)
+                if (navItems[i].label.length > longest.length)
+                    longest = navItems[i].label;
+            return longest;
+        }
+    }
+
+    readonly property bool showLabels: labelProbe.implicitWidth <= tile - 6
 
     Rectangle {
         width: 1
@@ -49,14 +76,10 @@ Rectangle {
         Item { Layout.preferredHeight: 12 }
 
         Repeater {
-            model: [
-                { glyph: "Aa", label: qsTr("Lookup") },
-                { glyph: "★",  label: qsTr("Vocabulary") },
-                { glyph: "⚙",  label: qsTr("Settings") },
-                { glyph: "?",  label: qsTr("Help") }
-            ]
+            model: bar.navItems
 
             delegate: Item {
+                id: navTile
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: bar.tile
                 Layout.preferredHeight: bar.tile
@@ -93,8 +116,10 @@ Rectangle {
                         color: index === bar.current ? Theme.accent : Theme.text
                     }
                     Text {
+                        id: labelText
                         Layout.alignment: Qt.AlignHCenter
                         Layout.maximumWidth: bar.tile - 2
+                        visible: bar.showLabels
                         text: modelData.label
                         font.pixelSize: Theme.baseSize
                         font.family: Theme.fontFamily
@@ -111,6 +136,10 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     onClicked: bar.navigate(index)
                 }
+
+                ToolTip.visible: hover.containsMouse && !bar.showLabels
+                ToolTip.delay: 600
+                ToolTip.text: modelData.label
             }
         }
 
