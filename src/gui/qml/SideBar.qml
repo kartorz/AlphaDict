@@ -9,8 +9,13 @@ Rectangle {
     property int current: 0
     signal navigate(int index)
 
-    implicitWidth: Math.max(96, Theme.baseSize * 4 + 40)
+    implicitWidth: tile + 16
     color: Theme.surface
+
+    /* Square navigation tiles.  The tile edge is derived from the two text
+     * lines so the labels fill it; the rail narrows instead of the buttons
+     * growing, which leaves more room for content. */
+    readonly property int tile: Math.max(60, Theme.textLine * 2 + 16)
 
     Rectangle {
         width: 1
@@ -27,15 +32,15 @@ Rectangle {
 
         Rectangle {
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: Math.max(44, Theme.baseSize + 28)
-            Layout.preferredHeight: Math.max(44, Theme.baseSize + 28)
+            Layout.preferredWidth: tile
+            Layout.preferredHeight: tile
             radius: 14
             gradient: Theme.accentGradient
             Text {
                 anchors.centerIn: parent
                 text: "A"
                 color: "#ffffff"
-                font.pixelSize: Math.max(24, Theme.baseSize + 8)
+                font.pixelSize: Theme.baseSize + 14
                 font.family: Theme.fontFamily
                 font.bold: true
             }
@@ -53,16 +58,15 @@ Rectangle {
 
             delegate: Item {
                 Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: Math.max(72, Theme.baseSize * 4 + 16)
-                /* Must fit the glyph line plus the label line, so grow with both. */
-                Layout.preferredHeight: Math.max(58, Theme.baseSize * 2 + 14)
+                Layout.preferredWidth: bar.tile
+                Layout.preferredHeight: bar.tile
 
                 Rectangle {
                     anchors.fill: parent
                     radius: Theme.radiusSmall
                     color: index === bar.current
                            ? Theme.selection
-                           : (hover.containsMouse ? Theme.surfaceHi : "transparent")
+                           : (hover.containsMouse ? Theme.surfaceHi : Theme.surfaceAlt)
                     Behavior on color { ColorAnimation { duration: Theme.fast } }
                 }
 
@@ -79,22 +83,22 @@ Rectangle {
 
                 ColumnLayout {
                     anchors.centerIn: parent
-                    spacing: 2
+                    spacing: 0
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: modelData.glyph
-                        font.pixelSize: Math.max(18, Theme.baseSize + 2)
+                        font.pixelSize: Theme.baseSize + 6
                         font.family: Theme.fontFamily
                         font.bold: true
                         color: index === bar.current ? Theme.accent : Theme.text
                     }
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        Layout.maximumWidth: Math.max(60, Theme.baseSize * 4 + 8)
+                        Layout.maximumWidth: bar.tile - 2
                         text: modelData.label
-                        font.pixelSize: Theme.tinySize
+                        font.pixelSize: Theme.baseSize
                         font.family: Theme.fontFamily
-                        color: index === bar.current ? Theme.accent : Theme.textMut
+                        color: index === bar.current ? Theme.accent : Theme.textDim
                         elide: Text.ElideRight
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -114,9 +118,9 @@ Rectangle {
 
         FlatButton {
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 46
+            Layout.preferredWidth: bar.tile
             glyph: Theme.dark ? "☀" : "☾"
-            controlHeight: Math.max(40, Theme.baseSize + 26)
+            controlHeight: bar.tile
             horizontalPadding: 0
             onClicked: Theme.dark = !Theme.dark
         }

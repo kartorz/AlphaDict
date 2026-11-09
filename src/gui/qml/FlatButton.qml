@@ -12,7 +12,7 @@ Rectangle {
     property bool danger: false
     property bool checkable: false
     property bool checked: false
-    property int horizontalPadding: 14
+    property int horizontalPadding: 10
     property int controlHeight: Theme.controlHeight
 
     signal clicked()
@@ -22,7 +22,7 @@ Rectangle {
                                 : ((primary || danger) ? "#ffffff" : Theme.text)
 
     implicitHeight: controlHeight
-    implicitWidth: Math.max(58, inner.implicitWidth + horizontalPadding * 2)
+    implicitWidth: Math.max(46, inner.implicitWidth + horizontalPadding * 2)
     radius: Theme.radiusSmall
     /* Disabled buttons must still read as buttons: dim the fill and the label a
      * little, but keep the outline and enough contrast to stay legible. */
@@ -49,7 +49,7 @@ Rectangle {
             text: btn.glyph
             visible: btn.glyph !== ""
             color: btn.fg
-            font.pixelSize: Theme.baseSize + 1
+            font.pixelSize: Math.max(Theme.baseSize + 1, Math.round(btn.controlHeight * 0.55))
             font.family: Theme.fontFamily
         }
         Text {

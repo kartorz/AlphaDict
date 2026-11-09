@@ -260,14 +260,14 @@ Item {
 
                                 FlatButton {
                                     glyph: "↑"
-                                    controlHeight: Math.max(26, Theme.baseSize + 14)
+                                    controlHeight: Theme.controlHeight
                                     horizontalPadding: 8
                                     enabled: index > 0
                                     onClicked: bridge.moveDictRow(index, -1)
                                 }
                                 FlatButton {
                                     glyph: "↓"
-                                    controlHeight: Math.max(26, Theme.baseSize + 14)
+                                    controlHeight: Theme.controlHeight
                                     horizontalPadding: 8
                                     enabled: index < bridge.dictCount - 1
                                     onClicked: bridge.moveDictRow(index, 1)

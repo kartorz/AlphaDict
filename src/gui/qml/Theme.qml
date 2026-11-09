@@ -53,10 +53,16 @@ QtObject {
     readonly property int smallSize: Math.max(11, baseSize - 2)
     readonly property int tinySize:  Math.max(10, baseSize - 4)
 
-    /* Chrome heights follow the text size or a larger font would be clipped. */
-    readonly property int controlHeight: Math.max(34, baseSize + 20)
-    readonly property int toolbarHeight: Math.max(58, baseSize + 44)
-    readonly property int statusHeight:  Math.max(26, baseSize + 12)
+    /* Text should fill ~90% of a control. QML draws a pixelSize font in about
+     * 1.3x its size, so size chrome from that line box instead of the font
+     * size plus a fixed pad -- text reads big while the control stays small. */
+    readonly property real textFill: 0.9
+    readonly property int textLine: Math.ceil(baseSize * 1.3)
+    readonly property int tinyLine: Math.ceil(tinySize * 1.3)
+
+    readonly property int controlHeight: Math.max(28, Math.round(textLine / textFill))
+    readonly property int toolbarHeight: Math.max(46, controlHeight + 18)
+    readonly property int statusHeight:  Math.max(24, tinyLine + 8)
 
     property Gradient accentGradient: Gradient {
         GradientStop { position: 0.0; color: theme.accent }

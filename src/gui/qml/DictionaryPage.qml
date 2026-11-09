@@ -49,7 +49,7 @@ Item {
 
                     delegate: Rectangle {
                         width: indexList.width
-                        height: Math.max(28, Theme.baseSize + 14)
+                        height: Math.max(24, Theme.textLine + 4)
                         radius: 6
                         color: entry.containsMouse ? Theme.surfaceHi : "transparent"
 
@@ -93,7 +93,7 @@ Item {
                     FlatButton {
                         glyph: "⏮"
                         horizontalPadding: 8
-                        controlHeight: Math.max(26, Theme.baseSize + 14)
+                        controlHeight: Theme.controlHeight
                         onClicked: {
                             var row = bridge.pageIndex(-1);
                             if (row >= 0) indexList.positionViewAtIndex(row, ListView.Beginning);
@@ -103,7 +103,7 @@ Item {
                     FlatButton {
                         glyph: "⏭"
                         horizontalPadding: 8
-                        controlHeight: Math.max(26, Theme.baseSize + 14)
+                        controlHeight: Theme.controlHeight
                         onClicked: {
                             var row = bridge.pageIndex(1);
                             if (row >= 0) indexList.positionViewAtIndex(row, ListView.Beginning);
@@ -194,7 +194,7 @@ Item {
                                         glyph: "★"
                                         text: qsTr("Vocabulary")
                                         horizontalPadding: 9
-                                        controlHeight: Math.max(26, Theme.baseSize + 14)
+                                        controlHeight: Theme.controlHeight
                                         enabled: modelData.found
                                         onClicked: bridge.addToVBook(modelData.word)
                                     }

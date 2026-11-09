@@ -45,7 +45,7 @@ Item {
                         checkable: true
                         checked: bridge.vBookMode === 0
                         horizontalPadding: 10
-                        controlHeight: Math.max(28, Theme.baseSize + 16)
+                        controlHeight: Theme.controlHeight
                         onClicked: bridge.vBookMode = 0
                     }
                     FlatButton {
@@ -53,7 +53,7 @@ Item {
                         checkable: true
                         checked: bridge.vBookMode === 1
                         horizontalPadding: 10
-                        controlHeight: Math.max(28, Theme.baseSize + 16)
+                        controlHeight: Theme.controlHeight
                         onClicked: bridge.vBookMode = 1
                     }
 
@@ -62,7 +62,7 @@ Item {
                     FlatButton {
                         glyph: "✕"
                         danger: true
-                        controlHeight: Math.max(28, Theme.baseSize + 16)
+                        controlHeight: Theme.controlHeight
                         horizontalPadding: 8
                         enabled: bridge.vbook.length > 0
                         onClicked: bridge.clearVBook()
@@ -162,14 +162,14 @@ Item {
                     FlatButton {
                         glyph: "↑"
                         horizontalPadding: 10
-                        controlHeight: Math.max(30, Theme.baseSize + 18)
+                        controlHeight: Theme.controlHeight
                         enabled: bridge.vBookRow > 0
                         onClicked: bridge.vbookStep(-1)
                     }
                     FlatButton {
                         glyph: "↓"
                         horizontalPadding: 10
-                        controlHeight: Math.max(30, Theme.baseSize + 18)
+                        controlHeight: Theme.controlHeight
                         enabled: bridge.vBookRow >= 0 && bridge.vBookRow < bridge.vbook.length - 1
                         onClicked: bridge.vbookStep(1)
                     }
@@ -275,7 +275,7 @@ Item {
                     }
                     StyledComboBox {
                         controlWidth: Math.max(80, Theme.baseSize * 4)
-                        controlHeight: Math.max(30, Theme.baseSize + 18)
+                        controlHeight: Theme.controlHeight
                         model: [1, 2, 3, 5]
                         currentIndex: 0
                         onActivated: page.repeatCount = [1, 2, 3, 5][index]
