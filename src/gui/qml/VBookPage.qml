@@ -220,16 +220,18 @@ Item {
                 /* 目标词：学习模式显示单词，测试模式只显示点数，不能泄题 */
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.max(64, Theme.baseSize * 2 + 28)
+                    /* 随两行文字自适应，避免提示行压住底边框 */
+                    Layout.preferredHeight: Math.max(64, wordCol.implicitHeight + 20)
                     radius: Theme.radiusSmall
                     color: Theme.surfaceAlt
                     border.width: 1
                     border.color: Theme.border
 
                     ColumnLayout {
+                        id: wordCol
                         anchors.fill: parent
-                        anchors.margins: 8
-                        spacing: 2
+                        anchors.margins: 10
+                        spacing: 4
 
                         Text {
                             Layout.fillWidth: true
@@ -265,41 +267,45 @@ Item {
                     }
                 }
 
-                /* 大号拼写框：反复输入，回车即判定 */
-                ThemedField {
-                    id: inputField
-                    Layout.fillWidth: true
-                    fieldHeight: Math.round(Theme.controlHeight * 1.9)
-                    font.pixelSize: Theme.baseSize + 8
-                    horizontalAlignment: TextInput.AlignHCenter
-                    verdict: page.verdict
-                    placeholderText: qsTr("Spell the word here, then press Enter")
-                    onAccepted: page.submit()
-                }
-
+                /* 大号拼写框 + 提交按钮同一行，回车即判定 */
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 8
 
-                    Text {
+                    ThemedField {
+                        id: inputField
                         Layout.fillWidth: true
-                        elide: Text.ElideRight
-                        text: page.verdict === 1 ? qsTr("✔ Correct")
-                            : page.verdict === -1 ? qsTr("✘ Try again")
-                            : qsTr("Press Enter to check your spelling")
-                        color: page.verdict === 1 ? Theme.success
-                             : page.verdict === -1 ? Theme.danger
-                             : Theme.textMut
-                        font.pixelSize: Theme.smallSize
-                        font.family: Theme.fontFamily
+                        fieldHeight: Math.round(Theme.controlHeight * 1.9)
+                        font.pixelSize: Theme.baseSize + 8
+                        horizontalAlignment: TextInput.AlignHCenter
+                        verdict: page.verdict
+                        placeholderText: qsTr("Spell the word here, then press Enter")
+                        onAccepted: page.submit()
                     }
 
                     FlatButton {
                         text: qsTr("Submit")
                         primary: true
-                        controlHeight: Theme.controlHeight
+                        controlHeight: inputField.fieldHeight
                         onClicked: page.submit()
                     }
+                }
+
+                /* 判定提示单独居中一行，固定行高防止布局跳动 */
+                Text {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: Theme.textLine
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                    text: page.verdict === 1 ? qsTr("✔ Correct")
+                        : page.verdict === -1 ? qsTr("✘ Try again")
+                        : qsTr("Press Enter to check your spelling")
+                    color: page.verdict === 1 ? Theme.success
+                         : page.verdict === -1 ? Theme.danger
+                         : Theme.textMut
+                    font.pixelSize: Theme.smallSize
+                    font.family: Theme.fontFamily
                 }
 
                 RowLayout {

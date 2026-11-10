@@ -5,7 +5,7 @@
     <name>CapWordDialog</name>
     <message>
         <source>Capture Word</source>
-        <translation>取词</translation>
+        <translation type="vanished">取词</translation>
     </message>
     <message>
         <source>Add to vocabulary book,success</source>
@@ -19,7 +19,30 @@
     </message>
     <message>
         <source>My Menu Item</source>
-        <translation>我的菜单项</translation>
+        <translation type="vanished">我的菜单项</translation>
+    </message>
+    <message>
+        <source>Add to vocabulary book</source>
+        <translation>加入生词本</translation>
+    </message>
+</context>
+<context>
+    <name>DictListModel</name>
+    <message>
+        <source>version: %1</source>
+        <translation>版本 %1</translation>
+    </message>
+    <message>
+        <source>%1 entries</source>
+        <translation>共 %1 条</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>英语</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation>中文</translation>
     </message>
 </context>
 <context>
@@ -42,15 +65,15 @@
     </message>
     <message>
         <source>Explanation</source>
-        <translation>释义</translation>
+        <translation type="vanished">释义</translation>
     </message>
     <message>
         <source>%1 results</source>
-        <translation>%1 条结果</translation>
+        <translation type="vanished">%1 条结果</translation>
     </message>
     <message>
         <source>Vocabulary</source>
-        <translation>生词本</translation>
+        <translation type="vanished">生词本</translation>
     </message>
     <message>
         <source>Entry not found</source>
@@ -90,6 +113,22 @@
         <source>No dictionary available</source>
         <translation>没有可用的词典</translation>
     </message>
+    <message>
+        <source>Remove from vocabulary book</source>
+        <translation>从生词本移除</translation>
+    </message>
+    <message>
+        <source>Add to vocabulary book</source>
+        <translation>加入生词本</translation>
+    </message>
+    <message>
+        <source>Dark</source>
+        <translation>深色</translation>
+    </message>
+    <message>
+        <source>Light</source>
+        <translation>浅色</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -99,14 +138,14 @@
         <translation>词典</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select source language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;select source language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;选择源语言&lt;/p&gt;&lt;p&gt;'any'意味着不指定.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select source language.&lt;/p&gt;&lt;p&gt;&apos;any&apos; means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;select source language.&lt;/p&gt;&lt;p&gt;&apos;any&apos; means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;选择源语言&lt;/p&gt;&lt;p&gt;&apos;any&apos;意味着不指定.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select destination language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;select destination language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;选择目标语言&lt;/p&gt;&lt;p&gt;'any'意味着不指定.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select destination language.&lt;/p&gt;&lt;p&gt;&apos;any&apos; means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;select destination language.&lt;/p&gt;&lt;p&gt;&apos;any&apos; means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;选择目标语言&lt;/p&gt;&lt;p&gt;&apos;any&apos;意味着不指定.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Filter by a prefix</source>
@@ -195,19 +234,19 @@
         <translation>取词开关</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;User can use this 'Shortcut Key' disable or enable capture temporarily, It don't change 'enable' state. &lt;/p&gt;
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key 'a' to 'z' (not casp lock).&lt;/p&gt;
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;On X11, if  shortcut key does't work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User can use this &apos;Shortcut Key&apos; disable or enable capture temporarily, It don&apos;t change &apos;enable&apos; state. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;AlphaDict uses Ctrl+Alt as a modifier, choose a hotkey from key &apos;a&apos; to &apos;z&apos; (not casp lock).&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;On X11, if  shortcut key does&apos;t work, you can try clicking AlphaDict window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>用户可以使用该快捷键，临时打开/关闭取词，它不改变‘取词开关’状态。
-AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’到键'z'）作为快捷键（不要开启‘大写锁定’）。
+AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’到键&apos;z&apos;）作为快捷键（不要开启‘大写锁定’）。
 在X11系统下，如果快捷键不起作用，可以尝试先点击（选中）一下AlphaDict窗口</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Shortcut Key&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Shortcut Key&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>快捷键</translation>
     </message>
     <message>
@@ -376,12 +415,12 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
         <translation>单词学习次数</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=" color:#0000ff;"&gt;emacs&lt;/span&gt;, left button click will do the selection again,&lt;span style=" color:#ff0000;"&gt; temporarily turn on &lt;/span&gt; this switch  can prevent this situation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在 &lt;span style=" color:#0000ff;"&gt;emacs&lt;/span&gt; 上双击选中后，左键点击会再次触发选择，&lt;span style=" color:#ff0000;"&gt;临时打开&lt;/span&gt; 此开关可避免该情况。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;emacs&lt;/span&gt;, left button click will do the selection again,&lt;span style=&quot; color:#ff0000;&quot;&gt; temporarily turn on &lt;/span&gt; this switch  can prevent this situation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在 &lt;span style=&quot; color:#0000ff;&quot;&gt;emacs&lt;/span&gt; 上双击选中后，左键点击会再次触发选择，&lt;span style=&quot; color:#ff0000;&quot;&gt;临时打开&lt;/span&gt; 此开关可避免该情况。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=" color:#0000ff;"&gt;Emacs,&lt;/span&gt; left click will do the selection again,&lt;span style=" color:#0000ff;"/&gt;&lt;span style=" color:#ff0000;"&gt;turn on&lt;/span&gt; this switch can prevent this situation。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=" color:#0000ff;"&gt;Emacs,&lt;/span&gt; left click will do the selection again,&lt;span style=" color:#0000ff;"/&gt;&lt;span style=" color:#ff0000;"&gt;turn on&lt;/span&gt; this switch can prevent this situation。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;Emacs,&lt;/span&gt; left click will do the selection again,&lt;span style=&quot; color:#0000ff;&quot;/&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;turn on&lt;/span&gt; this switch can prevent this situation。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After double click selection on &lt;span style=&quot; color:#0000ff;&quot;&gt;Emacs,&lt;/span&gt; left click will do the selection again,&lt;span style=&quot; color:#0000ff;&quot;/&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;turn on&lt;/span&gt; this switch can prevent this situation。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Non-repeat selection</source>
@@ -512,7 +551,7 @@ AlphaDict使用Ctrl+Alt作为修饰键，可以选择一个按键（键‘a’�
     <name>QObject</name>
     <message>
         <source>warning</source>
-        <translation>警告</translation>
+        <translation type="vanished">警告</translation>
     </message>
     <message>
         <source>
@@ -521,7 +560,7 @@ This application has alreay been running,
 Do you want run a another process.
 
 </source>
-        <translation>
+        <translation type="vanished">
 该程序已经在运行，  
 
 是否再启动一个进程？
@@ -566,6 +605,50 @@ Do you want run a another process.
     <message>
         <source>Help file not found: %1</source>
         <translation>未找到帮助文件：%1</translation>
+    </message>
+    <message>
+        <source>Removed from the vocabulary book</source>
+        <translation>已从生词本移除</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>任意</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>英语</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation>中文</translation>
+    </message>
+    <message>
+        <source>Japanese</source>
+        <translation>日语</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation>韩语</translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation>法语</translation>
+    </message>
+    <message>
+        <source>German</source>
+        <translation>德语</translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation>俄语</translation>
+    </message>
+    <message>
+        <source>%1 entries</source>
+        <translation>共 %1 条</translation>
+    </message>
+    <message>
+        <source>%1 · %2 entries</source>
+        <translation>%1 · %2 条</translation>
     </message>
 </context>
 <context>
@@ -627,7 +710,7 @@ Do you want run a another process.
     </message>
     <message>
         <source>Affects explanations and the vocabulary book</source>
-        <translation>影响释义与生词本的显示大小</translation>
+        <translation type="vanished">影响释义与生词本的显示大小</translation>
     </message>
     <message>
         <source>Interface font</source>
@@ -667,7 +750,7 @@ Do you want run a another process.
     </message>
     <message>
         <source>Read the X11 primary selection</source>
-        <translation>读取 X11 primary selection</translation>
+        <translation>读取 X11 主选区的内容</translation>
     </message>
     <message>
         <source>Close the capture window automatically</source>
@@ -683,7 +766,7 @@ Do you want run a another process.
     </message>
     <message>
         <source>Ctrl+Alt+ the selected letter toggles capture temporarily</source>
-        <translation>Ctrl+Alt+ 所选字母，用于临时开关取词</translation>
+        <translation>Ctrl+Alt+字母 临时开/关取词</translation>
     </message>
     <message>
         <source>Dictionaries</source>
@@ -702,6 +785,10 @@ Do you want run a another process.
     <message>
         <source>Restore defaults</source>
         <translation>恢复默认设置</translation>
+    </message>
+    <message>
+        <source>Applies to the whole interface right away</source>
+        <translation>立即应用于整个界面</translation>
     </message>
 </context>
 <context>
@@ -749,15 +836,15 @@ Add words from an explanation card.</source>
     </message>
     <message>
         <source>Read the word and its explanation, then type it</source>
-        <translation>先看单词和释义，再输入它</translation>
+        <translation type="vanished">先看单词和释义，再输入它</translation>
     </message>
     <message>
         <source>Spell the word from its explanation, then press Enter</source>
-        <translation>根据释义拼出单词，输入后回车</translation>
+        <translation type="vanished">根据释义拼出单词，输入后回车</translation>
     </message>
     <message>
         <source>Type the word and press Enter</source>
-        <translation>输入单词后回车</translation>
+        <translation type="vanished">输入单词后回车</translation>
     </message>
     <message>
         <source>Submit</source>
@@ -770,6 +857,30 @@ Add words from an explanation card.</source>
     <message>
         <source>Select a word on the left</source>
         <translation>选择左边的一个单词</translation>
+    </message>
+    <message>
+        <source>Type the word to practise its spelling</source>
+        <translation>输入单词，练习拼写</translation>
+    </message>
+    <message>
+        <source>Type the word that matches the explanation</source>
+        <translation>根据释义输入对应的单词</translation>
+    </message>
+    <message>
+        <source>Spell the word here, then press Enter</source>
+        <translation>在这里拼写单词，然后按回车</translation>
+    </message>
+    <message>
+        <source>✔ Correct</source>
+        <translation>✔ 正确</translation>
+    </message>
+    <message>
+        <source>✘ Try again</source>
+        <translation>✘ 再试一次</translation>
+    </message>
+    <message>
+        <source>Press Enter to check your spelling</source>
+        <translation>按回车检查拼写</translation>
     </message>
 </context>
 </TS>

@@ -60,7 +60,7 @@ QtObject {
     readonly property int tinyLine: Math.ceil(tinySize * 1.3)
 
     readonly property int controlHeight: Math.max(28, Math.round(textLine / textFill))
-    readonly property int toolbarHeight: Math.max(46, controlHeight + 16)
+    readonly property int toolbarHeight: Math.max(50, controlHeight + 20)
     readonly property int statusHeight:  Math.max(24, tinyLine + 8)
 
     property Gradient accentGradient: Gradient {

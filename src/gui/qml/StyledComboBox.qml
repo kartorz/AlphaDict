@@ -9,6 +9,22 @@ ComboBox {
 
     property int controlHeight: Theme.controlHeight
     property int controlWidth: 96
+    /* Optional mapper for the display text.  A language code such as
+     * "english" stays the model value (dictionary lookup needs it) while the
+     * user sees the localized name. */
+    property var labeler: null
+    property string shownText: labelOf(currentText)
+
+    function labelOf(value) {
+        if (value === undefined || value === null)
+            return ""
+        if (labeler !== null) {
+            var mapped = labeler("" + value)
+            if (mapped !== undefined && mapped !== null && mapped !== "")
+                return mapped
+        }
+        return "" + value
+    }
 
     implicitHeight: controlHeight
     implicitWidth: controlWidth
@@ -18,7 +34,7 @@ ComboBox {
     contentItem: Text {
         leftPadding: 12
         rightPadding: 24
-        text: cb.displayText
+        text: cb.shownText
         color: Theme.text
         font: cb.font
         verticalAlignment: Text.AlignVCenter
@@ -49,7 +65,7 @@ ComboBox {
         highlighted: cb.highlightedIndex === index
         contentItem: Text {
             leftPadding: 10
-            text: modelData === undefined || modelData === null ? "" : ("" + modelData)
+            text: cb.labelOf(modelData)
             color: Theme.text
             font.pixelSize: Theme.baseSize
             font.family: Theme.fontFamily

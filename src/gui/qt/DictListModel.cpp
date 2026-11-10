@@ -19,6 +19,7 @@
 
 #include "DictListModel.h"
 
+#include <QCoreApplication>
 #include "Configure.h"
 #include "Application.h"
 #include "MessageQueue.h"
@@ -27,6 +28,53 @@
 namespace {
     const int PENDING_POLL_MS = 100;
     const int PENDING_GIVEUP_MS = 3000;
+
+    /* Language names in the summary are display text only; the lookup path
+     * keeps using the raw english/chinese strings from the dictionary. */
+    QString localizedLanName(const QString &name)
+    {
+        const QString l = name.toLower();
+        if (l == QLatin1String("english"))
+            return QCoreApplication::translate("DictListModel", "English");
+        if (l == QLatin1String("chinese"))
+            return QCoreApplication::translate("DictListModel", "Chinese");
+        return name;
+    }
+
+    /* configure.xml stores the summary exactly as the dictionary produced it
+     * when it was added, so the "version:"/"entry:" labels stay English for
+     * good.  Rewrite them for display instead of touching the stored text.
+     * Lines we do not recognise pass through unchanged. */
+    QString localizedSummary(const std::string &raw)
+    {
+        const QStringList lines = QString::fromStdString(raw).split('\n');
+        QStringList out;
+        for (int i = 0; i < lines.size(); i++) {
+            const QString t = lines.at(i).trimmed();
+            if (t.isEmpty())
+                continue;
+            if (t.startsWith(QLatin1String("version:"))) {
+                out << QCoreApplication::translate("DictListModel", "version: %1")
+                           .arg(t.mid(8).trimmed());
+            } else if (t.startsWith(QLatin1String("entry:"))) {
+                out << QCoreApplication::translate("DictListModel", "%1 entries")
+                           .arg(t.mid(6).trimmed());
+            } else if (t.startsWith(QLatin1String("from \"")) && t.contains(QLatin1String("\"   to   \""))) {
+                /* from "english"   to   "chinese" -> english -> chinese */
+                QString rest = t.mid(6);
+                rest.remove('"');
+                const int at = rest.indexOf(QLatin1String(" to "));
+                if (at > 0)
+                    out << localizedLanName(rest.left(at).trimmed()) + QString::fromUtf8(" → ")
+                               + localizedLanName(rest.mid(at + 4).trimmed());
+                else
+                    out << t;
+            } else {
+                out << t;
+            }
+        }
+        return out.join(' ');
+    }
 }
 
 DictListModel::DictListModel(QObject *parent)
@@ -89,7 +137,7 @@ QVariant DictListModel::data(const QModelIndex &index, int role) const
     case EnabledRole:
         return en;
     case SummaryRole:
-        return QString::fromStdString(node.summary);
+        return localizedSummary(node.summary);
     case SrcLanRole:
         return QString::fromStdString(node.srclan);
     case DetLanRole:

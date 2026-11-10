@@ -1,3 +1,11 @@
+alphadict (1.5) unstable; urgency=medium
+
+  * Vocabulary book spelling trainer with study and test modes.
+  * Ship the CC-CEDICT Chinese-to-English dictionary and drop the duplicate
+    Langdao English-to-Chinese one.
+
+ -- joni lee <joni_lee@outlook.com>  Mon, 09 Nov 2026 20:10:00 +0800
+
 alphadict (1.4.1) unstable; urgency=medium
 
   * Initial Debian packaging.

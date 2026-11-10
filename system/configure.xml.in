@@ -36,11 +36,11 @@
       <summary>上海朗道电脑科技发展有限公司，朗道英汉字典 5.0</summary>
     </d>
     <d open="aldict" en="true">
-      <path>langdao-ce-gb-v2.6.aldict</path>
-      <name>朗道英汉词典 v2.6</name>
-      <srclan>english</srclan>
-      <detlan>chinese</detlan>
-      <summary>上海朗道电脑科技发展有限公司，朗道英汉字典 5.0，v2.6 数据</summary>
+      <path>cc-cedict-zh-en.aldict</path>
+      <name>CC-CEDICT 汉英词典</name>
+      <srclan>chinese</srclan>
+      <detlan>english</detlan>
+      <summary>CC-CEDICT（MDBG），109642 条汉英词条</summary>
     </d>
   </dict>
 </configure>

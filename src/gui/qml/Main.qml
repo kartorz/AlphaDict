@@ -91,7 +91,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Math.max(900, Theme.baseSize * 40)
                 Layout.alignment: Qt.AlignVCenter
-                fieldHeight: Math.max(34, Theme.controlHeight + 6)
+                fieldHeight: Math.max(36, Theme.controlHeight + 9)
                 placeholderText: qsTr("Type a word and press Enter")
                 onAccepted: bridge.search(text)
             }
@@ -101,6 +101,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 controlWidth: Math.max(120, Theme.baseSize * 7)
                 model: bridge.srcLans
+                labeler: function(v) { return bridge.lanLabel(v) }
                 currentIndex: Math.max(0, bridge.srcLans.indexOf(bridge.srcLan))
                 onActivated: bridge.srcLan = bridge.srcLans[index]
             }
@@ -118,6 +119,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 controlWidth: Math.max(120, Theme.baseSize * 7)
                 model: bridge.detLans
+                labeler: function(v) { return bridge.lanLabel(v) }
                 currentIndex: Math.max(0, bridge.detLans.indexOf(bridge.detLan))
                 onActivated: bridge.detLan = bridge.detLans[index]
             }
@@ -256,7 +258,15 @@ Rectangle {
             }
 
             Text {
-                text: "AlphaDict · Qt 5 · QML"
+                /* version, theme and the dictionary actually loaded: more
+                 * useful than the toolkit fingerprint that was here. */
+                text: {
+                    var parts = ["AlphaDict " + bridge.appVersion,
+                                 Theme.dark ? qsTr("Dark") : qsTr("Light")];
+                    if (bridge.dictInfo !== "")
+                        parts.push(bridge.dictInfo);
+                    return parts.join("  ·  ");
+                }
                 color: Theme.textMut
                 font.pixelSize: Theme.tinySize
                 font.family: Theme.fontFamily

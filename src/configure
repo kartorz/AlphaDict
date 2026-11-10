@@ -734,6 +734,14 @@ Install the Qt5 development packages (Qt5Core Qt5Gui Qt5Widgets), or pass
   extra_cflags="$inc_tmp $extra_cflags"
   libs_alphadict="$libs_alphadict $ld_tmp"
 
+  # Deepin 的 alphaim Qt 输入法插件不链接任何 Qt 库，只依赖宿主进程已把
+  # QtDBus 载入符号表。缺了它插件加载失败，Qt 静默退回 compose，中文
+  # 无法输入。--no-as-needed 防止链接器丢弃这个未被代码引用的库。
+  if test "`uname -s`" = "Linux" &&
+     pkg-config --exists "Qt${_qtmajor}DBus" 2>/dev/null ; then
+    libs_alphadict="$libs_alphadict -Wl,--no-as-needed `pkg-config --libs "Qt${_qtmajor}DBus"` -Wl,--as-needed"
+  fi
+
   # moc/uic/rcc are advertised by the Core .pc file as host_bins (Qt5 and
   # Qt6) or libexecdir; --with-qttool=DIR overrides both.
   _qttools="`pkg-config --variable=host_bins $qtcore`"

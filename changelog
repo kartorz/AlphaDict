@@ -1,5 +1,5 @@
 
-AlphaDict 1.5 (unreleased):
+AlphaDict 1.5 (2026-11-09):
         -- configure is rewritten around pkg-config: Qt is located with
            pkg-config only, no include or library path is hard-coded, Qt 5.9 or
            newer is required, and Qt6 is detected up front and rejected with an
@@ -38,6 +38,15 @@ AlphaDict 1.5 (unreleased):
            old *_to_aldictxml.py tools were removed. 'aldctl build' turns text
            into a .aldict, 'aldctl export' writes any dictionary back to text
            for editing; doc/make_dictionary.txt explains the workflow.
+        -- A Chinese-to-English dictionary (CC-CEDICT, 109642 entries) is
+           shipped with the program, so lookup works in both directions.
+        -- The duplicate English-to-Chinese dictionary
+           (langdao-ce-gb-v2.6.aldict, the same Langdao data as
+           langdao-ec-gb.aldict) is removed.
+        -- The vocabulary book has a spelling trainer: one large input
+           box, study mode repeats the word until it is typed right, test
+           mode hides the word behind dots and only advances after a
+           correct answer.
         -- Memory handling fixes throughout the dictionary and GUI layers:
            leaked index items in the prefix-search and sizing paths, a leaked
            worker QThread in QtMessager, a stale file handle in the

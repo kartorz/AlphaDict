@@ -31,7 +31,7 @@ endif
 endif
 endif
 
-subdirs := convert lib dict db gui
+subdirs := tools lib dict db gui
 incs := $(foreach dir, $(subdirs), $(dir)/Makefile.inc)
 include $(incs)
 
@@ -77,21 +77,32 @@ EXTRALIBS_ALPHADICT += $(EXTRALIBS)
 # command line dictionary converter remains.
 PROGS_GUI_yes = AlphaDict
 INSTALL_GUI_yes = install-AlphaDict
+UITR_yes = uitr-qm
 
 INSTALL_TARGETS-yes = install-system install-aldctl $(INSTALL_GUI_$(GUI))
 
-DIRS = . convert dict/aldict gui/qt gui/qml db
+DIRS = . tools dict/aldict gui/qt gui/qml db
 
 ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
 ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 
-a11: aldctl $(PROGS_GUI_$(GUI))
+# English is the source language, so only the Chinese catalogue is built.
+# "make uitr" (gui/qt/qt.mk) also runs lupdate; the build target only compiles
+# the checked-in .ts, so packaging never rewrites a tracked file.
+uitr-qm:
+	@if command -v lrelease >/dev/null 2>&1; then \
+	    lrelease gui/qt/uitr_cn.ts -qm gui/qt/uitr_cn.qm; \
+	else \
+	    echo "note: lrelease not found, UI translation not built"; \
+	fi
+
+a11: aldctl $(PROGS_GUI_$(GUI)) $(UITR_$(GUI))
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $^
 
-AlphaDict: $(QT_H_$(GUI)) $(OBJS_ALPHADICT)
+AlphaDict: $(QT_H_$(GUI)) $(OBJS_ALPHADICT) $(UITR_$(GUI))
 	$(CC)  $(OBJS_ALPHADICT) $(EXTRALIBS_ALPHADICT) -lstdc++  -o $@
 
 # The command line tool and the conversion scripts share tools/.  It is also
@@ -188,4 +199,4 @@ clean:
 distclean: clean
 	-@rm -rf config.*  gui/build-qt-Desktop-Debug  gui/build-qt-Desktop-Release
 
-.PHONY : install uninstall clean distclean dict 
+.PHONY : install uninstall clean distclean dict uitr-qm

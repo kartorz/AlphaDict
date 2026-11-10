@@ -39,6 +39,10 @@ public:
 	virtual ~Task();
 	virtual void doWork() = 0;
     virtual void abort() { m_abort = true; m_repeat = false;}
+    /*! Called right before TaskManager deletes a task it refused to run
+     *  because it was aborted.  Owners use it to drop the pointer they keep,
+     *  which otherwise stays non-NULL forever and blocks reloads. */
+    virtual void onDrop() {}
 
 	int getInterval() { return m_interval; }
 	unsigned int getStartRunningTime() { return m_starRunningTime; }
@@ -78,7 +82,11 @@ public:
 	void stop();
 	bool isRunning() { return m_bRunning; }
 
-	void addTask(Task *tsk, int delay=0);
+	/* Returns true when the task was queued, false when it was refused and
+	 * deleted by the manager (the manager is stopped, or the very same task is
+	 * already queued).  Owners that keep a pointer to the task must clear it
+	 * when this returns false. */
+	bool addTask(Task *tsk, int delay=0);
 	void deleteTask(Task *tsk) {} /* Not used */
     Task* getTask(std::string identify);
 

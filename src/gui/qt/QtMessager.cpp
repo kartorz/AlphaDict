@@ -48,6 +48,13 @@ void QtMessager::doWork()
                 QMetaObject::invokeMethod(m_indexListModel,
                                           "onResetIndexList",
                                           Qt::QueuedConnection);
+                /* The list is rebuilt from the freshly loaded dictionaries,
+                 * so whatever is on screen belongs to the previous set.  This
+                 * is the only place that means "dictionary set changed";
+                 * prefix search and paging reset the model by themselves. */
+                QMetaObject::invokeMethod(m_owner,
+                                          "onDictReloaded",
+                                          Qt::QueuedConnection);
                 break;
             }
 
@@ -55,6 +62,7 @@ void QtMessager::doWork()
                 QMetaObject::invokeMethod(m_owner,
                                               "onUpdateExplText",
                                               Qt::QueuedConnection,
+                                              Q_ARG(int, msg.iArg1),
                                               Q_ARG(void*, msg.pArg1));
                 break;
             }

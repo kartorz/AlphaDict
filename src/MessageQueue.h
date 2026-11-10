@@ -20,8 +20,8 @@ enum {
     MSG_CAPWORD_QUERY, /* (strArg1) */  
     MSG_DICT_PENDING_QUERY,/* (strArg1, iArg1)*/
     MSG_DICT_INDEX_QUERY,
-    MSG_SET_DICTITEMS, /* (-1[@1], pArg1[@3]):  */
-    MSG_SET_CAPWORD_DICTITEM, /* (-1[@1], pArg1[@3]):  */
+    MSG_SET_DICTITEMS, /* (iArg1[@1]: dict slot, -1 = index click; pArg1[@3]) */
+    MSG_SET_CAPWORD_DICTITEM, /* (iArg1[@1]: dict slot; pArg1[@3])  */
     MSG_SET_LANLIST,   /* (strArg1, strArg2, pArg1[@3])  */
     MSG_SET_SRCLAN,    /* (strArg1) */
     MSG_SET_DETLAN,    /* (strArg1) */

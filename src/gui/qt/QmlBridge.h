@@ -24,6 +24,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QVariantList>
+#include <QtCore/QMap>
 
 #include "dict/iDict.h"
 #include "DictIndexModel.h"
@@ -78,6 +79,9 @@ class QmlBridge : public QObject
     Q_PROPERTY(int maxFontSize     READ maxFontSize     CONSTANT)
     Q_PROPERTY(int defaultFontSize READ defaultFontSize CONSTANT)
     Q_PROPERTY(bool    hasDict    READ hasDict    NOTIFY dictStateChanged)
+    /* current dictionary summary + entry count, shown in the status bar */
+    Q_PROPERTY(QString dictInfo   READ dictInfo   NOTIFY dictStateChanged)
+    Q_PROPERTY(QString appVersion READ appVersion CONSTANT)
     /* data directory actually in use, shown by the settings page */
     Q_PROPERTY(QString dataDir    READ dataDir    CONSTANT)
 
@@ -129,6 +133,8 @@ public:
     int     defaultFontSize() const;
     QString fontFamily() const;
     bool    hasDict() const;
+    QString dictInfo() const;
+    QString appVersion() const;
 
     bool systemTray() const;
     bool darkTheme() const { return m_darkTheme; }
@@ -141,6 +147,11 @@ public:
     int  uiLanID() const;
     QStringList uiLans() const;
 
+    /*! Localized display name for a dictionary language code ("english"
+     *  -> "英语").  The raw code still identifies the dictionary, so only
+     *  the label is translated. */
+    Q_INVOKABLE QString lanLabel(const QString &lan) const;
+
     /*! The raw list of the last captured-word lookup.  Ownership stays here,
      *  the caller must not delete it. */
     DictItemList* capWordItems() const { return m_capItems; }
@@ -151,9 +162,14 @@ public:
 
 public slots:
     /* Called by QtMessager (queued), never from a worker thread directly. */
-    void onUpdateExplText(void *v);
+    void onUpdateExplText(int which, void *v);
     void onUpdateCapWordExplText(void *v);
     void onSetLanComboBox(const QString &src, const QString &det, void *v);
+    /*! Called by QtMessager right after a (re)load rebuilt the index, i.e.
+     *  the displayed results belong to a dictionary set that is gone.  Not
+     *  driven by modelReset(): prefix search and paging reset the same model
+     *  and must keep the results on screen. */
+    void onDictReloaded();
 
 private slots:
     void onVBookModelReset();
@@ -250,6 +266,9 @@ private:
     VBookModel     *m_vbookModel;
 
     QVariantList m_expl;
+    /*! last result of every dictionary, keyed by its index, so several
+     *  dictionaries can be shown one after another in dictionary-list order. */
+    QMap<int, QVariantList> m_explByDict;
     QVariantList m_capWord;
     QString      m_query;
     QStringList  m_srcLans;

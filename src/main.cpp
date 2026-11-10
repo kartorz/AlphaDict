@@ -135,12 +135,14 @@ int main(int argc, char* argv[])
     if (g_application.m_configure->m_setting.uilanID == UILAN_CN) {
         // The catalogue is installed next to the data files, but while the
         // program runs straight from the source tree it only exists in
-        // gui/qt/.  Try every plausible location instead of a single one.
+        // gui/qt/.  Try every plausible location instead of a single one,
+        // the build tree first: a stale installed .qm must not shadow a
+        // fresh one next to the binary.
         QStringList trFiles;
-        trFiles << QString::fromLocal8Bit(
-            (g_application.m_configure->m_dataDir + "/uitr_cn").c_str());
         trFiles << QCoreApplication::applicationDirPath() + "/gui/qt/uitr_cn";
         trFiles << QDir::currentPath() + "/gui/qt/uitr_cn";
+        trFiles << QString::fromLocal8Bit(
+            (g_application.m_configure->m_dataDir + "/uitr_cn").c_str());
         for (int i = 0; i < trFiles.size(); i++) {
             if (translator.load(trFiles.at(i)))
                 break;

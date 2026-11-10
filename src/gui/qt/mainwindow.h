@@ -38,7 +38,8 @@ public:
     QtMessager *m_messager;
 
 public slots:
-    void onUpdateExplText(void *v);
+    void onDictReloaded();
+    void onUpdateExplText(int which, void *v);
     void onUpdateCapWordExplText(void *v);
     void onSetLanComboBox(const QString& src, const QString& det, void *v);
 

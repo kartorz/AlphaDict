@@ -106,7 +106,7 @@ void TaskManager::stop()
     }
 }
 
-void TaskManager::addTask(Task *tsk, int delay)
+bool TaskManager::addTask(Task *tsk, int delay)
 {
     unsigned int now = Util::getTimeMS();
     MutexLock lock(m_taskQueueLock);
@@ -122,15 +122,23 @@ void TaskManager::addTask(Task *tsk, int delay)
                  if ((*iter)->getStartRunningTime() >= tsk->getStartRunningTime()) {
                      m_taskQueue.insert(iter, tsk);
                      m_queueCond.setEvent();
-                     return;
+                     return true;
 		  }
 	     }
 	     m_taskQueue.push_back(tsk);
 	     m_queueCond.setEvent();
+	     return true;
 	}
-    } else {
+        /* The very same task is already queued: drop this copy instead of
+         * leaking it. */
         delete tsk;
+        return false;
     }
+
+    /* Stopped (shutdown): the caller has to learn that its task will never
+     * run, otherwise it keeps a dangling pointer. */
+    delete tsk;
+    return false;
 }
 
 void TaskManager::waitForThrdExit()
@@ -315,12 +323,19 @@ void* execute(void *owner)
                 if (work->isRepeat()) {
                     tmgr->addTask(work, work->getInterval());
                 } else {
+                    /* A task may return early without publishing anything,
+                     * so let it drop whatever pointer it still owns. */
+                    work->onDrop();
                     delete work;
                 }
                 //printf("{execute} doWork\n");
             } else {
                 work->m_callback->onTaskAbort();
                 g_sysLog.d("{execute} onTaskAbort\n");
+                /* The task is thrown away without ever running, so its owner
+                 * would keep a pointer to freed memory.  Let it drop the
+                 * pointer before the object goes away. */
+                work->onDrop();
                 delete work;
             }
         }

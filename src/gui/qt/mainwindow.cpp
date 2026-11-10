@@ -268,9 +268,24 @@ void MainWindow::on_indexLineEdit_editingFinished()
     m_dictIndexModel->onResetIndexList(ui->indexLineEdit->text().toUtf8().data());
 }
 
-void MainWindow::onUpdateExplText(void *v)
+/* QtMessager invokes this by name after a dictionary (re)load.  The widget UI
+ * keeps the old document on screen, so there is nothing to clear here. */
+void MainWindow::onDictReloaded()
 {
+}
+
+void MainWindow::onUpdateExplText(int which, void *v)
+{
+    /* The widget UI appends every dictionary into one document, so the
+     * per-dict index carried by the message is not needed here. */
+    Q_UNUSED(which);
     DictItemList* itemList = (DictItemList*) v;
+    if (itemList == NULL)
+        return;
+    if (itemList->empty()) {
+        delete itemList;
+        return;
+    }
 
     QTextCursor cursor(ui->dictTextEdit->textCursor());
     QTextFrameFormat itemFrame;

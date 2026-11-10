@@ -104,7 +104,19 @@ QmlBridge::~QmlBridge()
  * messages from the backend
  *-------------------------------------------------------------------------*/
 
-void QmlBridge::onUpdateExplText(void *v)
+void QmlBridge::onDictReloaded()
+{
+    /* The dictionary set changed, so every explanation on screen belongs to a
+     * dictionary that is no longer loaded.  Drop them together with the
+     * index and the dictionary state. */
+    m_explByDict.clear();
+    m_expl.clear();
+    emit explChanged();
+    emit indexCountChanged();
+    emit dictStateChanged();
+}
+
+void QmlBridge::onUpdateExplText(int which, void *v)
 {
     DictItemList *itemList = (DictItemList *)v;
     if (itemList == NULL)
@@ -114,7 +126,20 @@ void QmlBridge::onUpdateExplText(void *v)
     for (size_t i = 0; i < itemList->size(); i++)
         list.append(dictItemToMap((*itemList)[i]));
 
-    m_expl = list;
+    if (which < 0) {
+        /* Not tied to a dictionary (e.g. an index click): use as-is. */
+        m_explByDict.clear();
+        m_expl = list;
+    } else {
+        /* Each dictionary reports on its own; keep the results keyed by
+         * dictionary index and emit them in dictionary-list order, no matter
+         * which worker finished first. */
+        m_explByDict.insert(which, list);
+        m_expl.clear();
+        for (QMap<int, QVariantList>::const_iterator it = m_explByDict.constBegin();
+             it != m_explByDict.constEnd(); ++it)
+            m_expl += it.value();
+    }
     emit explChanged();
 
     delete itemList;
@@ -179,6 +204,7 @@ void QmlBridge::search(const QString &input)
     }
 
     m_query = trimmed;
+    m_explByDict.clear();
     m_expl.clear();
     emit queryChanged();
     emit explChanged();
@@ -204,6 +230,7 @@ void QmlBridge::clickIndex(int row)
         return;
 
     m_query = QString::fromStdString(item->index);
+    m_explByDict.clear();
     m_expl.clear();
     emit queryChanged();
     emit explChanged();
@@ -474,6 +501,31 @@ bool QmlBridge::hasDict() const
     return DictManager::getReference().hasDict();
 }
 
+QString QmlBridge::appVersion() const
+{
+    return QString(AL_VERSION);
+}
+
+QString QmlBridge::dictInfo() const
+{
+    DictManager &dm = DictManager::getReference();
+    int id = dm.openDictId();
+    const vector<struct DictNode> &nodes = m_config->m_dictNodes;
+    if (!dm.hasDict() || id < 0 || id >= (int)nodes.size())
+        return QString();
+
+    /* summary holds name + publisher + date, only the name fits one line */
+    QString name = QString::fromStdString(nodes[id].summary).trimmed();
+    int nl = name.indexOf('\n');
+    if (nl >= 0)
+        name = name.left(nl).trimmed();
+
+    int count = dm.indexListSize();
+    if (name.isEmpty())
+        return tr("%1 entries").arg(count);
+    return tr("%1 · %2 entries").arg(name).arg(count);
+}
+
 bool QmlBridge::systemTray() const
 {
     return m_config->m_setting.bsystemTray;
@@ -527,6 +579,20 @@ QStringList QmlBridge::uiLans() const
     return lans;
 }
 
+QString QmlBridge::lanLabel(const QString &lan) const
+{
+    const QString key = lan.trimmed().toLower();
+    if (key == QLatin1String("any"))      return tr("Any");
+    if (key == QLatin1String("english"))  return tr("English");
+    if (key == QLatin1String("chinese"))  return tr("Chinese");
+    if (key == QLatin1String("japanese")) return tr("Japanese");
+    if (key == QLatin1String("korean"))   return tr("Korean");
+    if (key == QLatin1String("french"))   return tr("French");
+    if (key == QLatin1String("german"))   return tr("German");
+    if (key == QLatin1String("russian"))  return tr("Russian");
+    return lan;
+}
+
 void QmlBridge::setSrcLan(const QString &lan)
 {
     if (m_srcLan == lan)
@@ -534,7 +600,12 @@ void QmlBridge::setSrcLan(const QString &lan)
     m_srcLan = lan;
     std::string u8lan(lan.toUtf8().constData());
     g_application.sysMessageQ()->push(MSG_SET_SRCLAN, u8lan);
+    /* The dictionary set is about to change: drop the old results instead of
+     * leaving entries from the previous direction on screen. */
+    m_explByDict.clear();
+    m_expl.clear();
     emit languagesChanged();
+    emit explChanged();
 }
 
 void QmlBridge::setDetLan(const QString &lan)
@@ -544,7 +615,10 @@ void QmlBridge::setDetLan(const QString &lan)
     m_detLan = lan;
     std::string u8lan(lan.toUtf8().constData());
     g_application.sysMessageQ()->push(MSG_SET_DETLAN, u8lan);
+    m_explByDict.clear();
+    m_expl.clear();
     emit languagesChanged();
+    emit explChanged();
 }
 
 void QmlBridge::setFontSize(int size)

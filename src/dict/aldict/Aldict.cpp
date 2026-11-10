@@ -150,10 +150,12 @@ void Aldict::summary(string& text)
     stream << (char *)(m_doc.m_header.d_identi);
     stream << "\n";
 
+    /* the header keeps the minor number in d_version[0] and the major in
+     * d_version[1]; printing them in array order shows "4.2" for "2.4". */
     stream <<  "version:    ";
-    stream <<  ((int) m_doc.m_header.d_version[0]);
+    stream <<  ((int) m_doc.m_header.d_version[1]);
     stream << ".";
-    stream <<  ((int) m_doc.m_header.d_version[1]);   
+    stream <<  ((int) m_doc.m_header.d_version[0]);
     stream << "\n";
 
     stream << "from \"";

@@ -1,7 +1,10 @@
 #ifndef _DICTMANAGER_H_
 #define _DICTMANAGER_H_
 
-#define DICT_MAX_OPEN 3
+/* How many enabled dictionaries may be loaded at once.  The first matching
+ * dictionary in the configured list is the main one (index, captured word and
+ * status bar); the rest only add their entries to the search result. */
+#define DICT_MAX_OPEN 8
 
 #include "iDict.h"
 #include "TaskManager.h"
@@ -20,6 +23,7 @@ public:
       virtual ~LookupTask() {}
       virtual void doWork();
 	  virtual void abort();
+      virtual void onDrop();
 private:
       iDict* m_dict;
       DictManager* m_dmgr;
@@ -58,10 +62,14 @@ public:
     void setDictSrcLan(string& srclan);
     void setDictDetLan(string& detlan);
     bool hasDict() { return m_dictTotal > 0;}
+    int  openDictId() const { return m_dictTotal > 0 ? m_dictOpen[0].dictId : -1; }
 
 private:
-    void onAddLookupResult(int which, DictItemList& items, bool lookupResult);
+    void onAddLookupResult(int which, DictItemList& items, bool lookupResult, Task* owner);
     bool loadDict(bool more=false);
+    /*! Clear the reload gate; caller holds m_cs.  Returns true when a reload
+     *  requested during this one must be scheduled once the lock is released. */
+    bool endReload();
     bool matchDict(const string& srcLan, const string& detLan);
     iDict* createHandleByDict(const string dictpath);
     iDict* createHandleByIdenitfier(const string identi);
@@ -74,10 +82,19 @@ private:
         int   dictId;
         int   flag;
         string pending;
+        /*! flags of the pending query: it may differ from the running task's
+         *  (a captured-word lookup arriving while a normal search runs). */
+        int   pendingFlag;
     };
     
     DictOpen m_dictOpen[DICT_MAX_OPEN];
     bool m_bReload;
+    /*! True while a reload runs (also while it waits for lookups to stop).
+     *  New lookups would race with the dictionary being torn down. */
+    bool m_loading;
+    /*! A language change arrived while a reload was running; run it again
+     *  once the current one ends. */
+    bool m_reloadPending;
     int m_dictTotal;
     int m_indexListStart;
     IndexList  *m_indexList;
