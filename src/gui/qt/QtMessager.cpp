@@ -75,16 +75,6 @@ void QtMessager::doWork()
                 break;
             }
 
-            case MSG_SET_LANLIST: {
-                QMetaObject::invokeMethod(m_owner,
-                                              "onSetLanComboBox",
-                                              Qt::QueuedConnection,
-                                              Q_ARG(QString, QString(msg.strArg1.c_str())),
-                                              Q_ARG(QString, QString(msg.strArg2.c_str())),
-                                              Q_ARG(void*, msg.pArg1));
-                break;
-            }
-
             case MSG_QUIT: {
                 m_reqAbort = true;
                 break;

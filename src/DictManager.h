@@ -1,9 +1,10 @@
 #ifndef _DICTMANAGER_H_
 #define _DICTMANAGER_H_
 
-/* How many enabled dictionaries may be loaded at once.  The first matching
- * dictionary in the configured list is the main one (index, captured word and
- * status bar); the rest only add their entries to the search result. */
+/* How many enabled dictionaries may be loaded at once.  The main one is the
+ * first enabled dictionary whose source language matches the query language
+ * (index, captured word and status bar); the rest only add their entries to
+ * the search result. */
 #define DICT_MAX_OPEN 8
 
 #include "iDict.h"
@@ -59,10 +60,11 @@ public:
     void onClick(int row, iIndexItem* item);
     void reloadDict();
     int  indexListSize();
-    void setDictSrcLan(string& srclan);
-    void setDictDetLan(string& detlan);
     bool hasDict() { return m_dictTotal > 0;}
-    int  openDictId() const { return m_dictTotal > 0 ? m_dictOpen[0].dictId : -1; }
+    /*! Slot index of the main dictionary: first one matching m_curLan. */
+    int  openDictId();
+    /*! Same, for a word coming from outside a query (vocabulary book). */
+    int  mainDictIndexFor(const string& word);
 
 private:
     void onAddLookupResult(int which, DictItemList& items, bool lookupResult, Task* owner);
@@ -70,7 +72,15 @@ private:
     /*! Clear the reload gate; caller holds m_cs.  Returns true when a reload
      *  requested during this one must be scheduled once the lock is released. */
     bool endReload();
-    bool matchDict(const string& srcLan, const string& detLan);
+    /*! Language handling.  These run with m_cs held. */
+    string dictSourceLan(int idx);
+    bool   dictMatchesLan(int idx, const string& lan);
+    int    pickMainDict(const string& lan);
+    /*! Pick the dictionary set for this query; returns its language and
+     *  whether to filter on it.  Caller holds m_cs. */
+    string beginQuery(const string& input, int flags, bool& filter);
+    /*! Rebuild m_lanMask from the loaded dictionaries.  Caller holds m_cs. */
+    void recomputeLanMask();
     iDict* createHandleByDict(const string dictpath);
     iDict* createHandleByIdenitfier(const string identi);
     bool lookupIgnoreGrammarCase(iDict* dict, const string& input, DictItemList& items);
@@ -95,6 +105,11 @@ private:
     /*! A language change arrived while a reload was running; run it again
      *  once the current one ends. */
     bool m_reloadPending;
+    /*! Language of the current query, empty until the first one. */
+    string m_curLan;
+    /*! Scripts the loaded dictionaries declare (Util::LAN_* bits), so that
+     *  detectLanguage() stays inside what can be looked up. */
+    unsigned int m_lanMask;
     int m_dictTotal;
     int m_indexListStart;
     IndexList  *m_indexList;

@@ -58,11 +58,6 @@ class QmlBridge : public QObject
     Q_PROPERTY(int indexCount READ indexCount NOTIFY indexCountChanged)
     Q_PROPERTY(int dictCount  READ dictCount  NOTIFY dictCountChanged)
 
-    Q_PROPERTY(QStringList srcLans READ srcLans NOTIFY languagesChanged)
-    Q_PROPERTY(QStringList detLans READ detLans NOTIFY languagesChanged)
-    Q_PROPERTY(QString srcLan READ srcLan WRITE setSrcLan NOTIFY languagesChanged)
-    Q_PROPERTY(QString detLan READ detLan WRITE setDetLan NOTIFY languagesChanged)
-
     Q_PROPERTY(QVariantList vbook     READ vbook     NOTIFY vbookChanged)
     Q_PROPERTY(int          vBookMode READ vBookMode WRITE setVBookMode NOTIFY vBookModeChanged)
     Q_PROPERTY(int          vBookRow  READ vBookRow  NOTIFY vbookChanged)
@@ -113,11 +108,6 @@ public:
     QString dataDir() const;
     int dictCount() const;
 
-    QStringList srcLans() const { return m_srcLans; }
-    QStringList detLans() const { return m_detLans; }
-    QString srcLan() const { return m_srcLan; }
-    QString detLan() const { return m_detLan; }
-
     QVariantList vbook() const { return m_vbook; }
     int          vBookMode() const;
     int          vBookRow() const;
@@ -147,11 +137,6 @@ public:
     int  uiLanID() const;
     QStringList uiLans() const;
 
-    /*! Localized display name for a dictionary language code ("english"
-     *  -> "英语").  The raw code still identifies the dictionary, so only
-     *  the label is translated. */
-    Q_INVOKABLE QString lanLabel(const QString &lan) const;
-
     /*! The raw list of the last captured-word lookup.  Ownership stays here,
      *  the caller must not delete it. */
     DictItemList* capWordItems() const { return m_capItems; }
@@ -164,7 +149,6 @@ public slots:
     /* Called by QtMessager (queued), never from a worker thread directly. */
     void onUpdateExplText(int which, void *v);
     void onUpdateCapWordExplText(void *v);
-    void onSetLanComboBox(const QString &src, const QString &det, void *v);
     /*! Called by QtMessager right after a (re)load rebuilt the index, i.e.
      *  the displayed results belong to a dictionary set that is gone.  Not
      *  driven by modelReset(): prefix search and paging reset the same model
@@ -180,7 +164,6 @@ signals:
     void capWordChanged();
     void indexCountChanged();
     void dictCountChanged();
-    void languagesChanged();
     void vbookChanged();
     void vBookModeChanged();
     void statusTextChanged();
@@ -243,8 +226,6 @@ public:
     Q_INVOKABLE void resetSettings();
 
     /* property writers */
-    void setSrcLan(const QString &lan);
-    void setDetLan(const QString &lan);
     void setFontSize(int size);
     void setFontFamily(const QString &family);
     void setVBookMode(int mode);
@@ -271,10 +252,6 @@ private:
     QMap<int, QVariantList> m_explByDict;
     QVariantList m_capWord;
     QString      m_query;
-    QStringList  m_srcLans;
-    QStringList  m_detLans;
-    QString      m_srcLan;
-    QString      m_detLan;
     QVariantList m_vbook;
     QString      m_vBookExpl;
     QString      m_statusText;

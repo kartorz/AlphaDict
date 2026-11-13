@@ -131,48 +131,6 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QComboBox" name="srcLanComboBox">
-      <property name="geometry">
-       <rect>
-        <x>236</x>
-        <y>14</y>
-        <width>113</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select source language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="detLanComboBox">
-      <property name="geometry">
-       <rect>
-        <x>397</x>
-        <y>14</y>
-        <width>112</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select destination language.&lt;/p&gt;&lt;p&gt;'any' means not specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>356</x>
-        <y>21</y>
-        <width>32</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="mainwindow.qrc">:/res/to_right_arrow.png</pixmap>
-      </property>
-     </widget>
      <widget class="QTextEdit" name="dictTextEdit">
       <property name="geometry">
        <rect>
@@ -405,9 +363,9 @@
      <widget class="QComboBox" name="inputComboBox">
       <property name="geometry">
        <rect>
-        <x>524</x>
+        <x>236</x>
         <y>14</y>
-        <width>200</width>
+        <width>488</width>
         <height>32</height>
        </rect>
       </property>

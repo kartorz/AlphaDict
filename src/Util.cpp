@@ -291,6 +291,103 @@ bool Util::isValidEnglishChar(char c)
     return false;
 }
 
+/* Decode one UTF-8 code point at text[i] and advance i.  Malformed input
+ * yields its first byte and advances by one. */
+static unsigned int utf8Next(const string& text, size_t& i)
+{
+    unsigned char c = (unsigned char)text[i];
+    int len;
+    unsigned int cp;
+
+    if (c < 0x80) {
+        i++;
+        return c;
+    }
+    if ((c & 0xE0) == 0xC0) {
+        len = 2; cp = c & 0x1F;
+    } else if ((c & 0xF0) == 0xE0) {
+        len = 3; cp = c & 0x0F;
+    } else if ((c & 0xF8) == 0xF0) {
+        len = 4; cp = c & 0x07;
+    } else {
+        i++;
+        return c;
+    }
+
+    if (i + (size_t)len > text.size()) {
+        i = text.size();
+        return c;
+    }
+    for (int k = 1; k < len; k++) {
+        unsigned char cc = (unsigned char)text[i + k];
+        if ((cc & 0xC0) != 0x80) {   /* truncated sequence */
+            i += k;
+            return c;
+        }
+        cp = (cp << 6) | (cc & 0x3F);
+    }
+    i += len;
+    return cp;
+}
+
+string Util::detectLanguage(const string& text, unsigned int scripts)
+{
+    size_t i = 0;
+    size_t n = text.size();
+    bool latin = false;
+
+    while (i < n) {
+        /* ASCII means english: skip the bytes. */
+        if ((unsigned char)text[i] < 0x80) {
+            latin = true;
+            i++;
+            continue;
+        }
+
+        unsigned int cp = utf8Next(text, i);
+
+        /* CJK unified ideographs, incl. ext A/B and compatibility. */
+        if ((cp >= 0x3400 && cp <= 0x4DBF)
+            || (cp >= 0x4E00 && cp <= 0x9FFF)
+            || (cp >= 0xF900 && cp <= 0xFAFF)
+            || (cp >= 0x20000 && cp <= 0x2FA1F)) {
+            if (scripts & LAN_CJK)
+                return "chinese";
+            continue;   /* no dictionary for it */
+        }
+
+        /* Hiragana, katakana and the katakana phonetic extensions. */
+        if ((cp >= 0x3040 && cp <= 0x30FF) || (cp >= 0x31F0 && cp <= 0x31FF)) {
+            if (scripts & LAN_KANA)
+                return "japanese";
+            continue;
+        }
+
+        /* Hangul jamo, compatibility jamo and syllables. */
+        if ((cp >= 0x1100 && cp <= 0x11FF) || (cp >= 0x3130 && cp <= 0x318F)
+            || (cp >= 0xAC00 && cp <= 0xD7AF)) {
+            if (scripts & LAN_HANGUL)
+                return "korean";
+            continue;
+        }
+
+        /* Cyrillic. */
+        if (cp >= 0x0400 && cp <= 0x04FF) {
+            if (scripts & LAN_CYRILLIC)
+                return "russian";
+            continue;
+        }
+
+        /* Anything else counts as latin, but only after the whole scan, so
+         * that "café中文" still reads as chinese. */
+        latin = true;
+    }
+
+    if (latin && (scripts & LAN_LATIN))
+        return "english";
+    return "";
+}
+
 
 int Util::stringToInt(string strInt)
 {

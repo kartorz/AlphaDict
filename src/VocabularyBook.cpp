@@ -116,7 +116,10 @@ bool VocabularyBook::add(const string& word)
             return false;
 
         DictItemList itemList;
-        DictManager::getReference().lookup(word, 0, itemList);
+        /* Words of all languages: pick the dictionary by the word. */
+        int which = DictManager::getReference().mainDictIndexFor(word);
+        if (which >= 0)
+            DictManager::getReference().lookup(word, which, itemList);
 
         string expl;
         for (int i=0; i< itemList.size(); i++) {

@@ -22,9 +22,6 @@ enum {
     MSG_DICT_INDEX_QUERY,
     MSG_SET_DICTITEMS, /* (iArg1[@1]: dict slot, -1 = index click; pArg1[@3]) */
     MSG_SET_CAPWORD_DICTITEM, /* (iArg1[@1]: dict slot; pArg1[@3])  */
-    MSG_SET_LANLIST,   /* (strArg1, strArg2, pArg1[@3])  */
-    MSG_SET_SRCLAN,    /* (strArg1) */
-    MSG_SET_DETLAN,    /* (strArg1) */
     MSG_SET_DICTEN,    /* (iArg1, iArg2) */
     MSG_MOVE_DICTITEM,  /* (iArg1, iArg2) */
     MSG_RESET_INDEXLIST, /*  */

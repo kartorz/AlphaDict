@@ -96,35 +96,7 @@ Rectangle {
                 onAccepted: bridge.search(text)
             }
 
-            StyledComboBox {
-                id: srcCombo
-                Layout.alignment: Qt.AlignVCenter
-                controlWidth: Math.max(120, Theme.baseSize * 7)
-                model: bridge.srcLans
-                labeler: function(v) { return bridge.lanLabel(v) }
-                currentIndex: Math.max(0, bridge.srcLans.indexOf(bridge.srcLan))
-                onActivated: bridge.srcLan = bridge.srcLans[index]
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignVCenter
-                text: "→"
-                color: Theme.textMut
-                font.pixelSize: Theme.baseSize
-                font.family: Theme.fontFamily
-            }
-
-            StyledComboBox {
-                id: detCombo
-                Layout.alignment: Qt.AlignVCenter
-                controlWidth: Math.max(120, Theme.baseSize * 7)
-                model: bridge.detLans
-                labeler: function(v) { return bridge.lanLabel(v) }
-                currentIndex: Math.max(0, bridge.detLans.indexOf(bridge.detLan))
-                onActivated: bridge.detLan = bridge.detLans[index]
-            }
-
-            Item { Layout.fillWidth: true }
+            /* No language combos: the input decides. */
 
             FlatButton {
                 id: starButton

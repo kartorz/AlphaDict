@@ -197,18 +197,6 @@ void MainWindow::initDelay()
     }
 }
 
-void MainWindow::on_srcLanComboBox_currentIndexChanged(const QString &arg1)
-{
-    //g_sysLog.i("on_srcLanComboBox_currentIndexChanged\n");
-    g_application.sysMessageQ()->push(MSG_SET_SRCLAN, std::string(arg1.toUtf8().data()));
-}
-
-void MainWindow::on_detLanComboBox_currentIndexChanged(const QString &arg1)
-{
-    //g_sysLog.i("on_detLanComboBox_currentIndexChanged\n");
-    g_application.sysMessageQ()->push(MSG_SET_DETLAN, std::string(arg1.toUtf8().data()));
-}
-
 void MainWindow::on_inputComboBox_currentIndexChanged(const QString &arg1)
 {
 	//qDebug() << "inputComboBox_currentIndexChanged,arg1 " << arg1;
@@ -369,39 +357,6 @@ void MainWindow::onUpdateCapWordExplText(void *v)
     }
 }
 
-void MainWindow::onSetLanComboBox(const QString& src, const QString& det, void *v)
-{
-    /* The sender hands over a heap copy and this slot owns it (pArg1[@3]). */
-    vector<string> *pVec = (vector<string>*) v;
-
-    ui->detLanComboBox->blockSignals(true);
-    ui->srcLanComboBox->blockSignals(true);
-
-    ui->detLanComboBox->clear();
-    ui->srcLanComboBox->clear();
-
-    ui->detLanComboBox->addItem("any");
-    ui->srcLanComboBox->addItem("any");
-
-    if (pVec != NULL) {
-        for (size_t i = 0; i < pVec->size(); i++) {
-            QString item((*pVec)[i].c_str());
-            ui->srcLanComboBox->addItem(item);
-            ui->detLanComboBox->addItem(item);
-        }
-        delete pVec;
-    }
-
-    int i = ui->srcLanComboBox->findText(src);
-    ui->srcLanComboBox->setCurrentIndex(i);
-
-    i = ui->detLanComboBox->findText(det);
-    ui->detLanComboBox->setCurrentIndex(i);
-
-    ui->detLanComboBox->blockSignals(false);
-    ui->srcLanComboBox->blockSignals(false);
-}
-
 void MainWindow::on_saveButton_clicked()
 {
     QString word = ui->inputComboBox->currentText();
@@ -550,13 +505,10 @@ void MainWindow::onActionVcbularyPageAdded()
         
         //ui->vbExplLabel->setText("");
         //ui->vbExplLabel->setText(m_vbookModel->curExamExpl());
-        ui->detLanComboBox->blockSignals(true);
 
         ui->vbModeComboBox->clear();
         ui->vbModeComboBox->addItem(tr("study"));
         ui->vbModeComboBox->addItem(tr("exam"));
-
-        ui->detLanComboBox->blockSignals(false);
 
         //ui->vbScoreLabel->setText("0");
         //QIcon icon;

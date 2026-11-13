@@ -65,9 +65,6 @@ QmlBridge::QmlBridge(QObject *parent)
     m_vbookModel = new VBookModel(m_config->getVBPath());
     m_vbookModel->setParent(this);
 
-    m_srcLan = QString::fromStdString(m_config->m_srcLan);
-    m_detLan = QString::fromStdString(m_config->m_detLan);
-
     /* Counts and the vocabulary list are derived from the models, so keep them
      * in sync with every reset the models issue. */
     connect(m_indexModel, SIGNAL(modelReset()), this, SIGNAL(indexCountChanged()));
@@ -161,30 +158,6 @@ void QmlBridge::onUpdateCapWordExplText(void *v)
     m_capWord = list;
     emit capWordChanged();
     emit capWordShown();
-}
-
-void QmlBridge::onSetLanComboBox(const QString &src, const QString &det, void *v)
-{
-    /* The sender hands over a heap copy and this slot owns it (pArg1[@3]). */
-    vector<string> *pVec = (vector<string> *)v;
-
-    m_srcLans.clear();
-    m_detLans.clear();
-    m_srcLans << "any";
-    m_detLans << "any";
-
-    if (pVec != NULL) {
-        for (size_t i = 0; i < pVec->size(); i++) {
-            QString item(QString::fromStdString((*pVec)[i]));
-            m_srcLans << item;
-            m_detLans << item;
-        }
-        delete pVec;
-    }
-
-    m_srcLan = src;
-    m_detLan = det;
-    emit languagesChanged();
 }
 
 /*---------------------------------------------------------------------------
@@ -577,48 +550,6 @@ QStringList QmlBridge::uiLans() const
     QStringList lans;
     lans << QString::fromUtf8("English") << QString::fromUtf8("简体中文");
     return lans;
-}
-
-QString QmlBridge::lanLabel(const QString &lan) const
-{
-    const QString key = lan.trimmed().toLower();
-    if (key == QLatin1String("any"))      return tr("Any");
-    if (key == QLatin1String("english"))  return tr("English");
-    if (key == QLatin1String("chinese"))  return tr("Chinese");
-    if (key == QLatin1String("japanese")) return tr("Japanese");
-    if (key == QLatin1String("korean"))   return tr("Korean");
-    if (key == QLatin1String("french"))   return tr("French");
-    if (key == QLatin1String("german"))   return tr("German");
-    if (key == QLatin1String("russian"))  return tr("Russian");
-    return lan;
-}
-
-void QmlBridge::setSrcLan(const QString &lan)
-{
-    if (m_srcLan == lan)
-        return;
-    m_srcLan = lan;
-    std::string u8lan(lan.toUtf8().constData());
-    g_application.sysMessageQ()->push(MSG_SET_SRCLAN, u8lan);
-    /* The dictionary set is about to change: drop the old results instead of
-     * leaving entries from the previous direction on screen. */
-    m_explByDict.clear();
-    m_expl.clear();
-    emit languagesChanged();
-    emit explChanged();
-}
-
-void QmlBridge::setDetLan(const QString &lan)
-{
-    if (m_detLan == lan)
-        return;
-    m_detLan = lan;
-    std::string u8lan(lan.toUtf8().constData());
-    g_application.sysMessageQ()->push(MSG_SET_DETLAN, u8lan);
-    m_explByDict.clear();
-    m_expl.clear();
-    emit languagesChanged();
-    emit explChanged();
 }
 
 void QmlBridge::setFontSize(int size)

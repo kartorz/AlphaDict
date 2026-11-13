@@ -72,8 +72,6 @@ public:
     void moveDictItem(int index, bool down=true);
     void enableDict(int index, bool en=true);
     void writeDictItem(int item);
-    void writeSrcLan(const string& lan);
-    void writeDetLan(const string& lan);
     void writeUILanID(int id);
     void writeFontSize(int size);
     void writeFont(string font);
@@ -88,12 +86,9 @@ public:
     void writeXml();
     void reset();
 
-    vector<string> m_languages;
     string m_dataDir;
     string m_homeDir;
     string m_configFile;
-    string m_srcLan;
-    string m_detLan;    
     CaptureWordSetting  m_cws;
     Setting  m_setting;
 
@@ -103,7 +98,6 @@ public:
 
 private:
     int  load(const string& xmlpath);
-    void loadLanguage();
     void scanDictDir(const string& path, vector<string>& dictFiles);
     int  findDict(const string& path, const vector<string>& dictFiles);
 

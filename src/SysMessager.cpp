@@ -68,16 +68,6 @@ void SysMessager::processMessage()
             break;
         }
 
-        case MSG_SET_SRCLAN: {
-            DictManager::getReference().setDictSrcLan(msg.strArg1);
-            break;
-        }
-
-        case MSG_SET_DETLAN: {
-            DictManager::getReference().setDictDetLan(msg.strArg1);
-            break;
-        }
-
         case MSG_SET_DICTEN: {
             // When UI init, will send a invalid message.
             if (g_application.m_configure->m_dictNodes[msg.iArg1].en != (bool)msg.iArg2) {

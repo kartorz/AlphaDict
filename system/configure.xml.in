@@ -7,8 +7,6 @@
       Every *.aldict file in that directory is scanned on start up.
   -->
   <dir></dir>
-  <srclan>english</srclan>
-  <detlan>chinese</detlan>
   <dict>
     <!--
       <d open="" en="true">

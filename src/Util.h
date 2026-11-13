@@ -32,6 +32,20 @@ public:
     static bool isValidInput(string& str);
     static bool isValidEnglishChar(char c);
 
+    /*! Script classes a dictionary can be declared for. */
+    enum {
+        LAN_LATIN    = 1 << 0,   /* english: ASCII, and anything unclassified */
+        LAN_CJK      = 1 << 1,   /* chinese */
+        LAN_KANA     = 1 << 2,   /* japanese */
+        LAN_HANGUL   = 1 << 3,   /* korean */
+        LAN_CYRILLIC = 1 << 4,   /* russian */
+        LAN_ALL      = LAN_LATIN | LAN_CJK | LAN_KANA | LAN_HANGUL | LAN_CYRILLIC
+    };
+
+    /*! Guess the language of a UTF-8 word, limited to [scripts].  Empty when
+     *  no installed dictionary claims it. */
+    static string detectLanguage(const string& text, unsigned int scripts = LAN_ALL);
+
     static int stringToInt(string strInt);
     static string intToString(int i);
 

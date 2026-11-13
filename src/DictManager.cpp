@@ -78,7 +78,7 @@ DictManager& DictManager::getReference()
 
 DictManager::DictManager()
 :m_dictTotal(0),m_indexListStart(-1),m_bReload(false),m_loading(false),
- m_reloadPending(false)
+ m_reloadPending(false),m_lanMask(Util::LAN_ALL)
 {   
     for (int i=0; i<DICT_MAX_OPEN; i++) {
         m_dictOpen[i].task = NULL;
@@ -155,7 +155,7 @@ void DictManager::initialization()
  * the size of dictionay. Usually, we load only one, but allow user to enable 
  * more dictionaies.
  *
- * When change language comboxs, setting dictionary, should loadDict again.
+ * When setting changes, should loadDict again.
  *
  * Todo: 
  *     Support multi-lookups at the same time.
@@ -245,8 +245,6 @@ bool DictManager::loadDict(bool more)
     for (iter=nodeVec.begin(); iter<nodeVec.end(); ++iter) {
         if (!iter->en)
             continue;
-        if (!matchDict(iter->srclan, iter->detlan))
-            continue;
         if (m_dictTotal >= DICT_MAX_OPEN) {
             g_sysLog(LOG_INFO, "too many dicts match, ignored: %s\n",
                      iter->path.c_str());
@@ -268,10 +266,11 @@ bool DictManager::loadDict(bool more)
         g_sysLog(LOG_DEBUG,"DictManager::loadDict(%s)\n", iter->path.c_str());
     }
 
+    recomputeLanMask();
+
     if (m_dictTotal == 0)
-        g_sysLog(LOG_INFO, "no enabled dict for %s -> %s\n",
-                 g_application.m_configure->m_srcLan.c_str(),
-                 g_application.m_configure->m_detLan.c_str());
+        g_sysLog(LOG_INFO, "no enabled dict at all, dir:%s\n",
+                 g_application.m_configure->m_dataDir.c_str());
 
     again = endReload();
     }
@@ -354,7 +353,11 @@ void DictManager::lookup(const string& input, const int which, const int flags)
         if (m_loading || m_dictTotal == 0)
             return;
         if (which == -1) {
+            bool filter = false;
+            string lan = beginQuery(input, flags, filter);
             for (int i=0; i<m_dictTotal; i++) {
+                if (filter && !dictMatchesLan(i, lan))
+                    continue;
                 if (m_dictOpen[i].task != NULL) {
                     //m_dictOpen[i].task->abort(); // need enter into onAddLookupResult
                     m_dictOpen[i].pending = input;
@@ -574,7 +577,8 @@ int DictManager::getIndexList(IndexList& indexList, int start, int end, const st
      * instead of blanking the index for a whole reload, waiting period
      * included. */
     MutexLock lock(m_cs);
-    iDict* dict = m_dictOpen[0].dict;
+    int idx = pickMainDict(m_curLan);
+    iDict* dict = idx >= 0 ? m_dictOpen[idx].dict : NULL;
     if (!dict)
         return 0;
     return dict->getIndexList(indexList, start, end, startwith);
@@ -583,7 +587,8 @@ int DictManager::getIndexList(IndexList& indexList, int start, int end, const st
 int DictManager::indexListSize()
 {
     MutexLock lock(m_cs);
-    iDict* dict = m_dictOpen[0].dict;
+    int idx = pickMainDict(m_curLan);
+    iDict* dict = idx >= 0 ? m_dictOpen[idx].dict : NULL;
     if (!dict)
         return 0;
     return dict->indexListSize();
@@ -593,64 +598,141 @@ void DictManager::onClick(int row, iIndexItem* item)
 {
     DictItemList* arg1 = new DictItemList();
     {
-        /* The index belongs to the first dictionary.  A click can still be in
-         * flight after a language change left no matching dictionary, and the
-         * dictionary may be torn down concurrently, so take the lock and answer
-         * with an empty list when there is nothing to ask. */
+        /* The index belongs to the main dictionary; it may be gone after a
+         * language change, so answer with an empty list in that case. */
         MutexLock lock(m_cs);
-        if (!m_loading && m_dictTotal > 0 && m_dictOpen[0].dict != NULL)
-            arg1->push_back(m_dictOpen[0].dict->onClick(row, item));
+        int idx = pickMainDict(m_curLan);
+        if (!m_loading && idx >= 0 && m_dictOpen[idx].dict != NULL)
+            arg1->push_back(m_dictOpen[idx].dict->onClick(row, item));
     }
     g_application.uiMessageQ()->push(MSG_SET_DICTITEMS, -1, (void *)arg1);
 }
 
-void DictManager::setDictSrcLan(string& srclan)
+/*---------------------------------------------------------------------------
+ * query language selection
+ *---------------------------------------------------------------------------*/
+
+/* Source language declared for the dictionary in slot idx, lower case. */
+string DictManager::dictSourceLan(int idx)
 {
-    if (g_application.m_configure->m_srcLan.compare(srclan) != 0) {
-        g_application.m_configure->writeSrcLan(srclan);
-        /* Always reload: the matching set depends on the whole direction, and
-         * the previously opened dicts may no longer be the right ones. */
-        reloadDict();
+    if (idx < 0 || idx >= m_dictTotal)
+        return "";
+
+    int did = m_dictOpen[idx].dictId;
+    const vector<struct DictNode>& nodes = g_application.m_configure->m_dictNodes;
+    if (did < 0 || did >= (int)nodes.size())
+        return "";
+    /* The configured spelling is not normalised anywhere, but the language
+     * names compared against are lower case. */
+    string src = nodes[did].srclan;
+    for (size_t i = 0; i < src.size(); i++) {
+        if (src[i] >= 'A' && src[i] <= 'Z')
+            src[i] = (char)(src[i] - 'A' + 'a');
     }
+    return src;
 }
 
-void DictManager::setDictDetLan(string& detlan)
+bool DictManager::dictMatchesLan(int idx, const string& lan)
 {
-    if (g_application.m_configure->m_detLan.compare(detlan) != 0) {
-        g_application.m_configure->writeDetLan(detlan);
-        reloadDict();
-    }
+    string src = dictSourceLan(idx);
+    /* An unknown/any source language can answer anything. */
+    return src.empty() || src == "any" || lan.empty() || src == lan;
 }
 
-/* Check if this dictionary supports accroding lanauage */
-bool DictManager::matchDict(const string& dictSrcLan, const string& dictDetLan)
+/* Script bits a declared source language stands for.  Languages this app
+ * cannot tell apart by script widen the mask to all of them. */
+static unsigned int lanToScript(const string& lan)
 {
-    Configure *config = g_application.m_configure;
-    bool src_match = false;
-    bool det_match = false;
+    if (lan == "english")
+        return Util::LAN_LATIN;
+    if (lan == "chinese")
+        return Util::LAN_CJK;
+    if (lan == "japanese")
+        return Util::LAN_KANA;
+    if (lan == "korean")
+        return Util::LAN_HANGUL;
+    if (lan == "russian")
+        return Util::LAN_CYRILLIC;
+    return Util::LAN_ALL;
+}
 
-    if (dictSrcLan == "any")
-        src_match = true;
-    else {
-        if (config->m_srcLan == "any")
-            src_match = true;
-        else if (dictSrcLan == config->m_srcLan)
-            src_match = true;
+void DictManager::recomputeLanMask()
+{
+    unsigned int mask = 0;
+
+    for (int i = 0; i < m_dictTotal; i++)
+        mask |= lanToScript(dictSourceLan(i));
+
+    /* Nothing loaded: nothing to narrow the detection down to. */
+    m_lanMask = mask ? mask : (unsigned int)Util::LAN_ALL;
+}
+
+/* Main dictionary for a language: exact hit, then an unknown-language one,
+ * then the first. */
+int DictManager::pickMainDict(const string& lan)
+{
+    if (m_dictTotal <= 0)
+        return -1;
+    if (lan.empty() || lan == "any")
+        return 0;
+
+    int fallback = -1;
+    for (int i = 0; i < m_dictTotal; i++) {
+        string src = dictSourceLan(i);
+        if (src == lan)
+            return i;
+        if ((src.empty() || src == "any") && fallback < 0)
+            fallback = i;
+    }
+    return fallback >= 0 ? fallback : 0;
+}
+
+int DictManager::mainDictIndexFor(const string& word)
+{
+    MutexLock lock(m_cs);
+    return pickMainDict(Util::detectLanguage(word, m_lanMask));
+}
+
+int DictManager::openDictId()
+{
+    MutexLock lock(m_cs);
+    int idx = pickMainDict(m_curLan);
+    return idx >= 0 ? m_dictOpen[idx].dictId : -1;
+}
+
+/* Decide which dictionaries this query may use, and remember the language so
+ * the index list and the status bar follow the same dictionary. */
+string DictManager::beginQuery(const string& input, int flags, bool& filter)
+{
+    filter = false;
+
+    /* A captured word uses the dictionary chosen for it and must not change
+     * what the main window shows. */
+    if (m_dictTotal == 0 || (flags & QUERY_CAPWORD_FLAG))
+        return m_curLan;
+
+    string lan = Util::detectLanguage(input, m_lanMask);
+    /* No installed dictionary claims this script: search everything and keep
+     * the main dictionary as it is. */
+    if (lan.empty())
+        return m_curLan;
+
+    if (lan != m_curLan) {
+        m_curLan = lan;
+        /* The main dictionary changed: reset the index list and status bar.
+         * The UI resets before the results are queued, so nothing is lost. */
+        g_application.uiMessageQ()->push(MSG_RESET_INDEXLIST);
     }
 
-    if (dictDetLan == "any")
-        det_match = true;
-    else {
-        if (config->m_detLan == "any")
-            det_match = true;
-        else if (dictDetLan == config->m_detLan)
-            det_match = true;
+    /* If no dictionary matches the input, search all of them instead of
+     * returning nothing. */
+    for (int i = 0; i < m_dictTotal; i++) {
+        if (dictMatchesLan(i, lan)) {
+            filter = true;
+            break;
+        }
     }
-    g_sysLog(LOG_DEBUG, "{matchDict} xml:[%s -> %s], det:[%s, %s]\n",
-        config->m_srcLan.c_str(), config->m_detLan.c_str(), dictSrcLan.c_str(), dictDetLan.c_str());
-    if (src_match && det_match)
-        return true;
-    return false;
+    return lan;
 }
 
 iDict* DictManager::createHandleByDict(const string dictpath)

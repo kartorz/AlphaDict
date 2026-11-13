@@ -41,13 +41,8 @@ public slots:
     void onDictReloaded();
     void onUpdateExplText(int which, void *v);
     void onUpdateCapWordExplText(void *v);
-    void onSetLanComboBox(const QString& src, const QString& det, void *v);
 
 private slots:
-    void on_srcLanComboBox_currentIndexChanged(const QString &arg1);
-
-    void on_detLanComboBox_currentIndexChanged(const QString &arg1);
-
 	void on_inputComboBox_currentIndexChanged(const QString &arg1);
 
 	void onInputLineEditReturnPressed();

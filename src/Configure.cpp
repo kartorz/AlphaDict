@@ -2,7 +2,6 @@
 #include <Windows.h>
 # endif
 
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <cctype>
 #include <sstream>
@@ -14,8 +13,6 @@
 #include "Application.h"
 #include "Util.h"
 #include "CharUtil.h"
-#include "DictManager.h"
-#include "MessageQueue.h"
 #include "Configure.h"
 #include "alphadict.h"
 #include "SpinLock.h"
@@ -36,8 +33,7 @@ Configure& Configure::getRefrence()
     return configure;
 }
 
-Configure::Configure():m_homeDir(""),m_configFile(""),
- m_srcLan("any"),m_detLan("any"),m_dirty(false)
+Configure::Configure():m_homeDir(""),m_configFile(""),m_dirty(false)
 {
 }
 
@@ -100,17 +96,6 @@ int Configure::initialization()
         g_sysLog.w("{Configure} load configure.xml failure, restore to default setting\n");
     }
 
-    loadLanguage();
-
-    Message msg;
-    msg.id = MSG_SET_LANLIST;
-    msg.strArg1 = m_srcLan;
-    msg.strArg2 = m_detLan;
-    /* The UI thread reads this asynchronously, so hand over an independent
-     * copy instead of pointing it at m_languages. The receiver owns it
-     * (see the [@3] note in MessageQueue.h) and releases it after copying. */
-    msg.pArg1 = new vector<string>(m_languages);
-    g_application.uiMessageQ()->push(msg); // Cause loading dict.
     return ret;
 }
 
@@ -133,16 +118,6 @@ int Configure::load(const string& xmlpath)
         int ver = rootElement->IntAttribute("version");
         if (ver != CONF_VERSION)
             return ERR_LDCFG; // Recreate configure.xml
-    }
-
-    XMLElement* tempElement = rootElement->FirstChildElement("srclan");
-    if (tempElement && tempElement->GetText()) {
-        m_srcLan = tempElement->GetText();
-    }
-
-    tempElement = rootElement->FirstChildElement("detlan");
-    if (tempElement && tempElement->GetText()) {
-        m_detLan = tempElement->GetText();
     }
 
     // Loading dictionary 
@@ -210,7 +185,7 @@ int Configure::load(const string& xmlpath)
     }
     // Loading dictionary -- end
 
-    tempElement = rootElement->FirstChildElement(XML_TAG_CWS);
+    XMLElement* tempElement = rootElement->FirstChildElement(XML_TAG_CWS);
     if (tempElement) {
         m_cws.bselection  = tempElement->BoolAttribute("selection");
         m_cws.bclipboard  = tempElement->BoolAttribute("clipboard");
@@ -349,34 +324,6 @@ void Configure::scanDictDir(const string& path, vector<string>& dictFiles)
 #endif
 }
 
-void Configure::loadLanguage()
-{
-    string path = m_dataDir + "/language.txt";
-    FILE *f = fopen(path.c_str(),"r");
-    if (!f) {
-        g_sysLog(LOG_ERROR, "can find language file\n");
-        return;
-    }
-
-    util::ReadFile read;
-    char buf[1024];
-    /* keep one byte free for the terminator: a full 1024-byte read would
-     * otherwise write buf[sizeof(buf)], one byte past the array. */
-    int size = (int)read(f, (void *)buf, sizeof(buf) - 1);
-    buf[size] = '\0';
-    string strTemp(buf);
-    vector<string> splitVec;
-    boost::split(splitVec, strTemp, boost::is_any_of("\n"),
-                 boost::algorithm::token_compress_on);
-
-    vector<string>::iterator iter;
-    for (iter=splitVec.begin(); iter!=splitVec.end(); iter++) {
-        if (*iter != "" && iter->at(0) != ' ' && iter->at(0) != '\n') {
-            m_languages.push_back(*iter);
-        }
-    }
-}
-
 void Configure::moveDictItem(int index, bool down)
 {
     int newindex = down ? index + 1 : index - 1;
@@ -487,32 +434,6 @@ void Configure::writeDictItem(int item)
     /*printf("writeDictItem(%s): %d, %s -> %s\n", ndname.c_str(), 
            item, m_dictNodes[item].srclan.c_str(), m_dictNodes[item].detlan.c_str());*/
     m_dirty = true;
-}
-
-void Configure::writeSrcLan(const string& lan)
-{
-    if (m_srcLan.compare(lan) != 0) {
-        SpinLock lock(m_cs);
-        m_srcLan = lan;
-        XMLText* txt = XMLHandle(m_doc.RootElement()).FirstChildElement("srclan").FirstChild().ToText();
-        if (txt) {
-            txt->SetValue(lan.c_str());
-            m_dirty = true;
-        }
-    }
-}
-
-void Configure::writeDetLan(const string& lan)
-{
-    if (m_detLan.compare(lan) != 0) {
-        SpinLock lock(m_cs);
-	    m_detLan = lan;
-        XMLText* txt = XMLHandle(m_doc.RootElement()).FirstChildElement("detlan").FirstChild().ToText();
-        if (txt) {
-            txt->SetValue(lan.c_str());
-            m_dirty = true;
-        }
-    }
 }
 
 void Configure::writeUILanID(int id)
