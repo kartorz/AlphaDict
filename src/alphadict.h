@@ -17,7 +17,7 @@
 
 #define KEY_WIN_GEOMETRY "geometry"
 
-#define AL_VERSION  "1.5"
+#define AL_VERSION  "1.6"
 #define NPOS  -1
 
 

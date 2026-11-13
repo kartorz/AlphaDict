@@ -7,6 +7,16 @@ import "."
 Item {
     id: page
 
+    /* Optional index column; Main.qml toggles it from the top bar. */
+    property bool indexOpen: false
+
+    /* Space the column takes in the row.  Main.qml hands it to the bridge so
+     * the window can give it back while the column is hidden. */
+    readonly property int indexPaneWidth: indexCard.Layout.preferredWidth + Theme.gutter
+    /* Height the window drops when the column is hidden.  A choice for a
+     * tighter default, not measured against the content. */
+    readonly property int indexPaneHeightDelta: Theme.pad * 4
+
     /*! Ask the bridge for the index of the given prefix. */
     function loadPrefix(prefix) {
         bridge.prefixSearch(prefix);
@@ -19,8 +29,12 @@ Item {
 
         /* ------------------------- index ------------------------- */
         Card {
+            id: indexCard
             Layout.preferredWidth: Math.max(230, Theme.baseSize * 13)
+            /* Keeps the column usable if the user shrinks the window. */
+            Layout.minimumWidth: 200
             Layout.fillHeight: true
+            visible: page.indexOpen
             title: qsTr("Index")
             subtitle: qsTr("%1 items").arg(bridge.indexCount)
 

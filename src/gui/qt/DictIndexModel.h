@@ -24,6 +24,12 @@ public:
     /* Thread-safe detached copy of row, owned by the caller. */
     iIndexItem* itemClone(int row);
 
+    /*! Inactive models ignore resets and paging: the caller uses this for the
+     *  index column while it is hidden.  Defaults to active, which is what the
+     *  widget UI expects. */
+    void setActive(bool active);
+    bool isActive() const { return m_active; }
+
 public slots:
     void onResetIndexList(string startwith);
     void onResetIndexList();   /* meta-callable overload, see QtMessager */
@@ -39,6 +45,7 @@ private:
     int m_indexStart;
 	int m_indexEnd;
     string m_indexPrefix;
+    bool m_active;
     MutexCriticalSection m_cs;
 };
 

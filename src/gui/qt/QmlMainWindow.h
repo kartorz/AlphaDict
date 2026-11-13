@@ -66,6 +66,7 @@ private slots:
 
     void onBeginWindowMove();
     void onBeginWindowResize(int edges);
+    void onRequestIndexPane(bool open, int widthDelta, int heightDelta);
     void onRequestMinimizeToTray();
     void onRequestQuit();
     void onRequestSystemTray(bool en);

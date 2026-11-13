@@ -1,3 +1,9 @@
+alphadict (1.6) unstable; urgency=medium
+
+  * Refine window.
+  * Refine aldconv.py.
+ -- joni lee <joni_lee@outlook.com>  Sat, 13 Nov 2026 20:10:00 +0800
+
 alphadict (1.5) unstable; urgency=medium
 
   * Vocabulary book spelling trainer with study and test modes.

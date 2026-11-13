@@ -87,6 +87,11 @@ ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
 ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 
+# Plain "make" builds the program.  Without this, the first rule in the file
+# (uitr-qm, below) would become the default and only the translation would be
+# built.
+.DEFAULT_GOAL := a11
+
 # English is the source language, so only the Chinese catalogue is built.
 # "make uitr" (gui/qt/qt.mk) also runs lupdate; the build target only compiles
 # the checked-in .ts, so packaging never rewrites a tracked file.
@@ -199,4 +204,4 @@ clean:
 distclean: clean
 	-@rm -rf config.*  gui/build-qt-Desktop-Debug  gui/build-qt-Desktop-Release
 
-.PHONY : install uninstall clean distclean dict uitr-qm
+.PHONY : a11 install uninstall clean distclean dict uitr-qm

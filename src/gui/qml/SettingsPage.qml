@@ -52,6 +52,17 @@ Item {
                     }
 
                     SettingRow {
+                        label: qsTr("Theme")
+                        hint: qsTr("Automatic: light from 06:00 to 18:00, dark otherwise")
+                        StyledComboBox {
+                            model: [qsTr("Automatic"), qsTr("Light"), qsTr("Dark")]
+                            controlWidth: Math.max(120, Theme.baseSize * 7)
+                            currentIndex: bridge.themeMode
+                            onActivated: bridge.themeMode = index
+                        }
+                    }
+
+                    SettingRow {
                         label: qsTr("Interface language")
                         hint: qsTr("Restart the application to apply the change")
                         StyledComboBox {

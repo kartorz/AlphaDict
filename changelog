@@ -1,4 +1,18 @@
 
+AlphaDict 1.6 (2026-11-12):
+        -- The dictionary index is hidden by default: it helps browsing, not
+           a plain lookup. A button in the top bar shows and hides it, and the
+           index model is filled only while it is visible, so alternating
+           Chinese and English input no longer rebuilds the index.
+        -- The QML window opens at 920x660 with a 720x520 minimum, now that
+           the index column no longer reserves space.
+        -- aldconv.py converts dictd, WordNet, JMdict and EDICT2 besides
+           StarDict, CC-CEDICT, IDP and dicts.info. The text encoding is
+           detected from the file (UTF-8, EUC-JP, Shift_JIS), which EDICT2
+           needs because its two official releases use different encodings.
+        -- doc/make_dictionary.txt explains where to download each supported
+           format and gives the command for it; pyglossary covers the rest.
+
 AlphaDict 1.5 (2026-11-09):
         -- configure is rewritten around pkg-config: Qt is located with
            pkg-config only, no include or library path is hard-coded, Qt 5.9 or

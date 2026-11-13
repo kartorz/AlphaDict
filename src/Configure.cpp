@@ -229,6 +229,14 @@ int Configure::load(const string& xmlpath)
             m_setting.bsystemTray = tempElement->BoolAttribute("systemtray");
         }
 
+        /* Same for "theme": files written before it existed get automatic. */
+        if (tempElement->Attribute("theme") == NULL) {
+            m_setting.themeMode = THEME_AUTO;
+            tempElement->SetAttribute("theme", m_setting.themeMode);
+        } else {
+            m_setting.themeMode = tempElement->IntAttribute("theme");
+        }
+
         /* Lift the old 9..10 sizes that are unreadable on scaled desktops. */
         if (m_setting.fontsize < UI_FONT_SIZE_MIN) {
             m_setting.fontsize = UI_FONT_SIZE_DEFAULT;
@@ -239,12 +247,14 @@ int Configure::load(const string& xmlpath)
         m_setting.fontsize = UI_FONT_SIZE_DEFAULT;
         m_setting.font = "";
         m_setting.bsystemTray = true;
+        m_setting.themeMode = THEME_AUTO;
 
         XMLElement* e = m_doc.NewElement(XML_TAG_SETTING);
         e->SetAttribute("uilan", m_setting.uilanID);
         e->SetAttribute("fontsize", m_setting.fontsize);
         e->SetAttribute("font", m_setting.font.c_str());
         e->SetAttribute("systemtray", m_setting.bsystemTray);
+        e->SetAttribute("theme", m_setting.themeMode);
 
         rootElement->InsertEndChild(e);
     }
@@ -475,6 +485,16 @@ void Configure::writeSystemTray(bool en)
 	m_setting.bsystemTray = en;
         XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
         e->SetAttribute("systemtray", m_setting.bsystemTray);
+        m_dirty = true;
+    }
+}
+
+void Configure::writeThemeMode(int mode)
+{
+    if (m_setting.themeMode != mode) {
+        m_setting.themeMode = mode;
+        XMLElement* e = XMLHandle(m_doc.RootElement()).FirstChildElement(XML_TAG_SETTING).ToElement();
+        e->SetAttribute("theme", m_setting.themeMode);
         m_dirty = true;
     }
 }

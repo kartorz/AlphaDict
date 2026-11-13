@@ -6,7 +6,32 @@ import QtQuick 2.15
 QtObject {
     id: theme
 
-    property bool dark: true
+    /* Theme picked in the settings page: 0 automatic, 1 light, 2 dark.
+     * Automatic goes by the clock, 06:00-18:00 light and dark otherwise.
+     * The two hours are a fixed choice, not measured or tied to sunrise. */
+    property int mode: 0
+    property bool dark: mode === 2 || (mode === 0 && night)
+
+    /* Minutes since midnight, refreshed every minute so a long running window
+     * crosses the 06:00/18:00 boundary without a restart. */
+    property int minuteOfDay: {
+        var d = new Date()
+        return d.getHours() * 60 + d.getMinutes()
+    }
+    readonly property int dayStart:   6 * 60
+    readonly property int nightStart: 18 * 60
+    readonly property bool night: minuteOfDay < dayStart || minuteOfDay >= nightStart
+
+    property Timer clock: Timer {
+        interval: 60000
+        repeat: true
+        running: theme.mode === 0
+        triggeredOnStart: true
+        onTriggered: {
+            var d = new Date()
+            theme.minuteOfDay = d.getHours() * 60 + d.getMinutes()
+        }
+    }
 
     /* surfaces */
     property color bg:         dark ? "#0e1015" : "#f4f6fb"

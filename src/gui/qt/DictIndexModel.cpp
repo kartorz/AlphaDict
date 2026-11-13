@@ -13,7 +13,7 @@
 #define STRING_MORE_E1  "-------->"
 #define STRING_MORE_E2  "-------->>"
 
-DictIndexModel::DictIndexModel():m_indexStart(0),m_indexEnd(0)
+DictIndexModel::DictIndexModel():m_indexStart(0),m_indexEnd(0),m_active(true)
 {
 }
 
@@ -99,9 +99,31 @@ void DictIndexModel::onResetIndexList()
     onResetIndexList(string(""));
 }
 
+void DictIndexModel::setActive(bool active)
+{
+    MutexLock lock(m_cs);
+    if (m_active == active)
+        return;
+
+    m_active = active;
+    /* Nobody reads the list while it is hidden, and a dictionary reload may
+     * already have made it stale: free it rather than keep it around. */
+    if (!active) {
+        beginResetModel();
+        clearIndexList();
+        endResetModel();
+        m_indexStart = 0;
+        m_indexEnd = 0;
+    }
+}
+
 void DictIndexModel::onResetIndexList(string startwith)
 {
     MutexLock lock(m_cs);
+    /* Hidden index: the bridge replays the prefix when it becomes visible. */
+    if (!m_active)
+        return;
+
     beginResetModel();
     clearIndexList();
 
@@ -119,6 +141,9 @@ QModelIndex DictIndexModel::updateIndexList(int pg)
 {
     MutexLock lock(m_cs);
     QModelIndex result = QAbstractItemModel::createIndex(-1, 0);
+
+    if (!m_active)
+        return result;
 
     /* Refuse the no-op pages before the model is reset, otherwise
      * beginResetModel() is left unbalanced and Qt5 aborts the application. */

@@ -143,25 +143,82 @@ build/export 会把问题写到标准错误，退出码非 0 表示失败。
 五、从现有词典格式转换
 ----------------------
 
-src/tools/aldconv.py 是一个 Python 3 脚本，把常见的开放词典转换成上述
-文本，再用 aldctl build 生成 .aldict。支持的格式：
+src/tools/aldconv.py 是一个 Python 3 脚本（无第三方依赖），把现成的开放
+词典转成上述文本，再用 aldctl build 生成 .aldict。它只收条目量大的格式，
+给的都是收录几万条以上的数据源：
 
-  stardict   StarDict（.ifo/.idx/.dict 三件套，-i 给基名）
+  stardict   StarDict 三件套 .ifo/.idx/.dict[.dz]，-i 给基名
+  dictd      dictd 的 .index + .dict[.dz]，-i 给基名
+  wordnet    WordNet 数据库，-i 给目录
   cedict     CC-CEDICT 文本
+  jmdict     JMdict_e XML
+  edict2     EDICT2 文本
   idp        IDP 双语词表
   dictsinfo  dicts.info 双语词表
 
-格式一般从输入文件自动识别，识别不出时用 -f 指定。用法：
+格式从输入自动识别，识别不出时用 -f 指定；-h 列出全部选项和示例。
+输入是 .gz/.bz2/.xz 会边解压边读，不用先手工解压。文本编码按文件内容
+探测（UTF-8、EUC-JP、Shift_JIS），EDICT2 的两种官方发布版都能直接读。
+
+
+下载地址
+--------
+
+  StarDict 词典合集      http://download.huzheng.org/
+                         （https 打不开，浏览器里用 http 访问）
+  FreeDict 双语词典      https://freedict.org/downloads/
+                         同时提供 .stardict.tar.xz 和 .dictd.tar.xz
+  CC-CEDICT              https://www.mdbg.net/chinese/dictionary?page=cedict
+  JMdict_e / EDICT2      https://www.edrdg.org/pub/Nihongo/JMdict_e.gz
+                         https://www.edrdg.org/pub/Nihongo/edict2u.gz  (UTF-8)
+                         https://www.edrdg.org/pub/Nihongo/edict2.gz   (EUC-JP)
+  WordNet                apt install wordnet，数据在 /usr/share/wordnet
+
+FreeDict 和 huzheng 的包解压后是一堆同名文件，取基名即可。例如
+freedict-eng-deu-0.7.0.dictd.tar.xz 解出
+freedict-eng-deu-0.7.0.index 与 .dict.dz，-i 就给
+freedict-eng-deu-0.7.0。
+
+
+用法
+----
 
     aldconv.py -i ~/dicts/langdao-ec-gb -o langdao.txt
-    aldconv.py -f cedict -i cedict.txt -o cedict_aldict.txt
-    aldconv.py -h                 # 全部选项和示例
+    aldconv.py -i cedict.txt.gz -o cedict.txt
+    aldconv.py -i /usr/share/wordnet -o wordnet.txt
+    aldconv.py -i edict2.gz -o edict2-ja.txt
 
     aldctl build -o langdao-ec-gb.aldict langdao.txt
     aldctl info langdao-ec-gb.aldict
 
+省略 -o 时输出到 <输入名>_aldict.txt，不会覆盖输入文件。
+
+实测（2026-11-11 的发布版）：CC-CEDICT 转出 125405 条、11MB 的 .aldict，
+EDICT2 转出 219051 条、27MB，两次 aldctl build 都在 2 秒内。
+
 转换结果是普通文本，可以继续用编辑器增删改，再重新 build。安装后脚本
 和 aldctl 都在 /usr/local/share/alphadict/tools 下，该目录可以单独使用。
+
+
+关于语种
+--------
+
+文本头里的 srclang 决定 AlphaDict 在输入某种文字时会不会选这本词典。
+FreeDict 的文件名带语种（freedict-eng-deu-...），脚本会据此写入
+english/german；CC-CEDICT 固定写 chinese；JMdict/EDICT2 写 japanese；
+WordNet 写 english。其他来源默认 any，任何输入都会被检索到，可以用
+-n 改词典名、用编辑器手改 srclang。
+
+
+其他格式
+--------
+
+ Babylon .bgl、ABBYY .dsl、MDX 等格式不在支持范围内。需要时先用
+pyglossary（https://github.com/ilius/pyglossary）转成 StarDict，再用
+本脚本转换。pyglossary 的参数以它自己的 -h 为准，大致是：
+
+    pyglossary dict.bgl out/ --write-format=Stardict
+    aldconv.py -i out/<基名> -o out.txt
 
 
 六、示例：给词典加一条词

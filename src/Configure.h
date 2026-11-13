@@ -41,6 +41,7 @@ struct Setting {
     int  fontsize;
     string font;
     bool bsystemTray;
+    int  themeMode;
 };
 
 struct CaptureWordSetting {
@@ -57,6 +58,13 @@ enum UILanID {
     UILAN_NONE = -1, // Auto detect.
     UILAN_EN,
     UILAN_CN,
+};
+
+/* Theme choice; THEME_AUTO follows the clock, see Theme.qml. */
+enum ThemeMode {
+    THEME_AUTO = 0,
+    THEME_LIGHT,
+    THEME_DARK,
 };
 
 class Configure
@@ -76,6 +84,7 @@ public:
     void writeFontSize(int size);
     void writeFont(string font);
     void writeSystemTray(bool en);
+    void writeThemeMode(int mode);
     void writeCwsSelection(bool en);
     void writeCwsClipboard(bool en);
     void writeCwsMouse(bool en);

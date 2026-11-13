@@ -12,15 +12,28 @@ Rectangle {
     id: root
 
     property int currentPage: 0
+    /* The index is a browsing aid, not needed for a plain lookup: hidden by
+     * default, the button in the top bar brings it back. */
+    property bool indexOpen: false
+    /* The bridge fills the index model only while it is visible. */
+    onIndexOpenChanged: {
+        bridge.indexVisible = indexOpen
+        bridge.fitIndexPane(indexOpen, dictPage.indexPaneWidth,
+                            dictPage.indexPaneHeightDelta)
+    }
 
     color: Theme.bg
     focus: true
 
-    /* Follow the configured font size for every themed text. */
+    /* Follow the configured font size and theme for every themed text. */
     Component.onCompleted: {
         Theme.baseSize = bridge.fontSize;
         Theme.fontFamily = bridge.fontFamily;
+        Theme.mode = bridge.themeMode;
         bridge.darkTheme = Theme.dark;
+        /* Starts with the index hidden: open at the tight size. */
+        bridge.fitIndexPane(false, dictPage.indexPaneWidth,
+                            dictPage.indexPaneHeightDelta);
         searchField.forceActiveFocus();
         bridge.refreshHelpText();
     }
@@ -34,6 +47,7 @@ Rectangle {
         target: bridge
         function onFontSizeChanged() { Theme.baseSize = bridge.fontSize }
         function onFontFamilyChanged() { Theme.fontFamily = bridge.fontFamily }
+        function onThemeModeChanged() { Theme.mode = bridge.themeMode }
         function onQueryChanged() {
             if (searchField.text !== bridge.query)
                 searchField.text = bridge.query;
@@ -99,6 +113,18 @@ Rectangle {
             /* No language combos: the input decides. */
 
             FlatButton {
+                id: indexButton
+                Layout.alignment: Qt.AlignVCenter
+                glyph: "☰"
+                primary: root.indexOpen
+                controlHeight: Math.max(32, Theme.controlHeight + 4)
+                horizontalPadding: 10
+                onClicked: root.indexOpen = !root.indexOpen
+                ToolTip.visible: hovered
+                ToolTip.delay: 600
+                ToolTip.text: root.indexOpen ? qsTr("Hide index") : qsTr("Show index")
+            }
+            FlatButton {
                 id: starButton
                 /* Acts on what the user typed: the button must work before
                  * Enter is pressed, so it does not use bridge.query. */
@@ -163,7 +189,10 @@ Rectangle {
                 anchors.fill: parent
                 currentIndex: root.currentPage
 
-                DictionaryPage { }
+                DictionaryPage {
+                    id: dictPage
+                    indexOpen: root.indexOpen
+                }
                 VBookPage { }
                 SettingsPage { }
                 HelpPage { }

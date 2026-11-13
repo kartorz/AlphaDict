@@ -58,6 +58,11 @@ class QmlBridge : public QObject
     Q_PROPERTY(int indexCount READ indexCount NOTIFY indexCountChanged)
     Q_PROPERTY(int dictCount  READ dictCount  NOTIFY dictCountChanged)
 
+    /*! Whether the QML side shows the index.  While hidden the model is not
+     *  filled: a language switch must not rebuild a list nobody reads. */
+    Q_PROPERTY(bool indexVisible READ indexVisible WRITE setIndexVisible
+               NOTIFY indexVisibleChanged)
+
     Q_PROPERTY(QVariantList vbook     READ vbook     NOTIFY vbookChanged)
     Q_PROPERTY(int          vBookMode READ vBookMode WRITE setVBookMode NOTIFY vBookModeChanged)
     Q_PROPERTY(int          vBookRow  READ vBookRow  NOTIFY vbookChanged)
@@ -82,6 +87,9 @@ class QmlBridge : public QObject
 
     /* settings page */
     Q_PROPERTY(bool systemTray   READ systemTray   WRITE setSystemTray   NOTIFY systemTrayChanged)
+    /*! Theme: 0 automatic (by clock), 1 light, 2 dark.  QML computes the
+     *  actual palette in Theme.qml; the bridge only persists the choice. */
+    Q_PROPERTY(int  themeMode    READ themeMode    WRITE setThemeMode    NOTIFY themeModeChanged)
     /*! 取词窗（CapWordDialog）跟主界面共用主题，QML 侧把 Theme.dark 同步过来。 */
     Q_PROPERTY(bool darkTheme    READ darkTheme    WRITE setDarkTheme    NOTIFY darkThemeChanged)
     Q_PROPERTY(bool cwsEnabled   READ cwsEnabled   WRITE setCwsEnabled   NOTIFY cwsChanged)
@@ -105,6 +113,8 @@ public:
     QVariantList capWord() const { return m_capWord; }
 
     int indexCount() const;
+    bool indexVisible() const { return m_indexVisible; }
+    void setIndexVisible(bool visible);
     QString dataDir() const;
     int dictCount() const;
 
@@ -127,6 +137,7 @@ public:
     QString appVersion() const;
 
     bool systemTray() const;
+    int  themeMode() const;
     bool darkTheme() const { return m_darkTheme; }
     bool cwsEnabled() const;
     bool cwsClipboard() const;
@@ -163,6 +174,7 @@ signals:
     void queryChanged();
     void capWordChanged();
     void indexCountChanged();
+    void indexVisibleChanged();
     void dictCountChanged();
     void vbookChanged();
     void vBookModeChanged();
@@ -172,12 +184,16 @@ signals:
     void fontFamilyChanged();
     void dictStateChanged();
     void systemTrayChanged();
+    void themeModeChanged();
     void darkThemeChanged();
     void cwsChanged();
     void uiLanChanged();
 
     /* window requests */
     void requestBeginWindowMove();
+    /*! The index column was shown or hidden; widthDelta/heightDelta are the
+     *  space it takes, so the window can grow and shrink by the same amount. */
+    void requestIndexPane(bool open, int widthDelta, int heightDelta);
     void requestBeginWindowResize(int edges);
     void requestMinimizeToTray();
     /*! same path as the window manager's close button */
@@ -189,6 +205,10 @@ signals:
     void requestShortcutKey(int oldIndex, int newIndex);
 
 public:
+    /*! Applies the index column's size to the window; the deltas come from
+     *  the QML layout, which is the only side that knows them. */
+    Q_INVOKABLE void fitIndexPane(bool open, int widthDelta, int heightDelta);
+
     Q_INVOKABLE void search(const QString &input);
     Q_INVOKABLE void prefixSearch(const QString &prefix);
     Q_INVOKABLE void clickIndex(int row);
@@ -230,6 +250,7 @@ public:
     void setFontFamily(const QString &family);
     void setVBookMode(int mode);
     void setSystemTray(bool en);
+    void setThemeMode(int mode);
     void setDarkTheme(bool dark);
     void setCwsEnabled(bool en);
     void setCwsClipboard(bool en);
@@ -252,6 +273,9 @@ private:
     QMap<int, QVariantList> m_explByDict;
     QVariantList m_capWord;
     QString      m_query;
+    /*! Last prefix the QML side asked for; replayed once the index is shown. */
+    QString      m_indexPrefix;
+    bool         m_indexVisible;
     QVariantList m_vbook;
     QString      m_vBookExpl;
     QString      m_statusText;

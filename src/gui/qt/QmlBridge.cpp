@@ -61,6 +61,9 @@ QmlBridge::QmlBridge(QObject *parent)
 
     m_indexModel = new DictIndexModel();
     m_indexModel->setParent(this);
+    /* QML starts with the index column hidden. */
+    m_indexVisible = false;
+    m_indexModel->setActive(false);
     m_dictModel = new DictListModel(this);
     m_vbookModel = new VBookModel(m_config->getVBPath());
     m_vbookModel->setParent(this);
@@ -187,8 +190,28 @@ void QmlBridge::search(const QString &input)
 
 void QmlBridge::prefixSearch(const QString &prefix)
 {
-    std::string u8prefix(prefix.trimmed().toUtf8().constData());
+    m_indexPrefix = prefix.trimmed();
+    /* Hidden index: remember the prefix only, the model stays empty until the
+     * user opens the index column. */
+    if (!m_indexVisible)
+        return;
+
+    std::string u8prefix(m_indexPrefix.toUtf8().constData());
     m_indexModel->onResetIndexList(u8prefix);
+}
+
+void QmlBridge::setIndexVisible(bool visible)
+{
+    if (m_indexVisible == visible)
+        return;
+
+    m_indexVisible = visible;
+    m_indexModel->setActive(visible);
+    if (visible) {
+        std::string u8prefix(m_indexPrefix.toUtf8().constData());
+        m_indexModel->onResetIndexList(u8prefix);
+    }
+    emit indexVisibleChanged();
 }
 
 void QmlBridge::clickIndex(int row)
@@ -504,6 +527,14 @@ bool QmlBridge::systemTray() const
     return m_config->m_setting.bsystemTray;
 }
 
+int QmlBridge::themeMode() const
+{
+    int mode = m_config->m_setting.themeMode;
+    if (mode < THEME_AUTO || mode > THEME_DARK)
+        mode = THEME_AUTO;
+    return mode;
+}
+
 bool QmlBridge::cwsEnabled() const
 {
     return m_config->m_cws.benable;
@@ -584,6 +615,14 @@ void QmlBridge::setSystemTray(bool en)
     emit requestSystemTray(en);
 }
 
+void QmlBridge::setThemeMode(int mode)
+{
+    if (mode < THEME_AUTO || mode > THEME_DARK || mode == themeMode())
+        return;
+    m_config->writeThemeMode(mode);
+    emit themeModeChanged();
+}
+
 void QmlBridge::setDarkTheme(bool dark)
 {
     if (m_darkTheme == dark)
@@ -651,11 +690,13 @@ void QmlBridge::resetSettings()
     /* reset() only rewrites the XML on next start; restore the visible font now. */
     m_config->writeFontSize(UI_FONT_SIZE_DEFAULT);
     m_config->writeFont("");
+    m_config->writeThemeMode(THEME_AUTO);
     refreshHelpText();
     applyUiFont();
     emit fontSizeChanged();
     emit fontFamilyChanged();
     emit systemTrayChanged();
+    emit themeModeChanged();
     emit cwsChanged();
     emit uiLanChanged();
     setStatus(tr("Settings have been reset"));
@@ -710,6 +751,11 @@ void QmlBridge::beginWindowMove()
 void QmlBridge::beginWindowResize(int edges)
 {
     emit requestBeginWindowResize(edges);
+}
+
+void QmlBridge::fitIndexPane(bool open, int widthDelta, int heightDelta)
+{
+    emit requestIndexPane(open, widthDelta, heightDelta);
 }
 
 void QmlBridge::minimizeToTray()

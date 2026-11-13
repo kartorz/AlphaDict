@@ -23,7 +23,9 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QIcon>
 #include <QtGui/QCursor>
+#include <QtGui/QGuiApplication>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QScreen>
 #include <QtGui/QWindow>
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
@@ -87,10 +89,17 @@ QmlMainWindow::QmlMainWindow(QWidget *parent) :
     setWindowIcon(QIcon(QStringLiteral(":/res/appicon.png")));
     /* The QML top bar draws every button, so no system decorations at all. */
     setWindowFlags(Qt::FramelessWindowHint);
-    resize(1120, 740);
-    setMinimumSize(880, 580);
+    /* 920x660 is the size with the index column open; Main.qml trims the
+     * column away on start through onRequestIndexPane(). The minimum is small
+     * enough for the trimmed layout. */
+    resize(920, 660);
+    setMinimumSize(640, 520);
 
     m_bridge = new QmlBridge(this);
+    /* Must be connected before setSource(): Main.qml trims the window in
+     * Component.onCompleted, which runs during setSource(). */
+    QObject::connect(m_bridge, SIGNAL(requestIndexPane(bool, int, int)),
+                     this, SLOT(onRequestIndexPane(bool, int, int)));
 
     m_quick = new QQuickWidget(this);
     m_quick->setResizeMode(QQuickWidget::SizeRootObjectToView);
@@ -324,6 +333,36 @@ void QmlMainWindow::onBeginWindowResize(int edges)
     m_dragStartCursor = QCursor::pos();
     m_dragStartGeometry = geometry();
     m_dragActive = true;
+}
+
+/*! The index column takes real width and height.  Give that space back while
+ *  it is hidden and take it again when it returns, so the window stays tight
+ *  for plain lookups.  A delta instead of two remembered sizes keeps whatever
+ *  the user resized in between. */
+void QmlMainWindow::onRequestIndexPane(bool open, int widthDelta, int heightDelta)
+{
+    const int dir = open ? 1 : -1;
+    QSize target = size() + QSize(dir * widthDelta, dir * heightDelta);
+    target = target.expandedTo(minimumSize());
+    resize(target);
+
+    /* Growing back may push part of the frameless window off screen. */
+    QScreen *screen = QGuiApplication::screenAt(frameGeometry().center());
+    if (screen == NULL)
+        screen = QGuiApplication::primaryScreen();
+    if (screen == NULL)
+        return;
+    const QRect avail = screen->availableGeometry();
+    QRect g = geometry();
+    if (g.right() > avail.right())
+        g.moveRight(avail.right());
+    if (g.bottom() > avail.bottom())
+        g.moveBottom(avail.bottom());
+    if (g.left() < avail.left())
+        g.moveLeft(avail.left());
+    if (g.top() < avail.top())
+        g.moveTop(avail.top());
+    setGeometry(g);
 }
 
 void QmlMainWindow::onRequestMinimizeToTray()
