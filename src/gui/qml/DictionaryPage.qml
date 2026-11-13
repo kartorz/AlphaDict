@@ -32,7 +32,7 @@ Item {
                 ThemedField {
                     id: prefixField
                     Layout.fillWidth: true
-                    fieldHeight: Math.max(30, Theme.baseSize + 18)
+                    fieldHeight: Math.max(30, Theme.textLine + 12)
                     placeholderText: qsTr("Prefix, e.g. ab")
                     onTextChanged: page.loadPrefix(text)
                 }
@@ -49,7 +49,7 @@ Item {
 
                     delegate: Rectangle {
                         width: indexList.width
-                        height: Math.max(24, Theme.textLine + 4)
+                        height: Math.max(26, Theme.textLine + 6)
                         radius: 6
                         color: entry.containsMouse ? Theme.surfaceHi : "transparent"
 

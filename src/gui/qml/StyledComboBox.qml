@@ -61,7 +61,7 @@ ComboBox {
     delegate: ItemDelegate {
         id: entry
         width: cb.width
-        height: Math.max(30, Theme.baseSize + 16)
+        height: Math.max(30, Theme.textLine + 12)
         highlighted: cb.highlightedIndex === index
         contentItem: Text {
             leftPadding: 10

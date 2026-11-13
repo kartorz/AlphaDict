@@ -53,11 +53,11 @@ QtObject {
     readonly property int smallSize: Math.max(11, baseSize - 2)
     readonly property int tinySize:  Math.max(10, baseSize - 4)
 
-    /* Text ~90% of the control: QML's line box is ~1.3x pixelSize, so size
-     * chrome from textLine, not from font size + fixed padding. */
+    /* 单行文字的行盒约 1.45–1.50 em: 实测 20/32/48 号字分别为 1.50/1.50/1.46,
+     * 这里取 1.45 作基准。控件高度由 textLine 推出, 不用字号加固定内边距。 */
     readonly property real textFill: 0.9
-    readonly property int textLine: Math.ceil(baseSize * 1.3)
-    readonly property int tinyLine: Math.ceil(tinySize * 1.3)
+    readonly property int textLine: Math.ceil(baseSize * 1.45)
+    readonly property int tinyLine: Math.ceil(tinySize * 1.45)
 
     readonly property int controlHeight: Math.max(28, Math.round(textLine / textFill))
     readonly property int toolbarHeight: Math.max(50, controlHeight + 20)

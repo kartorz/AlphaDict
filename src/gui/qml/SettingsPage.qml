@@ -116,7 +116,7 @@ Item {
                         ThemedField {
                             id: fontField
                             implicitWidth: Math.max(200, Theme.baseSize * 12)
-                            fieldHeight: Math.max(30, Theme.baseSize + 18)
+                            fieldHeight: Math.max(30, Theme.textLine + 12)
                             text: bridge.fontFamily
                             placeholderText: qsTr("System default")
                             onEditingFinished: bridge.fontFamily = text
